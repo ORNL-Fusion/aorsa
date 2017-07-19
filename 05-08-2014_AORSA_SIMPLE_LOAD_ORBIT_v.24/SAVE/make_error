@@ -1,0 +1,2 @@
+ftn   -fast -tp barcelona-64 -fastsse -Mfixed -Mr8 -r8 -Msave -I /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/src/CQL3D_SETUP -c   -I /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/src/CQL3D_SETUP   -DUSE_HPL -o /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/obj/hopper/aorsa2dMain.o \
+                             /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/src/aorsa2dMain.F			     

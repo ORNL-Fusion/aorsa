@@ -1,0 +1,979 @@
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 1
+
+Switches: -noasm -nodclchk -nodebug -nodlines -noline -list
+          -idir /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/src/CQL3D_SETUP
+          -idir /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/src/CQL3D_SETUP
+          -idir /opt/cray/netcdf/4.3.2/PGI/141/include
+          -idir /opt/cray/hdf5/1.8.13/PGI/141/include
+          -idir /opt/cray/mpt/7.1.1/gni/mpich2-pgi/141/include
+          -idir /opt/cray/mpt/7.1.1/gni/sma/include
+          -idir /opt/cray/libsci/13.0.1/PGI/141/x86_64/include
+          -idir /opt/cray/rca/1.0.0-2.0502.53711.3.125.gem/include
+          -idir /opt/cray/alps/5.2.1-2.0502.9041.11.6.gem/include
+          -idir /opt/cray/xpmem/0.1-2.0502.55507.3.2.gem/include
+          -idir /opt/cray/gni-headers/3.0-1.0502.9684.5.2.gem/include
+          -idir /opt/cray/dmapp/7.0.1-1.0502.9501.5.211.gem/include
+          -idir /opt/cray/pmi/5.0.6-1.0000.10439.140.3.gem/include
+          -idir /opt/cray/ugni/5.0-1.0502.9685.4.24.gem/include
+          -idir /opt/cray/udreg/2.3.2-1.0502.9275.1.25.gem/include
+          -idir /opt/cray/wlm_detect/1.0-1.0502.53341.1.1.gem/include
+          -idir /opt/cray/krca/1.0.0-2.0502.53880.4.103.gem/include
+          -idir /opt/cray-hss-devel/7.2.0/include
+          -inform severe -opt 2 -save -object -noonetrip
+          -depchk on -nostandard     
+          -nosymbol -noupcase    
+
+Filename: /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/src/wdot_sum.f90
+
+(    1)   	module wdot_sum_mod
+(    2)          contains
+(    3) !module METS2AORSA_MYRA
+(    4) 
+(    5) !  private
+(    6) !  public::  GET_WMAT_MYRA, intplt1d, WINTERP1D_3
+(    7) 
+(    8) 
+(    9) !contains
+(   10) !
+(   11) !*************************************************************************
+(   12) !
+(   13) 
+(   14)     subroutine wdot_new_maxwellian_sum(ip, jp, k_uper, b_sum, c_sum,  & 
+(   15)        & e_sum, f_sum, &
+(   16)        & sum_wdot, sum_fx0, sum_fy0, W, ZSPEC, ASPEC, BMAG, &
+(   17)        & lmax, ENORM, UPARMIN, UPARMAX, &
+(   18)        & NUPAR, NUPER, UPER, UPAR, DFDUPER, DFDUPAR, FPERP, &
+(   19)        & ealphak, ebetak, ebk, nkdim1, nkdim2, mkdim1, mkdim2,   &
+(   20)        & nkx1, nkx2, nky1, nky2, &
+(   21)        & uxx, uxy, uxz, &
+(   22)        & uyx, uyy, uyz, &
+(   23)        & uzx, uzy, uzz, &
+(   24)        & nxdim, nydim, xkxsav, xkysav, xkphi, xx, yy, i_global, j_global, &
+(   25)        & lmaxdim, ndist, nzeta, &
+(   26)        & gradprlb, bmod, omgc, alpha, xm, upshift, xk_cutoff, rt, nphi,  &
+(   27)        & rho, z0_table, z1_table, z2_table, ntable, mtable, &
+(   28)        & zetai_table, dKdL_table, nmax, mmax,   &
+(   29)        & bhatgradbx, bhatgradby, bhatgradbz, z2_electron, xnuomg)
+(   30) 
+(   31)     implicit none
+(   32) 
+(   33)     integer i_global, j_global, ier, nxdim, nydim, k, lmaxdim, ndist
+(   34)     integer, intent(IN):: NUPAR, NUPER, lmax, ip, jp
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 2
+
+(   35)     integer nkx1, nkx2, nky1, nky2, j_upar, k_uper, l, ldum
+(   36)     integer nkdim1, nkdim2, mkdim1, mkdim2
+(   37)     integer:: NHARM, IHARM, M, N, i, nzeta
+(   38)     integer i_uprl, upshift
+(   39)     integer ires, iresmax, nphi, z2_electron
+(   40) 
+(   41)     complex, dimension(:,:), allocatable :: zbeta
+(   42)     complex, dimension(:,:), allocatable :: zbeta_iharm
+(   43)     
+(   44)     real  y, y0, alpha, xm, akprl, sgn_kprl, omgc, bmod, xkprl_eff,  &
+(   45)    &   descrim, xme, fgam, gradprlb, gammab, xk_cutoff, rt, akprl_min, rho
+(   46)    
+(   47)     real dkprldl
+(   48)     real bhatgradbx, bhatgradby, bhatgradbz
+(   49) 
+(   50)     real  uxx, uxy, uxz, uyx, uyy, uyz, uzx, uzy, uzz, omgrf, xnuomg
+(   51)     real  xkphi, sinth, factc, facte, factf, sinth_inv
+(   52)     real  xkxsav(nkdim1 : nkdim2), xkysav(mkdim1 : mkdim2)
+(   53)     real  xkperpn, xkperpni, xkrhon, xketan, xkprln, beta
+(   54)     real, intent(IN):: W, ZSPEC, ASPEC, BMAG
+(   55)     real, intent(IN):: ENORM, UPARMIN, UPARMAX
+(   56)     real, dimension(NUPER), intent(IN):: UPER
+(   57)     real, dimension(NUPAR), intent(IN):: UPAR
+(   58)     real, dimension(NUPER,NUPAR), intent(IN):: DFDUPER, DFDUPAR
+(   59)     real, dimension(NUPER), intent(IN):: FPERP
+(   60)     real:: W2, WCW, RRP, RRM, WC, WCI
+(   61)     real:: MUT0, SQMUT0, PISQMUT0, SQMUT0I, KPARA1
+(   62)     real:: ISQ2, SQ2, NWCW, DFACTPAR, DFACTPER, U0
+(   63)     real:: UPAR0, dfdupar0, dfduper0, du, dui, p 
+(   64)     real:: time, t1, tmsec, second1, dummy, WI, uperpk, uperpk2
+(   65)     real:: dzeta, dzetai, zetamax, zetamin, zeta0, zetamax1, zetamax2
+(   66)     real:: A1, A2, A3, u
+(   67)     real:: temp1, temp2, temp3, factor
+(   68)     real:: temp1w, temp2w, temp3w
+(   69)     
+(   70)     real, dimension(:),     allocatable :: zetai
+(   71)     real, dimension(:,:),   allocatable :: Jni
+(   72)     real, dimension(:,:,:), allocatable :: Jn
+(   73)     real, dimension(:,:),   allocatable :: NPARA_sav
+(   74)     
+(   75)     integer, dimension(:),  allocatable :: nres
+(   76)     integer, dimension(:),  allocatable :: mres
+(   77)         
+(   78)     complex, dimension(:),  allocatable :: sumb_11
+(   79)     complex, dimension(:),  allocatable :: sumb_31
+(   80)      
+(   81)     complex, dimension(:),  allocatable :: sumc_11
+(   82)     complex, dimension(:),  allocatable :: sumc_31
+(   83)     
+(   84)     complex, dimension(:),  allocatable :: sume_11
+(   85)     complex, dimension(:),  allocatable :: sume_31
+(   86)      
+(   87)     complex, dimension(:),  allocatable :: sumf_11
+(   88)     complex, dimension(:),  allocatable :: sumf_31
+(   89)     
+(   90)     complex z0, z1, z2
+(   91)     complex z0_new, z1_new, z2_new
+(   92)     
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 3
+
+(   93)     complex sumf_11_nm
+(   94)     complex sumf_31_nm
+(   95) 
+(   96)     complex sume_11_nm
+(   97)     complex sume_31_nm
+(   98)        
+(   99)     complex sumc_11_nm
+(  100)     complex sumc_31_nm
+(  101)        
+(  102)     complex sumb_11_nm
+(  103)     complex sumb_31_nm
+(  104)  
+(  105)     logical, dimension(:,:), allocatable :: is_resonance_nm      
+(  106) 
+(  107)     complex epsx, epsy, epsz
+(  108)     complex ttmp, cross2, cross3, ld
+(  109)     complex ttmp_11, cross_13, cross_31, landau_33
+(  110)     complex ealphak(nkdim1 : nkdim2, mkdim1 : mkdim2), &
+(  111)     &        ebetak(nkdim1 : nkdim2, mkdim1 : mkdim2), &
+(  112)     &           ebk(nkdim1 : nkdim2, mkdim1 : mkdim2)
+(  113)     complex cexpkx, cexpky, zi, zeta, omgrfc
+(  114) 
+(  115)     complex xx(nkdim1 : nkdim2, 1 : nxdim),   &
+(  116)     &       yy(mkdim1 : mkdim2, 1 : nydim)
+(  117)      
+(  118)     integer ntable, mtable, nmax, mmax
+(  119)       
+(  120)     complex z0_table(ntable, mtable)
+(  121)     complex z1_table(ntable, mtable)
+(  122)     complex z2_table(ntable, mtable)
+(  123)     real zetai_table(ntable), dKdL_table(mtable)
+(  124)     real dKdL_giv        
+(  125) 
+(  126)     complex cexpn, cexpnp1, cexpnm1, cexp11
+(  127) 
+(  128)     complex cexp1, cexp2, cexp0
+(  129)     complex sumwdot_11_nm, sumwdot_13_nm, sumwdot_31_nm
+(  130)     
+(  131)     complex sumwdot_11, sumwdot_13, sumwdot_31
+(  132)     complex sumwdotkx_11, sumwdotkx_31
+(  133)     complex sumwdotky_11, sumwdotky_31
+(  134) 	
+(  135)     complex sum2_1, sum2_2, sum2_3
+(  136)     complex sum1_1, sum1_2, sum1_3, sum1_4
+(  137)     
+(  138)     complex sumkx2_1, sumkx2_2, sumkx2_3 
+(  139)     complex sumky2_1, sumky2_2, sumky2_3        
+(  140)     
+(  141)     complex b_sum(nupar), c_sum(nupar), e_sum(nupar), f_sum(nupar)
+(  142)     complex sum_wdot, sum_fx0, sum_fy0
+(  143)     complex term1, term2, term3, term4
+(  144)     complex b(100)
+(  145)     complex zetal
+(  146) 
+(  147)     real, parameter:: EOVERAMU=9.64853e7
+(  148)     real, parameter:: EOVERMH = 9.58084e+07
+(  149)     
+(  150)     real, parameter:: MPC2 = 938271998.38
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 4
+
+(  151)     real, parameter:: C = 2.99792458e8
+(  152)     real, parameter:: PI = 3.141592653597932384
+(  153)     real :: cosbeta_n_m, sinbeta_n_m
+(  154)     common/upcom/akprl_min    
+(  155)     
+(  156)     allocate( zbeta(nkx1:nkx2,nky1:nky2) )
+(  157)     allocate( zbeta_iharm(nkx1:nkx2,nky1:nky2) )
+(  158) 
+(  159)     allocate(zetai(nzeta + 1) )
+(  160)     allocate(Jni(-lmaxdim : lmaxdim, nzeta + 1) )
+(  161)     allocate( Jn(-lmaxdim : lmaxdim, nkdim1 : nkdim2, mkdim1 : mkdim2))    
+(  162)     allocate(NPARA_sav(nkdim1 : nkdim2, mkdim1 : mkdim2) ) 
+(  163)     
+(  164)     allocate(nres(nxdim * nydim) )
+(  165)     allocate(mres(nxdim * nydim) )
+(  166)     
+(  167)     allocate(sumb_11(nupar))
+(  168)     allocate(sumb_31(nupar))
+(  169)      
+(  170)     allocate(sumc_11(nupar))
+(  171)     allocate(sumc_31(nupar))
+(  172)     
+(  173)     allocate(sume_11(nupar))
+(  174)     allocate(sume_31(nupar))
+(  175)      
+(  176)     allocate(sumf_11(nupar))
+(  177)     allocate(sumf_31(nupar))
+(  178) 
+(  179)     allocate(is_resonance_nm(nkx1:nkx2,nky1:nky2))
+(  180) 
+(  181) !   -------------------------------------
+(  182) !   initialize allocatable arrays to zero
+(  183) !   -------------------------------------
+(  184) 
+(  185)     omgrf = W
+(  186) 
+(  187)     omgrfc = omgrf * (1. + zi * xnuomg) 
+(  188) 
+(  189)     zbeta = 0.0
+(  190)     zbeta_iharm = 0.0
+(  191)     
+(  192)     sumf_11_nm = 0.0
+(  193)     sumf_31_nm = 0.0
+(  194) 
+(  195)     sume_11_nm = 0.0
+(  196)     sume_31_nm = 0.0
+(  197)     
+(  198)     sumc_11_nm = 0.0
+(  199)     sumc_31_nm = 0.0
+(  200)     
+(  201)     sumb_11_nm = 0.0
+(  202)     sumb_31_nm = 0.0    
+(  203) 
+(  204)     is_resonance_nm = .false.
+(  205) 
+(  206)     zetai = 0.0
+(  207)     Jni = 0.0
+(  208)     NPARA_sav = 0.0
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 5
+
+(  209)     
+(  210)     sumb_11 = 0.0
+(  211)     sumb_31 = 0.0
+(  212)       
+(  213)     sumc_11 = 0.0
+(  214)     sumc_31 = 0.0
+(  215) 
+(  216)     sume_11 = 0.0
+(  217)     sume_31 = 0.0
+(  218) 
+(  219)     sumf_11 = 0.0
+(  220)     sumf_31 = 0.0        
+(  221)         
+(  222)     xme = 9.11e-31
+(  223)     zi = cmplx(0., 1.)
+(  224)     
+(  225)     uperpk = uper(k_uper)
+(  226)     uperpk2 = uperpk**2
+(  227)  
+(  228) 
+(  229)     W2 = W * W
+(  230)     WI = 1.0 / W
+(  231) 
+(  232)     WCW = BMAG * ZSPEC * EOVERMH / ASPEC / W
+(  233)     WC = WCW * W
+(  234)     WCI = 1.0 /WC
+(  235) 
+(  236)     MUT0 = 0.5 * MPC2 * ASPEC / ENORM
+(  237)     SQMUT0 = SQRT(MUT0)
+(  238)     SQMUT0I = 1.0 / SQMUT0
+(  239)     PISQMUT0 = SQMUT0 * pi
+(  240)     u0 = C / (alpha * SQMUT0)
+(  241) 
+(  242)     ISQ2 = SQRT(0.5)
+(  243)     SQ2 = SQRT(2.0)    
+(  244)     NHARM = lmax
+(  245)     
+(  246)     du = (upar(nupar) - upar(1)) / (nupar - 1)
+(  247)     dui = 1.0 / du
+(  248)         
+(  249)     if(nzeta .eq. 1)then
+(  250)     
+(  251)     ! -------------------------------------------------------- !
+(  252)     ! ---Don't interpolate: precalculate all Bessel functions- !
+(  253)     ! -------------------------------------------------------- !
+(  254) 
+(  255)        do n = nkx1, nkx2
+(  256)           do m = nky1, nky2
+(  257) 
+(  258)              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
+(  259)              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
+(  260)              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
+(  261) 	     xkperpn = sqrt(xkrhon**2 + xketan**2)
+(  262) 	     
+(  263)             ! ------------------------------------
+(  264)             ! Optional: leave out upshift in xkprl
+(  265)             ! --------------------------------- --          
+(  266)               if (upshift .eq. 0)xkprln = uzz * xkphi
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 6
+
+(  267) !	      if (upshift .eq. 0)xkprln = nphi /rt
+(  268) 	      
+(  269) 	     if (upshift .eq. -1) then      
+(  270)                 if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
+(  271)              end if	      
+(  272) 	     
+(  273) 	     
+(  274) 	     sgn_kprl = sign(1.0, xkprln)
+(  275)              akprl = abs(xkprln)		      
+(  276) 		     
+(  277) !            ----------------------------------------------
+(  278) !            Optional: Don't allow xkprl to be 0 (upshift = -2)
+(  279) !            ----------------------------------------------        
+(  280)              if (upshift .eq. -2) then
+(  281)                 if (akprl .lt. akprl_min) then
+(  282) 		    xkprln = akprl_min * sgn_kprl
+(  283) 		end if 
+(  284)              end if		     
+(  285) 	     
+(  286) 
+(  287)              y0 = 1.5
+(  288)              y = y0
+(  289) 	     
+(  290)       
+(  291)              l = 1
+(  292) 	     if(xkprln .eq. 0)xkprln = 1.0e-06
+(  293)              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
+(  294)      &                                    * gradprlb / bmod)
+(  295) 
+(  296)              if(xm .eq. xme)gammab = 0.0
+(  297)              if(abs(gammab) .gt. 1000.0) gammab = 1000.0
+(  298)              if(abs(gammab) .lt. .01)gammab = .01
+(  299) 
+(  300) 
+(  301)              if(sgn_kprl .ge. 0.0)then
+(  302)                 fgam = 1.0
+(  303) 
+(  304)                 if(gammab .gt. 1.0e-05)then
+(  305)                    y = y0
+(  306)                    fgam = (sqrt(1. +  4. * gammab * y) - 1.)   &
+(  307)      &               / (2. * gammab * y)
+(  308)                 endif
+(  309) 
+(  310)                 xkprl_eff = xkprln / fgam 
+(  311) 
+(  312)              end if
+(  313) 
+(  314) 
+(  315)              if(sgn_kprl .lt. 0.0)then
+(  316)                 fgam = 1.0
+(  317) 
+(  318)                 if(gammab .gt. 1.0e-05)then
+(  319)                    descrim = 1. - 4. * gammab * y0
+(  320)                    if (descrim .ge. 0.0) y =   y0
+(  321)                    if (descrim .lt. 0.0) y = - y0
+(  322)                    fgam = (1. - sqrt(1. -  4. * gammab * y) )  &
+(  323)      &                / (2. * gammab * y)
+(  324)                 endif
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 7
+
+(  325) 
+(  326)                 xkprl_eff = xkprln / fgam 
+(  327) 
+(  328)              end if
+(  329) 
+(  330)              if (upshift .ne. 0) xkprln = xkprl_eff	     
+(  331) 	
+(  332)              NPARA_sav(n, m) = xkprln * C / W
+(  333) 
+(  334)              xkperpn = sqrt(xkrhon**2 + xketan**2)
+(  335)              if(xkperpn .eq. 0.0)xkperpn = 1.0e-08
+(  336) 	
+(  337)              cosbeta_n_m  = xkrhon / xkperpn
+(  338)              sinbeta_n_m  = xketan / xkperpn
+(  339)              zbeta(n,m) = cmplx( cosbeta_n_m , sinbeta_n_m  )
+(  340) 
+(  341)              zeta = xkperpn * uper(k_uper) * c * sqmut0i / wc
+(  342) 
+(  343)              call besjc(zeta, nharm + 2, b, ier)
+(  344)              if(ier .ne. 0) write(6, *) "ier = ", ier
+(  345) 
+(  346)              do IHARM = 0, NHARM + 1
+(  347)                 Jn(iharm,  n, m) = b(iharm + 1)
+(  348)                 Jn(-iharm, n, m) = (-1.0)**iharm * Jn(iharm, n, m)
+(  349)              end do
+(  350) 
+(  351)           end do
+(  352)        end do
+(  353)     
+(  354)     else
+(  355)     
+(  356)         
+(  357)        ! -------------------------------------- !
+(  358)        ! ---Interpolate; calculate zeta mesh -- !
+(  359)        ! -------------------------------------- !
+(  360)     
+(  361)        zetamax = 0.0
+(  362)        zetamin = 0.0
+(  363)     
+(  364)        do n = nkx1, nkx2
+(  365)           do m = nky1, nky2
+(  366) 
+(  367)              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
+(  368)              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
+(  369)              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
+(  370) 
+(  371)              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
+(  372) 	
+(  373)              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
+(  374) 	  
+(  375)              if (zeta0 .gt. zetamax) zetamax = zeta0
+(  376)              if (zeta0 .lt. zetamin) zetamin = zeta0
+(  377)           end do
+(  378)        end do
+(  379)     
+(  380) 
+(  381)         if(zetamax .eq. zetamin)then
+(  382)           zetamax =  1.0e-06
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 8
+
+(  383)           zetamin = -1.0e-06
+(  384)        end if
+(  385) 
+(  386)        dzeta = (zetamax - zetamin) / (nzeta - 1)
+(  387)        dzetai = 1.0 / dzeta
+(  388)     
+(  389)        ! ------------------------------------------------- !
+(  390)        ! ---Pre-calculate Bessel functions on zeta mesh -- !
+(  391)        ! ------------------------------------------------- !
+(  392) 	  
+(  393)        do i = 1, nzeta + 1
+(  394)           zetai(i) = zetamin + (i - 1) * dzeta
+(  395)           zeta = cmplx(zetai(i), 0.0)
+(  396) 	  
+(  397)           call besjc(zeta, nharm + 2, b, ier)
+(  398) !          if(ier .ne. 0) write(6, *) "ier = ", ier
+(  399) 	  
+(  400)           do iharm = 0, NHARM + 1
+(  401)              Jni(iharm,  i) = b(iharm + 1)
+(  402)              Jni(-iharm, i) = (-1.0)**iharm * b(iharm + 1)
+(  403)           end do
+(  404)        end do
+(  405)      
+(  406) 
+(  407)        ! --------------------------------- !
+(  408)        ! ---Interpolate Bessel functions-- !
+(  409)        ! --------------------------------- !
+(  410) 
+(  411)        do n = nkx1, nkx2
+(  412)           do m = nky1, nky2
+(  413) 
+(  414)              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
+(  415)              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
+(  416)              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
+(  417) 	     xkperpn = sqrt(xkrhon**2 + xketan**2)
+(  418) 	     	     
+(  419) 	    ! ------------------------------------
+(  420)             ! Optional: leave out upshift in xkprl
+(  421)             ! --------------------------------- --          
+(  422)              if (upshift .eq. 0)xkprln = uzz * xkphi
+(  423) !             if (upshift .eq. 0)xkprln = nphi / rt
+(  424) 	      
+(  425) 	     if (upshift .eq. -1) then      
+(  426)                 if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
+(  427)              end if
+(  428) 	     
+(  429) 	     
+(  430) 	     sgn_kprl = sign(1.0, xkprln)
+(  431)              akprl = abs(xkprln)		      
+(  432) 		     
+(  433) !            ----------------------------------------------
+(  434) !            Optional: Don't allow xkprl to be 0 (upshift = -2)
+(  435) !            ----------------------------------------------        
+(  436)              if (upshift .eq. -2) then
+(  437)                 if (akprl .lt. akprl_min) then
+(  438) 		    xkprln = akprl_min * sgn_kprl
+(  439) 		end if 
+(  440)              end if		     
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 9
+
+(  441) 	     	     
+(  442) 
+(  443)              y0 = 1.5
+(  444)              y = y0
+(  445) 	     
+(  446)       
+(  447)              l = 1
+(  448) 	     if(xkprln .eq. 0)xkprln = 1.0e-06
+(  449)              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
+(  450)      &                                    * gradprlb / bmod)
+(  451) 
+(  452)              if(xm .eq. xme)gammab = 0.0
+(  453)              if(abs(gammab) .gt. 1000.0) gammab = 1000.0
+(  454)              if(abs(gammab) .lt. .01)gammab = .01
+(  455) 
+(  456) 
+(  457)              if(sgn_kprl .ge. 0.0)then
+(  458)                 fgam = 1.0
+(  459) 
+(  460)                 if(gammab .gt. 1.0e-05)then
+(  461)                    y = y0
+(  462)                    fgam = (sqrt(1. +  4. * gammab * y) - 1.)   &
+(  463)      &               / (2. * gammab * y)
+(  464)                 endif
+(  465) 
+(  466)                 xkprl_eff = xkprln / fgam 
+(  467) 
+(  468)              end if
+(  469) 
+(  470) 
+(  471)              if(sgn_kprl .lt. 0.0)then
+(  472)                 fgam = 1.0
+(  473) 
+(  474)                 if(gammab .gt. 1.0e-05)then
+(  475)                    descrim = 1. - 4. * gammab * y0
+(  476)                    if (descrim .ge. 0.0) y =   y0
+(  477)                    if (descrim .lt. 0.0) y = - y0
+(  478)                    fgam = (1. - sqrt(1. -  4. * gammab * y) )  &
+(  479)      &                / (2. * gammab * y)
+(  480)                 endif
+(  481) 
+(  482)                 xkprl_eff = xkprln / fgam 
+(  483) 
+(  484)              end if
+(  485) 
+(  486)              if (upshift .ne. 0) xkprln = xkprl_eff
+(  487) 	     
+(  488) 	
+(  489)              NPARA_sav(n, m) = xkprln * C * WI
+(  490) 
+(  491)              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
+(  492)              xkperpni = 1.0 / xkperpn
+(  493) 	
+(  494)              cosbeta_n_m = xkrhon * xkperpni
+(  495)              sinbeta_n_m  = xketan * xkperpni
+(  496)              zbeta(n,m) = cmplx( cosbeta_n_m , sinbeta_n_m )
+(  497) 	  
+(  498)              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 10
+
+(  499) 	  
+(  500)              i = int((zeta0 - zetamin) * dzetai) + 1
+(  501)              p = (zeta0 - zetai(i)) * dzetai
+(  502)              A1 = 0.5 * P * (P - 1.)
+(  503)              A2 = 1. - P * P
+(  504)              A3 = 0.5 * P * (P + 1.)
+(  505) 	  
+(  506)              do iharm = -NHARM - 1, NHARM + 1
+(  507) 	  
+(  508)                 Jn(iharm, n, m) = Jni(iharm, i)    &
+(  509)      &   	   + p * (Jni(iharm, i + 1) - Jni(iharm, i))
+(  510)                 if(i .ne. 1 )then
+(  511)                    Jn(iharm, n, m) = A1 * Jni(iharm, i - 1)     &
+(  512)      &                             + A2 * Jni(iharm, i)         &
+(  513)      &                             + A3 * Jni(iharm, i + 1)
+(  514)                 end if
+(  515) 	      
+(  516)              end do
+(  517) 	  
+(  518)           end do
+(  519)        end do
+(  520)     
+(  521) 
+(  522)     end if
+(  523)                     
+(  524) 
+(  525)     ! ------------------------ !
+(  526)     ! ---Sum over harmonics--- !
+(  527)     ! ------------------------ !
+(  528)     
+(  529)     sum_wdot = 0.0   
+(  530)            
+(  531)     do IHARM = -NHARM, NHARM
+(  532)     
+(  533)        l = iharm
+(  534) 
+(  535)        sum2_1 = 0.0
+(  536)        sum2_2 = 0.0
+(  537)        sum2_3 = 0.0
+(  538)        
+(  539)        sum1_1 = 0.0
+(  540)        sum1_2 = 0.0
+(  541)        sum1_3 = 0.0
+(  542)        sum1_4 = 0.0             
+(  543)        
+(  544)        call zpow((nkx2-nkx1+1)*(nky2-nky1+1), zbeta, iharm, zbeta_iharm)
+(  545)         
+(  546)               
+(  547)       ! ------------------------------- !
+(  548)       ! ---Sum over all Fourier modes-- !
+(  549)       ! --------------------------------!
+(  550)        do n = nkx1, nkx2
+(  551)           do m = nky1, nky2
+(  552)              cexp0 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m)
+(  553) 	     cexp1 = cexp0 * zbeta(n,m)
+(  554) 	     cexp2 = cexp0 / zbeta(n,m)
+(  555) 		
+(  556)              epsx = isq2 * (ealphak(n, m) - zi * ebetak(n, m)) * cexp1
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 11
+
+(  557)              epsy = isq2 * (ealphak(n, m) + zi * ebetak(n, m)) * cexp2
+(  558)              epsz = ebk(n, m) * cexp0
+(  559) 	     
+(  560)              sum2_1 = sum2_1 + conjg(epsx) * Jn(IHARM + 1, n, m)
+(  561)              sum2_2 = sum2_2 + conjg(epsy) * Jn(IHARM - 1, n, m)
+(  562)              sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)
+(  563) 	     
+(  564) 
+(  565) !            ---------------------------------
+(  566) !            Calculate zetal and gammab
+(  567) !            ---------------------------------            
+(  568) 
+(  569)              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
+(  570) 	     
+(  571)              NPARA_sav(n, m) = xkprln * C * WI
+(  572) 	     	     	     
+(  573) 	     sgn_kprl = sign(1.0, xkprln)	     	     
+(  574) 	     
+(  575)              dkprldl = xkxsav(n) * bhatgradbx             &
+(  576)      &               + xkysav(m) * bhatgradby             &
+(  577)      &               + xkphi     * bhatgradbz	     
+(  578) 	     
+(  579) 	     dKdL_giv = (alpha / omgrf)**2 * dkprldl	    
+(  580) 
+(  581) 	     if (rho .gt. 1.0) then
+(  582)                 zetal = (omgrfc - l * omgc) / (xkprln * alpha)
+(  583)              else
+(  584)                 zetal = (omgrf  - l * omgc) / (xkprln * alpha)
+(  585)              end if	
+(  586) 
+(  587)              ldum = 1
+(  588) 	     if(xkprln .eq. 0)xkprln = 1.0e-06
+(  589)              gammab = abs(ldum * omgc / (2.0 * alpha * xkprln**2)  &
+(  590)      &                                    * gradprlb / bmod)
+(  591)              if(xm .eq. xme)gammab = 0.0     
+(  592)              if(abs(gammab) .gt. 1000.0) gammab = 1000.0
+(  593)              if(abs(gammab) .lt. .01)gammab = .01
+(  594) 	     
+(  595)       	     
+(  596)              call z_approx(sgn_kprl, zetal, gammab, z0, z1, z2)
+(  597) 
+(  598)              
+(  599) 	     if (z2_electron .eq. 1 .and. xm .eq. xme) then
+(  600) 	     
+(  601)                 if(l .eq. 0) then
+(  602)                    call z_approx_e(sgn_kprl, zetal, gammab,   &
+(  603)      &                z0_new, z1_new, z2_new, zetai_table,         &
+(  604)      &                dKdL_table, z0_table, z1_table, z2_table,    &
+(  605)      &                dKdL_giv, nmax, mmax, ntable, mtable)
+(  606)                    z0 = z0_new
+(  607)                    z1 = z1_new
+(  608)                    z2 = z2_new
+(  609)                 end if
+(  610) 		
+(  611) 	     end if
+(  612) 	     
+(  613) 	     
+(  614) 
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 12
+
+(  615) 	     
+(  616) !            ------------------------------------
+(  617) !            To keep only the resonant terms, use:
+(  618) !            ------------------------------------   	     
+(  619) !	     z0 = zi * sqrt(pi)            * exp(-zetal**2)
+(  620) !	     z1 = zi * sqrt(pi) * zetal    * exp(-zetal**2)
+(  621) !	     z2 = zi * sqrt(pi) * zetal**2 * exp(-zetal**2)
+(  622) 	     
+(  623) 	     
+(  624) 	     ttmp = (Jn(IHARM + 1, n, m) * epsx    &
+(  625)      &            +  Jn(IHARM - 1, n, m) * epsy)       
+(  626) 	     cross2 = SQ2 * Jn(IHARM, n, m) * epsz 
+(  627) 	            
+(  628) 	     cross3 = SQ2 * (Jn(IHARM + 1, n, m) * epsx    & 
+(  629)      &                    +  Jn(IHARM - 1, n, m) * epsy)                 
+(  630)              ld =     2.0 * Jn(IHARM, n, m) * epsz
+(  631) 	     	     
+(  632) !	     ttmp = 0.0       
+(  633) !	     cross2 = 0.0 	            
+(  634) !	     cross3 = 0.0                
+(  635) !            ld =    0.0	     	                  
+(  636) 	     
+(  637) 	     sum1_1 = sum1_1 + ttmp   / NPARA_sav(n, m) * z0        
+(  638) 	     sum1_2 = sum1_2 + cross2 / NPARA_sav(n, m) * z1     
+(  639) 	     sum1_3 = sum1_3 + cross3 / NPARA_sav(n, m) * z1                        
+(  640)              sum1_4 = sum1_4 + ld     / NPARA_sav(n, m) * z2
+(  641) 	          	     	               	     	     		     
+(  642)           end do  !  end of sum over ky
+(  643)        end do     !  end of sum over kx
+(  644)        
+(  645) 
+(  646) 
+(  647)       ttmp_11 = 0.0 
+(  648)       cross_13 = 0.0
+(  649)       cross_31 = 0.0
+(  650)       landau_33 = 0.0              
+(  651)                         
+(  652)       ttmp_11 = (sum2_1 + sum2_2) * sum1_1 
+(  653)       cross_13 = (sum2_1 + sum2_2) * sum1_2 
+(  654)       cross_31 = sum2_3 * sum1_3
+(  655)       landau_33 = sum2_3 * sum1_4
+(  656)                       
+(  657)        sum_wdot = sum_wdot + FPERP(k_uper) * SQMUT0 / u0 *     &
+(  658)       &                    ( (u0 * uperpk)**3 * ttmp_11        &
+(  659)       &                    + (u0 * uperpk)**2 * cross_13       &
+(  660)       &                    + (u0 * uperpk)**2 * cross_31       &
+(  661)       &                    + (u0 * uperpk)    * landau_33)
+(  662) 
+(  663)                            
+(  664)     end do  ! end of sum over harmonics
+(  665)     
+(  666) 
+(  667)     
+(  668) !    if (ip .eq. 80 .and. jp .eq. 90) then
+(  669) !       write(6, *) "dKdL_giv = ", dKdL_giv 
+(  670) !       write(6, *) "sum_wdot = ", sum_wdot
+(  671) !    end if
+(  672) 
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 13
+
+(  673)     deallocate( zbeta )
+(  674)     deallocate( zbeta_iharm )
+(  675)     
+(  676)     deallocate(nres )
+(  677)     deallocate(mres )
+(  678) 
+(  679)     deallocate(zetai)
+(  680)     deallocate(Jni)
+(  681)     deallocate(Jn)    
+(  682)     deallocate(NPARA_sav)
+(  683)     
+(  684)     
+(  685)     deallocate(sumb_11)
+(  686)     deallocate(sumb_31)
+(  687)     
+(  688)     deallocate(sumc_11)
+(  689)     deallocate(sumc_31) 
+(  690)     
+(  691)     deallocate(sume_11)
+(  692)     deallocate(sume_31)
+(  693)     
+(  694)     deallocate(sumf_11)
+(  695)     deallocate(sumf_31)      
+(  696)     
+(  697)     deallocate( is_resonance_nm )
+(  698)     
+(  699)     return
+(  700) 
+(  701)   end subroutine wdot_new_maxwellian_sum
+(  702) 
+(  703) 
+(  704) 
+(  705) !
+(  706) !*************************************************************************
+(  707) !
+(  708) 
+(  709) 	subroutine zpow(n, z, iharm, zout )
+(  710) 	implicit none
+(  711) 	integer n, iharm
+(  712) 	complex z(n), zout(n)
+(  713) 
+(  714) 	integer i,ipow
+(  715) 	complex one, zero
+(  716)         complex zin
+(  717) 
+(  718)         integer nharm
+(  719)         logical isodd
+(  720)         intrinsic mod
+(  721) 
+(  722)         logical use_zdiv
+(  723)         parameter(use_zdiv=.true.)
+(  724) 
+(  725)         integer nb
+(  726)         parameter(nb=1024*4*4)
+(  727)         complex zk(nb)
+(  728)         integer istart,iend,isize
+(  729) 
+(  730)         one = 1.0d0
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 14
+
+(  731)         zero = 0.0d0
+(  732) 
+(  733)         if (iharm.eq.0) then
+(  734)              do i=1,n
+(  735)                 zout(i) = one
+(  736)              enddo
+(  737)              return
+(  738)         endif
+(  739) 
+(  740) 
+(  741)         do istart=1,n,nb
+(  742) 
+(  743)            iend = min(n,istart+nb-1)
+(  744)            isize = iend-istart+1
+(  745) 
+(  746) 	  do i=1,isize
+(  747) 	    zout(istart-1+i) = one
+(  748)           enddo
+(  749) 
+(  750) 
+(  751)          do i=1,isize
+(  752)            zk(i) = z(istart-1+i)
+(  753)          enddo
+(  754) 
+(  755)         nharm = abs(iharm)
+(  756)         do while (nharm .gt. 0)
+(  757)            isodd = (mod(nharm,2).eq.1)
+(  758)            if (isodd) then
+(  759)                do i=1,isize
+(  760)                  zout(istart-1+i) = zout(istart-1+i) * zk(i)
+(  761)                enddo
+(  762)            endif
+(  763)            do i=1,isize
+(  764)               zk(i) = zk(i) * zk(i)
+(  765)            enddo
+(  766)            nharm = int( nharm/2 )
+(  767)         enddo
+(  768) 
+(  769) 
+(  770) 
+(  771) 	if (iharm.lt.0) then
+(  772)            if (use_zdiv) then
+(  773) 	     do i=1,isize
+(  774)                 zin = zout(istart-1+i)
+(  775)                 call zdiv( zin, zout(istart-1+i) )
+(  776)             enddo
+(  777)            else
+(  778)              do i=1,isize
+(  779)                 zin = zout(istart-1+i)
+(  780)                 zout(istart-1+i) = one/zin
+(  781)              enddo
+(  782)            endif
+(  783)         endif
+(  784) 
+(  785)         enddo
+(  786) 
+(  787) 	return
+(  788) 	end subroutine 
+
+
+
+
+
+
+PGF90 (Version     14.2)          06/05/2015  08:32:39      page 15
+
+(  789) 	
+(  790) !
+(  791) !*************************************************************************
+(  792) !
+(  793) 
+(  794)         subroutine zdiv( zin, zout )
+(  795)         implicit none
+(  796)         complex zin, zout
+(  797)         real a, b
+(  798)         real d
+(  799) 
+(  800)         real one
+(  801)         parameter(one=1.0d0)
+(  802)         real rd, a_over_b, b_over_a
+(  803) 
+(  804) 
+(  805)         a = real(zin)
+(  806)         b = aimag(zin)
+(  807) 
+(  808) !       z = (a + i * b)
+(  809) !       1/z =  a/(a^2 + b^2) - i * b/(a^2 + b^2)
+(  810) !
+(  811) !       or    1/(a + (b/a)*b) - i * (b/a) / (a + (b/a)*b)
+(  812) !       or    (a/b)/( (a/b)*a + b ) - i * 1/( (a/b)*a + b )
+(  813) !        
+(  814)         if (abs(a).gt.abs(b)) then
+(  815)             b_over_a = b/a
+(  816)             d = a + (b_over_a)*b
+(  817)             rd = one/d
+(  818)             zout = cmplx( rd, -(b_over_a)*rd )
+(  819)         else
+(  820)             a_over_b = a/b
+(  821)             d = (a_over_b)*a + b
+(  822)             rd = one/d
+(  823)             zout = cmplx( (a_over_b)*rd, -rd )
+(  824)         endif
+(  825) 
+(  826)         return
+(  827)         end subroutine
+(  828) 	
+(  829) 
+(  830) 
+(  831) !
+(  832) !*************************************************************************
+(  833) !	
+(  834) 
+(  835) 
+(  836)          end module wdot_sum_mod	 
+(  837) 	 
