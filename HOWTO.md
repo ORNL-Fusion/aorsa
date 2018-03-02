@@ -5,7 +5,9 @@ Inputs:
   - Ztable - numerical lookup table for Plasma Dispersion function
   - geqdsk - EFIT G-EQDSK file for tokamak equilibrium, name is given in aorsa2d.in
   - aorsa2d.in - fortran namelist file for code parameters
-    + nprow,npcol - processor grid. Typically equal. nprow x npcol = nproc requested for batch job
+    + processors: nprow,npcol - processor grid. Typically equal. nprow x npcol = nproc requested for batch job
+    + profiles: iprofile=3 doubly parabolic, iprofile=5 numerical in STATE block
+      - doubly parabolic options
 
 Outputs:
   - out15 - run time logging messages
@@ -19,6 +21,8 @@ Outputs:
     - capd.vtk - contour plots of dispersion relation D(k,x)
   - Postscript output (from pgplot)
     - aorsa2d.ps - main output. 1D and 2D field and power plots
+      Colors for curves for species specific profiles are electrons: red, ions: cyan (majority), blue, green, magenta, orange, yellow 
+      in order of species index from aorsa2d.in
       + slide p80+ - 2D contour plots of alpha, beta, and b components of rf electric fields and currents
       + slide p92+ - 1D plots of Eplus,Eminus,Eparallel. 2D contours of J.E and Wdot (power deposition)
       + slide p111+ - 1D and 2D plots of power spectra; useful for testing convergence
