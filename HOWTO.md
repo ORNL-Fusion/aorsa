@@ -21,8 +21,11 @@ Outputs:
     - capd.vtk - contour plots of dispersion relation D(k,x)
   - Postscript output (from pgplot)
     - aorsa2d.ps - main output. 1D and 2D field and power plots
+    
       Colors for curves for species specific profiles are electrons: red, ions: cyan (majority), blue, green, magenta, orange, yellow 
       in order of species index from aorsa2d.in
+      + slide p1+  - contour plots of the Ztable
+      + slide p15+ - density and temperature profiles
       + slide p80+ - 2D contour plots of alpha, beta, and b components of rf electric fields and currents
       + slide p92+ - 1D plots of Eplus,Eminus,Eparallel. 2D contours of J.E and Wdot (power deposition)
       + slide p111+ - 1D and 2D plots of power spectra; useful for testing convergence
