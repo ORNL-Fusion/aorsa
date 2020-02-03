@@ -885,7 +885,7 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
             if(nzfun .eq. 1) then
 	       call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
 	       
-               if(use_new_z2 .eq. .true. .and. l .eq. 0) then
+               if(use_new_z2 .eqv. .true. .and. l .eq. 0) then
                   call z_approx_e(sgn_kprl, zetal(l), gammab(l),
      .               z0_new, z1_new, z2_new, zetai_table, 
      .               dKdL_table, z0_table, z1_table, z2_table, 
@@ -1769,7 +1769,7 @@ c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
            if(nzfun .eq. 1) then
 	      call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
      
-              if(use_new_z2 .eq. .true. .and. l .eq. 0) then      
+              if(use_new_z2 .eqv. .true. .and. l .eq. 0) then      
                  call z_approx_e(sgn_kprl, zetal(l), gammab(l),
      .              z0_new, z1_new, z2_new, zetai_table, 
      .              dKdL_table, z0_table, z1_table, z2_table, 

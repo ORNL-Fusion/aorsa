@@ -1187,7 +1187,7 @@ c      jdiag = nmodesy / 2
          open(unit=15, file='out15', status='unknown', form='formatted')
 	 open(unit=166,file='bharvey_3d',status='unknown',
      .                                                 form='formatted')
-	 if(nphi_sum_only .ne. .true.)
+	 if(nphi_sum_only .neqv. .true.)
      .      open(unit=34, file='fpm',status='unknown', form='formatted')	
       
 *        ------------------------ 
@@ -1199,7 +1199,7 @@ c      jdiag = nmodesy / 2
 *     -----------------------
 *     write fpm (34) file
 *     ------------------------
-      if (myid.eq.0 .and. nphi_sum_only .ne. .true.) then
+      if (myid.eq.0 .and. nphi_sum_only .neqv. .true.) then
          write(34,309) nphi1, nphi2
       end if
                  
@@ -1226,7 +1226,7 @@ c      jdiag = nmodesy / 2
 
 
    
-      if(nphi_sum_only .eq. .true.)go to 9001 
+      if(nphi_sum_only .eqv. .true.)go to 9001 
        
 *     ----------------
 *     loop over nphi's
@@ -1453,7 +1453,7 @@ c      jequat  = nnodey / 2
       omgrf = 2.0 * pi * xnurf
       
       
-      if (plot_only .eq. .true.)go to 9002        
+      if (plot_only .eqv. .true.)go to 9002        
 
       vphase = omgrf / xkphi0
       vthe = sqrt(t0e / xme)
@@ -3237,14 +3237,14 @@ c      end if
 *           ------------------------
 *           Curved antenna (default)
 *           ------------------------
-            if(curved_ant .eq. .true.) then	    
+            if(curved_ant .eqv. .true.) then	    
                gausspsi = exp(-( psi(i,j) - psiant)**2 / dpsiant**2)
 	    end if
 	    
 *           ----------------
 *           Straight antenna
 *           -----------------
-            if(curved_ant .ne. .true.) then	    
+            if(curved_ant .neqv. .true.) then	    
 	       gausspsi   = exp(-(capr(i) -   rant)**2 / dpsiant**2)
 	    end if	    
 	    
@@ -5084,7 +5084,7 @@ c	 call flush
       end if         
 
 
-      if (read_solution .eq. .true.) then
+      if (read_solution .eqv. .true.) then
          t1 = second1(dummy)
 !        ---------------------------------------------
 !        read solution in Fourier space to all processors
@@ -5373,7 +5373,7 @@ c	    call flush
 	   
 	    	    	    	    
      
-            if (use_fourier_z2 .eq. .true.) then
+            if (use_fourier_z2 .eqv. .true.) then
 	    
 *           ---------------------------------------------------------
 *           if nboundary = 1, just do orbits in interior plasma region
@@ -5662,7 +5662,7 @@ c               end if
                         end if
 			
          
-                         if (use_fourier_z2 .eq. .true. .and. 
+                         if (use_fourier_z2 .eqv. .true. .and. 
      .                                    psi(i,j) .lt. psiorb) then			      							
 *                          ----------------------------------------------
 *                          Evaluate AORSA basis function along field line                      
@@ -5771,7 +5771,7 @@ c               end if
 			end if !  end if use_fourier_z2 = true and psi .lt. psiorb	
 					     
 
-                        if(use_fourier_z2 .eq. .false.) then
+                        if(use_fourier_z2 .eqv. .false.) then
 			
 			   sige3_new = 0.0
 			   			
@@ -5806,7 +5806,7 @@ c               end if
 			end if    !  if   use_fourier_z2 .eq. .false.
 			
 			
-                        if(use_fourier_z2 .eq. .true. .and.
+                        if(use_fourier_z2 .eqv. .true. .and.
      .			                           psi(i,j) .ge. psiorb) then
 			
 			   sige3_new = 0.0
@@ -6868,7 +6868,7 @@ c--   Operations for complex matrix factor and solve:
      
      
      
-      if (anti_alias .eq. .true.) then
+      if (anti_alias .eqv. .true.) then
 *        --------------------------------------
 *        Anti-aliasing filter (two-thirds rule):
 *        --------------------------------------      
@@ -7400,7 +7400,7 @@ c		      if (upshift .eq. 0) xkprl = nphi / rt
 *     ---------------------------------
 *     set artificial absorption to zero
 *     ---------------------------------
-      if (use_no_damp .eq. .true.)then 
+      if (use_no_damp .eqv. .true.)then 
          delta0 = 0.0
          damping = 0.0
       end if
@@ -7860,7 +7860,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   n_bin, upshift, i_write, xk_cutoff)
  
 
-      if (use_new_wdot .eq. .true.) then
+      if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron,
      .   wdote, darea, nrhomax, nnoderho, drho,
      .   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
@@ -7930,7 +7930,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   n_bin, upshift, i_write, xk_cutoff)
   
      
-      if (use_new_wdot .eq. .true.) then
+      if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron, 
      .   wdoti1,
      .   darea, nrhomax, nnoderho, drho,
@@ -7996,7 +7996,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      .   n_bin, upshift, i_write, xk_cutoff)
      
-      if (use_new_wdot .eq. .true.) then
+      if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron, 
      .   wdoti2,
      .   darea, nrhomax, nnoderho, drho,
@@ -8063,7 +8063,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      .   n_bin, upshift, i_write, xk_cutoff)
      
-      if (use_new_wdot .eq. .true.) then
+      if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron, 
      .   wdoti3,  
      .   darea, nrhomax, nnoderho, drho,
@@ -8132,7 +8132,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      .   n_bin, upshift, i_write, xk_cutoff)
      
-      if (use_new_wdot .eq. .true.) then
+      if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron, 
      .   wdoti4,  
      .   darea, nrhomax, nnoderho, drho,
@@ -8199,7 +8199,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      .   n_bin, upshift, i_write, xk_cutoff)
      
-      if (use_new_wdot .eq. .true.) then
+      if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron, 
      .   wdoti5,  
      .   darea, nrhomax, nnoderho, drho,
@@ -8267,7 +8267,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      .   n_bin, upshift, i_write, xk_cutoff)
      
-      if (use_new_wdot .eq. .true.) then
+      if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron, 
      .   wdoti6,  
      .   darea, nrhomax, nnoderho, drho,
@@ -11502,7 +11502,7 @@ c      endif
 
       end if
       
-      if (read_solution .eq. .false.) then      
+      if (read_solution .eqv. .false.) then      
 	 
 c         deallocate( new_to_org )
 	 

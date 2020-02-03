@@ -238,7 +238,7 @@ c
             id = mod(ngrid, nproc)
             if(id .eq. myid)then
 	    
-            if (use_fourier_z2 .eq. .true.) then
+            if (use_fourier_z2 .eqv. .true.) then
 	    
 *           ---------------------------------------------------------
 *           if nboundary = 1, just do orbits in interior plasma region
@@ -552,7 +552,7 @@ c                          c_ehst = 1.0
 		     
  
      
-                     if (use_fourier_z2 .eq. .true. .and. 
+                     if (use_fourier_z2 .eqv. .true. .and. 
      .		                     psi(i,j) .lt. psiorb) then                				
 *                       ----------------------------------------------
 *                       Evaluate AORSA basis function along field line                
@@ -660,7 +660,7 @@ c                          c_ehst = 1.0
                      end if  ! use_fourier_z2 = true and psi .lt. psiorb
 		     
 		     
-                     if(use_fourier_z2 .eq. .false.) then
+                     if(use_fourier_z2 .eqv. .false.) then
 		     
 			sige3_new = 0.0		     
 		     
@@ -694,7 +694,7 @@ c                          c_ehst = 1.0
 
                      end if    ! if use_fourier_z2 .eq. .false.	
 		     
-                     if(use_fourier_z2 .eq. .true. .and.
+                     if(use_fourier_z2 .eqv. .true. .and.
      .			                           psi(i,j) .ge. psiorb) then
 			
 			   sige3_new = 0.0

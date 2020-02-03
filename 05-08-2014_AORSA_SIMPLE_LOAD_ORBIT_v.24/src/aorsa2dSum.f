@@ -2,7 +2,7 @@
 *     AORSA2D_SUM: 
 *------------------
 
-      OPTIONS / check = no underflow
+!      OPTIONS / check = no underflow
       
       subroutine aorsa2dSum(myid)
       

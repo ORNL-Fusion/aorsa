@@ -203,7 +203,7 @@ z_out = z_out + re_an(0) / length / (length - zi * z_in)
 z_out = zi * sqrt(pi) * z_out
 ! set the flag for success
 flag = .true.
-if(aimag(z_in) .lt. 0.0_rprec) stop('negative im(zeta)')
+if(aimag(z_in) .lt. 0.0_rprec) stop 'negative im(zeta)'
 return
 
 
