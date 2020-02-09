@@ -37,7 +37,9 @@ c      use zfun_hilbert
       integer :: nphi2 =  50
       
       complex xjpxh, xjpyh, xjpzh
-      
+
+      logical :: write_for_azzam = .true.
+      CHARACTER(LEN=60) :: rowfmt
 
       real zetai_max, zetai_min, zetai_step, zetai, phil,
      .    dKdL_max, dKdL_min, dKdL_step, modEln, modEln2, cosarg, sinarg
@@ -6696,6 +6698,26 @@ c	 call flush
 
       call blacs_barrier(icontxt, 'All')
       t1 = second1(dummy)
+
+*   write p_amat to file for Azzam
+
+      if(write_for_azzam)then
+        write(6,*) 'Starting p_mat file write for Azzam ...'
+        write(6,*) 'ncol = ', ncol
+        write(6,*) 'nrow = ', nrow
+*       WRITE(rowfmt,'(A,i10,A)') '(',ncol,'(1X,e14.7,"+i",e14.7))'
+        WRITE(rowfmt,'(A,i10,A)') '(',ncol,
+     .     '(1X,"(",e18.12,",",e18.12,")"))'
+
+        OPEN(UNIT=12, FILE="p_mat_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40*ncol+10))
+        DO i=1,nrow
+          WRITE(12,FMT=rowfmt) (p_amat((i-1)*nrow+j), j=1,ncol)
+        END DO
+        CLOSE(UNIT=12)
+        write(6,*) 'DONE'
+      end if
+
 
 *	---------------------
 *	Call scalapack solver

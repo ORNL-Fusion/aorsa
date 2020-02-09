@@ -27,13 +27,16 @@ ARCH = cori
 HOME = /global/homes/j/jaegeref
 
 #CODEDIR = AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24
-CODEDIR = AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24
+#CODEDIR = AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24
+CODEDIR = $(shell pwd)
 
 EXEC = xaorsa2d.$(ARCH)
 
-SRC_DIR = $(HOME)/$(CODEDIR)/src
+#SRC_DIR = $(HOME)/$(CODEDIR)/src
+SRC_DIR = src
 
-OBJ_DIR = $(HOME)/$(CODEDIR)/obj/$(ARCH)
+#OBJ_DIR = $(HOME)/$(CODEDIR)/obj/$(ARCH)
+OBJ_DIR = obj/$(ARCH)
 
 FFT_DIR = $(SRC_DIR)/FFTPACK
 
@@ -142,7 +145,8 @@ COMPILE90_4        = $(F90_4)        $(F90FLAGS)
 
 LOADFLAGS = -mkl=cluster $(DFFTPACK)
 
-LIBS = -L/global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot -lpgplot 
+#LIBS = -L/global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot -lpgplot 
+LIBS = /global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot/libpgplot.a  
 LOAD = $(F90_LOAD) $(OPTIMIZATION) 
 
 # Compile the program

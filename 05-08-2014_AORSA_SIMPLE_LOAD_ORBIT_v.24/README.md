@@ -9,6 +9,8 @@ src/JAGERHP : special version of AORSA used for lower hybrid and testing odd ord
 src/SAVE* , src/NEW , src/BACKUP : other versions of AORSA
 
 # Cori
+module unload darshan
 module load cray-netcdf
 module load dfftpack
+mkdir -p obj/cori
 make -f makefile_aorsa_v.24_simple_load.cori
