@@ -124,7 +124,7 @@ INC_FILES = $(INCLUDE_DIR)/netcdf.inc
 #COMMON_OPTION4  = -r8 -i4 -I $(INCLUDE_DIR)
 
 # gfortran opts
-COMMON_OPTION  = -fno-automatic -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -I $(INCLUDE_DIR) 
+COMMON_OPTION  = -g -fno-automatic -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -I $(INCLUDE_DIR) 
 COMMON_OPTION2 = -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -I $(INCLUDE_DIR)
 COMMON_OPTION3 = -I $(INCLUDE_DIR)
 COMMON_OPTION4 = -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -I $(INCLUDE_DIR)

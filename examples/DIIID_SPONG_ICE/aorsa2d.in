@@ -43,8 +43,8 @@
  nmodesx = 50,
  nmodesy = 50,
  
- nprow = 4,
- npcol = 4,
+ nprow = 1,
+ npcol = 1,
  
  nphi_number = 1,
  nphi_array = -15, 
