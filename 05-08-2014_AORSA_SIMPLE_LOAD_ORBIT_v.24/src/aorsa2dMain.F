@@ -6701,20 +6701,28 @@ c	 call flush
 
 *   write p_amat to file for Azzam
 
-      if(write_for_azzam)then
+      if((write_for_azzam) .and. (nprow*npcol.eq.1))then
         write(6,*) 'Starting p_mat file write for Azzam ...'
         write(6,*) 'ncol = ', ncol
         write(6,*) 'nrow = ', nrow
-*       WRITE(rowfmt,'(A,i10,A)') '(',ncol,'(1X,e14.7,"+i",e14.7))'
         WRITE(rowfmt,'(A,i10,A)') '(',ncol,
-     .     '(1X,"(",e18.12,",",e18.12,")"))'
+     .     '(1X,"(",e18.10,",",e18.10,")"))'
 
         OPEN(UNIT=12, FILE="p_mat_for_azzam.txt",
      .       ACTION="write", STATUS="replace", RECL=(40*ncol+10))
+        write(12,'(i6)') ncol
         DO i=1,nrow
           WRITE(12,FMT=rowfmt) (p_amat((i-1)*nrow+j), j=1,ncol)
         END DO
         CLOSE(UNIT=12)
+        OPEN(UNIT=12, FILE="p_brhs_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40))
+        write(12,'(i6)') ncol
+        DO i=1,nrow
+          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs(i)
+        END DO
+        CLOSE(UNIT=12)
+ 
         write(6,*) 'DONE'
       end if
 
@@ -6763,6 +6771,18 @@ c	 call flush
 
       deallocate(p_amat)
 c      deallocate(Btmp)
+
+      if((write_for_azzam) .and. (nprow*npcol.eq.1))then
+        write(6,*) 'Starting solution file write for Azzam ...'
+        OPEN(UNIT=12, FILE="p_solution_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40))
+        write(12,'(i6)') ncol
+        DO i=1,nrow
+          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs(i)
+        END DO
+        CLOSE(UNIT=12)
+        write(6,*) 'DONE'
+      end if
 
 c--   Operations for complex matrix factor and solve:
       ops = 8. / 3. * (real(nrow))**3 + 7. * (real(nrow))**2
@@ -6823,7 +6843,17 @@ c--   Operations for complex matrix factor and solve:
       
       brhs2 = brhs_tmp
 
-
+      if((write_for_azzam) .and. (nprow*npcol.eq.1))then
+        write(6,*) 'Starting solution file write for Azzam ...'
+        OPEN(UNIT=12, FILE="p_solution2_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40))
+        write(12,'(i6)') ncol
+        DO i=1,nrow
+          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs(i)
+        END DO
+        CLOSE(UNIT=12)
+        write(6,*) 'DONE'
+      end if
 
       do n = nkx1, nkx2
          do m = nky1, nky2
