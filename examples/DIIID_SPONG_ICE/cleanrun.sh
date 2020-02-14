@@ -6,4 +6,3 @@ rm Ono_disp fields_* namelist_input
 rm *.txt
 rm log_*
 rm bharvey3_3d bharvey_3d
-rm Ztable

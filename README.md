@@ -18,6 +18,7 @@ mkdir -p obj/cori
 make -f makefile_aorsa_v.24_simple_load.cori
 ## Run
 source env.cori
+ulimit -s unlimited
 cp -r examples $SCRATCH/
 cd $SCRATCH/examples
 cd DIIID_SPONG_ICE

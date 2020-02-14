@@ -159,11 +159,7 @@ LOADFLAGS = $(DFFTPACK)
 #LIBS = -L/global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot -lpgplot 
 LIBS = -L/usr/lib/ -lpgplot /usr/lib/x86_64-linux-gnu/libnetcdff.a -L /usr/lib/x86_64-linux-gnu -lscalapack-openmpi /usr/lib/x86_64-linux-gnu/blas/libblas.a /usr/lib/x86_64-linux-gnu/libblacs-openmpi.a -L /usr/lib/x86_64-linux-gnu -lnetcdf /usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a /usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a /usr/lib/x86_64-linux-gnu/libblacs-openmpi.a /usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a /usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a
 
-<<<<<<< HEAD:makefile_aorsa_v.24_simple_load.fusiont6
-=======
 #LIBS = -L/global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot -lpgplot 
-LIBS = /global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot/libpgplot.a  
->>>>>>> examples:05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/makefile_aorsa_v.24_simple_load.cori
 LOAD = $(F90_LOAD) $(OPTIMIZATION) 
 
 # Compile the program
