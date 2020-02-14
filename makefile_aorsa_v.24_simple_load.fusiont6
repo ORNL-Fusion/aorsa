@@ -141,7 +141,9 @@ F90_LOAD     = mpif90    $(COMMON_OPTION)
 
 INLINE=
 OPTIMIZATION =  
-F90FLAGS=  $(INLINE) $(OPTIMIZATION)  -I $(INCLUDE_DIR) 
+F90FLAGS=  $(INLINE) $(OPTIMIZATION)  -I $(INCLUDE_DIR) -g 
+
+WARNING_FLAGS = -O2 -Wall  -Wline-truncation  -Wcharacter-truncation  -Wsurprising  -Waliasing  -Wimplicit-interface  -Wunused-parameter  -fwhole-file  -fcheck=all  -fbacktrace
 
 COMPILE90          = $(F90)          $(F90FLAGS) 
 COMPILE90_NOSAVE   = $(F90_NOSAVE)   $(F90FLAGS)
@@ -288,7 +290,6 @@ $(OBJ_DIR)/types_mod.o:      $(SRC_DIR)/types_mod.f90 $(INC_FILES)
 $(OBJ_DIR)/zfun_hilbert_mod.o:   $(SRC_DIR)/zfun_hilbert_mod.f90 $(INC_FILES)
 	                         $(COMPILE90) -o $(OBJ_DIR)/zfun_hilbert_mod.o \
                                  $(SRC_DIR)/zfun_hilbert_mod.f90			     			     		   
-				   		
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f $(INC_FILES)
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/rf2x_setup2.o \
                              $(SRC_DIR)/rf2x_setup2.f
@@ -305,9 +306,9 @@ $(OBJ_DIR)/orbit.o:          $(SRC_DIR)/orbit.f $(INC_FILES)
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/orbit.o \
                              $(SRC_DIR)/orbit.f			     
 			     			     			     			     
-$(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f $(INC_FILES)
+$(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f90 $(INC_FILES)
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/eqdsk_plot.o \
-                             $(SRC_DIR)/eqdsk_plot.f				     
+                             $(SRC_DIR)/eqdsk_plot.f90 $(WARNING_FLAGS)				     
 			     			     
 $(OBJ_DIR)/fieldws.o:        $(SRC_DIR)/fieldws.f $(INC_FILES)
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/fieldws.o \

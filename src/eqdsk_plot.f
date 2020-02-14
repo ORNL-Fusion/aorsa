@@ -31,6 +31,7 @@ c
       integer pgopen, pgbeg, ier
 c      integer nmodesmax, mmodesmax
 
+      integer iostatval
       parameter (nlevmax = 101)
       
 c      parameter (nmodesmax = 450)
@@ -79,8 +80,6 @@ c      parameter (mmodesmax = 450)
       real fmin, fmax, fminre, fmaxre, fminim, fmaxim, fmin1,
      .   fmax1, fmax2, fmax3, fmaxt, fmin2, fmin3, fmint     
       real x(nxmx), capr(nxmx), y(nymx)
-      
-      
       
 c      real xkti(nxmx, nymx), xkte(nxmx, nymx), xn(nxmx, nymx)
 c      real rho(nxmx, nymx)
@@ -529,7 +528,7 @@ c      read(63, 309)ibackground
 
       read(138, 310) (psigrid(i), i = 1, nxeqd)
       read(138, 310) (rhoeqdsk(i), i = 1, nxeqd)
-      read(138, 310) (qpsi(i), i = 1, nxeqd)
+      read(138, 310, iostat=iostatval) (qpsi(i), i = 1, nxeqd)
 
       read(138, 310) ((dxxbxn(i, j), i = 1, nnodex), j = 1, nnodey)
       read(138, 310) ((dxxbyn(i, j), i = 1, nnodex), j = 1, nnodey)
