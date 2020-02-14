@@ -40,8 +40,8 @@
  eqdsk = 'g171089.05450',
  netCDF_file2='DIII_NB_FW_0th.max.nc',
    
- nmodesx = 50,
- nmodesy = 50,
+ nmodesx = 16,
+ nmodesy = 16,
  
  nprow = 1,
  npcol = 1,
