@@ -11,6 +11,8 @@ src/SAVE* , src/NEW , src/BACKUP : other versions of AORSA
 # Build
 
 ## Cori
+git clone https://github.com/ORNL-Fusion/aorsa.git
+cd aorsa
 source env.cori
 module unload darshan
 module load cray-netcdf
@@ -19,6 +21,11 @@ mkdir -p obj/cori
 make -f makefile_aorsa_v.24_simple_load.cori
 
 ## fusiont6
+git clone https://github.com/ORNL-Fusion/aorsa.git
+cd aorsa
+git checkout fustiont6
+mkdir -p obj/fusiont6
+make -f makefile_aorsa_v.24_simple_load.fusiont6
 
 # Run
 
