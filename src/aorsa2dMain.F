@@ -25,7 +25,8 @@
 c      use zfun_hilbert      
 
       implicit none
-      
+
+      complex :: l2norm      
       integer :: ieer ! fft error flag
       integer n_theta_max, n_theta, n_psi_max, nt, k, nbessj
       integer n_upper, n_lower, m_upper, m_lower, n1
@@ -37,7 +38,9 @@ c      use zfun_hilbert
       integer :: nphi2 =  50
       
       complex xjpxh, xjpyh, xjpzh
-      
+
+      logical :: write_for_azzam = .true.
+      CHARACTER(LEN=60) :: rowfmt
 
       real zetai_max, zetai_min, zetai_step, zetai, phil,
      .    dKdL_max, dKdL_min, dKdL_step, modEln, modEln2, cosarg, sinarg
@@ -813,9 +816,9 @@ c     .        uzzk(nkdim1 : nkdim2, mkdim1 : mkdim2)
       logical use_cur_mod
       parameter(use_cur_mod=.true.)
 
-      complex, allocatable :: p_amat(:)
+      complex, allocatable :: p_amat(:), p_amat_copy(:)
       integer, allocatable :: p_ipiv(:)
-      complex, allocatable :: p_brhs(:)
+      complex, allocatable :: p_brhs(:), p_brhs_copy(:)
 
       real err_max,err,b_nrm2,err_nrm2
       complex, dimension(ndfmax) ::brhs2,brhsk,brhs_tmp
@@ -1250,7 +1253,7 @@ c      jdiag = nmodesy / 2
          fqksav = 0.0
          fsksav = 0.0
 	 
-	 fdksav2d = 0.0
+	     fdksav2d = 0.0
          feksav2d = 0.0
          ffksav2d = 0.0
 
@@ -5148,10 +5151,17 @@ c	    call flush
       allocate(p_amat(p_amat_dim))
       p_amat(:) = cmplx(0.0,0.0)
 
+      if(write_for_azzam)then
+        allocate(p_amat_copy(p_amat_dim))
+        p_amat_copy(:) = cmplx(0.0,0.0)
+      end if
 
       p_brhs_dim = nrow
       p_ipiv_dim = nrow
       allocate( p_brhs(p_brhs_dim), p_ipiv(p_ipiv_dim) )
+      if(write_for_azzam)then
+        allocate( p_brhs_copy(p_brhs_dim) )
+      end if
       p_brhs(:) = cmplx(0.0,0.0)
       p_ipiv(:) = 0
 
@@ -6697,76 +6707,118 @@ c	 call flush
       call blacs_barrier(icontxt, 'All')
       t1 = second1(dummy)
 
+*   write p_amat to file for Azzam
+
+      if((write_for_azzam) .and. (nprow*npcol.eq.1))then
+      
+        p_amat_copy = p_amat;
+
+        write(6,*) 'Starting p_mat file write for Azzam ...'
+        write(6,*) 'ncol = ', ncol
+        write(6,*) 'nrow = ', nrow
+        WRITE(rowfmt,'(A,i10,A)') '(',ncol,
+     .     '(1X,"(",e18.10,",",e18.10,")"))'
+
+        OPEN(UNIT=12, FILE="p_mat_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40*ncol+10))
+        write(12,'(i6)') ncol
+        DO i=1,nrow
+          WRITE(12,FMT=rowfmt) (p_amat((i-1)*nrow+j), j=1,ncol)
+        END DO
+        CLOSE(UNIT=12)
+        OPEN(UNIT=12, FILE="p_brhs_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40))
+        write(12,'(i6)') ncol
+        DO i=1,nrow
+          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs(i)
+        END DO
+        CLOSE(UNIT=12)
+ 
+        write(6,*) 'DONE'
+      end if
+
+
 *	---------------------
 *	Call scalapack solver
 *	---------------------
-	call pzgetrf( nrow, ncol, p_amat, 1, 1, desc_amat, p_ipiv, info)
-        if (info.ne.0) then
-	   write(6,*) 'pzgetrf returns info = ', info
-	   write(15,*) 'pzgetrf returns info = ', info
-           stop '** error ** '
-	endif
+      call pzgetrf( nrow, ncol, p_amat, 1, 1, desc_amat, p_ipiv, info)
+      if (info.ne.0) then
+          write(6,*) 'pzgetrf returns info = ', info
+          write(15,*) 'pzgetrf returns info = ', info
+          stop '** error ** '
+      endif
 
-        call blacs_barrier(icontxt, 'All')
-	
+      call blacs_barrier(icontxt, 'All')
+
 *	------------------------------
 *	Optional: get condition number
 *	------------------------------
-        lwork = ndfmax
-	lrwork = ndfmax
-        anorm = pzlange('1', nrow, ncol, p_amat, 1, 1, desc_amat, rwork)      
-	call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond, 
+       lwork = ndfmax
+       lrwork = ndfmax
+      anorm = pzlange('1', nrow, ncol, p_amat, 1, 1, desc_amat, rwork)      
+      call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond, 
      .          workn, lwork, rwork, lrwork, info)
-     
-	if (info.ne.0) then
-	   write(6,*) 'pzgecon returns info = ', info
-	   write(15,*) 'pzgecon returns info = ', info
-	   stop '** error ** '
-	endif
+        
+      if (info.ne.0) then
+         write(6,*) 'pzgecon returns info = ', info
+         write(15,*) 'pzgecon returns info = ', info
+         stop '** error ** '
+      endif
+       
+      if(write_for_azzam)then
+        p_brhs_copy = p_brhs;
+      end if
+       
+      call pzgetrs( 'notrans', nrow, 1, p_amat, 1, 1, desc_amat,
+     .                p_ipiv, p_brhs, 1,1,desc_brhs, info )
+       
+      if (info.ne.0) then
+         write(6,*) 'pzgetrs returns info = ', info
+         write(15,*) 'pzgetrs returns info = ', info
+         stop '** error ** '
+      endif
 
+      call blacs_barrier(icontxt, 'All')
+      time = second1(dummy) - t1
+      time = max(1.0, time)
 
-	call pzgetrs( 'notrans', nrow, 1, p_amat, 1, 1, desc_amat,
-     &                p_ipiv, p_brhs, 1,1,desc_brhs, info )
-
-
-	if (info.ne.0) then
-	   write(6,*) 'pzgetrs returns info = ', info
-	   write(15,*) 'pzgetrs returns info = ', info
-	   stop '** error ** '
-	endif
-
-        call blacs_barrier(icontxt, 'All')
-	time = second1(dummy) - t1
-        time = max(1.0, time)
-
-      deallocate(p_amat)
-c      deallocate(Btmp)
+      if((write_for_azzam) .and. (nprow*npcol.eq.1))then
+        write(6,*) 'Starting solution file write for Azzam ...'
+        OPEN(UNIT=12, FILE="p_solution_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40))
+        write(12,'(i6)') ncol
+        DO i=1,nrow
+          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs(i)
+        END DO
+        CLOSE(UNIT=12)
+        write(6,*) 'DONE'
+      end if
 
 c--   Operations for complex matrix factor and solve:
       ops = 8. / 3. * (real(nrow))**3 + 7. * (real(nrow))**2
 
       gflops  = ops / time / 1.0e+09
       gflopsp = gflops / nproc
-	tmin = time / 60.
-	if (myid.eq.0) then
-	  write(6 ,839) nrow, nproc
-	  write(15,839) nrow, nproc
-	  write(6 ,833) tmin
-	  write(15,833) tmin
-	  write(6 ,837) gflops
-	  write(15,837) gflops
-	  write(6 ,838) gflopsp
-	  write(15,838) gflopsp
-	  
-	  write(6, *) "workn(1) = ", workn(1)
-	  write(6, *) "rwork(1) = ", rwork(1)
-	  write(6, *) "rcond = ", rcond
-	  
-	  write(15, *) "workn(1) = ", workn(1)
-	  write(15, *) "rwork(1) = ", rwork(1)
-	  write(15, *) "rcond = ", rcond
-	endif
-	
+      tmin = time / 60.
+      if (myid.eq.0) then
+        write(6 ,839) nrow, nproc
+        write(15,839) nrow, nproc
+        write(6 ,833) tmin
+        write(15,833) tmin
+        write(6 ,837) gflops
+        write(15,837) gflops
+        write(6 ,838) gflopsp
+        write(15,838) gflopsp
+        
+        write(6, *) "workn(1) = ", workn(1)
+        write(6, *) "rwork(1) = ", rwork(1)
+        write(6, *) "rcond = ", rcond
+        
+        write(15, *) "workn(1) = ", workn(1)
+        write(15, *) "rwork(1) = ", rwork(1)
+        write(15, *) "rcond = ", rcond
+      endif
+
   833 format('time taken by ScaLAPACK =',f9.3,4h min)
   834 format('info =', i10)
   839 format('nrow =', i10, 5x, 'nproc =', i10)
@@ -6801,7 +6853,42 @@ c--   Operations for complex matrix factor and solve:
       
       brhs2 = brhs_tmp
 
+      if((write_for_azzam) .and. (nprow*npcol.eq.1))then
+        write(6,*) 'Starting solution file write for Azzam ...'
+        OPEN(UNIT=12, FILE="p_solution2_for_azzam.txt",
+     .       ACTION="write", STATUS="replace", RECL=(40))
+        write(12,'(i6)') ncol
+        DO i=1,nrow
+          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') brhs2(i)
+        END DO
+        CLOSE(UNIT=12)
+        write(6,*) 'DONE'
+      end if
 
+      if(write_for_azzam)then
+*       Examine solve error 
+     
+        do i=1,nrow
+          do j=1,ncol
+            brhs_tmp(i) = brhs_tmp(i) + 
+     .         p_amat_copy((i-1)*nrow+j) * p_brhs(i)  
+          end do
+        end do
+
+        l2norm = 0;
+        do i=1,nrow
+          l2norm = l2norm + abs(p_brhs_copy(i)-brhs_tmp(i))**2
+          write(*,*) 'error : ', p_brhs_copy(i)-brhs_tmp(i)
+        enddo
+        l2norm = sqrt(l2norm)
+        write(*,*) 'l2norm : ', l2norm 
+
+        deallocate(p_amat_copy)
+        deallocate(p_brhs_copy)
+      end if
+
+      deallocate(p_amat)
+c      deallocate(Btmp)
 
       do n = nkx1, nkx2
          do m = nky1, nky2
