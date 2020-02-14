@@ -25,7 +25,7 @@ make -f makefile_aorsa_v.24_simple_load.cori
 ```
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
-git checkout fustiont6
+git checkout fusiont6
 mkdir -p obj/fusiont6
 make -f makefile_aorsa_v.24_simple_load.fusiont6
 ```
