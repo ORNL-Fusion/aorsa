@@ -15,7 +15,8 @@ cp /global/homes/j/jaegeref/ZFUNCT_LAB_2D_EDISON_801/Ztable .
 
 #Cori has 16 cores per compute node
 
-srun -n 16 /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/xaorsa2d.cori > log_aorsa2d
+#srun -n 1 /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/xaorsa2d.cori > log_aorsa2d
+srun -n 1 /global/homes/g/greendl1/code/aorsa/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/xaorsa2d.cori > log_aorsa2d
 
 	 
 rm ZTABLE.TXT
