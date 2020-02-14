@@ -6877,7 +6877,7 @@ c--   Operations for complex matrix factor and solve:
         do i=1,nrow
           l2norm_res = l2norm_res + abs(p_brhs_copy(i)-brhs_tmp(i))**2
           l2norm_rhs = l2norm_rhs + abs(p_brhs_copy(i))**2
-          write(*,*) 'error : ', p_brhs_copy(i)-brhs_tmp(i)
+*          write(*,*) 'error : ', p_brhs_copy(i)-brhs_tmp(i)
         enddo
         l2norm_res = sqrt(l2norm_res)
         write(*,*) 'l2norm_res : ', l2norm_res 
