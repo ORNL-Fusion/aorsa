@@ -26,7 +26,7 @@ c      use zfun_hilbert
 
       implicit none
 
-      complex :: l2norm      
+      complex :: l2norm_res, l2norm_rhs     
       integer :: ieer ! fft error flag
       integer n_theta_max, n_theta, n_psi_max, nt, k, nbessj
       integer n_upper, n_lower, m_upper, m_lower, n1
@@ -6712,6 +6712,7 @@ c	 call flush
       if((write_for_azzam) .and. (nprow*npcol.eq.1))then
       
         p_amat_copy = p_amat;
+        p_brhs_copy = p_brhs;
 
         write(6,*) 'Starting p_mat file write for Azzam ...'
         write(6,*) 'ncol = ', ncol
@@ -6723,14 +6724,14 @@ c	 call flush
      .       ACTION="write", STATUS="replace", RECL=(40*ncol+10))
         write(12,'(i6)') ncol
         DO i=1,nrow
-          WRITE(12,FMT=rowfmt) (p_amat((i-1)*nrow+j), j=1,ncol)
+          WRITE(12,FMT=rowfmt) (p_amat_copy(i+(j-1)*nrow), j=1,ncol)
         END DO
         CLOSE(UNIT=12)
         OPEN(UNIT=12, FILE="p_brhs_for_azzam.txt",
      .       ACTION="write", STATUS="replace", RECL=(40))
         write(12,'(i6)') ncol
         DO i=1,nrow
-          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs(i)
+          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs_copy(i)
         END DO
         CLOSE(UNIT=12)
  
@@ -6764,10 +6765,6 @@ c	 call flush
          write(15,*) 'pzgecon returns info = ', info
          stop '** error ** '
       endif
-       
-      if(write_for_azzam)then
-        p_brhs_copy = p_brhs;
-      end if
        
       call pzgetrs( 'notrans', nrow, 1, p_amat, 1, 1, desc_amat,
      .                p_ipiv, p_brhs, 1,1,desc_brhs, info )
@@ -6867,21 +6864,24 @@ c--   Operations for complex matrix factor and solve:
 
       if(write_for_azzam)then
 *       Examine solve error 
-     
+        brhs_tmp = 0
         do i=1,nrow
           do j=1,ncol
             brhs_tmp(i) = brhs_tmp(i) + 
-     .         p_amat_copy((i-1)*nrow+j) * p_brhs(i)  
+     .         p_amat_copy(i+(j-1)*nrow) * p_brhs(j)  
           end do
         end do
 
-        l2norm = 0;
+        l2norm_res = 0;
+        l2norm_rhs = 0;
         do i=1,nrow
-          l2norm = l2norm + abs(p_brhs_copy(i)-brhs_tmp(i))**2
+          l2norm_res = l2norm_res + abs(p_brhs_copy(i)-brhs_tmp(i))**2
+          l2norm_rhs = l2norm_rhs + abs(p_brhs_copy(i))**2
           write(*,*) 'error : ', p_brhs_copy(i)-brhs_tmp(i)
         enddo
-        l2norm = sqrt(l2norm)
-        write(*,*) 'l2norm : ', l2norm 
+        l2norm_res = sqrt(l2norm_res)
+        write(*,*) 'l2norm_res : ', l2norm_res 
+        write(*,*) 'l2norm_rhs : ', l2norm_rhs
 
         deallocate(p_amat_copy)
         deallocate(p_brhs_copy)
