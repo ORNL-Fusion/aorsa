@@ -1,6 +1,7 @@
  &aorsa2din
 
  use_new_wdot = .true.,
+ write_for_azzam = .false.,
 
  z2_electron = 1,
 

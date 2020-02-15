@@ -39,7 +39,6 @@ c      use zfun_hilbert
       
       complex xjpxh, xjpyh, xjpzh
 
-      logical :: write_for_azzam = .true.
       CHARACTER(LEN=60) :: rowfmt
 
       real zetai_max, zetai_min, zetai_step, zetai, phil,
