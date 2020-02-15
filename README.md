@@ -1,12 +1,9 @@
-This directory contains the stable release of AORSA. 
+# Dependencies
 
-src/ source for building AORSA
-
-src/FFTPACK , src/CQL3DSETUP : source for additional AORSA dependencies
-
-src/JAGERHP : special version of AORSA used for lower hybrid and testing odd order derivative
-
-src/SAVE* , src/NEW , src/BACKUP : other versions of AORSA
+* netcdf
+* scalapack
+* mpi
+* pgplot
 
 # Build
 
@@ -21,6 +18,7 @@ module load dfftpack
 mkdir -p obj/cori
 make -f makefile_aorsa_v.24_simple_load.cori
 ```
+
 ## fusiont6
 ```
 git clone https://github.com/ORNL-Fusion/aorsa.git
@@ -29,6 +27,19 @@ git checkout fusiont6
 mkdir -p obj/fusiont6
 make -f makefile_aorsa_v.24_simple_load.fusiont6
 ```
+
+## osx-mojave
+```
+brew install open-mpi
+brew install scalapack
+brew install pgplot
+git clone https://github.com/ORNL-Fusion/aorsa.git
+git checkout osx-mojave
+mkdir obj
+make -f makefile.osx-mojave
+
+```
+
 # Run
 
 ## Cori
@@ -54,3 +65,16 @@ ulimit -s unlimited
 cd examples/DIIID_SPONG_ICE
 mpirun -n 1 ../../xaorsa2d.fusiont6
 ```
+
+# Other Notes
+This directory contains the stable release of AORSA. 
+
+src/ source for building AORSA
+
+src/FFTPACK , src/CQL3DSETUP : source for additional AORSA dependencies
+
+src/JAGERHP : special version of AORSA used for lower hybrid and testing odd order derivative
+
+src/SAVE* , src/NEW , src/BACKUP : other versions of AORSA
+
+
