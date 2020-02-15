@@ -15,7 +15,7 @@ source env.cori
 module unload darshan
 module load cray-netcdf
 module load dfftpack
-mkdir -p obj/cori
+mkdir -p obj
 make -f makefile_aorsa_v.24_simple_load.cori
 ```
 
@@ -23,9 +23,8 @@ make -f makefile_aorsa_v.24_simple_load.cori
 ```
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
-git checkout fusiont6
-mkdir -p obj/fusiont6
-make -f makefile_aorsa_v.24_simple_load.fusiont6
+mkdir -p obj
+make -f makefile.fusiont6
 ```
 
 ## osx-mojave
@@ -52,18 +51,18 @@ cd DIIID_SPONG_ICE
 ```
 ### batchscript
 ```
-sbatch cori.batchscript
+sbatch batchscript.cori
 ```
 ### interative
 ```
 salloc -N 1 -C haswell -q interactive -t 01:00:00
-srun -n 1 /path/to/xaorsa2d.cori 
+srun -n 1 /path/to/xaorsa2d
 ```
 ## fusiont6
 ```
 ulimit -s unlimited
 cd examples/DIIID_SPONG_ICE
-mpirun -n 1 ../../xaorsa2d.fusiont6
+mpirun -n 1 ../../xaorsa2d
 ```
 
 # Other Notes
