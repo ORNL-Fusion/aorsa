@@ -52,7 +52,7 @@ module unload darshan
 module load cray-netcdf
 module load dfftpack
 mkdir -p obj
-make -f makefile_aorsa_v.24_simple_load.cori
+make -f makefile.cori
 ```
 
 ## fusiont6
