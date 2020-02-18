@@ -25,7 +25,8 @@
 c      use zfun_hilbert      
 
       implicit none
-
+      integer :: iodev
+      integer, parameter :: dp = selected_real_kind(15, 307) 
       complex :: l2norm_res, l2norm_rhs     
       integer :: ieer ! fft error flag
       integer n_theta_max, n_theta, n_psi_max, nt, k, nbessj
@@ -50,7 +51,7 @@ c      use zfun_hilbert
       
 c      CHARACTER*128 :: root 
 
-      character*16 title		                        
+      character*16 title                                        
       character*16 titll
       character*16 titlr
       character*16 titlb
@@ -219,7 +220,7 @@ c      CHARACTER*128 :: root
       real, dimension(:),   allocatable :: FPERP4 
       real, dimension(:),   allocatable :: FPERP5
       real, dimension(:),   allocatable :: FPERP6   
-       			            
+                                    
                       
       real, dimension(:,:), allocatable :: f
       
@@ -419,7 +420,7 @@ c     .        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real xmi6, t0i6, qi6
       real xjantx, xjanty, xjantz, xjant
       complex djxdx, djydy
-	    
+            
       real xprimec(nxmx), caprc(nxmx), xcourse(nxmx), capr(nxmx),
      .   xprime(nxmx), x(nxmx), dx, dxc, drdx(nxmx), d2rdx2(nxmx)
       real dbxdx, dbxdy, dbydx, dbydy, dbphidx, dbphidy,
@@ -851,43 +852,43 @@ c     &         itable,jtable,ntable,mtable
       integer undefined
       parameter(undefined=-987654321)
 
-*	---------------------------------------------------
-*	local variables for transformation to real space
-*	---------------------------------------------------
-	integer :: ib,jb
-	integer :: Locp, Locq, irow, icol, nia,nja
-	integer :: niastart, niaend
-	integer :: num_org, num_new, niasize
-	integer :: org_nrow, org_ncol, mmb, nnb
-	integer :: new_nrow, new_ncol
-	integer :: num_inside, mm, ni, nn, iia, jja, niu, miu
+*       ---------------------------------------------------
+*       local variables for transformation to real space
+*       ---------------------------------------------------
+        integer :: ib,jb
+        integer :: Locp, Locq, irow, icol, nia,nja
+        integer :: niastart, niaend
+        integer :: num_org, num_new, niasize
+        integer :: org_nrow, org_ncol, mmb, nnb
+        integer :: new_nrow, new_ncol
+        integer :: num_inside, mm, ni, nn, iia, jja, niu, miu
 
-	logical, dimension(:,:), allocatable :: is_inside
-c	integer, dimension(:), allocatable :: new_to_org
-c	integer, dimension(:,:), allocatable :: niabegin_all
-c	integer, dimension(:,:), allocatable :: isize_all
-c	integer, dimension(:,:,:), allocatable :: descBtmp_all
-c	integer, dimension(:,:,:), allocatable :: descbrhs_all
-	integer, dimension(DLEN_) :: descBtmp, descbrhs
+        logical, dimension(:,:), allocatable :: is_inside
+c       integer, dimension(:), allocatable :: new_to_org
+c       integer, dimension(:,:), allocatable :: niabegin_all
+c       integer, dimension(:,:), allocatable :: isize_all
+c       integer, dimension(:,:,:), allocatable :: descBtmp_all
+c       integer, dimension(:,:,:), allocatable :: descbrhs_all
+        integer, dimension(DLEN_) :: descBtmp, descbrhs
 
-	real :: rho_thresh
+        real :: rho_thresh
 
 
 
-	complex :: aij, beta
-c	complex, dimension(:,:), allocatable :: brhs
-	real,    dimension(:,:), allocatable :: work
-	complex, dimension(:,:), allocatable :: workc	
+        complex :: aij, beta
+c       complex, dimension(:,:), allocatable :: brhs
+        real,    dimension(:,:), allocatable :: work
+        complex, dimension(:,:), allocatable :: workc   
 
-c	complex, dimension(:,:), allocatable :: Btmp
+c       complex, dimension(:,:), allocatable :: Btmp
 
         complex, dimension(ndfmax) :: row,rowk
-	
-	complex, dimension(ndfmax) :: workn
-	real, dimension(ndfmax) :: rwork
-	real pzlange, anorm, rcond
+        
+        complex, dimension(ndfmax) :: workn
+        real, dimension(ndfmax) :: rwork
+        real pzlange, anorm, rcond
 
-	logical, parameter :: use_fft = .true.
+        logical, parameter :: use_fft = .true.
 
 
 *       ---------------------------------------------------------       
@@ -1136,16 +1137,16 @@ c	complex, dimension(:,:), allocatable :: Btmp
          use_new_z2 = .false.
          use_fourier_z2 = .false.
       end if 
-					  
+                                          
       if (z2_electron .eq. 1) then
          use_new_z2 = .true.
          use_fourier_z2 = .false.
       end if 
-					  
+                                          
       if (z2_electron .eq. 2) then
          use_new_z2 = .false.
          use_fourier_z2 = .true.
-      end if 			      
+      end if                          
                
 
 *     ------------------------------------------- 
@@ -1173,7 +1174,7 @@ c      jdiag = nmodesy / 2
       if (nproc .lt. 1) then
          write(6,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
          write(15,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
-	 stop '** blacs not setup '
+         stop '** blacs not setup '
       endif
       
      
@@ -1182,15 +1183,15 @@ c      jdiag = nmodesy / 2
          open(unit=53, file='out_fields', status='unknown',
      .      form='formatted')
          rewind (53)
-	      
-	 open(unit=963, file='namelist_input', 
+              
+         open(unit=963, file='namelist_input', 
      .                               status='unknown', form='formatted')
       
          open(unit=15, file='out15', status='unknown', form='formatted')
-	 open(unit=166,file='bharvey_3d',status='unknown',
+         open(unit=166,file='bharvey_3d',status='unknown',
      .                                                 form='formatted')
-	 if(nphi_sum_only .neqv. .true.)
-     .      open(unit=34, file='fpm',status='unknown', form='formatted')	
+         if(nphi_sum_only .neqv. .true.)
+     .      open(unit=34, file='fpm',status='unknown', form='formatted')        
       
 *        ------------------------ 
 *        Write namelist input data
@@ -1218,7 +1219,7 @@ c      jdiag = nmodesy / 2
 *     -------------------------------------------------------
       if (myid .eq. 0) then
          write(6,*) "setting up processor grid"
-	 write(6, *) "nphi_sum_only = ", nphi_sum_only
+         write(6, *) "nphi_sum_only = ", nphi_sum_only
       end if
 
       call blacs_gridinit( icontxt, 'column-major', nprow,npcol)
@@ -1251,8 +1252,8 @@ c      jdiag = nmodesy / 2
          frksav = 0.0
          fqksav = 0.0
          fsksav = 0.0
-	 
-	     fdksav2d = 0.0
+         
+             fdksav2d = 0.0
          feksav2d = 0.0
          ffksav2d = 0.0
 
@@ -1270,7 +1271,7 @@ c      jdiag = nmodesy / 2
       xkb = 0.0
       xkb2d = 0.0      
  
-      nphi = nphi_array(nsum)	      
+      nphi = nphi_array(nsum)         
       nt = nt + 1 
       
       signkz =  1.0
@@ -1318,12 +1319,12 @@ c      write(6, *) 'myid = ', myid
 
       if (myid.eq.0) then
          open(unit=38,file='out38',status='unknown',form='formatted') 
-	 open(unit=130, file='Ono_disp', status='unknown',
+         open(unit=130, file='Ono_disp', status='unknown',
      .      form='formatted')
      
 c         open(unit=29,file='out29',status='unknown',form='formatted')
 c         open(unit=30,file='out30',status='unknown',form='formatted')
-	 
+         
          open(unit=59,file='movie_eb',status='unknown',form='formatted')
          open(unit=60,file='movie_ealpha',status='unknown',
      .      form='formatted')
@@ -1331,13 +1332,13 @@ c         open(unit=30,file='out30',status='unknown',form='formatted')
          open(unit=69,file='movie_wdot',status='unknown',
      .        form='formatted')
      
-     	 open(unit=65,file='umat',status='unknown', form='formatted')
-	 
-	 
+         open(unit=65,file='umat',status='unknown', form='formatted')
+         
+         
 c         open(unit=32,file='diagnostic',status='unknown',
 c     .      form='formatted')
 
-	 
+         
          open(unit=28, file='fields_local',   status='unknown',
      .      form='formatted')
      
@@ -1446,7 +1447,7 @@ c      jequat  = nnodey / 2
 
 
       xkphi0 = nphi / rt_init
-      xkphia = nphi / rant      	            
+      xkphia = nphi / rant                          
       if(xkphi0 .eq. 0.0)xkphi0 = 1.0e-05
     
 
@@ -1478,59 +1479,59 @@ c      jequat  = nnodey / 2
       
          write(15, *) "AORSA2D: version_number = ", version_number 
          write(15, *) "z2_electron = ", z2_electron
-	 write(15, *) "use_new_Z2 = ", use_new_Z2
-	 write(15, *) "use_fourier_Z2 = ", use_fourier_Z2	 
-	     
-      	 write(15, *) "nphi_number = ", nphi_number
+         write(15, *) "use_new_Z2 = ", use_new_Z2
+         write(15, *) "use_fourier_Z2 = ", use_fourier_Z2        
+             
+         write(15, *) "nphi_number = ", nphi_number
          write(15, *) "nphi_array = ", nphi_array
-	 
-	 
+         
+         
          write(6, *) "AORSA2D: version_number = ", version_number
-	 write(6, *) "z2_electron = ", z2_electron
-	 write(6, *) "use_new_Z2 = ", use_new_Z2
-	 write(6, *) "use_fourier_Z2 = ", use_fourier_Z2		 	 
-	          
+         write(6, *) "z2_electron = ", z2_electron
+         write(6, *) "use_new_Z2 = ", use_new_Z2
+         write(6, *) "use_fourier_Z2 = ", use_fourier_Z2                         
+                  
          write(6, *) "nphi_number = ", nphi_number
          write(6, *) "nphi_array = ", nphi_array 
       
       
-         write (6, *)	         
-         write (6, *) "xkperp_cutoff = ", xkperp_cutoff 	
+         write (6, *)            
+         write (6, *) "xkperp_cutoff = ", xkperp_cutoff         
          write (6, *) "damping       = ", damping
-	 write (6, *) "upshift = ", upshift 
-	 write (6, *)
-	 write (6, *) "n_prof_flux = ", n_prof_flux      	             
+         write (6, *) "upshift = ", upshift 
+         write (6, *)
+         write (6, *) "n_prof_flux = ", n_prof_flux                          
          write (6, *) "eqdsk       = ", eqdsk
-	 write (6, *) "netcdf_file1 = ", netcdf_file1
-	 write (6, *) "netcdf_file2 = ", netcdf_file2
-	 write (6, *)
+         write (6, *) "netcdf_file1 = ", netcdf_file1
+         write (6, *) "netcdf_file2 = ", netcdf_file2
+         write (6, *)
          write (6, *) "nnodex  = ", nnodex
          write (6, *) "nnodey  = ", nnodey
-         write (6, *) "nnodelb  = ", nnodelb	 
+         write (6, *) "nnodelb  = ", nnodelb     
          write (6, *)
-	 
+         
 
-	 write (6, *)
+         write (6, *)
          write (6, *) "nprow   = ", nprow
          write (6, *) "npcol   = ", npcol
-	 write (6, *)
-	 write (6, *) "i_antenna = ", i_antenna       
-	 write (6, *) "prfin   = ", prfin
+         write (6, *)
+         write (6, *) "i_antenna = ", i_antenna       
+         write (6, *) "prfin   = ", prfin
          write (6, *) "freqcy  = ", freqcy
          write (6, *) "nphi    = ", nphi
          write (6, *) "antlen  = ", antlen
-         write (6, *) "antlc   = ", antlc	 
+         write (6, *) "antlc   = ", antlc        
          write (6, *) "rant    = ", rant
-	 write (6, *) "antang    = ", antang
-	 
+         write (6, *) "antang    = ", antang
+         
          write (6, *) "yant    = ", yant
-	 write (6, *)
-	 write (6, *) "delta0  = ", delta0
+         write (6, *)
+         write (6, *) "delta0  = ", delta0
          write (6, *) "xnuome  = ", xnuome
-	 write (6, *) "xnuomi  = ", xnuomi
-	 write (6, *)
+         write (6, *) "xnuomi  = ", xnuomi
+         write (6, *)
          write (6, *) "lmax    = ", lmax
-         write (6, *) "lmaxe    = ", lmaxe	 
+         write (6, *) "lmaxe    = ", lmaxe       
          write (6, *) "zeffcd  = ", zeffcd
          write (6, *)
          write (6, *) "xn0     = ", xn0
@@ -1538,18 +1539,18 @@ c      jequat  = nnodey / 2
          write (6, *) "alphan  = ", alphan
          write (6, *) "betan   = ", betan 
          write (6, *) "te0     = ", te0
-	 write (6, *) "telim   = ", telim
+         write (6, *) "telim   = ", telim
          write (6, *) "alphate = ", alphate
          write (6, *) "betate  = ", betate
-	 write (6, *)
-         write (6, *) "ndisti1 = ", ndisti1	 
+         write (6, *)
+         write (6, *) "ndisti1 = ", ndisti1      
          write (6, *) "amu1    = ", amu1
          write (6, *) "z1      = ", z1 
          write (6, *) "ti0     = ", ti0
          write (6, *) "tilim   = ", tilim
          write (6, *) "alphati = ", alphati
          write (6, *) "betati  = ", betati
-	 write (6, *)
+         write (6, *)
          write (6, *) "ndisti2 = ", ndisti2
          write (6, *) "amu2    = ", amu2 
          write (6, *) "z2      = ", z2 
@@ -1598,42 +1599,42 @@ c      jequat  = nnodey / 2
          write (6, *) "alphati5= ", alphati5
          write (6, *) "betati5 = ", betati5
          write (6, *)
-	 
-	 
-         write (15, *)	         
-         write (15, *) "xkperp_cutoff = ", xkperp_cutoff 	
+         
+         
+         write (15, *)           
+         write (15, *) "xkperp_cutoff = ", xkperp_cutoff        
          write (15, *) "damping       = ", damping
-	 write (15, *) "upshift = ", upshift  
-	 write (15, *)
-	 write (15, *) "n_prof_flux = ", n_prof_flux      	                         
+         write (15, *) "upshift = ", upshift  
+         write (15, *)
+         write (15, *) "n_prof_flux = ", n_prof_flux                                     
          write (15, *) "eqdsk       = ", eqdsk
-	 write (15, *) "netcdf_file1 = ", netcdf_file1
-	 write (15, *) "netcdf_file2 = ", netcdf_file2
-	 write (15, *)
+         write (15, *) "netcdf_file1 = ", netcdf_file1
+         write (15, *) "netcdf_file2 = ", netcdf_file2
+         write (15, *)
          write (15, *) "nnodex  = ", nnodex
          write (15, *) "nnodey  = ", nnodey
          write (15, *) "nnodelb  = ", nnodelb
 
-	 write (15, *)
-	 write (15, *) "nprow   = ", nprow
+         write (15, *)
+         write (15, *) "nprow   = ", nprow
          write (15, *) "npcol   = ", npcol
-	 write (15, *)
-         write (15, *) "i_antenna = ", i_antenna 	 
-	 write (15, *) "prfin     = ", prfin
+         write (15, *)
+         write (15, *) "i_antenna = ", i_antenna         
+         write (15, *) "prfin     = ", prfin
          write (15, *) "freqcy    = ", freqcy
          write (15, *) "nphi      = ", nphi
          write (15, *) "antlen    = ", antlen
          write (15, *) "rant      = ", rant
          write (15, *) "yant      = ", yant
-	 write (15, *) "antang    = ", antang
-	 write (15, *)
-	 write (15, *) "delta0  = ", delta0
+         write (15, *) "antang    = ", antang
+         write (15, *)
+         write (15, *) "delta0  = ", delta0
          write (15, *) "xnuome  = ", xnuome
-	 write (15, *) "xnuomi  = ", xnuomi
-	 write (15, *)
+         write (15, *) "xnuomi  = ", xnuomi
+         write (15, *)
          write (15, *) "lmax    = ", lmax
-         write (15, *) "lmaxe    = ", lmaxe	 
-	 
+         write (15, *) "lmaxe    = ", lmaxe      
+         
          write (15, *) "zeffcd  = ", zeffcd
          write (15, *)
          write (15, *) "xn0     = ", xn0
@@ -1641,18 +1642,18 @@ c      jequat  = nnodey / 2
          write (15, *) "alphan  = ", alphan
          write (15, *) "betan   = ", betan 
          write (15, *) "te0     = ", te0
-	 write (15, *) "telim   = ", telim
+         write (15, *) "telim   = ", telim
          write (15, *) "alphate = ", alphate
          write (15, *) "betate  = ", betate
-	 write (15, *)
-         write (15, *) "ndisti1 = ", ndisti1	 
+         write (15, *)
+         write (15, *) "ndisti1 = ", ndisti1     
          write (15, *) "amu1    = ", amu1
          write (15, *) "z1      = ", z1 
          write (15, *) "ti0     = ", ti0
          write (15, *) "tilim   = ", tilim
          write (15, *) "alphati = ", alphati
          write (15, *) "betati  = ", betati
-	 write (15, *)
+         write (15, *)
          write (15, *) "ndisti2 = ", ndisti2
          write (15, *) "amu2    = ", amu2 
          write (15, *) "z2      = ", z2 
@@ -1701,32 +1702,32 @@ c      jequat  = nnodey / 2
          write (15, *) "alphati5= ", alphati5
          write (15, *) "betati5 = ", betati5
          write (15, *)
-	 
-	 	 
+         
+                 
       
 c         write(6, 7013)nmodesx, nmodesy
 c         write(6, 7113)nwdot
 
-	 
-c	 write(6, *)"nprow = ", nprow
+         
+c        write(6, *)"nprow = ", nprow
 c        write(6, *)"npcol = ", npcol
-c	 write(6, *)"n_bin = ", n_bin
+c        write(6, *)"n_bin = ", n_bin
 
 c         write(6, *) "i_write = ", i_write
-c	 write(15, *)"i_write = ", i_write
-	 
-	 
+c        write(15, *)"i_write = ", i_write
+         
+         
          write(6, 1815)te0
          write(6, 1821)ti0
-	 
+         
          write(6, 7217)qavg0
          write(6, 7014)lmax
          write(6,17014)lmaxe
-	 	 
+                 
          write(6, 7015)ibessel
          write(6, 7115)nzfun
          write(6, 71160)xnuome
-	 write(6, 71161)xnuomi
+         write(6, 71161)xnuomi
 c         write(6, 7016)rhoi1overl
 c         write(6, 7017)rhoi10
          write(6, 7217)qavg0
@@ -1755,7 +1756,7 @@ c         write(6, 7017)rhoi10
          write(6, 1018)xnu2ad
          write(6, 1020)nnodex, nnodey
 
-	 write(6, *) "iprofile = ", iprofile
+         write(6, *) "iprofile = ", iprofile
          write(6, *) "psilim = ", psilim
 
 
@@ -1763,21 +1764,21 @@ c         write(6, 7017)rhoi10
 c         write(15, 7013)nmodesx, nmodesy
          write(15, 7113)nwdot
 
-	 
+         
 c         write(15,*)"nprow = ", nprow
 c         write(15,*)"npcol = ", npcol
-	 
-	 write(15, 1815)te0
+         
+         write(15, 1815)te0
          write(15, 1821)ti0
-	 
+         
          write(15, 7217)qavg0
          write(15, 7014)lmax
          write(15,17014)lmaxe
-	 	 
+                 
          write(15, 7015)ibessel
          write(15, 7115)nzfun
          write(15, 71160)xnuome
-	 write(15, 71161)xnuomi
+         write(15, 71161)xnuomi
 c         write(15, 7016)rhoi1overl
 c         write(15, 7017)rhoi10
          write(15, 7217)qavg0
@@ -1805,8 +1806,8 @@ c         write(15, 7017)rhoi10
          write(15, 1017)xnu1ad
          write(15, 1018)xnu2ad
          write(15, 1020)nnodex, nnodey
-	
-	 write(15, *) "iprofile = ", iprofile
+        
+         write(15, *) "iprofile = ", iprofile
          write(15, *) "psilim = ", psilim
       endif
       
@@ -1833,68 +1834,68 @@ c         write(15, 7017)rhoi10
 *     Flux surfaces from EQDSK (ga version)
 *------------------------------------------
       call blacs_barrier(icontxt, 'All')
-	 	
+                
 
       if(igeom .eq. 5) then
       
-	 if(eqdsk_special .eq. 0)
+         if(eqdsk_special .eq. 0)
      .      call eqdsk_setup(myid, eqdsk, nmodesx, nmodesy, 
-     .	    rwleft, rwright, ytop, ybottom,
-     .      rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,	    
+     .      rwleft, rwright, ytop, ybottom,
+     .      rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,          
      .      bxn, byn, bzn, bmod, psi_pol2d, rho_pol2d, qsafety, 
      .      bmod_mid,  capr_bpol_mid2,  capr_bpol_mid, rho_tor2d,
      .      i_psi_eq, dldb_tot12, dldbavg, n_prof_flux, rhomax)
 
-	 if(eqdsk_special .ne. 0)
+         if(eqdsk_special .ne. 0)
      .      call eqdsk_setup2(myid, eqdsk, nmodesx, nmodesy, 
-     .	    rwleft, rwright, ytop, ybottom,
-     .      rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,	    
+     .      rwleft, rwright, ytop, ybottom,
+     .      rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,          
      .      bxn, byn, bzn, bmod, psi_pol2d, rho_pol2d, qsafety, 
      .      bmod_mid,  capr_bpol_mid2,  capr_bpol_mid, rho_tor2d,
      .      i_psi_eq, dldb_tot12, dldbavg, n_prof_flux, rhomax)
      
-	 call blacs_barrier(icontxt, 'All')
-	 	 	 
-	 
- 9318    format(a128)	    
-	 rt = rmaxis
-	    
-	 r0 = rmaxis
-	 z0 = zmaxis
-	    
-	 if (myid .eq. 0)then	 
-	    write (6, *) "rwleft  = ", rwleft
+         call blacs_barrier(icontxt, 'All')
+                         
+         
+ 9318    format(a128)       
+         rt = rmaxis
+            
+         r0 = rmaxis
+         z0 = zmaxis
+            
+         if (myid .eq. 0)then    
+            write (6, *) "rwleft  = ", rwleft
             write (6, *) "rwright = ", rwright
             write (6, *) "ybottom = ", ybottom
-	    write (6, *) "ytop    = ", ytop
-	    
-	    write (15, *)
+            write (6, *) "ytop    = ", ytop
+            
+            write (15, *)
             write (15, *) "rwleft  = ", rwleft
             write (15, *) "rwright = ", rwright
             write (15, *) "ybottom = ", ybottom
-	    write (15, *) "ytop    = ", ytop
-	    
-	    write (6, *) "eqdsk       = ", eqdsk
-	    write (15, *) "eqdsk       = ", eqdsk      
-	 end if
-	 
+            write (15, *) "ytop    = ", ytop
+            
+            write (6, *) "eqdsk       = ", eqdsk
+            write (15, *) "eqdsk       = ", eqdsk      
+         end if
+         
 
 
      
 
-	    
+            
 *        ----------------------------------------------------
 *        Default:  if n_prof_flux equals 0, use poloidal flux     
 *        ----------------------------------------------------   
 
             do i = 1, nnodex
-               do j = 1, nnodey 	    
-	          rho(i,j) = rho_pol2d(i,j)
-	          psi(i,j) = psi_pol2d(i,j)
+               do j = 1, nnodey             
+                  rho(i,j) = rho_pol2d(i,j)
+                  psi(i,j) = psi_pol2d(i,j)
                   psi_dim(i,j) = psi(i,j) * psio
                end do
             end do
-	 
+         
 
 *        --------------------------------------------------------------
 *        Alternate: if n_prof_flux does not equal 0,  use toroidal flux 
@@ -1904,18 +1905,18 @@ c         write(15, 7017)rhoi10
          if(n_prof_flux .ne. 0)then
             do i = 1, nnodex
                do j = 1, nnodey 
-	          psi_tor2d(i,j) = rho_tor2d(i,j)**2
-		     
-		  if(rho(i,j) .lt. 1.0)then	       	    
-	             rho(i,j) = rho_tor2d(i,j)
-	             psi(i,j) = psi_tor2d(i,j) 
-	             psi_dim(i,j) = psi(i,j) * psi_tor_max
-	       	  end if 
-		      
+                  psi_tor2d(i,j) = rho_tor2d(i,j)**2
+                     
+                  if(rho(i,j) .lt. 1.0)then                 
+                     rho(i,j) = rho_tor2d(i,j)
+                     psi(i,j) = psi_tor2d(i,j) 
+                     psi_dim(i,j) = psi(i,j) * psi_tor_max
+                  end if 
+                      
                end do
             end do
          end if
-	 
+         
 *        -------------------------------------------------------
 *        Recalculate rnz and vphase with major radius from eqdsk     
 *        --------------------------------------------- --------- 
@@ -1928,64 +1929,64 @@ c         write(15, 7017)rhoi10
          if(vthe .ne. 0.0)wphase = vphase / vthe
          rnz = xkphia / xk0
 
-	  
+          
          if(myid .eq. 0)then
             if(n_prof_flux .eq. 0)write(6, *)'use sqrt(poloidal flux)'
-	    if(n_prof_flux .ne. 0)write(6, *)'use sqrt(toroidal flux)'
-	    
-	    write(15, 1321)wphase
+            if(n_prof_flux .ne. 0)write(6, *)'use sqrt(toroidal flux)'
+            
+            write(15, 1321)wphase
             write(15, 1323)vthe
 c            write(15, 1022)rnz
-	    
-	    write(6, 1321)wphase
+            
+            write(6, 1321)wphase
             write(6, 1323)vthe
-c            write(6, 1022)rnz		    	 
-	 
+c            write(6, 1022)rnz                   
+         
             write(6, 1812)rt
             write(6, 1809)b0
-	    write(6, *) "rmaxis = ", rmaxis
-	    write(6, *) "zmaxis = ", zmaxis
-	    
+            write(6, *) "rmaxis = ", rmaxis
+            write(6, *) "zmaxis = ", zmaxis
+            
             if(n_prof_flux .eq. 0)write(15,*)'use sqrt(poloidal flux)'
-	    if(n_prof_flux .ne. 0)write(15,*)'use sqrt(toroidal flux)'
+            if(n_prof_flux .ne. 0)write(15,*)'use sqrt(toroidal flux)'
             write(15, 1812)rt
             write(15, 1809)b0
          end if
-	 
-	 
-	 omgci10 = qi1 * b0 / xmi1
+         
+         
+         omgci10 = qi1 * b0 / xmi1
          vthi10 = sqrt(2.0 * t0i / xmi1)
-         rhoi10 = vthi10 / omgci10	 
-	 if(myid .eq. 0)write(15, *)"rhoi10 = ", rhoi10
-	 
-	 omgci20 = qi2 * b0 / xmi2
+         rhoi10 = vthi10 / omgci10       
+         if(myid .eq. 0)write(15, *)"rhoi10 = ", rhoi10
+         
+         omgci20 = qi2 * b0 / xmi2
          vthi20 = sqrt(2.0 * t0i2 / xmi2)
-         rhoi20 = vthi20 / omgci20	 
-	 if(myid .eq. 0)write(15, *)"rhoi20 = ", rhoi20
-	 
-	 omgci30 = qi3 * b0 / xmi3
+         rhoi20 = vthi20 / omgci20       
+         if(myid .eq. 0)write(15, *)"rhoi20 = ", rhoi20
+         
+         omgci30 = qi3 * b0 / xmi3
          vthi30 = sqrt(2.0 * t0i3 / xmi3)
-         rhoi30 = vthi30 / omgci30	 
-	 if(myid .eq. 0)write(15, *)"rhoi30 = ", rhoi30
-	 
-	 omgci40 = qi4 * b0 / xmi4
+         rhoi30 = vthi30 / omgci30       
+         if(myid .eq. 0)write(15, *)"rhoi30 = ", rhoi30
+         
+         omgci40 = qi4 * b0 / xmi4
          vthi40 = sqrt(2.0 * t0i4 / xmi4)
-         rhoi40 = vthi40 / omgci40	 
-	 if(myid .eq. 0)write(15, *)"rhoi40 = ", rhoi40
-	 
-	 omgci50 = qi5 * b0 / xmi5
+         rhoi40 = vthi40 / omgci40       
+         if(myid .eq. 0)write(15, *)"rhoi40 = ", rhoi40
+         
+         omgci50 = qi5 * b0 / xmi5
          vthi50 = sqrt(2.0 * t0i5 / xmi5)
-         rhoi50 = vthi50 / omgci50	 
-	 if(myid .eq. 0)write(15, *)"rhoi50 = ", rhoi50
+         rhoi50 = vthi50 / omgci50       
+         if(myid .eq. 0)write(15, *)"rhoi50 = ", rhoi50
 
 
          do i = 1, nnodex
             do j = 1, nnodey
                btau(i,j) = sqrt(bxn(i,j)**2 + byn(i,j)**2)
-	       bpol(i,j) = btau(i,j) * bmod(i,j)
+               bpol(i,j) = btau(i,j) * bmod(i,j)
                bzeta(i,j) = bzn(i,j)
-	       pitch(i,j) = btau(i,j) / bzeta(i,j)
-	       
+               pitch(i,j) = btau(i,j) / bzeta(i,j)
+               
 
 *              ---------------------------
 *              Calculate rotation matrix U
@@ -2382,16 +2383,16 @@ c     1             bzeta(i,j)
                dyuzz(i,j)  = dybzn
                dyyuzz(i,j) = dyybzn
                dxyuzz(i,j) = dxybzn
-	       
+               
 *              -----
 *              Exact:
 *              -----       
 c               gradprlb(i,j) = uzx(i,j) * dxbmod + uzy(i,j) * dybmod
-	       
+               
 *              -----------------------
 *              Brambilla approximation:
 *              -----------------------
-	       sinth = y(j) / sqrt(x(i)**2 + y(j)**2)
+               sinth = y(j) / sqrt(x(i)**2 + y(j)**2)
                gradprlb(i,j) = bmod(i,j) / capr(i) 
      .                                       * abs(btau(i,j) * sinth)
      
@@ -2400,8 +2401,8 @@ c               gradprlb(i,j) = uzx(i,j) * dxbmod + uzy(i,j) * dybmod
 *              -------------------------------
 c               gradprlb(i,j) = bmod(i,j) / capr(i)  
   
-	       
-	       
+               
+               
                if (nzfun .eq. 0)gradprlb(i,j) = 1.0e-10
 
 
@@ -2409,8 +2410,8 @@ c               gradprlb(i,j) = bmod(i,j) / capr(i)
                drhody = 0.5 / sqrt(psi(i,j)) * dypsi
 
                gradrho = sqrt(drhodx**2 + drhody**2)
-	       if (gradrho .eq. 0.0) gradrho = 1.0e-08
-	       
+               if (gradrho .eq. 0.0) gradrho = 1.0e-08
+               
                rhohatx(i,j) = drhodx / gradrho
                rhohaty(i,j) = drhody / gradrho
 
@@ -2452,72 +2453,72 @@ c      akprl_min = abs(nphi / rt)
 
          allocate( UPERP(nuper) )
          allocate( UPARA(nupar) )
-	 allocate( VPERP(nuper) )
+         allocate( VPERP(nuper) )
          allocate( VPARA(nupar) ) 
-	 
+         
          allocate( UPERP_work(nuper) )
          allocate( UPARA_work(nupar) )
-	 
-	 allocate( f(nuper, nupar) )
-	 
+         
+         allocate( f(nuper, nupar) )
+         
          allocate( dfdupere(nuper, nupar) )
          allocate( dfdupare(nuper, nupar) )
-         allocate( fperpe(nuper) )	 
-	 
+         allocate( fperpe(nuper) )       
+         
          allocate( dfduper1(nuper, nupar) )
          allocate( dfdupar1(nuper, nupar) )
-	 allocate( fperp1(nuper) )
-	 
-	 allocate( dfduper2(nuper, nupar) )
+         allocate( fperp1(nuper) )
+         
+         allocate( dfduper2(nuper, nupar) )
          allocate( dfdupar2(nuper, nupar) )
          allocate( fperp2(nuper) )
-	 
-	 allocate( dfduper3(nuper, nupar) )
+         
+         allocate( dfduper3(nuper, nupar) )
          allocate( dfdupar3(nuper, nupar) )
-	 allocate( fperp3(nuper) )
-	 
-	 allocate( dfduper4(nuper, nupar) )
+         allocate( fperp3(nuper) )
+         
+         allocate( dfduper4(nuper, nupar) )
          allocate( dfdupar4(nuper, nupar) )
-	 allocate( fperp4(nuper) )
+         allocate( fperp4(nuper) )
  
          allocate( dfduper5(nuper, nupar) )
          allocate( dfdupar5(nuper, nupar) )
-	 allocate( fperp5(nuper) )
-	 
-	 allocate( dfduper6(nuper, nupar) )
+         allocate( fperp5(nuper) )
+         
+         allocate( dfduper6(nuper, nupar) )
          allocate( dfdupar6(nuper, nupar) )
-	 allocate( fperp6(nuper) )
+         allocate( fperp6(nuper) )
  
  
-	 
-	 
-	 UPERP = 0.0
-	 UPARA = 0.0
-	 UPERP_work = 0.0
-	 UPARA_work = 0.0
+         
+         
+         UPERP = 0.0
+         UPARA = 0.0
+         UPERP_work = 0.0
+         UPARA_work = 0.0
 
-	 f = 0.0
-	 
-	 dfdupere = 0.0
-	 dfdupare = 0.0
-	 
-	 dfduper1 = 0.0
-	 dfdupar1 = 0.0
-	 
-	 dfduper2 = 0.0
-	 dfdupar2 = 0.0	 
-	 
-	 dfduper3 = 0.0
-	 dfdupar3 = 0.0
-	 
-	 dfduper4 = 0.0
-	 dfdupar4 = 0.0	
-	 
-	 dfduper5 = 0.0
-	 dfdupar5 = 0.0
-	 
-	 dfduper6 = 0.0
-	 dfdupar6 = 0.0	  	 
+         f = 0.0
+         
+         dfdupere = 0.0
+         dfdupare = 0.0
+         
+         dfduper1 = 0.0
+         dfdupar1 = 0.0
+         
+         dfduper2 = 0.0
+         dfdupar2 = 0.0  
+         
+         dfduper3 = 0.0
+         dfdupar3 = 0.0
+         
+         dfduper4 = 0.0
+         dfdupar4 = 0.0 
+         
+         dfduper5 = 0.0
+         dfdupar5 = 0.0
+         
+         dfduper6 = 0.0
+         dfdupar6 = 0.0          
 
       end if
 
@@ -2535,70 +2536,70 @@ c      akprl_min = abs(nphi / rt)
 !        -----------------
          allocate( UPERP(nuper) )
          allocate( UPARA(nupar) )
-	 allocate( VPERP(nuper) )
+         allocate( VPERP(nuper) )
          allocate( VPARA(nupar) )
          allocate( UPERP_work(nuper) )
          allocate( UPARA_work(nupar) )
-	 
-	 
-	 allocate( f(nuper, nupar) )
-	 	 
+         
+         
+         allocate( f(nuper, nupar) )
+                 
          allocate( dfdupere(nuper, nupar) )
          allocate( dfdupare(nuper, nupar) )
-         allocate( fperpe(nuper) )	 
-	 
+         allocate( fperpe(nuper) )       
+         
          allocate( dfduper1(nuper, nupar) )
          allocate( dfdupar1(nuper, nupar) )
-	 allocate( fperp1(nuper) )
-	 
-	 allocate( dfduper2(nuper, nupar) )
+         allocate( fperp1(nuper) )
+         
+         allocate( dfduper2(nuper, nupar) )
          allocate( dfdupar2(nuper, nupar) )
          allocate( fperp2(nuper) )
-	 
-	 allocate( dfduper3(nuper, nupar) )
+         
+         allocate( dfduper3(nuper, nupar) )
          allocate( dfdupar3(nuper, nupar) )
-	 allocate( fperp3(nuper) )
-	 
-	 allocate( dfduper4(nuper, nupar) )
+         allocate( fperp3(nuper) )
+         
+         allocate( dfduper4(nuper, nupar) )
          allocate( dfdupar4(nuper, nupar) )
-	 allocate( fperp4(nuper) )
+         allocate( fperp4(nuper) )
  
          allocate( dfduper5(nuper, nupar) )
          allocate( dfdupar5(nuper, nupar) )
-	 allocate( fperp5(nuper) )
-	 
-	 allocate( dfduper6(nuper, nupar) )
+         allocate( fperp5(nuper) )
+         
+         allocate( dfduper6(nuper, nupar) )
          allocate( dfdupar6(nuper, nupar) )
-	 allocate( fperp6(nuper) )
- 	 
-	
-	 UPERP = 0.0
-	 UPARA = 0.0
-	 UPERP_work = 0.0
-	 UPARA_work = 0.0
+         allocate( fperp6(nuper) )
+         
+        
+         UPERP = 0.0
+         UPARA = 0.0
+         UPERP_work = 0.0
+         UPARA_work = 0.0
 
-	 f = 0.0
-	 
-	 dfdupere = 0.0
-	 dfdupare = 0.0	 
-	 
-	 dfduper1 = 0.0
-	 dfdupar1 = 0.0
-	 
-	 dfduper2 = 0.0
-	 dfdupar2 = 0.0	 
-	 
-	 dfduper3 = 0.0
-	 dfdupar3 = 0.0
-	 
-	 dfduper4 = 0.0
-	 dfdupar4 = 0.0	
-	 
-	 dfduper5 = 0.0
-	 dfdupar5 = 0.0
-	 
-	 dfduper6 = 0.0
-	 dfdupar6 = 0.0	  
+         f = 0.0
+         
+         dfdupere = 0.0
+         dfdupare = 0.0  
+         
+         dfduper1 = 0.0
+         dfdupar1 = 0.0
+         
+         dfduper2 = 0.0
+         dfdupar2 = 0.0  
+         
+         dfduper3 = 0.0
+         dfdupar3 = 0.0
+         
+         dfduper4 = 0.0
+         dfdupar4 = 0.0 
+         
+         dfduper5 = 0.0
+         dfdupar5 = 0.0
+         
+         dfduper6 = 0.0
+         dfdupar6 = 0.0   
 
          allocate( fe_cql_cart(nuper, nupar, n_psi_dim) )
          allocate( dfe_cql_uprp(nuper, nupar, n_psi_dim) )
@@ -2611,71 +2612,71 @@ c      akprl_min = abs(nphi / rt)
          allocate( f2_cql_cart(nuper, nupar, n_psi_dim) )
          allocate( df2_cql_uprp(nuper, nupar, n_psi_dim) )
          allocate( df2_cql_uprl(nuper, nupar, n_psi_dim) )
-	 
-	 allocate( f3_cql_cart(nuper, nupar, n_psi_dim) )
+         
+         allocate( f3_cql_cart(nuper, nupar, n_psi_dim) )
          allocate( df3_cql_uprp(nuper, nupar, n_psi_dim) )
          allocate( df3_cql_uprl(nuper, nupar, n_psi_dim) )
-	 
-	 allocate( f4_cql_cart(nuper, nupar, n_psi_dim) )
+         
+         allocate( f4_cql_cart(nuper, nupar, n_psi_dim) )
          allocate( df4_cql_uprp(nuper, nupar, n_psi_dim) )
          allocate( df4_cql_uprl(nuper, nupar, n_psi_dim) )
-	 
-	 allocate( f5_cql_cart(nuper, nupar, n_psi_dim) )
+         
+         allocate( f5_cql_cart(nuper, nupar, n_psi_dim) )
          allocate( df5_cql_uprp(nuper, nupar, n_psi_dim) )
          allocate( df5_cql_uprl(nuper, nupar, n_psi_dim) )
-	 
-	 allocate( f6_cql_cart(nuper, nupar, n_psi_dim) )
+         
+         allocate( f6_cql_cart(nuper, nupar, n_psi_dim) )
          allocate( df6_cql_uprp(nuper, nupar, n_psi_dim) )
-         allocate( df6_cql_uprl(nuper, nupar, n_psi_dim) )	 
+         allocate( df6_cql_uprl(nuper, nupar, n_psi_dim) )       
       
-      	 
+         
 
-	 fe_cql_cart = 0.0
-	 dfe_cql_uprp = 0.0
-	 dfe_cql_uprl = 0.0
-	
-	 f1_cql_cart = 0.0
-	 df1_cql_uprp = 0.0
-	 df1_cql_uprl = 0.0
-	
-	 f2_cql_cart = 0.0
-	 df2_cql_uprp = 0.0
-	 df2_cql_uprl = 0.0
-	
-	 f3_cql_cart = 0.0
-	 df3_cql_uprp = 0.0
-	 df3_cql_uprl = 0.0
-	
-	 f4_cql_cart = 0.0
-	 df4_cql_uprp = 0.0
-	 df4_cql_uprl = 0.0
-	
-	 f5_cql_cart = 0.0
-	 df5_cql_uprp = 0.0
-	 df5_cql_uprl = 0.0
-	
+         fe_cql_cart = 0.0
+         dfe_cql_uprp = 0.0
+         dfe_cql_uprl = 0.0
+        
+         f1_cql_cart = 0.0
+         df1_cql_uprp = 0.0
+         df1_cql_uprl = 0.0
+        
+         f2_cql_cart = 0.0
+         df2_cql_uprp = 0.0
+         df2_cql_uprl = 0.0
+        
+         f3_cql_cart = 0.0
+         df3_cql_uprp = 0.0
+         df3_cql_uprl = 0.0
+        
+         f4_cql_cart = 0.0
+         df4_cql_uprp = 0.0
+         df4_cql_uprl = 0.0
+        
+         f5_cql_cart = 0.0
+         df5_cql_uprp = 0.0
+         df5_cql_uprl = 0.0
+        
          f6_cql_cart = 0.0
-	 df6_cql_uprp = 0.0
-	 df6_cql_uprl = 0.0
-	 
-	 call blacs_barrier(icontxt, 'All')
-	  
-	
+         df6_cql_uprp = 0.0
+         df6_cql_uprl = 0.0
+         
+         call blacs_barrier(icontxt, 'All')
+          
+        
      
          if (ndisti1 .eq. 1) then
-	 
-	    if(myid .eq. 0) call cql3d_setup1(netcdf_file1, nuper, nupar,
-     .                                xmi1, enorm_factor, vc1_mks_cql3d)	
+         
+      if(myid .eq. 0) call cql3d_setup1(netcdf_file1, nuper, nupar,
+     .             xmi1, enorm_factor, vc1_mks_cql3d)        
      
-            vc1_cgs_cql3d = vc1_mks_cql3d * 100. 	 	
-	 
+            vc1_cgs_cql3d = vc1_mks_cql3d * 100.                
+         
             call blacs_barrier(icontxt, 'All')
 
-            open(unit=50, file='cql3d.out', status='unknown',
-     .                                                 form='formatted')
+      open(unit=50, file='cql3d.out', status='unknown',
+     .                             form='formatted')
 
 !           ---------------------------------------------
-!    	    Read data from CQL3D in u_perp and u_parallel
+!           Read data from CQL3D in u_perp and u_parallel
 !           ---------------------------------------------
 
             rewind (50)
@@ -2683,14 +2684,14 @@ c      akprl_min = abs(nphi / rt)
             read (50, 309) nuper
             read (50, 309) nupar
             read (50, 309) n_psi
-     	 
+         
             read (50, 3310) vc1_mks
             read (50, 3310) UminPara, UmaxPara
 
             read (50, 3310) (rho_a(i_psi), i_psi = 1, n_psi)
             read (50, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
             read (50, 3310) (upara(i_upara), i_upara = 1, nupar)
-	
+        
             read (50, 3310) (((f1_cql_cart(i_uperp, i_upara, i_psi),
      &       i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
 
@@ -2702,24 +2703,24 @@ c      akprl_min = abs(nphi / rt)
      
              close(50)
      
-	 end if
-	 
-	 call blacs_barrier(icontxt, 'All')
-	 
+         end if
+         
+         call blacs_barrier(icontxt, 'All')
+         
          if (ndisti2 .eq. 1) then
-	 
-	    if(myid .eq. 0) call cql3d_setup2(netcdf_file2, nuper, nupar,
-     .                                xmi2, enorm_factor, vc2_mks_cql3d)
+         
+      if(myid .eq. 0) call cql3d_setup2(netcdf_file2, nuper, nupar,
+     .                           xmi2, enorm_factor, vc2_mks_cql3d)
      
             vc2_cgs_cql3d = vc2_mks_cql3d * 100.
-	 
+         
             call blacs_barrier(icontxt, 'All')
 
-            open(unit=50,file='cql3d.out', status='unknown',
-     .                                                 form='formatted')
+      open(unit=50,file='cql3d.out', status='unknown',
+     .                                  form='formatted')
 
 !           ---------------------------------------------
-!    	    Read data from CQL3D in u_perp and u_parallel
+!           Read data from CQL3D in u_perp and u_parallel
 !           ---------------------------------------------
 
             rewind (50)
@@ -2734,8 +2735,8 @@ c      akprl_min = abs(nphi / rt)
             read (50, 3310) (rho_a(i_psi), i_psi = 1, n_psi)
             read (50, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
             read (50, 3310) (upara(i_upara), i_upara = 1, nupar)
-	    
-	    read (50, 3310) (((f2_cql_cart(i_uperp, i_upara, i_psi),
+            
+            read (50, 3310) (((f2_cql_cart(i_uperp, i_upara, i_psi),
      &       i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
 
             read (50, 3310) (((df2_cql_uprp(i_uperp, i_upara, i_psi),
@@ -2745,10 +2746,10 @@ c      akprl_min = abs(nphi / rt)
      &       i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi) 
      
             close(50)
-	    	 
-	 end if
-	 
-	 
+                 
+         end if
+         
+         
 
          if(myid .eq. 0)then
             WRITE (6,*)
@@ -2758,12 +2759,12 @@ c      akprl_min = abs(nphi / rt)
 
             WRITE (6,*)
             WRITE (6,*) "vce_mks = ", vce_mks
-	    WRITE (6,*) "vc1_mks = ", vc1_mks
+            WRITE (6,*) "vc1_mks = ", vc1_mks
             WRITE (6,*) "vc2_mks = ", vc2_mks
             WRITE (6,*) "vc3_mks = ", vc3_mks
-	    WRITE (6,*) "vc4_mks = ", vc4_mks
+            WRITE (6,*) "vc4_mks = ", vc4_mks
             WRITE (6,*) "vc5_mks = ", vc5_mks
-            WRITE (6,*) "vc6_mks = ", vc6_mks	    
+            WRITE (6,*) "vc6_mks = ", vc6_mks       
 
             write(6, *)
             write(6, *) "rho/a(i_psi)"
@@ -2786,12 +2787,12 @@ c      akprl_min = abs(nphi / rt)
 
             WRITE (15,*)
             WRITE (15,*) "vce_mks = ", vce_mks
-	    WRITE (15,*) "vc1_mks = ", vc1_mks
+            WRITE (15,*) "vc1_mks = ", vc1_mks
             WRITE (15,*) "vc2_mks = ", vc2_mks
             WRITE (15,*) "vc3_mks = ", vc3_mks
-	    WRITE (15,*) "vc4_mks = ", vc4_mks
+            WRITE (15,*) "vc4_mks = ", vc4_mks
             WRITE (15,*) "vc5_mks = ", vc5_mks
-            WRITE (15,*) "vc6_mks = ", vc6_mks	
+            WRITE (15,*) "vc6_mks = ", vc6_mks  
 
             write(15, *)
             write(15, *) "rho/a(i_psi)"
@@ -2851,7 +2852,7 @@ c         write(6, 1312)i, x(i), xprime(i), capr(i)
       
       do i = 2, nnodex - 1
          drdx(i) = (capr(i+1) - capr(i-1) ) / (2.0 * dx)
-	 d2rdx2(i) = (capr(i+1) - 2.0 * capr(i) + capr(i-1)) / dx**2
+         d2rdx2(i) = (capr(i+1) - 2.0 * capr(i) + capr(i-1)) / dx**2
       end do
       drdx(1) = (capr(2) - capr(1)) / dx 
       d2rdx2(1) = 0.0
@@ -2880,7 +2881,7 @@ c--   y(j) : -ymax / 2.0   to   ymax / 2.0
      .      + dy / 2.0
 c--      Note: the code gives slightly smoother results with dy/2.0 added
          y(j) = yprime(j) + ybottom
-	 
+         
 c         write(6, 1312)j, y(j), yprime(j)
       end do
       
@@ -2907,10 +2908,10 @@ c      write(6, 1312) jzoom2
       ydiff_min = 100.0
       do j = 1, nnodey
          ydiff = abs(y(j) - zmaxis)
-	 if (ydiff .lt. ydiff_min) then
-	    jmid = j
-	    ydiff_min = ydiff
-	 end if
+         if (ydiff .lt. ydiff_min) then
+            jmid = j
+            ydiff_min = ydiff
+         end if
       end do
       
       jequat = jmid
@@ -2943,9 +2944,9 @@ c      write(6, 1312) jzoom2
       do i = 2, nnodex - 1
          do j = 2, nnodey - 1
             drhodr(i,j) = (rho(i+1, j) - rho(i-1, j)) / (2.0 * dx)
-	    drhodz(i,j) = (rho(i, j+1) - rho(i, j-1)) / (2.0 * dy)
-	    dthedr(i,j) = (theta(i+1, j) - theta(i-1, j)) / (2.0 * dx)
-	    dthedz(i,j) = (theta(i, j+1) - theta(i, j-1)) / (2.0 * dy)
+            drhodz(i,j) = (rho(i, j+1) - rho(i, j-1)) / (2.0 * dy)
+            dthedr(i,j) = (theta(i+1, j) - theta(i-1, j)) / (2.0 * dx)
+            dthedz(i,j) = (theta(i, j+1) - theta(i, j-1)) / (2.0 * dy)
          end do
       end do
      
@@ -2968,7 +2969,7 @@ c--   thetam: 0 to 2pi
       dtheta = thetamax / (mnodetheta - 1)
       do m = 1, mnodetheta
          thetam(m) = (m-1) * dtheta
-	 if(myid .eq. 0)write(6, *)m, thetam(m)
+         if(myid .eq. 0)write(6, *)m, thetam(m)
       end do 
       
 *---------------------------------------------------
@@ -2977,17 +2978,17 @@ c--   thetam: 0 to 2pi
 *---------------------------------------------------
       do n = 1, nnoderho
          do m = 1, mnodetheta
-	    rho_in = rhon(n)
-	    theta_in = thetam(m)
-	    
-	    call invert(rho_in, theta_in, capr_out, capz_out,
+            rho_in = rhon(n)
+            theta_in = thetam(m)
+            
+            call invert(rho_in, theta_in, capr_out, capz_out,
      .         nnodex, nnodey, nxmx, nymx, rho, theta, capr, y, myid,
      .         drhodr, drhodz, dthedr, dthedz, xj)
      
      
             capr_flux(n,m) = capr_out
-	    capz_flux(n,m) = capz_out
-c	    if(myid .eq. 0)write(6,*)n, m, capr_flux(n,m), xj
+            capz_flux(n,m) = capz_out
+c           if(myid .eq. 0)write(6,*)n, m, capr_flux(n,m), xj
          end do
       end do
              
@@ -3037,7 +3038,7 @@ c     .       capr(i)
 
       do n = 1, nnoderho
          rn(n) = rhon(n) * rmax
-	 epsn(n) = rn(n) / rt
+         epsn(n) = rn(n) / rt
          dn(n) = rmax**2 / taue
 c         if (myid .eq. 0)write(6, 1312)n, rn(n), rhon(n), dn(n)
 c         if (myid .eq. 0)write(15, 1312)n, rn(n), rhon(n), dn(n)
@@ -3084,16 +3085,16 @@ c         if (myid .eq. 0)write(6, 1312)n, rh(n), dh(n)
 *     -------------------------------------
       do i = 1, nnodex
          do j = 1, nnodey
-	    capr_bpol(i,j) = capr(i) * bpol(i,j)
-	    ipsi(i,j)= capr(i) * bzeta(i,j) * bmod(i,j)
-	 end do
+            capr_bpol(i,j) = capr(i) * bpol(i,j)
+            ipsi(i,j)= capr(i) * bzeta(i,j) * bmod(i,j)
+         end do
       end do
 
       do i = 1, nnodex
          do j = 1, nnodey
             call midplane(i, j, capr_bpol, capr_bpol_mid2(i,j),
      .          rho, nxmx, nymx, nnodex, nnodey, capr, rt, 0.0, jmid)
-	   end do
+           end do
       end do
 
       call polavg(capr_bpol_mid2, capr_bpol_mid, rho, nxmx, nymx,
@@ -3104,26 +3105,26 @@ c         if (myid .eq. 0)write(6, 1312)n, rh(n), dh(n)
       if (myid .eq. 0)then
       
          write(6, *) "jmid = ", jmid
-	 write(15, *) "jmid = ", jmid
+         write(15, *) "jmid = ", jmid
       
          write(6, *)  "psio = ", psio
-	 write(15, *) "psio = ", psio
-	 write(6, *)  "psi_tor_max = ", psi_tor_max
-	 write(15, *) "psi_tor_max = ", psi_tor_max      
+         write(15, *) "psio = ", psio
+         write(6, *)  "psi_tor_max = ", psi_tor_max
+         write(15, *) "psi_tor_max = ", psi_tor_max      
       
          write(15, *)"rt = ", rt
-	 write(15, *)"b0 = ", b0
-	 write(15, *)"dx = ", dx
-	 write(15, *)"dy = ", dy
-	 write(15, *)"drho = ", drho	 
+         write(15, *)"b0 = ", b0
+         write(15, *)"dx = ", dx
+         write(15, *)"dy = ", dy
+         write(15, *)"drho = ", drho     
 
          write(15, *)
          write(15, *) "     i    capr  rhoij  capr_bpol  capr_bpol_mid2"
-	 write(15, *)
+         write(15, *)
 
          write(6, *)
          write(6, *)  "     i    capr  rhoij  capr_bpol  capr_bpol_mid2"
-	 write(6, *)
+         write(6, *)
 
          do i = 1, nnodex
             write(6,  1312)i, capr(i), rho(i, jequat), 
@@ -3155,7 +3156,7 @@ c         if (myid .eq. 0)write(6, 1312)n, rh(n), dh(n)
          do j = 1, nnodey
             call midplane(i, j, bmod, bmod_mid(i,j), rho,
      .                nxmx, nymx, nnodex, nnodey, capr, rt, b0, jmid)
-	   end do
+           end do
       end do
 
       call polavg(bmod_mid, bmod_midavg, rho, nxmx, nymx,
@@ -3164,7 +3165,7 @@ c         if (myid .eq. 0)write(6, 1312)n, rh(n), dh(n)
      
      
 c      if (myid .eq. 0)then
-      	 
+         
 c         write(15, *)
 c         write(15, *) "     n        bmod_midavg"
 
@@ -3176,7 +3177,7 @@ c         do n = 1, nnoderho
 c            write(6,  1312)n, bmod_midavg(n)
 c            write(15, 1312)n, bmod_midavg(n)
 c         end do
-	 
+         
 c      end if
       
 
@@ -3223,92 +3224,92 @@ c      end if
 
       do i = 1, nnodex
          do j = 1, nnodey
-	 
-	    call deriv_x(psi, nxmx, nymx, i, j, nnodex, nnodey, dx,
+         
+            call deriv_x(psi, nxmx, nymx, i, j, nnodex, nnodey, dx,
      .         dpsidx, d2psidx2)
             call deriv_y(psi, nxmx, nymx, i, j, nnodex, nnodey, dy,
      .         dpsidy, d2psidy2)
      
             gradpsi = sqrt(dpsidx**2 + dpsidy**2)
-	    if (gradpsi .le. 1.0e-06)gradpsi = 1.0e-06
-	    
+            if (gradpsi .le. 1.0e-06)gradpsi = 1.0e-06
+            
 
             delta_theta = theta0(i,j) - theta_antr
             gaussantth = exp(-delta_theta**2 / dthetant**2)
-	    
+            
 *           ------------------------
 *           Curved antenna (default)
 *           ------------------------
-            if(curved_ant .eqv. .true.) then	    
+            if(curved_ant .eqv. .true.) then        
                gausspsi = exp(-( psi(i,j) - psiant)**2 / dpsiant**2)
-	    end if
-	    
+            end if
+            
 *           ----------------
 *           Straight antenna
 *           -----------------
-            if(curved_ant .neqv. .true.) then	    
-	       gausspsi   = exp(-(capr(i) -   rant)**2 / dpsiant**2)
-	    end if	    
-	    
-	    shapey = 0.0
-	    deltay = y(j) - yant
-	    
-	    if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
-	    
-	       if (capr(i) .gt. rt) then
-	    
+            if(curved_ant .neqv. .true.) then       
+               gausspsi   = exp(-(capr(i) -   rant)**2 / dpsiant**2)
+            end if          
+            
+            shapey = 0.0
+            deltay = y(j) - yant
+            
+            if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
+            
+               if (capr(i) .gt. rt) then
+            
 *                 ------------------------------------------------
 *                 if(i_antenna .eq. 0) antenna current is Gaussian
 *                 ------------------------------------------------ 
-	       
-	          if (i_antenna .eq. 0) then
-	             shapey = exp(- deltay**2 / yant_max**2)
-	          end if
-	       
-	                    
+               
+                  if (i_antenna .eq. 0) then
+                     shapey = exp(- deltay**2 / yant_max**2)
+                  end if
+               
+                            
 *                 ---------------------------------------------------
 *                 if(i_antenna .eq. 1) antenna current is cos(ky * y)  (DEFAULT)
 *                 ---------------------------------------------------
-c                  antlc = pi / (xk0 * antlen)	       
-	          if (i_antenna.eq.1 .and. abs(deltay).lt.yant_max)then
-	             shapey = cos(xk0 * antlc * deltay)
-	          end if
-		  
-	       
-	       end if  
-	       
-	       Ix = - dpsidy / gradpsi * cos_antang
-	       Iy =   dpsidx / gradpsi * cos_antang
-	       Iz =   sin_antang
-	    
+c                  antlc = pi / (xk0 * antlen)         
+                  if (i_antenna.eq.1 .and. abs(deltay).lt.yant_max)then
+                     shapey = cos(xk0 * antlc * deltay)
+                  end if
+                  
+               
+               end if  
+               
+               Ix = - dpsidy / gradpsi * cos_antang
+               Iy =   dpsidx / gradpsi * cos_antang
+               Iz =   sin_antang
+            
                xjx(i,j) = xjantx * shapey  * gausspsi * Ix
                xjy(i,j) = xjanty * shapey  * gausspsi * Iy      
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
-	    
-	    end if
-	    
-	    if(i_antenna .eq. 2) then
-	       call random_number(ranval)	    	   		   	    
+            
+            end if
+            
+            if(i_antenna .eq. 2) then
+               call random_number(ranval)                                           
                xjx(i,j) = 0 
                xjy(i,j) = ranval * 1.0e-06       
-               xjz(i,j) = 0 	    
-	    end if	    	    
-	    
-	    if(i_antenna .eq. 3) then
-	       call random_number(ranval)	    	   		   	                   
+               xjz(i,j) = 0         
+            end if                  
+            
+            if(i_antenna .eq. 3) then
+               call random_number(ranval)                                                          
                xjx(i,j) = ranval * 1.0e-06
-	       xjy(i,j) = 0        
-               xjz(i,j) = 0 	    
-	    end if
-	    
-	    if(i_antenna .eq. 4) then
-	       call random_number(ranval)	    	   		   	    
+               xjy(i,j) = 0        
+               xjz(i,j) = 0         
+            end if
+            
+            if(i_antenna .eq. 4) then
+               call random_number(ranval)                                           
                xjx(i,j) = 0
-	       xjy(i,j) = 0  
-               xjz(i,j) = ranval * 1.0e-06                      	    
-	    end if
-	    
-	    	    	    
+               xjy(i,j) = 0  
+               xjz(i,j) = ranval * 1.0e-06                                  
+            end if
+            
+                            
          end do
       end do
       
@@ -3318,13 +3319,13 @@ c                  antlc = pi / (xk0 * antlen)
       cur_mod_max = 0.0
       do i = 1, nnodex
          do j = 1, nnodey
-	    cur_mod = sqrt(xjx(i,j)*2 + xjy(i,j)**2 + xjz(i,j)**2)
-	    if (cur_mod .gt. cur_mod_max) then
-	       cur_mod_max = cur_mod
-	       i_cur_max = i
-	       j_cur_max = j
-	    end if	   
-	 end do
+            cur_mod = sqrt(xjx(i,j)*2 + xjy(i,j)**2 + xjz(i,j)**2)
+            if (cur_mod .gt. cur_mod_max) then
+               cur_mod_max = cur_mod
+               i_cur_max = i
+               j_cur_max = j
+            end if         
+         end do
       end do
       
       xkphia = nphi / capr(i_cur_max)
@@ -3403,29 +3404,29 @@ c                  antlc = pi / (xk0 * antlen)
      .            xnslolim + (xnslo - xnslolim) * shapen_slo**alphan_slo
      .                                                        * flimiter
      
-	       nmin2 = xn2lim / xnlim * nmin
-	       nmin3 = xn3lim / xnlim * nmin
-	       nmin4 = xn4lim / xnlim * nmin
+               nmin2 = xn2lim / xnlim * nmin
+               nmin3 = xn3lim / xnlim * nmin
+               nmin4 = xn4lim / xnlim * nmin
                nmin5 = xn5lim / xnlim * nmin
-	       nmin6 = xn6lim / xnlim * nmin 
-	       nminslo = xnslolim / xnlim * nmin    
+               nmin6 = xn6lim / xnlim * nmin 
+               nminslo = xnslolim / xnlim * nmin    
      
      
                if(rho(i,j) .gt. rholim) then
-	          drho1 = rho(i,j) - rholim                                     		     
+                  drho1 = rho(i,j) - rholim                                                          
                   xnea(i,j) = nmin +
-     .                  (xnlim - nmin) * exp(- drho1 / scrape)		     
-		  xn2a(i,j) = nmin2 + 
+     .                  (xnlim - nmin) * exp(- drho1 / scrape)               
+                  xn2a(i,j) = nmin2 + 
      .                  (xn2lim - nmin2) * exp(- drho1 / scrape)     
-		  xn3a(i,j) = nmin3 + 
+                  xn3a(i,j) = nmin3 + 
      .                  (xn3lim - nmin3) * exp(- drho1 / scrape)
-		  xn4a(i,j) = nmin4 + 
+                  xn4a(i,j) = nmin4 + 
      .                  (xn4lim - nmin4) * exp(- drho1 / scrape)
-		  xn5a(i,j) = nmin5 + 
+                  xn5a(i,j) = nmin5 + 
      .                  (xn5lim - nmin6) * exp(- drho1 / scrape)
-		  xn6a(i,j) = nmin6 + 
+                  xn6a(i,j) = nmin6 + 
      .                  (xn6lim - nmin6) * exp(- drho1 / scrape) 
-     		  xna_slo(i,j) = nminslo + 
+                  xna_slo(i,j) = nminslo + 
      .                  (xnslolim - nminslo) * exp(- drho1 / scrape)      
               end if
 
@@ -3438,14 +3439,14 @@ c                  antlc = pi / (xk0 * antlen)
      .                               - z_slo * xna_slo(i, j)   ) / z1
      
                if (xn1a(i, j) .le. 0.0) then
-	          xn1a(i, j) = 1.0e-10
-		  if(myid .eq.0) write(6, *) xnea(i,j), xn1a(i,j), 
+                  xn1a(i, j) = 1.0e-10
+                  if(myid .eq.0) write(6, *) xnea(i,j), xn1a(i,j), 
      .               xn2a(i,j), xn3a(i,j), xn4a(i,j), xn5a(i,j), 
      .               xn6a(i,j), xna_slo(i,j)
                   call exit
-	       end if
-	       	       	          	       
-	       
+               end if
+                                               
+               
 
                eta2 = xn2 / xn0
                eta3 = xn3 / xn0
@@ -3487,7 +3488,7 @@ c                  antlc = pi / (xk0 * antlen)
                Tmini5 = ti5limj / telimj * Temin0
                Tmini6 = ti6limj / telimj * Temin0
      
-               if(rho(i,j) .gt. rholim) then                                   		     
+               if(rho(i,j) .gt. rholim) then                                                 
                   xkte(i,j)  = telimj 
                   xkti(i,j)  = tilimj 
                   xkti2(i,j) = ti2limj 
@@ -3495,27 +3496,27 @@ c                  antlc = pi / (xk0 * antlen)
                   xkti4(i,j) = ti4limj 
                   xkti5(i,j) = ti5limj 
                   xkti6(i,j) = ti6limj 
-	          drho1 = rho(i,j) - rholim                                     		     
+                  drho1 = rho(i,j) - rholim                                                          
 c                  xkte(i,j) = Temin0 +
-c     .                  (telimj - Temin0) * exp(- drho1 / scrape)		     
-c		  xkti(i,j) = Tmini + 
+c     .                  (telimj - Temin0) * exp(- drho1 / scrape)                   
+c                 xkti(i,j) = Tmini + 
 c     .                  (tilimj - Tmini) * exp(- drho1 / scrape)     
-c		  xkti2(i,j) = Tmini2 + 
+c                 xkti2(i,j) = Tmini2 + 
 c     .                  (ti2limj - Tmini2) * exp(- drho1 / scrape)
-c		  xkti3(i,j) = Tmini3 + 
+c                 xkti3(i,j) = Tmini3 + 
 c     .                  (ti3limj - Tmini3) * exp(- drho1 / scrape)
-c		  xkti4(i,j) = Tmini4 + 
+c                 xkti4(i,j) = Tmini4 + 
 c     .                  (ti4limj - Tmini4) * exp(- drho1 / scrape)
-c		  xkti5(i,j) = Tmini5 + 
+c                 xkti5(i,j) = Tmini5 + 
 c     .                  (ti5limj - Tmini5) * exp(- drho1 / scrape) 
-c     		  xkti6(i,j) = Tmini6 + 
+c                 xkti6(i,j) = Tmini6 + 
 c     .                  (ti6limj - Tmini6) * exp(- drho1 / scrape)  
                end if
 
-            end if	    
+            end if          
 *          --------------------
 *           end iprofile .eq. 3:
-*          --------------------	
+*          -------------------- 
     
 
             if (iprofile .eq. 1 .or. iprofile .eq. 2) then
@@ -3598,14 +3599,14 @@ c     .                  (ti6limj - Tmini6) * exp(- drho1 / scrape)
 *        ------------------
          rewind (63)
          read(63, state)
-	 
-	 ndata = s_nrho_n
-	    
-	 	 
+         
+         ndata = s_nrho_n
+            
+                 
 *        ------------------------------------------------------------
 *        Optional: change from stored energy to equivalent kT/e (keV)
 *        ------------------------------------------------------------
-c	 do n = 1, ndata
+c        do n = 1, ndata
 c            s_t_s(n,2) = (s_t_s(n,2) + s_t_s(n,3)) * 1.0 e+06 
 c     .                         / q / s_n_s(n,2) * 2./ 3./ 1.e+03 
 c            s_t_s(n,3) = s_t_s(n,3) / q / s_n_s(n,3) * 2./ 3./ 1.e+03 
@@ -3614,55 +3615,55 @@ c            s_t_s(n,0) = s_t_s(n,0) * 2.5
 c        end do
 
 
-	 
+         
 *        -------------------------
 *        Optional: modify profiles
 *        -------------------------
-	 
-	 go to 5009
-	 rho0 = 0.90
-	 n1 = 14
-	 do n = 1, ndata
-	    rhod(n) = s_rho_n_grid(n)
-	  	    	     
-c	    s_n_s(n,0) = s_n_s(n,0) / (1. + (rhod(n) / rho0)**n1)
-c	    s_n_s(n,1) = s_n_s(n,1) / (1. + (rhod(n) / rho0)**n1)
-c	    s_n_s(n,2) = s_n_s(n,2) / (1. + (rhod(n) / rho0)**n1)
-c	    s_n_s(n,3) = s_n_s(n,3) / (1. + (rhod(n) / rho0)**n1)
-c	    s_n_s(n,4) = s_n_s(n,4) / (1. + (rhod(n) / rho0)**n1)
+         
+         go to 5009
+         rho0 = 0.90
+         n1 = 14
+         do n = 1, ndata
+            rhod(n) = s_rho_n_grid(n)
+                             
+c           s_n_s(n,0) = s_n_s(n,0) / (1. + (rhod(n) / rho0)**n1)
+c           s_n_s(n,1) = s_n_s(n,1) / (1. + (rhod(n) / rho0)**n1)
+c           s_n_s(n,2) = s_n_s(n,2) / (1. + (rhod(n) / rho0)**n1)
+c           s_n_s(n,3) = s_n_s(n,3) / (1. + (rhod(n) / rho0)**n1)
+c           s_n_s(n,4) = s_n_s(n,4) / (1. + (rhod(n) / rho0)**n1)
 
-	    s_n_s(n,0) = s_n_s(n,0) * 0.54112554
-	    s_n_s(n,1) = s_n_s(n,1) * 0.54112554
+            s_n_s(n,0) = s_n_s(n,0) * 0.54112554
+            s_n_s(n,1) = s_n_s(n,1) * 0.54112554
 
 
-c	    s_t_s(n,0) = s_t_s(n,0) / (1. + (rhod(n) / rho0)**n1) 
-c	    s_t_s(n,1) = s_t_s(n,1) / (1. + (rhod(n) / rho0)**n1) 
-c	    s_t_s(n,2) = s_t_s(n,2) / (1. + (rhod(n) / rho0)**n1) 
-c	    s_t_s(n,3) = s_t_s(n,3) / (1. + (rhod(n) / rho0)**n1) 
-c	    s_t_s(n,4) = s_t_s(n,4) / (1. + (rhod(n) / rho0)**n1)
+c           s_t_s(n,0) = s_t_s(n,0) / (1. + (rhod(n) / rho0)**n1) 
+c           s_t_s(n,1) = s_t_s(n,1) / (1. + (rhod(n) / rho0)**n1) 
+c           s_t_s(n,2) = s_t_s(n,2) / (1. + (rhod(n) / rho0)**n1) 
+c           s_t_s(n,3) = s_t_s(n,3) / (1. + (rhod(n) / rho0)**n1) 
+c           s_t_s(n,4) = s_t_s(n,4) / (1. + (rhod(n) / rho0)**n1)
 
-	    s_t_s(n,0) = s_t_s(n,0) * 0.45801527 
-	    s_t_s(n,1) = s_t_s(n,1) * 0.45801527     
+            s_t_s(n,0) = s_t_s(n,0) * 0.45801527 
+            s_t_s(n,1) = s_t_s(n,1) * 0.45801527     
          end do
- 5009    continue	 
-	 
-	 	 
+ 5009    continue        
+         
+                 
          if(myid .eq. 0)then
-	    write(6, *)
+            write(6, *)
             write(6, *) "ndata = ", s_nrho_n
-	    write(6, 66164) 
+            write(6, 66164) 
 66164       format(1h ,5x,5h   n  ,3x,6h rhod ,
      .                 6x,6h  ne  ,6x,6h  te  ,6x,6h  ti1 ,6x,6h ti2  ,
      .                 6x,6h  ti3 ,6x,6h zeff ,6x,6h  n1  ,6x,6h  n2  ,
      .                 6x,6h  n3  )    
             write(6, *)
-	    	    
+                    
      
-     	    write(15, *)
-	    write(15, *) "ndata = ", s_nrho_n		    
-	    write(15, 66164) 
             write(15, *)
-	    
+            write(15, *) "ndata = ", s_nrho_n               
+            write(15, 66164) 
+            write(15, *)
+            
             do n = 1, s_nrho_n
                write(6, 1312)n, s_rho_n_grid(n), 
      .             s_n_s(n,0), s_t_s(n,0), s_t_s(n,1), s_t_s(n,2), 
@@ -3673,433 +3674,433 @@ c	    s_t_s(n,4) = s_t_s(n,4) / (1. + (rhod(n) / rho0)**n1)
      .             s_t_s(n,3), s_zeff(n),  s_n_s(n,1), s_n_s(n,2), 
      .             s_n_s(n,3) 
             end do
-	    
-	    ndata = s_nrho_n
-	    
-	    do n = 1, ndata
-	       	           	    
-	       rhod(n) = s_rho_n_grid(n)
-	    
+            
+            ndata = s_nrho_n
+            
+            do n = 1, ndata
+                                    
+               rhod(n) = s_rho_n_grid(n)
+            
                tekev(n)  = s_t_s(n,0) 
-	       tikev(n)  = s_t_s(n,1)
-	       ti2kev(n) = s_t_s(n,2)        
-	       e_beam(n) = s_t_s(n,3)
-	       
-	       xneavg(n) = s_n_s(n,0) 
-	       xn_min(n) = s_n_s(n,2)
-	       xn_maj(n) = s_n_s(n,1)
-	       xn_beam(n)= s_n_s(n,3)
-	       
-	         	        
-	       
-   	       	      	       
-	       
-	       if(eta .gt. 0.0)then
-	          xn_min(n) = eta * xneavg(n)	       
+               tikev(n)  = s_t_s(n,1)
+               ti2kev(n) = s_t_s(n,2)        
+               e_beam(n) = s_t_s(n,3)
+               
+               xneavg(n) = s_n_s(n,0) 
+               xn_min(n) = s_n_s(n,2)
+               xn_maj(n) = s_n_s(n,1)
+               xn_beam(n)= s_n_s(n,3)
+               
+                                
+               
+                               
+               
+               if(eta .gt. 0.0)then
+                  xn_min(n) = eta * xneavg(n)          
                end if
-	       
-	       if(eta3 .gt. 0.0)then
-	          xn_beam(n) = eta3 * xneavg(n)	       
+               
+               if(eta3 .gt. 0.0)then
+                  xn_beam(n) = eta3 * xneavg(n)        
                end if
-	       
+               
                xn_maj(n) = (xneavg(n) - z2 * xn_min(n)
      .                                - z3 * s_n_s(n,3)
      .                                - z4 * s_n_s(n,4)
      .                                - z5 * s_n_s(n,5)     
-     .                                - z6 * s_n_s(n,6) ) / z1	       
-	                 
+     .                                - z6 * s_n_s(n,6) ) / z1         
+                         
                xneavg_cgs(n) = xneavg(n) * 1.0e-06
-	       xn_min_cgs(n) = xn_min(n) * 1.0e-06
-               xn_maj_cgs(n) = xn_maj(n) * 1.0e-06	       	     
-	       xn_beam_cgs(n) = xn_beam(n) * 1.0e-06
-	                      
-	       zeffavg(n) = s_zeff(n)
-	      
-c	       rhod(n) = sqrt(rhod(n))
-	    end do
-	    
-c	    tekev  = tekev  / 3.  
-c	    tikev  = tikev  / 3. 
-c	    ti2kev = ti2kev / 3.    
-	    
-	    write(6, *)
+               xn_min_cgs(n) = xn_min(n) * 1.0e-06
+               xn_maj_cgs(n) = xn_maj(n) * 1.0e-06                   
+               xn_beam_cgs(n) = xn_beam(n) * 1.0e-06
+                              
+               zeffavg(n) = s_zeff(n)
+              
+c              rhod(n) = sqrt(rhod(n))
+            end do
+            
+c           tekev  = tekev  / 3.  
+c           tikev  = tikev  / 3. 
+c           ti2kev = ti2kev / 3.    
+            
+            write(6, *)
             write(6, *) "rhod = "
-	    write(6, 100) (rhod(n), n = 1, ndata)
-	    write(6, *)
-	 	 
-	    write(6, *) "xneavg = "
-	    write(6, 100) (xneavg(n), n = 1, ndata)
-	    write(6, *)
-	 
-	    write(6, *) "xn_majority = "
-	    write(6, 100) (xn_maj(n), n = 1, ndata)
-	    write(6, *)
-	 
-	    write(6, *) "xn_minority = "
-	    write(6, 100) (xn_min(n), n = 1, ndata)
-	    write(6, *)
-	 
-	    write(6, *) "xn_beam = "
-	    write(6, 100) (xn_beam(n), n = 1, ndata)
-	    write(6, *)
-	    
-	    write(6, *) "xn_ion4 = "
-	    write(6, 100) (s_n_s(n,4), n = 1, ndata)
-	    write(6, *)	
-	    
-	    write(6, *) "xn_ion5 = "
-	    write(6, 100) (s_n_s(n,5), n = 1, ndata)
-	    write(6, *)	
-	    
-	    write(6, *) "xn_ion6 = "
-	    write(6, 100) (s_n_s(n,6), n = 1, ndata)
-	    write(6, *)	            
-	 
-	    write(6, *) "zeffavg = "
-	    write(6, 100) (zeffavg(n), n = 1, ndata)
-	    write(6, *)
-	    
-c	    tekev = tekev * 2.1 / 3.54298
-c	    tikev = tikev * 2.1 / 2.83439
-	  
-	    write(6, *) "tekev = "
-	    write(6, 100) (tekev(n), n = 1, ndata)
-	    write(6, *)
-	 
-	    write(6, *) "tikev = "
-	    write(6, 100) (tikev(n), n = 1, ndata)
-	    write(6, *)
-	    
-	    write(6, *) "T_ion2 (keV) = "	
-	    write(6, 100) (s_t_s(n,2), n = 1, ndata)
-	    write(6, *)	    
-	 
-	    write(6, *) "T_ion3 (keV) = "	
-	    write(6, 100) (s_t_s(n,3), n = 1, ndata)
-	    write(6, *)
-	    
-	    write(6, *) "T_ion4 (keV) = "	
-	    write(6, 100) (s_t_s(n,4), n = 1, ndata)
-	    write(6, *)	 
-	    
-	    write(6, *) "T_ion5 (keV) = "	
-	    write(6, 100) (s_t_s(n,5), n = 1, ndata)
-	    write(6, *)	
-	    
-	    write(6, *) "T_ion6 (keV) = "	
-	    write(6, 100) (s_t_s(n,6), n = 1, ndata)
-	    write(6, *)		    	       
-	 
-            write(6, *) "xn_majority_cgs = "		 
+            write(6, 100) (rhod(n), n = 1, ndata)
+            write(6, *)
+                 
+            write(6, *) "xneavg = "
+            write(6, 100) (xneavg(n), n = 1, ndata)
+            write(6, *)
+         
+            write(6, *) "xn_majority = "
+            write(6, 100) (xn_maj(n), n = 1, ndata)
+            write(6, *)
+         
+            write(6, *) "xn_minority = "
+            write(6, 100) (xn_min(n), n = 1, ndata)
+            write(6, *)
+         
+            write(6, *) "xn_beam = "
+            write(6, 100) (xn_beam(n), n = 1, ndata)
+            write(6, *)
+            
+            write(6, *) "xn_ion4 = "
+            write(6, 100) (s_n_s(n,4), n = 1, ndata)
+            write(6, *) 
+            
+            write(6, *) "xn_ion5 = "
+            write(6, 100) (s_n_s(n,5), n = 1, ndata)
+            write(6, *) 
+            
+            write(6, *) "xn_ion6 = "
+            write(6, 100) (s_n_s(n,6), n = 1, ndata)
+            write(6, *)             
+         
+            write(6, *) "zeffavg = "
+            write(6, 100) (zeffavg(n), n = 1, ndata)
+            write(6, *)
+            
+c           tekev = tekev * 2.1 / 3.54298
+c           tikev = tikev * 2.1 / 2.83439
+          
+            write(6, *) "tekev = "
+            write(6, 100) (tekev(n), n = 1, ndata)
+            write(6, *)
+         
+            write(6, *) "tikev = "
+            write(6, 100) (tikev(n), n = 1, ndata)
+            write(6, *)
+            
+            write(6, *) "T_ion2 (keV) = "       
+            write(6, 100) (s_t_s(n,2), n = 1, ndata)
+            write(6, *)     
+         
+            write(6, *) "T_ion3 (keV) = "       
+            write(6, 100) (s_t_s(n,3), n = 1, ndata)
+            write(6, *)
+            
+            write(6, *) "T_ion4 (keV) = "       
+            write(6, 100) (s_t_s(n,4), n = 1, ndata)
+            write(6, *)  
+            
+            write(6, *) "T_ion5 (keV) = "       
+            write(6, 100) (s_t_s(n,5), n = 1, ndata)
+            write(6, *) 
+            
+            write(6, *) "T_ion6 (keV) = "       
+            write(6, 100) (s_t_s(n,6), n = 1, ndata)
+            write(6, *)                        
+         
+            write(6, *) "xn_majority_cgs = "             
             write(6, 100) (xn_maj_cgs(n), n = 1, ndata)
-	    write(6, *)	 
-	 
-	    write(6, *) "xn_minority_cgs = "		 
+            write(6, *)  
+         
+            write(6, *) "xn_minority_cgs = "             
             write(6, 100) (xn_min_cgs(n), n = 1, ndata)
-	    write(6, *)
-	 
-	    write(6, *) "xneavg_cgs = "	 
+            write(6, *)
+         
+            write(6, *) "xneavg_cgs = "  
             write(6, 100) (xneavg_cgs(n), n = 1, ndata)
-	    write(6, *)
-	 
-	 
-	    write(6, *) "ti2kev = "	
-	    write(6, 100) (ti2kev(n), n = 1, ndata)
-	    write(6, *)
-	    
-	    write(6, *) "xme = ", xme
-	    write(6, *) "xmi1 = ", xmi1
-	    write(6, *) "xmi2 = ", xmi2
-	    write(6, *) "xmi3 = ", xmi3
-	    write(6, *) "xmi4 = ", xmi4
-	    write(6, *) "xmi5 = ", xmi5
-	    write(6, *) "xmi6 = ", xmi6
-	    
-	    write(6, *) "qe = ", qe
-	    write(6, *) "qi1 = ", qi1
-	    write(6, *) "qi2 = ", qi2
-	    write(6, *) "qi3 = ", qi3
-	    write(6, *) "qi4 = ", qi4
-	    write(6, *) "qi5 = ", qi5
-	    write(6, *) "qi6 = ", qi6
-	    	 
-	     	    		    			    			    			    			    			    			    			  			    
-			    
-	    
-	    write(15, *)
+            write(6, *)
+         
+         
+            write(6, *) "ti2kev = "     
+            write(6, 100) (ti2kev(n), n = 1, ndata)
+            write(6, *)
+            
+            write(6, *) "xme = ", xme
+            write(6, *) "xmi1 = ", xmi1
+            write(6, *) "xmi2 = ", xmi2
+            write(6, *) "xmi3 = ", xmi3
+            write(6, *) "xmi4 = ", xmi4
+            write(6, *) "xmi5 = ", xmi5
+            write(6, *) "xmi6 = ", xmi6
+            
+            write(6, *) "qe = ", qe
+            write(6, *) "qi1 = ", qi1
+            write(6, *) "qi2 = ", qi2
+            write(6, *) "qi3 = ", qi3
+            write(6, *) "qi4 = ", qi4
+            write(6, *) "qi5 = ", qi5
+            write(6, *) "qi6 = ", qi6
+                 
+                                                                                                                                                                                                                                    
+                            
+            
+            write(15, *)
             write(15, *) "rhod = "
-	    write(15, 100) (rhod(n), n = 1, ndata)
-	    write(15, *)
-	 	 
-	    write(15, *) "xneavg = "
-	    write(15, 100) (xneavg(n), n = 1, ndata)
-	    write(15, *)
-	 
-	    write(15, *) "xn_majority = "
-	    write(15, 100) (xn_maj(n), n = 1, ndata)
-	    write(15, *)
-	 
-	    write(15, *) "xn_minority = "
-	    write(15, 100) (xn_min(n), n = 1, ndata)
-	    write(15, *)
-	 
-	    write(15, *) "xn_beam = "
-	    write(15, 100) (xn_beam(n), n = 1, ndata)
-	    write(15, *)
-	 
-	    write(15, *) "zeffavg = "
-	    write(15, 100) (zeffavg(n), n = 1, ndata)
-	    write(15, *)
-	  
-	    write(15, *) "tekev = "
-	    write(15, 100) (tekev(n), n = 1, ndata)
-	    write(15, *)
-	 
-	    write(15, *) "tikev = "
-	    write(15, 100) (tikev(n), n = 1, ndata)
-	    write(15, *)
-	 
-	    write(15, *) "e_beam = "	
-	    write(15, 100) (e_beam(n), n = 1, ndata)
-	    write(15, *)
-	 
-            write(15, *) "xn_majority_cgs = "		 
+            write(15, 100) (rhod(n), n = 1, ndata)
+            write(15, *)
+                 
+            write(15, *) "xneavg = "
+            write(15, 100) (xneavg(n), n = 1, ndata)
+            write(15, *)
+         
+            write(15, *) "xn_majority = "
+            write(15, 100) (xn_maj(n), n = 1, ndata)
+            write(15, *)
+         
+            write(15, *) "xn_minority = "
+            write(15, 100) (xn_min(n), n = 1, ndata)
+            write(15, *)
+         
+            write(15, *) "xn_beam = "
+            write(15, 100) (xn_beam(n), n = 1, ndata)
+            write(15, *)
+         
+            write(15, *) "zeffavg = "
+            write(15, 100) (zeffavg(n), n = 1, ndata)
+            write(15, *)
+          
+            write(15, *) "tekev = "
+            write(15, 100) (tekev(n), n = 1, ndata)
+            write(15, *)
+         
+            write(15, *) "tikev = "
+            write(15, 100) (tikev(n), n = 1, ndata)
+            write(15, *)
+         
+            write(15, *) "e_beam = "    
+            write(15, 100) (e_beam(n), n = 1, ndata)
+            write(15, *)
+         
+            write(15, *) "xn_majority_cgs = "            
             write(15, 100) (xn_maj_cgs(n), n = 1, ndata)
-	    write(15, *)	 
-	 
-	    write(15, *) "xn_minority_cgs = "		 
+            write(15, *)         
+         
+            write(15, *) "xn_minority_cgs = "            
             write(15, 100) (xn_min_cgs(n), n = 1, ndata)
-	    write(15, *)
-	 
-	    write(15, *) "xneavg_cgs = "	 
+            write(15, *)
+         
+            write(15, *) "xneavg_cgs = "         
             write(15, 100) (xneavg_cgs(n), n = 1, ndata)
-	    write(15, *)
-	 
-	 
-	    write(15, *) "ti2kev = "	
-	    write(15, 100) (ti2kev(n), n = 1, ndata)
-	    write(15, *)
-	    
-	    write(15, *) "xme = ", xme
-	    write(15, *) "xmi1 = ", xmi1
-	    write(15, *) "xmi2 = ", xmi2
-	    write(15, *) "xmi3 = ", xmi3
-	    write(15, *) "xmi4 = ", xmi4
-	    write(15, *) "xmi5 = ", xmi5
-	    write(15, *) "xmi6 = ", xmi6
-	    
-	    write(15, *) "qe = ", qe
-	    write(15, *) "qi1 = ", qi1
-	    write(15, *) "qi2 = ", qi2
-	    write(15, *) "qi3 = ", qi3
-	    write(15, *) "qi4 = ", qi4
-	    write(15, *) "qi5 = ", qi5
-	    write(15, *) "qi6 = ", qi6
-	    
-	    	 	     	    
+            write(15, *)
+         
+         
+            write(15, *) "ti2kev = "    
+            write(15, 100) (ti2kev(n), n = 1, ndata)
+            write(15, *)
+            
+            write(15, *) "xme = ", xme
+            write(15, *) "xmi1 = ", xmi1
+            write(15, *) "xmi2 = ", xmi2
+            write(15, *) "xmi3 = ", xmi3
+            write(15, *) "xmi4 = ", xmi4
+            write(15, *) "xmi5 = ", xmi5
+            write(15, *) "xmi6 = ", xmi6
+            
+            write(15, *) "qe = ", qe
+            write(15, *) "qi1 = ", qi1
+            write(15, *) "qi2 = ", qi2
+            write(15, *) "qi3 = ", qi3
+            write(15, *) "qi4 = ", qi4
+            write(15, *) "qi5 = ", qi5
+            write(15, *) "qi6 = ", qi6
+            
+                                    
 
-	 end if
+         end if
   100    format(1p6e12.3)
   
-  	 
-	 s_t_s = q * s_t_s * 1.0e3    !input is kev TEMPS IN JOULES
-	 Temin0 = q * Temin * 1.0e3    !input is kev TEMPS IN JOULES
-	 
+         
+         s_t_s = q * s_t_s * 1.0e3    !input is kev TEMPS IN JOULES
+         Temin0 = q * Temin * 1.0e3    !input is kev TEMPS IN JOULES
+         
          nmin1 = s_n_s(ndata, 1) / s_n_s(ndata, 0) * nmin
-	 nmin2 = s_n_s(ndata, 2) / s_n_s(ndata, 0) * nmin
-	 nmin3 = s_n_s(ndata, 3) / s_n_s(ndata, 0) * nmin
-	 nmin4 = s_n_s(ndata, 4) / s_n_s(ndata, 0) * nmin
+         nmin2 = s_n_s(ndata, 2) / s_n_s(ndata, 0) * nmin
+         nmin3 = s_n_s(ndata, 3) / s_n_s(ndata, 0) * nmin
+         nmin4 = s_n_s(ndata, 4) / s_n_s(ndata, 0) * nmin
          nmin5 = s_n_s(ndata, 5) / s_n_s(ndata, 0) * nmin
-	 nmin6 = s_n_s(ndata, 6) / s_n_s(ndata, 0) * nmin
+         nmin6 = s_n_s(ndata, 6) / s_n_s(ndata, 0) * nmin
 
-	 Tmin1 = s_t_s(ndata, 1) / s_t_s(ndata, 0) * Temin0
-	 Tmin2 = s_t_s(ndata, 2) / s_t_s(ndata, 0) * Temin0
-	 Tmin3 = s_t_s(ndata, 3) / s_t_s(ndata, 0) * Temin0
-	 Tmin4 = s_t_s(ndata, 4) / s_t_s(ndata, 0) * Temin0
+         Tmin1 = s_t_s(ndata, 1) / s_t_s(ndata, 0) * Temin0
+         Tmin2 = s_t_s(ndata, 2) / s_t_s(ndata, 0) * Temin0
+         Tmin3 = s_t_s(ndata, 3) / s_t_s(ndata, 0) * Temin0
+         Tmin4 = s_t_s(ndata, 4) / s_t_s(ndata, 0) * Temin0
          Tmin5 = s_t_s(ndata, 5) / s_t_s(ndata, 0) * Temin0
-	 Tmin6 = s_t_s(ndata, 6) / s_t_s(ndata, 0) * Temin0
-	 
-	 
-	 
+         Tmin6 = s_t_s(ndata, 6) / s_t_s(ndata, 0) * Temin0
+         
+         
+         
 *        -----------------------------
 *        deposit data on 2D flux grid:
 *        ----------------------------- 
 
-	 xnea = 1.0e-10
-c	 if(nboundary .eq. 0)xnea = s_n_s(ndata,0)
+         xnea = 1.0e-10
+c        if(nboundary .eq. 0)xnea = s_n_s(ndata,0)
 
          call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,0),
      .        xnea(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
 
          xkte = 1.0e-10 * q
-c	 if(nboundary .eq. 0)xkte = s_t_s(ndata,0) 
-	 	 
+c        if(nboundary .eq. 0)xkte = s_t_s(ndata,0) 
+                 
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,0),
      .        xkte(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
 
-      	 xn1a = 1.0e-10
-c	 if(nboundary .eq. 0)xn1a = s_n_s(ndata,1)
-		 
+         xn1a = 1.0e-10
+c        if(nboundary .eq. 0)xn1a = s_n_s(ndata,1)
+                 
          call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,1),
      .        xn1a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
-	 
-      	 xkti = 1.0e-10 *q
-c	 if(nboundary .eq. 0)xkti = s_t_s(ndata,1) 
-	 	 
-	 
+         
+         xkti = 1.0e-10 *q
+c        if(nboundary .eq. 0)xkti = s_t_s(ndata,1) 
+                 
+         
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,1),
      .        xkti(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
      
-      	 xn2a = 1.0e-10
-c	 if(nboundary .eq. 0)xn2a = s_n_s(ndata,2)	 
-	 
+         xn2a = 1.0e-10
+c        if(nboundary .eq. 0)xn2a = s_n_s(ndata,2)       
+         
          call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,2),
      .        xn2a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey)) 
-	 
-      	 xkti2 = 1.0e-10 *q
-c	 if(nboundary .eq. 0)xkti2 = s_t_s(ndata,2) 
-	 
+         
+         xkti2 = 1.0e-10 *q
+c        if(nboundary .eq. 0)xkti2 = s_t_s(ndata,2) 
+         
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,2),
      .        xkti2(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
      
-      	 xn3a = 1.0e-10
-c	 if(nboundary .eq. 0)xn3a = s_n_s(ndata,3)	 
-	 
+         xn3a = 1.0e-10
+c        if(nboundary .eq. 0)xn3a = s_n_s(ndata,3)       
+         
          call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,3),
      .        xn3a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey)) 
-	 
-      	 xkti3 = 1.0e-10 *q
-c	 if(nboundary .eq. 0)xkti3 = s_t_s(ndata,3) 
-	 
+         
+         xkti3 = 1.0e-10 *q
+c        if(nboundary .eq. 0)xkti3 = s_t_s(ndata,3) 
+         
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,3),
      .        xkti3(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
-     	 
-      	 xn4a = 1.0e-10
-c	 if(nboundary .eq. 0)xn4a = s_n_s(ndata,4)
-	 	 
+         
+         xn4a = 1.0e-10
+c        if(nboundary .eq. 0)xn4a = s_n_s(ndata,4)
+                 
          call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,4),
      .        xn4a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
-	 
-      	 xkti4 = 1.0e-10 *q
-c	 if(nboundary .eq. 0)xkti4 = s_t_s(ndata,4) 
-	 
+         
+         xkti4 = 1.0e-10 *q
+c        if(nboundary .eq. 0)xkti4 = s_t_s(ndata,4) 
+         
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,4),
      .        xkti4(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
-     	 
-      	 xn5a = 1.0e-10
-c	 if(nboundary .eq. 0)xn5a = s_n_s(ndata,5)
-	 	 
+         
+         xn5a = 1.0e-10
+c        if(nboundary .eq. 0)xn5a = s_n_s(ndata,5)
+                 
          call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,5),
      .        xn5a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey)) 
-	 
-      	 xkti5 = 1.0e-10 *q
-c	 if(nboundary .eq. 0)xkti5 = s_t_s(ndata,5) 
-	 
+         
+         xkti5 = 1.0e-10 *q
+c        if(nboundary .eq. 0)xkti5 = s_t_s(ndata,5) 
+         
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,5),
      .        xkti5(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey)) 
-     	 
-      	 xn6a = 1.0e-10
-c	 if(nboundary .eq. 0)xn6a = s_n_s(ndata,6)	 
-	 
+         
+         xn6a = 1.0e-10
+c        if(nboundary .eq. 0)xn6a = s_n_s(ndata,6)       
+         
          call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,6),
      .        xn6a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
-	 
-      	 xkti6 = 1.0e-10 *q
-c	 if(nboundary .eq. 0)xkti6 = s_t_s(ndata,6) 
-	 
+         
+         xkti6 = 1.0e-10 *q
+c        if(nboundary .eq. 0)xkti6 = s_t_s(ndata,6) 
+         
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,6),
      .        xkti6(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
      
      
-c	 if(nboundary .eq. 0)zeff = s_zeff(ndata)
-	      	 
+c        if(nboundary .eq. 0)zeff = s_zeff(ndata)
+                 
          call flux_to_rz(nnodex,nnodey,s_zeff(1:s_nrho_n),
      .        zeff(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n), 
      .        s_nrho_n, rho(1:nnodex,1:nnodey))
      
 
          if (nboundary .eq. 0) then
-	    if (iprofile .eq. 5)then	 
-*           -------------------------	    
+            if (iprofile .eq. 5)then     
+*           -------------------------       
 *           analytic scrape off layer
 *           -------------------------
 
             do i = 1, nnodex
                do j = 1, nnodey
-	          drho1 = rho(i,j) - rholim
+                  drho1 = rho(i,j) - rholim
                   if(rho(i,j) .gt. rholim) then
                    
                      xna_slo(i,j) = 0.0e-10
-		     
+                     
                      xnea(i,j) = nmin +
      .                  (s_n_s(ndata, 0) - nmin) * exp(- drho1 / scrape)
-		     xn1a(i,j) = nmin1 + 
-     .                  (s_n_s(ndata, 1) - nmin1) * exp(- drho1/ scrape)		     
-		     xn2a(i,j) = nmin2 + 
+                     xn1a(i,j) = nmin1 + 
+     .                  (s_n_s(ndata, 1) - nmin1) * exp(- drho1/ scrape)                     
+                     xn2a(i,j) = nmin2 + 
      .                  (s_n_s(ndata, 2) - nmin2) * exp(- drho1/ scrape)     
-		     xn3a(i,j) = nmin3 + 
+                     xn3a(i,j) = nmin3 + 
      .                  (s_n_s(ndata, 3) - nmin3) * exp(- drho1/ scrape)
-		     xn4a(i,j) = nmin4 + 
+                     xn4a(i,j) = nmin4 + 
      .                  (s_n_s(ndata, 4) - nmin4) * exp(- drho1/ scrape)
-		     xn5a(i,j) = nmin5 + 
+                     xn5a(i,j) = nmin5 + 
      .                  (s_n_s(ndata, 5) - nmin5) * exp(- drho1/ scrape)
-		     xn6a(i,j) = nmin6 + 
+                     xn6a(i,j) = nmin6 + 
      .                  (s_n_s(ndata, 6) - nmin6) * exp(- drho1/ scrape)
      
 c                     xnuomea(i,j) = xnuome * exp(+ drho1/ scrape)
-c  		     xnuomia(i,j) = xnuomi * exp(+ drho1/ scrape)
-		     
+c                    xnuomia(i,j) = xnuomi * exp(+ drho1/ scrape)
+                     
                      xnuomea(i,j) = xnuome 
-		     xnuomia(i,j) = xnuomi 		     
-		     		     		     
+                     xnuomia(i,j) = xnuomi                   
+                                                     
 c                     xkte(i,j)  = s_t_s(ndata,0) 
 c                     xkti(i,j)  = s_t_s(ndata,1) 
-c		      xkti2(i,j) = s_t_s(ndata,2) 
+c                     xkti2(i,j) = s_t_s(ndata,2) 
 c                     xkti3(i,j) = s_t_s(ndata,3) 
 c                     xkti4(i,j) = s_t_s(ndata,4) 
 c                     xkti5(i,j) = s_t_s(ndata,5) 
 c                     xkti6(i,j) = s_t_s(ndata,6) 
-		     xkte(i,j) = Temin0 +
+                     xkte(i,j) = Temin0 +
      .                  (s_t_s(ndata, 0) -Temin0) * exp(- drho1/ scrape)
-		     xkti(i,j) = Tmin1 + 
-     .                  (s_t_s(ndata, 1) - Tmin1) * exp(- drho1/ scrape)		     
-		     xkti2(i,j) = Tmin2 + 
+                     xkti(i,j) = Tmin1 + 
+     .                  (s_t_s(ndata, 1) - Tmin1) * exp(- drho1/ scrape)                     
+                     xkti2(i,j) = Tmin2 + 
      .                  (s_t_s(ndata, 2) - Tmin2) * exp(- drho1/ scrape)     
-		     xkti3(i,j) = Tmin3 + 
+                     xkti3(i,j) = Tmin3 + 
      .                  (s_t_s(ndata, 3) - Tmin3) * exp(- drho1/ scrape)
-		     xkti4(i,j) = Tmin4 + 
+                     xkti4(i,j) = Tmin4 + 
      .                  (s_t_s(ndata, 4) - Tmin4) * exp(- drho1/ scrape)
-		     xkti5(i,j) = Tmin5 + 
+                     xkti5(i,j) = Tmin5 + 
      .                  (s_t_s(ndata, 5) - Tmin5) * exp(- drho1/ scrape)
-		     xkti6(i,j) = Tmin6 + 
-     .                  (s_t_s(ndata, 6) - Tmin6) * exp(- drho1/ scrape)		     		     		     
-		     zeff(i,j) = s_zeff(ndata)
+                     xkti6(i,j) = Tmin6 + 
+     .                  (s_t_s(ndata, 6) - Tmin6) * exp(- drho1/ scrape)                                                     
+                     zeff(i,j) = s_zeff(ndata)
                   end if
                end do
             end do
-	    end if
-	 end if
-	 
+            end if
+         end if
+         
          if (nboundary .eq. 1) then
             do i = 1, nnodex
                do j = 1, nnodey
                   if(rho(i,j) .gt. rholim) then
                      xnea(i,j) = 1.0e-10
-	             zeff(i,j) = 1.0e-10
+                     zeff(i,j) = 1.0e-10
                      xn3a(i,j) = 1.0e-10
                      xna_slo(i,j) = 0.0e-10
                      xkte(i,j) = 1.0e-10 * q
@@ -4108,7 +4109,7 @@ c                     xkti6(i,j) = s_t_s(ndata,6)
                   end if
                end do
             end do
-	 end if	 
+         end if  
 
 *        ---------------------------------
 *        Minority ion (species 2) profiles:
@@ -4121,7 +4122,7 @@ c                     xkti6(i,j) = s_t_s(ndata,6)
             do i = 1, nnodex
                do j = 1, nnodey
                   xn2a(i,j) = eta * xnea(i,j)
-	    
+            
 *                 ----------------
 *                 Cold minority H:
 *                 ----------------
@@ -4131,11 +4132,11 @@ c                     xkti6(i,j) = s_t_s(ndata,6)
 *                 Hot minority H:
 *                 ----------------
 c                 xkti2(i,j) = xkti3(i,j) 
-	    
+            
                end do
             end do
-	    
-	    do i = 1, nnodex
+            
+            do i = 1, nnodex
                do j = 1, nnodey     
                   xn1a(i, j) = (xnea(i, j) - z2 * xn2a(i, j)
      .                                  - z3 * xn3a(i, j)
@@ -4146,14 +4147,14 @@ c                 xkti2(i,j) = xkti3(i,j)
      
                   if (xn1a(i, j) .le. 0.0) xn1a(i, j) = 1.0e-10
                end do
-            end do	    
-	    
-	 end if	 
-	 
+            end do          
+            
+         end if  
+         
 *        --------------------------------------------------
 *        Adjust ni1a for charge neutrality on all processors:
-*        --------------------------------------------------	     	    
-	 do i = 1, nnodex
+*        --------------------------------------------------                 
+         do i = 1, nnodex
             do j = 1, nnodey     
                xn1a(i, j) = (xnea(i, j) - z2 * xn2a(i, j)
      .                                  - z3 * xn3a(i, j)
@@ -4164,9 +4165,9 @@ c                 xkti2(i,j) = xkti3(i,j)
      
                if (xn1a(i, j) .le. 0.0) xn1a(i, j) = 1.0e-10
             end do
-         end do	    
-	    	 
-	 
+         end do     
+                 
+         
 
          xn00 = xnea(i0, j0)
          xn10 = xn1a(i0, j0)
@@ -4177,16 +4178,16 @@ c                 xkti2(i,j) = xkti3(i,j)
          eta2 = xn20 / xn00
          eta3 = xn30 / xn00
          eta_slo = xn_slo0 / xn00
-	 
-	 if(myid .eq. 0)then
+         
+         if(myid .eq. 0)then
             write(6, 6834)eta1
             write(6, 6835)eta2
             write(6, 6836)eta3
-	    
+            
             write(15, 6834)eta1
             write(15, 6835)eta2
-            write(15, 6836)eta3	    
-	 end if
+            write(15, 6836)eta3     
+         end if
 
 
          call fluxavg3(xnea, xnavg, rho, nxmx, nymx, nrhomax,
@@ -4290,7 +4291,7 @@ c     write (6, *) "xmi1 = ", xmi1
             n = int(rho(i,j) / drho) + 1
             if(n .le. nnoderho)then
                dvol(n)  =  dvol(n) + dx * dy * 2.0 * pi * capr(i) 
-	       darea(n) = darea(n) + dx * dy * capr(i) / rt
+               darea(n) = darea(n) + dx * dy * capr(i) / rt
             end if
          end do
       end do
@@ -4357,11 +4358,11 @@ c     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvolp, fvol)
          write(6, *)"        i    taup        tauii        nustar",
      .                "     epsa         xnea        xkti"
          write(6, *)
-	 
+         
          write(15,*)
          write(15,*)"        i    taup        tauii        nustar",
      .                "     epsa         xnea        xkti"
-	 write(15,*) 	 
+         write(15,*)     
       end if    
 
       do i = 1, nnodex
@@ -4379,20 +4380,20 @@ c     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvolp, fvol)
   
      
             presse  = xnea(i, j) * xkte(i, j)
-	    pressi1 = xn1a(i, j) * xkti(i, j)
-	    pressi2 = xn2a(i, j) * xkti2(i, j)
-	    pressi3 = xn3a(i, j) * xkti3(i, j)
-	    pressi4 = xn4a(i, j) * xkti4(i, j)
-	    pressi5 = xn5a(i, j) * xkti5(i, j)
-	    pressi6 = xn6a(i, j) * xkti6(i, j)
-	    
-c	    pressi(i, j) = presse + pressi1 pressi2 + pressi3
+            pressi1 = xn1a(i, j) * xkti(i, j)
+            pressi2 = xn2a(i, j) * xkti2(i, j)
+            pressi3 = xn3a(i, j) * xkti3(i, j)
+            pressi4 = xn4a(i, j) * xkti4(i, j)
+            pressi5 = xn5a(i, j) * xkti5(i, j)
+            pressi6 = xn6a(i, j) * xkti6(i, j)
+            
+c           pressi(i, j) = presse + pressi1 pressi2 + pressi3
 c     .                             + pressi4 pressi5 + pressi6
-      	    pressi(i, j) = pressi1
-	    
-	    xnuee = 2.859e-27 * xnea(i,j) * xlnlam /
+            pressi(i, j) = pressi1
+            
+            xnuee = 2.859e-27 * xnea(i,j) * xlnlam /
      .                      (sqrt(xme) * (xkte(i,j)/q)**1.5) 
-	  
+          
             xnuii = 2.859e-27 * xn1a(i,j) * xlnlam /
      .                      (sqrt(xmi1) * (xkti(i,j)/q)**1.5)
      
@@ -4410,16 +4411,16 @@ c     .                             + pressi4 pressi5 + pressi6
 *              Assume circular flux surfaces
 *              -----------------------------
 
-	       a = sqrt((x(i)-r0)**2 + (y(j)-z0)**2)
-	    
+               a = sqrt((x(i)-r0)**2 + (y(j)-z0)**2)
+            
                rmaxa = rt + a
                rmina = rt - a
-	    
+            
                epsa = (rmaxa - rmina) / (rmaxa + rmina)
-	       if( epsa .eq. 0.0) epsa = 1.0e-08
-	    
-	       xnustar = xnuii / (omgti * epsa**1.5)
-	       nu_star(i, j) = xnustar
+               if( epsa .eq. 0.0) epsa = 1.0e-08
+            
+               xnustar = xnuii / (omgti * epsa**1.5)
+               nu_star(i, j) = xnustar
 
 *              -----------------------------------------------
 *              bananna (collisionless) regime:   xnuii/omgti << eps**1.5
@@ -4435,33 +4436,33 @@ c     .                             + pressi4 pressi5 + pressi6
 *              Pfirsch - Schluter regime:  xnuii/omgti >> 1
 *              --------------------------------------------
 *              taup_ps = 1.0 / ( omgti * tauii) * (1.0 / omgti)
-	    	    
-		    	    
+                    
+                            
 *              ----------------------------------------
 *              Mult-regime model:  arbitray xnuii/omgti 
-*              ----------------------------------------	    
-	       taup_inv = 1.5 * omgti * xnustar / (1.0 + xnustar) 
+*              ----------------------------------------     
+               taup_inv = 1.5 * omgti * xnustar / (1.0 + xnustar) 
      .                             * 1.0 / (1.0 + xnustar * epsa**1.5)
                taup = 1.0 / taup_inv
-	    
-	       if(myid .eq. 0) then
-	          if(j .eq. 16) then
+            
+               if(myid .eq. 0) then
+                  if(j .eq. 16) then
                      write(6, 1312) i, taup, tauii, xnustar, epsa, 
-     .		        xnea(i,j), xkti(i,j)
-	             write(15,1312) i, taup, tauii, xnustar, epsa, 
-     .   		xnea(i,j), xkti(i,j)
-		  end if
-               end if	    	    
+     .                  xnea(i,j), xkti(i,j)
+                     write(15,1312) i, taup, tauii, xnustar, epsa, 
+     .                  xnea(i,j), xkti(i,j)
+                  end if
+               end if               
 
 *              ---------------------
 *              poloidal viscosities:
 *              --------------------- 
                muhat(i, j) = epsa**2 / taup 
-	    
-	    end if	    
+            
+            end if          
 
-	    	     
-	    	    
+                     
+                    
 
 
             signb = b0 / abs(b0)
@@ -4514,17 +4515,17 @@ c     .                             + pressi4 pressi5 + pressi6
      .             / omgrf
      
            left  = capk_perp - capk_x
-	   right = capk_perp + capk_x
+           right = capk_perp + capk_x
 
             xnphi = bzn(i,j) * xkphi(i) / xk0
 c            acold(i,j) = xnphi**2 - capk_perp
-	    
-	    acold(i,j) = capk_perp - xnphi**2
-	    bcold(i,j) = left - xnphi**2
-	    ccold(i,j) = right - xnphi**2
-	    
-	    xkperp_cold2(i,j) = bcold(i,j) * ccold(i,j) / acold(i,j)
-	    xkperp_cold(i,j) = csqrt(xkperp_cold2(i,j))
+            
+            acold(i,j) = capk_perp - xnphi**2
+            bcold(i,j) = left - xnphi**2
+            ccold(i,j) = right - xnphi**2
+            
+            xkperp_cold2(i,j) = bcold(i,j) * ccold(i,j) / acold(i,j)
+            xkperp_cold(i,j) = csqrt(xkperp_cold2(i,j))
             if (j .eq. jmid) kimag_cold(i) = aimag(xkperp_cold(i,j))
 
          end do
@@ -4539,22 +4540,22 @@ c            acold(i,j) = xnphi**2 - capk_perp
          write(6,  *) "spa_cold = ", spa_cold
       
          write (15, *) 'valfven = ', valfven, 'm/s'
-	 write (6,  *) 'valfven = ', valfven, 'm/s'
-	 
-	 write (15, *) 'kalfven = ', kalfven, 'm-1'
-	 write (6,  *) 'kalfven = ', kalfven, 'm-1'
-	 
-	 write (15, *) 'kperprhoi1 = ', kperprhoi1 
-	 write (15, *) 'kperprhoi2 = ', kperprhoi2 
-	 write (15, *) 'kperprhoi3 = ', kperprhoi3 
-	 write (15, *) 'kperprhoi4 = ', kperprhoi4 
-	 write (15, *) 'kperprhoi5 = ', kperprhoi5 
-	 
-	 write (6, *) 'kperprhoi1 = ', kperprhoi1 
-	 write (6, *) 'kperprhoi2 = ', kperprhoi2 
-	 write (6, *) 'kperprhoi3 = ', kperprhoi3 
-	 write (6, *) 'kperprhoi4 = ', kperprhoi4 
-	 write (6, *) 'kperprhoi5 = ', kperprhoi5 
+         write (6,  *) 'valfven = ', valfven, 'm/s'
+         
+         write (15, *) 'kalfven = ', kalfven, 'm-1'
+         write (6,  *) 'kalfven = ', kalfven, 'm-1'
+         
+         write (15, *) 'kperprhoi1 = ', kperprhoi1 
+         write (15, *) 'kperprhoi2 = ', kperprhoi2 
+         write (15, *) 'kperprhoi3 = ', kperprhoi3 
+         write (15, *) 'kperprhoi4 = ', kperprhoi4 
+         write (15, *) 'kperprhoi5 = ', kperprhoi5 
+         
+         write (6, *) 'kperprhoi1 = ', kperprhoi1 
+         write (6, *) 'kperprhoi2 = ', kperprhoi2 
+         write (6, *) 'kperprhoi3 = ', kperprhoi3 
+         write (6, *) 'kperprhoi4 = ', kperprhoi4 
+         write (6, *) 'kperprhoi5 = ', kperprhoi5 
 
          write (15, *) 'eta1 = ', eta1
          write (15, *) 'eta2 = ', eta2
@@ -4582,11 +4583,11 @@ c            acold(i,j) = xnphi**2 - capk_perp
       
  
       do i = 1, nnodex
-	 do j = 1, nnodey  
+         do j = 1, nnodey  
             reomg1a(i,j) = omgrf / omgci1(i, j)
             reomg2a(i,j) = omgrf / omgci2(i, j)
             reomg3a(i,j) = omgrf / omgci3(i, j)
-	    reomglha(i,j) = omgrf / omglh(i, j)	    
+            reomglha(i,j) = omgrf / omglh(i, j)     
          end do
       end do
 
@@ -4598,12 +4599,12 @@ c            acold(i,j) = xnphi**2 - capk_perp
          reomg4 = omgrf / omgci4(i, j)
          reomg5 = omgrf / omgci5(i, j)
          reomg6 = omgrf / omgci6(i, j)
-	 
-	 reomgpi = sqrt(omgp12(i,j))
-	 reomglh = reomglha(i,j)
+         
+         reomgpi = sqrt(omgp12(i,j))
+         reomglh = reomglha(i,j)
 
          teev = xkte(i,j) / q
-	 re_acold = real(acold(i,j))
+         re_acold = real(acold(i,j))
 
          if (myid .eq. 0) then
 c            write(6, 2163)i, capr(i), x(i), btau(i, j),
@@ -4640,9 +4641,9 @@ c     .         xnea(i,j), re_acold
          reomg4 = omgrf / omgci4(i, j)
          reomg5 = omgrf / omgci5(i, j)
          reomg6 = omgrf / omgci6(i, j)
-	 
-	 reomgpi = sqrt(omgp12(i,j))
-	 reomglh = reomglha(i,j)	 
+         
+         reomgpi = sqrt(omgp12(i,j))
+         reomglh = reomglha(i,j)         
 
          teev = xkte(i,j) / q
 
@@ -4703,7 +4704,7 @@ c     .         xnea(i,j), re_acold
       if(myid .eq. 0)write(6, *) "      n       xkxsav"
       do n = nkx1, nkx2
          xkxsav(n) = 2.0 * pi * n / xmax
-	 if(myid .eq. 0)write(6, *) n,  xkxsav(n)
+         if(myid .eq. 0)write(6, *) n,  xkxsav(n)
       end do
       
 
@@ -4711,7 +4712,7 @@ c     .         xnea(i,j), re_acold
       if(myid .eq. 0)write(6, *) "      m       xkysav"
       do m = nky1, nky2
          xkysav(m) = 2.0 * pi * m / ymax
-	 if(myid .eq. 0)write(6, *) m,  xkysav(m)	 
+         if(myid .eq. 0)write(6, *) m,  xkysav(m)        
       end do
       
       mdisp = xkydisp * ymax / (2.0 * pi) 
@@ -4733,7 +4734,7 @@ c     .         xnea(i,j), re_acold
          write (6, *) "kperp_max = ", kperp_max
          write(6, *) "xkydisp = ", xkydisp, "mdisp = ",mdisp
          write(6, *) "xkx_ono = ", xkx_ono, "xky_ono = ", xky_ono
-	 write (6,  *) "xk_cutoff = ", xk_cutoff 
+         write (6,  *) "xk_cutoff = ", xk_cutoff 
          write (15, *) "xk_cutoff = ", xk_cutoff 
       end if
       
@@ -4796,13 +4797,13 @@ c     ---------------------------
 *           Exact:
 *           ----- 
 c            gradprlb(i,j) = abs(uzx(i,j) * dbdx + uzy(i,j) * dbdy)      
-	       
+               
 *           -----------------------
 *           Brambilla approximation:
 *           -----------------------
-	    sinth = y(j) / sqrt(x(i)**2 + y(j)**2)
+            sinth = y(j) / sqrt(x(i)**2 + y(j)**2)
             gradprlb(i,j) = bmod(i,j) / capr(i) * abs(btau(i,j) * sinth)
-	    
+            
 *           -------------------------------
 *           Constant gradient scale length:
 *           -------------------------------
@@ -4822,9 +4823,9 @@ c            end if
             call deriv_y(rho, nxmx, nymx, i, j, nnodex, nnodey, dy,
      .         drhody, drhodyy)
 
-            gradrho = sqrt(drhodx**2 + drhody**2)	    
-	    if (gradrho .eq. 0.0) gradrho = 1.0e-08
-	    
+            gradrho = sqrt(drhodx**2 + drhody**2)           
+            if (gradrho .eq. 0.0) gradrho = 1.0e-08
+            
             rhohatx(i,j) = drhodx / gradrho
             rhohaty(i,j) = drhody / gradrho
 
@@ -4873,7 +4874,7 @@ c            end if
             call deriv_y(uzz, nxmx, nymx, i, j, nnodex, nnodey, dy,
      .         dyuzz(i,j), dyyuzz(i,j))
     
-     	         
+                 
 
             call deriv_xy(uxx, nxmx, nymx, i, j, nnodex, nnodey, dx, dy,
      .         dxyuxx(i,j))
@@ -4896,17 +4897,17 @@ c            end if
             call deriv_xy(uzz, nxmx, nymx, i, j, nnodex, nnodey, dx, dy,
      .         dxyuzz(i,j))
      
-c     	    if (myid .eq. 0) then
-c	       dbxdx = dxuzx(i,j)
-c	       dbxdy = dyuzx(i,j)		     
-c	       dbydx = dxuzy(i,j)
-c	       dbydy = dyuzy(i,j)		     
-c	       dbphidx = dxuzz(i,j)
-c	       dbphidy = dyuzz(i,j)		     
+c           if (myid .eq. 0) then
+c              dbxdx = dxuzx(i,j)
+c              dbxdy = dyuzx(i,j)                    
+c              dbydx = dxuzy(i,j)
+c              dbydy = dyuzy(i,j)                    
+c              dbphidx = dxuzz(i,j)
+c              dbphidy = dyuzz(i,j)                  
 c               write(65, 1314) i,j, bxn(i,j), byn(i,j), bzn(i,j),
 c     .                              dbxdx, dbydx, dbphidx,
 c     .                              dbxdy, dbydy, dbphidy
-c	    end if
+c           end if
 
 
          end do
@@ -4917,11 +4918,11 @@ c	    end if
       call smooth2d_(nsmooth, gradprlb, nxmx, nymx, nnodex, nnodey,work)
       call smooth2d_(nsmooth, rhohatx, nxmx, nymx, nnodex, nnodey, work)
       call smooth2d_(nsmooth, rhohaty, nxmx, nymx, nnodex, nnodey, work)
-	       
+               
 c      if (myid .eq. 0) then
 c         do j = 1, nnodey
 c            write(6,*) "j = ", j, "gradprlb(34,j) = ", gradprlb(34,j)
-c	 end do
+c        end do
 c      end if
 
       
@@ -5005,13 +5006,13 @@ c      call smooth2d_(nsmooth, drhodyy, nxmx, nymx, nnodex, nnodey, work)
       
       do i = 1, nnodex
          do j = 1, nnodey
-	 
-	    dbxdx = dxuzx(i,j)
-	    dbxdy = dyuzx(i,j)		     
-	    dbydx = dxuzy(i,j)
-	    dbydy = dyuzy(i,j)		     
-	    dbphidx = dxuzz(i,j)
-	    dbphidy = dyuzz(i,j)
+         
+            dbxdx = dxuzx(i,j)
+            dbxdy = dyuzx(i,j)               
+            dbydx = dxuzy(i,j)
+            dbydy = dyuzy(i,j)               
+            dbphidx = dxuzz(i,j)
+            dbphidy = dyuzz(i,j)
 
             kappa_hatx(i,j) = bxn(i,j) * dbxdx + byn(i,j) * dbxdy 
      .                            - bzn(i,j)**2 / capr(i) 
@@ -5027,9 +5028,9 @@ c      call smooth2d_(nsmooth, drhodyy, nxmx, nymx, nnodex, nnodey, work)
             rc(i,j) = 1.0 / mod_kappa
      
             bhatx(i,j) = bxn(i,j)
-	    bhaty(i,j) = byn(i,j)
-	    bhatz(i,j) = bzn(i,j)
-	         
+            bhaty(i,j) = byn(i,j)
+            bhatz(i,j) = bzn(i,j)
+                 
          end do
       end do  
               
@@ -5045,7 +5046,7 @@ c      call smooth2d_(nsmooth, drhodyy, nxmx, nymx, nnodex, nnodey, work)
       if(myid .eq. 0)then
          write(6, 386)tmin
          write(15, 386) tmin
-c	 call flush
+c        call flush
       end if
   386 format('time to call eqdsk_setup = ',f9.3, 4h min)
   
@@ -5071,18 +5072,18 @@ c	 call flush
       dKdL_max_table = dKdL_table(mmax)
       dKdL_min_table = dKdL_table(1) 
       
-      if (myid .eq. 0) then	 
-	 write(15, *) "dKdL_min_table = ", dKdL_min_table
-	 write(15, *) "dKdL_max_table = ", dKdL_max_table
-	 
-	 write(6,  *) "dKdL_min_table = ", dKdL_min_table
-	 write(6,  *) "dKdL_max_table = ", dKdL_max_table	 
+      if (myid .eq. 0) then      
+         write(15, *) "dKdL_min_table = ", dKdL_min_table
+         write(15, *) "dKdL_max_table = ", dKdL_max_table
+         
+         write(6,  *) "dKdL_min_table = ", dKdL_min_table
+         write(6,  *) "dKdL_max_table = ", dKdL_max_table        
 
-	 write(15, *) "zetai_min_table = ", zetai_min_table
-	 write(15, *) "zetai_max_table = ", zetai_max_table	 	 
-	 
-	 write(6, *) "zetai_min_table = ", zetai_min_table
-	 write(6, *) "zetai_max_table = ", zetai_max_table		 	       	 
+         write(15, *) "zetai_min_table = ", zetai_min_table
+         write(15, *) "zetai_max_table = ", zetai_max_table              
+         
+         write(6, *) "zetai_min_table = ", zetai_min_table
+         write(6, *) "zetai_max_table = ", zetai_max_table                               
       end if         
 
 
@@ -5097,25 +5098,25 @@ c	 call flush
          read(54, 8310)((ebk(n, m), n = nkx1, nkx2), m = nky1, nky2)
          read(54, 8310)(xkxsav(n), n = nkx1, nkx2)
          read(54, 8310)(xkysav(m), m = nky1, nky2)
-	 
+         
          time = second1(dummy) - t1
          tmin = time / 60.
          if(myid .eq. 0)then
             write(6, 6386)tmin
             write(15, 6386) tmin
-c	    call flush
+c           call flush
          end if
  6386    format('time to read solution = ',f9.3, 4h min)
-	   	
+                
          go to 6000
       end if
-	
+        
 
-	
+        
 
 
       t1=second1(dummy)
-		
+                
 *     ------------------------------------------
 *     define scalapack array descriptor for amat
 *     ------------------------------------------
@@ -5136,7 +5137,7 @@ c	    call flush
       if (isolve .ne. 0) then
 
 
-	if (myid.eq.0) then
+        if (myid.eq.0) then
            write (6, 6839) p_amat_dim, p_amat_size
            write (15,6839) p_amat_dim, p_amat_size
         end if
@@ -5168,20 +5169,20 @@ c	    call flush
       call descinit( desc_amat, nrow,ncol, mb,nb, 0,0, icontxt,            &
      &         lld, info )           
       if (info.ne.0) then
-	write(6,*) '** descinit for amat returns info = ', info
-	write(6,*) 'lld = ', lld
-	write(15,*) '** descinit for amat returns info = ', info
-	write(15,*) 'lld = ', lld
+        write(6,*) '** descinit for amat returns info = ', info
+        write(6,*) 'lld = ', lld
+        write(15,*) '** descinit for amat returns info = ', info
+        write(15,*) 'lld = ', lld
         stop '** error ** '
       endif
            
       do irnc=1,nrow_local*ncol_local
-	p_amat(irnc) = cmplx(0., 0.)
+        p_amat(irnc) = cmplx(0., 0.)
       enddo
-	
+        
       if (lld .gt. p_brhs_dim) then
-	write(6,*) 'increase p_brhs_dim to ', lld+1
-	write(15,*) 'increase p_brhs_dim to ', lld+1
+        write(6,*) 'increase p_brhs_dim to ', lld+1
+        write(15,*) 'increase p_brhs_dim to ', lld+1
         stop '** error ** '
       endif
 
@@ -5213,73 +5214,73 @@ c	    call flush
  
       do i = 1, nnodex
          do j = 1, nnodey
-	 
-	    if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
-	    if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
-	    if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)
-	    
-	    if(xjx(i,j) .lt. xjx_min) xjx_min = xjx(i,j)
-	    if(xjy(i,j) .lt. xjy_min) xjy_min = xjy(i,j)
-	    if(xjz(i,j) .lt. xjz_min) xjz_min = xjz(i,j)	    
+         
+            if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
+            if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
+            if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)
+            
+            if(xjx(i,j) .lt. xjx_min) xjx_min = xjx(i,j)
+            if(xjy(i,j) .lt. xjy_min) xjy_min = xjy(i,j)
+            if(xjz(i,j) .lt. xjz_min) xjz_min = xjz(i,j)            
 
             if(psi(i,j) .le. psilim .and. nboundary .eq. 1
      .                               .or. nboundary .eq. 0)then
 
                do n = nkx1, nkx2
                   do m = nky1, nky2
-		  
-		     xkalp = uxx(i, j) * xkxsav(n) 
+                  
+                     xkalp = uxx(i, j) * xkxsav(n) 
      .                     + uxy(i, j) * xkysav(m) 
      .                     + uxz(i, j) * xkphi(i)    
                      xkbet = uyx(i, j) * xkxsav(n) 
      .                     + uyy(i, j) * xkysav(m) 
-     .                     + uyz(i, j) * xkphi(i)		  
+     .                     + uyz(i, j) * xkphi(i)                 
                      xkprl = uzx(i, j) * xkxsav(n)
      .                     + uzy(i, j) * xkysav(m)
      .                     + uzz(i, j) * xkphi(i)
            
      
                      xkperp = sqrt(xkalp**2 + xkbet**2) 
-		     xkprl_orig = xkprl          
+                     xkprl_orig = xkprl          
      
-		     alphae = sqrt(2.0 * xkte(i,j) / xme) 		     
-		     zetai = xkprl_orig * alphae / omgrf
-		     
-		     alpha1 = sqrt(2.0 * xkti(i,j) / xmi1)
-		     
-		     if(zetai .gt. zetai_max) zetai_max = zetai
-		     if(zetai .lt. zetai_min) zetai_min = zetai
-		     
-		     if (xkprl  .eq. 0.0) xkprl  = 1.0e-08		     		     
-		     
-		     
-                     if (xkperp .eq. 0.0) xkperp = 1.0e-08									
-			
-	             dbxdx = dxuzx(i,j)
-	             dbxdy = dyuzx(i,j)
-		     
-		     dbydx = dxuzy(i,j)
-		     dbydy = dyuzy(i,j)
-		     
-		     dbphidx = dxuzz(i,j)
-		     dbphidy = dyuzz(i,j)
-		     
-		     d2bxdx2 = dxxuzx(i,j)
-		     d2bydx2 = dxxuzy(i,j)
-		     d2bzdx2 = dxxuzz(i,j)
-		     
-		     d2bxdxy = dxyuzx(i,j)
-		     d2bxdy2 = dyyuzx(i,j)
-		     d2bzdxy = dxyuzz(i,j)
-		     
-		     d2bphiRdx2 = -2. / capr(i) * drdx(i) * dbphidx 
+                     alphae = sqrt(2.0 * xkte(i,j) / xme)                    
+                     zetai = xkprl_orig * alphae / omgrf
+                     
+                     alpha1 = sqrt(2.0 * xkti(i,j) / xmi1)
+                     
+                     if(zetai .gt. zetai_max) zetai_max = zetai
+                     if(zetai .lt. zetai_min) zetai_min = zetai
+                     
+                     if (xkprl  .eq. 0.0) xkprl  = 1.0e-08                                   
+                     
+                     
+                     if (xkperp .eq. 0.0) xkperp = 1.0e-08                                                                      
+                        
+                     dbxdx = dxuzx(i,j)
+                     dbxdy = dyuzx(i,j)
+                     
+                     dbydx = dxuzy(i,j)
+                     dbydy = dyuzy(i,j)
+                     
+                     dbphidx = dxuzz(i,j)
+                     dbphidy = dyuzz(i,j)
+                     
+                     d2bxdx2 = dxxuzx(i,j)
+                     d2bydx2 = dxxuzy(i,j)
+                     d2bzdx2 = dxxuzz(i,j)
+                     
+                     d2bxdxy = dxyuzx(i,j)
+                     d2bxdy2 = dyyuzx(i,j)
+                     d2bzdxy = dxyuzz(i,j)
+                     
+                     d2bphiRdx2 = -2. / capr(i) * drdx(i) * dbphidx 
      .                  + d2bzdx2 + bzn(i,j) / capr(i)**2 * drdx(i)**2
      .                  - bzn(i,j) / capr(i) * d2rdx2(i)
      
-		     d2bphiRdxy = - 1. / capr(i) * drdx(i) * dbphidy 
+                     d2bphiRdxy = - 1. / capr(i) * drdx(i) * dbphidy 
      .                           + d2bzdx2
      
-                     dbphiRdx = dbphidx - bzn(i,j) / capr(i) * drdx(i)              			
+                     dbphiRdx = dbphidx - bzn(i,j) / capr(i) * drdx(i)                                  
       
                      bhatgradbx =  bxn(i,j) * dbxdx 
      .                           + byn(i,j) * dbxdy
@@ -5323,47 +5324,47 @@ c	    call flush
      .                         + xkphi(i)  * bhatgrad2bz     
      
                      dKdL_giv = (alphae / omgrf)**2 * dkprldl
-		     
-		      
-		     
-		     dKdL_giv_1 = (alpha1 / omgrf)**2 * dkprldl 	
+                     
+                      
+                     
+                     dKdL_giv_1 = (alpha1 / omgrf)**2 * dkprldl         
 
 *                    ------------------------------------
 *                    Calculate max and min dK/dL
 *                    --------------------------------- -- 
                      if (dKdL_giv .gt. dKdL_max) dKdL_max = dKdL_giv
-	             if (dKdL_giv .lt. dKdL_min) dKdL_min = dKdL_giv				
-								         		     
+                     if (dKdL_giv .lt. dKdL_min) dKdL_min = dKdL_giv                            
+                                                                                             
                   end do
-	       end do
-	       
-	    end if
-	    
+               end do
+               
+            end if
+            
          end do
       end do
 
       if (myid .eq. 0) then
       
          write(15, *) "xjx_max = ", xjx_max
-	 write(15, *) "xjy_max = ", xjy_max
-	 write(15, *) "xjz_max = ", xjz_max
-	 
+         write(15, *) "xjy_max = ", xjy_max
+         write(15, *) "xjz_max = ", xjz_max
+         
          write(15, *) "xjx_min = ", xjx_min
-	 write(15, *) "xjy_min = ", xjy_min
-	 write(15, *) "xjz_min = ", xjz_min	 
-	 
-	 write(15, *) "dKdL_min = ", dKdL_min
-	 write(15, *) "dKdL_max = ", dKdL_max
-	 
-	 write(6,  *) "dKdL_min = ", dKdL_min
-	 write(6,  *) "dKdL_max = ", dKdL_max	 
+         write(15, *) "xjy_min = ", xjy_min
+         write(15, *) "xjz_min = ", xjz_min      
+         
+         write(15, *) "dKdL_min = ", dKdL_min
+         write(15, *) "dKdL_max = ", dKdL_max
+         
+         write(6,  *) "dKdL_min = ", dKdL_min
+         write(6,  *) "dKdL_max = ", dKdL_max    
 
-	 write(15, *) "zetai_min = ", zetai_min
-	 write(15, *) "zetai_max = ", zetai_max	 	 
-	 
-	 write(6, *) "zetai_min = ", zetai_min
-	 write(6, *) "zetai_max = ", zetai_max		 	 
-      	 
+         write(15, *) "zetai_min = ", zetai_min
+         write(15, *) "zetai_max = ", zetai_max          
+         
+         write(6, *) "zetai_min = ", zetai_min
+         write(6, *) "zetai_max = ", zetai_max                   
+         
       end if
                         
       psiorb = psilim * 10.0     
@@ -5371,26 +5372,26 @@ c	    call flush
 *     ------------------------------------------------------------------------
 *     Load x, y and z equations for spatial point (i,j) and mode number (n,m)
 *     ------------------------------------------------------------------------
-      do i = 1, nnodex            	 	 	                
+      do i = 1, nnodex                                                  
          do j = 1, nnodey
-	 
-	    xnuome = xnuomea(i,j)
+         
+            xnuome = xnuomea(i,j)
             xnuomi = xnuomia(i,j)
-	 
-	 	 	 	 	    
+         
+                                            
             irnc1 = (j-1) * 3 + (i-1) * nnodey * 3 + 1
-	   
-	    	    	    	    
+           
+                                    
      
             if (use_fourier_z2 .eqv. .true.) then
-	    
+            
 *           ---------------------------------------------------------
 *           if nboundary = 1, just do orbits in interior plasma region
-*           ---------------------------------------------------------	     
+*           ---------------------------------------------------------        
             if(psi(i,j) .le. psilim .and. nboundary .eq. 1
      .                                    .or. nboundary .eq. 0) then
-            if(psi(i,j) .lt. psiorb) then                                	    	    
-	    
+            if(psi(i,j) .lt. psiorb) then                                                   
+            
 *              -----------------------------
 *              Define mesh along field line:
 *              -----------------------------
@@ -5398,28 +5399,28 @@ c--            lb(nl):  0 to lbmax
 c--            lbprime(nl): -lbmax / 2 to lbmax / 2
 
                 lbmax = 2.0 * pi * rt * qsafety(i, j)
-	    
-      								
+            
+                                                                
                dlb = lbmax / nnodelb 
-			                 
+                                         
                do nl = 1, nnodelb
                   lbprime(nl) = (nl - 1) * dlb
-                  lb(nl) = lbprime(nl) - lbmax / 2.0	 
+                  lb(nl) = lbprime(nl) - lbmax / 2.0     
                end do
-	    
+            
                do nkl = nkl1, nkl2
                   xklsav(nkl) = 2.0 * pi * nkl / lbmax
-	          if (nkl .eq. 0) xklsav(nkl) = 1.0e-05
-               end do  	    
-	 	 
-	          	    	        	       
-c	       if (myid .eq. 0) then
-	    	    	    	
-	       sgn_vprl = +1.0         	    	       
+                  if (nkl .eq. 0) xklsav(nkl) = 1.0e-05
+               end do       
+                 
+                                                       
+c              if (myid .eq. 0) then
+                                
+               sgn_vprl = +1.0                         
                call field_line_trace(sgn_vprl, i, j, 
      .            nmodesx, nmodesy, 
      .            rwleft, rwright, ytop, ybottom, xprime, yprime,
-     .            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,	    
+     .            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,            
      .            bxn, byn, bzn, bmod, capr, y, psi_pol2d, rho_pol2d, 
      .            qsafety, dx, dy,
      .            bmod_mid,  capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
@@ -5427,11 +5428,11 @@ c	       if (myid .eq. 0) then
      .            n_prof_flux, rhomax, norb_dim, lbmax,
      .            len_xp, phin_xp, capr_xp, capz_xp, nlen_exitp) 
      
-	       sgn_vprl = -1.0         	    	       
+               sgn_vprl = -1.0                         
                call field_line_trace(sgn_vprl, i, j, 
      .            nmodesx, nmodesy, 
      .            rwleft, rwright, ytop, ybottom, xprime, yprime,
-     .            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,	    
+     .            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,            
      .            bxn, byn, bzn, bmod, capr, y, psi_pol2d, rho_pol2d, 
      .            qsafety, dx, dy, 
      .            bmod_mid,  capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
@@ -5439,80 +5440,80 @@ c	       if (myid .eq. 0) then
      .            n_prof_flux, rhomax, norb_dim, lbmax,
      .            len_xm, phin_xm, capr_xm, capz_xm, nlen_exitm)
      
-	       
-	       do norbit = 1, nlen_exitm
-	          len_x(norbit)  = len_xm(nlen_exitm - norbit + 1)
-	          capr_x(norbit)  = capr_xm(nlen_exitm - norbit + 1)
-	          capz_x(norbit)  = capz_xm(nlen_exitm - norbit + 1)
-	          phin_x(norbit)  = phin_xm(nlen_exitm - norbit + 1)
-	       end do
-	       
-	       do norbit = nlen_exitm + 1, nlen_exitm + nlen_exitp  
-	          len_x(norbit) = len_xp(norbit - nlen_exitm)
-	          capr_x(norbit) = capr_xp(norbit - nlen_exitm)
-	          capz_x(norbit) = capz_xp(norbit - nlen_exitm)
-	          phin_x(norbit) = phin_xp(norbit - nlen_exitm)	       
-	       end do
-	       
-	       nlen_exit = nlen_exitm + nlen_exitp	       
-	       
+               
+               do norbit = 1, nlen_exitm
+                  len_x(norbit)  = len_xm(nlen_exitm - norbit + 1)
+                  capr_x(norbit)  = capr_xm(nlen_exitm - norbit + 1)
+                  capz_x(norbit)  = capz_xm(nlen_exitm - norbit + 1)
+                  phin_x(norbit)  = phin_xm(nlen_exitm - norbit + 1)
+               end do
+               
+               do norbit = nlen_exitm + 1, nlen_exitm + nlen_exitp  
+                  len_x(norbit) = len_xp(norbit - nlen_exitm)
+                  capr_x(norbit) = capr_xp(norbit - nlen_exitm)
+                  capz_x(norbit) = capz_xp(norbit - nlen_exitm)
+                  phin_x(norbit) = phin_xp(norbit - nlen_exitm)        
+               end do
+               
+               nlen_exit = nlen_exitm + nlen_exitp             
+               
 
 *              -----------------------------
 *              Calculate spline coeficients
 *              -----------------------------
                call spline (len_x, capr_x, 
-     .                       b_capr, c_capr, d_capr, nlen_exit) 	       
+     .                       b_capr, c_capr, d_capr, nlen_exit)                
                call spline (len_x, capz_x, 
      .                       b_capz, c_capz, d_capz, nlen_exit) 
                call spline (len_x, phin_x, 
-     .                       b_phin, c_phin, d_phin, nlen_exit)      	               
-	       
-               do nl = 1, nnodelb	          
+     .                       b_phin, c_phin, d_phin, nlen_exit)                        
+               
+               do nl = 1, nnodelb                 
                   capr_lb(nl) = ispline(lb(nl), len_x, capr_x, 
      .                           b_capr, c_capr, d_capr, nlen_exit) 
                   capz_lb(nl) = ispline(lb(nl), len_x, capz_x, 
      .                           b_capz, c_capz, d_capz, nlen_exit)  
                   phin_lb(nl) = ispline(lb(nl), len_x, phin_x, 
-     .                           b_phin, c_phin, d_phin, nlen_exit)         		      	           
-               end do  	        
-	       
-	           
+     .                           b_phin, c_phin, d_phin, nlen_exit)                                        
+               end do           
+               
+                   
                go to 7070
-	       
+               
 c              if(myid .eq. 0) then
-	       	    	
-     	          open(unit=116,file='trace',status='unknown',
+                        
+                  open(unit=116,file='trace',status='unknown',
      .                                                 form='formatted')     
                   write(116, 309) nnodex, nnodey
                   write(116, 310) rhoplasm
                   write(116, 310) (x(idum), idum = 1, nnodex)
                   write(116, 310) (y(jdum), jdum = 1, nnodey)
                   write(116, 310) (capr(idum), idum = 1, nnodex)
-	       
+               
                   write(116, 310) ((rho(idum, jdum), idum = 1,nnodex), 
-     .   	       jdum = 1,nnodey)	
-            	       
-	          write(116, 309) nnodelb
+     .                 jdum = 1,nnodey) 
+                       
+                  write(116, 309) nnodelb
                   write(116, 310) (capr_lb(nl), nl = 1, nnodelb)
-                  write(116, 310) (capz_lb(nl), nl = 1, nnodelb)	       
-	       	       
-	          close (116)
-	          call trace_plot	       
+                  write(116, 310) (capz_lb(nl), nl = 1, nnodelb)               
+                       
+                  close (116)
+                  call trace_plot              
 c               end if
-	    	    	                    
-	       call blacs_barrier(icontxt, 'All')	    
+                                            
+               call blacs_barrier(icontxt, 'All')           
                call exit
  7070          continue
  
             end if    !  end if psi(i,j) .lt. psiorb 
 
-	    end if    ! end if only do orbits in interior if nboundary = 1:
-            end if    ! end if use_fourier_z2 .eq. .true.    	    
-			         	        
+            end if    ! end if only do orbits in interior if nboundary = 1:
+            end if    ! end if use_fourier_z2 .eq. .true.           
+                                                
 
             do n = nkx1, nkx2
                do m = nky1, nky2
-	       
+               
 
                   icnc1 = (n - nkx1) * 3 * nmodesy + (m - nky1) * 3 + 1
 
@@ -5543,50 +5544,50 @@ c               end if
      .                                     .or. nboundary .eq. 0) then
 
                      if (isigma .eq. 1)then
-		     
-		        xkalp = uxx(i,j) * xkxsav(n) 
-     .   		      + uxy(i,j) * xkysav(m) 
+                     
+                        xkalp = uxx(i,j) * xkxsav(n) 
+     .                        + uxy(i,j) * xkysav(m) 
      .                        + uxz(i,j) * xkphi(i)
                         xkbet = uyx(i,j) * xkxsav(n) 
-     .   		      + uyy(i,j) * xkysav(m) 
-     .			      + uyz(i,j) * xkphi(i)
+     .                        + uyy(i,j) * xkysav(m) 
+     .                        + uyz(i,j) * xkphi(i)
                         xkprl = uzx(i,j) * xkxsav(n) 
-     .  		      + uzy(i,j) * xkysav(m) 
+     .                        + uzy(i,j) * xkysav(m) 
      .                        + uzz(i,j) * xkphi(i)          
                   
                         xkperp = sqrt(xkalp**2 + xkbet**2)
-			
-                        if (xkprl  .eq. 0.0) xkprl  = 1.0e-08		
-                        if (xkperp .eq. 0.0) xkperp = 1.0e-08									
-			
-			dbxdx = dxuzx(i,j)
-			dbxdy = dyuzx(i,j)
-			
-			dbydx = dxuzy(i,j)
-			dbydy = dyuzy(i,j)
-			
-			dbphidx = dxuzz(i,j)
-			dbphidy = dyuzz(i,j)
-			
-		        d2bxdx2 = dxxuzx(i,j)
-		        d2bydx2 = dxxuzy(i,j)
-		        d2bzdx2 = dxxuzz(i,j)
-		     
-		        d2bxdxy = dxyuzx(i,j)
-		        d2bxdy2 = dyyuzx(i,j)
-		        d2bzdxy = dxyuzz(i,j)
-			
+                        
+                        if (xkprl  .eq. 0.0) xkprl  = 1.0e-08           
+                        if (xkperp .eq. 0.0) xkperp = 1.0e-08                                                                   
+                        
+                        dbxdx = dxuzx(i,j)
+                        dbxdy = dyuzx(i,j)
+                        
+                        dbydx = dxuzy(i,j)
+                        dbydy = dyuzy(i,j)
+                        
+                        dbphidx = dxuzz(i,j)
+                        dbphidy = dyuzz(i,j)
+                        
+                        d2bxdx2 = dxxuzx(i,j)
+                        d2bydx2 = dxxuzy(i,j)
+                        d2bzdx2 = dxxuzz(i,j)
+                     
+                        d2bxdxy = dxyuzx(i,j)
+                        d2bxdy2 = dyyuzx(i,j)
+                        d2bzdxy = dxyuzz(i,j)
+                        
 
-		     
-		        d2bphiRdx2 = -2. / capr(i) * drdx(i) * dbphidx 
+                     
+                        d2bphiRdx2 = -2. / capr(i) * drdx(i) * dbphidx 
      .                  + d2bzdx2 + bzn(i,j) / capr(i)**2 * drdx(i)**2
      .                  - bzn(i,j) / capr(i) * d2rdx2(i)
      
-		        d2bphiRdxy = - 1. / capr(i) * drdx(i) * dbphidy 
+                        d2bphiRdxy = - 1. / capr(i) * drdx(i) * dbphidy 
      .                           + d2bzdx2
      
-                        dbphiRdx = dbphidx - bzn(i,j) / capr(i) *drdx(i)  			
-								
+                        dbphiRdx = dbphidx - bzn(i,j) / capr(i) *drdx(i)                        
+                                                                
       
                         bhatgradbx =  bxn(i,j) * dbxdx 
      .                              + byn(i,j) * dbxdy
@@ -5630,11 +5631,11 @@ c               end if
      
                         alphae = sqrt(2. * xkte(i,j) / xme)          
                         dKdL_giv   = (alphae / omgrf)**2 * dkprldl
-			d2KdL2_giv = (alphae / omgrf)**2 * d2kprldl2
-			
+                        d2KdL2_giv = (alphae / omgrf)**2 * d2kprldl2
+                        
                         alpha1 = sqrt(2. * xkti(i,j) / xmi1)          
-                        dKdL_giv_1   = (alpha1 / omgrf)**2 * dkprldl			
-																								         
+                        dKdL_giv_1   = (alpha1 / omgrf)**2 * dkprldl                    
+                                                                                                                                                                                                         
       
 *                       ------------------------------------
 *                       Optional: leave out upshift in xkprl
@@ -5644,18 +5645,18 @@ c               end if
       
                         if (upshift .eq. -1) then      
                            if (xkperp .gt. xk_cutoff) 
-     .          	                     xkprl = uzz(i,j) * xkphi(i)
+     .                                       xkprl = uzz(i,j) * xkphi(i)
                         end if
-			
+                        
                         if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
-                        if (xkperp .eq. 0.0) xkperp = 1.0e-08						
+                        if (xkperp .eq. 0.0) xkperp = 1.0e-08                                           
  
                         sgn_kprl = sign(1.0, xkprl)
                         akprl = abs(xkprl) 
                         sgn_dKdL = sign(1.0, dKdL_giv)
-                        abs_dKdL = abs(dKdL_giv)								
-                            					      		      
-		     
+                        abs_dKdL = abs(dKdL_giv)                                                                
+                                                                                      
+                     
 !                       -------------------------------------------------
 !                       Optional: Don't allow xkprl to be 0 (upshift = -2)
 !                       -------------------------------------------------        
@@ -5663,31 +5664,31 @@ c               end if
                            if (akprl .lt. akprl_min) then
                               xkprl = akprl_min * sgn_kprl
                            end if 
-                        end if	      
+                        end if        
       
                         if(xkperp .gt. kperp_max)then
                            write (6, *)"xkperp gt kperp_max in sigmad"
                            write (15, *)"xkperp gt kperp_max in sigmad"
                         end if
-			
+                        
          
                          if (use_fourier_z2 .eqv. .true. .and. 
-     .                                    psi(i,j) .lt. psiorb) then			      							
+     .                                    psi(i,j) .lt. psiorb) then                                                                            
 *                          ----------------------------------------------
 *                          Evaluate AORSA basis function along field line                      
-*                          ---------------------------------------------- 					 			
-	                   do nl = 1, nnodelb
+*                          ----------------------------------------------                                                               
+                           do nl = 1, nnodelb
                               psil = xkxsav(n) * capr_lb(nl) 
-     .   			    + xkysav(m) * capz_lb(nl) 
-     .   			    + nphi      * phin_lb(nl)           
-                              El(nl) = exp(zi * psil)					   		            
-                           end do			   			   			   	
-			
+     .                              + xkysav(m) * capz_lb(nl) 
+     .                              + nphi      * phin_lb(nl)           
+                              El(nl) = exp(zi * psil)                                                               
+                           end do                                                                               
+                        
 *                          -------------------------------------------------
 *                          fft on lb mesh giving nnodelb modes (nkl1 to nkl2)
 *                          -------------------------------------------------
                            call fftn2(El, workl, nnodelb, nlmx, 
-     .               		                  nkldim1, nkldim2, Eln) 
+     .                                            nkldim1, nkldim2, Eln) 
           
      
 *                          --------------------------------------------------
@@ -5696,18 +5697,18 @@ c               end if
                            nl = nnodelb0
       
                            Esum = 0.0
-			   Jzzsum = 0.0
-			   
+                           Jzzsum = 0.0
+                           
 *                          ------------------------------------------------------
 *                          Calculate sigma_e (l = 0 harmonic) for each k in the
 *                             Fourier expansion along the field line - xklsav(nkl)
-*                          ------------------------------------------------------ 			   			   			   			   			   
+*                          ------------------------------------------------------                                                                                                                          
                            do nkl = nkl1, nkl2
-			   
-			      sige3_new = 0.0			      
-			      			      			      			   			                               
+                           
+                              sige3_new = 0.0                         
+                                                                                                                                                       
                               call sigmad_cql3d_e(i, j, n, m, rho(i,j), 
-     .			      rho_a,
+     .                        rho_a,
      .                        gradprlb(i,j), bmod(i,j), bmod_mid(i,j),
      .                        xme, qe, xnea(i,j), xnuome,
      .                        xkte(i,j), omgce(i,j), omgpe2(i,j),
@@ -5734,15 +5735,15 @@ c               end if
      .                        dKdL_giv, nmax, mmax, use_new_z2, ntable, 
      .                        mtable, sige3_new)
      
-      			      ekl = cexp(zi * xklsav(nkl) * lbprime(nl))      
-	      			   
-                              Esum   = Esum   + Eln(nkl) * ekl 			        
-                              Jzzsum = Jzzsum + Eln(nkl) * sigezz * ekl	
-	   			   			                                       			      
+                              ekl = cexp(zi * xklsav(nkl) * lbprime(nl))      
+                                   
+                              Esum   = Esum   + Eln(nkl) * ekl                          
+                              Jzzsum = Jzzsum + Eln(nkl) * sigezz * ekl 
+                                                                                                                      
                            end do
-			   			   			   
+                                                                           
                            sige3_new  = Jzzsum / Esum
-								   			   			   
+                                                                                                                   
 
 *                          ----------------------------------------------
 *                          Recalulate sigma_e using all harmonics, but
@@ -5775,17 +5776,17 @@ c               end if
      .                     z2_table1, zetai_table, dKdL_table, 
      .                     dKdL_giv, nmax, mmax, use_new_z2, ntable, 
      .                     mtable, sige3_new) 
-     	         	   	         	   					   						
+                                                                                                                                        
 
-			end if !  end if use_fourier_z2 = true and psi .lt. psiorb	
-					     
+                        end if !  end if use_fourier_z2 = true and psi .lt. psiorb      
+                                             
 
                         if(use_fourier_z2 .eqv. .false.) then
-			
-			   sige3_new = 0.0
-			   			
+                        
+                           sige3_new = 0.0
+                                                
                            call sigmad_cql3d_e(i, j, n, m, rho(i,j),
-     .			      rho_a, gradprlb(i,j), bmod(i,j), 
+     .                        rho_a, gradprlb(i,j), bmod(i,j), 
      .                        bmod_mid(i,j), xme, qe, xnea(i,j), 
      .                        xnuome,
      .                        xkte(i,j), omgce(i,j), omgpe2(i,j),
@@ -5811,17 +5812,17 @@ c               end if
      .                        z2_table1, zetai_table, dKdL_table, 
      .                        dKdL_giv, nmax, mmax, use_new_z2, 
      .                        ntable, mtable, sige3_new)
-     			   
-			end if    !  if   use_fourier_z2 .eq. .false.
-			
-			
-                        if(use_fourier_z2 .eqv. .true. .and.
-     .			                           psi(i,j) .ge. psiorb) then
-			
-			   sige3_new = 0.0
-			   			
+                           
+                        end if    !  if   use_fourier_z2 .eq. .false.
+                        
+                        
+             if(use_fourier_z2 .eqv. .true. .and.
+     .              psi(i,j) .ge. psiorb) then
+                        
+                           sige3_new = 0.0
+                                                
                            call sigmad_cql3d_e(i, j, n, m, rho(i,j),
-     .			      rho_a, gradprlb(i,j), bmod(i,j), 
+     .                        rho_a, gradprlb(i,j), bmod(i,j), 
      .                        bmod_mid(i,j), xme, qe, xnea(i,j), 
      .                        xnuome,
      .                        xkte(i,j), omgce(i,j), omgpe2(i,j),
@@ -5847,10 +5848,10 @@ c               end if
      .                        z2_table1, zetai_table, dKdL_table, 
      .                        dKdL_giv, nmax, mmax, .true., 
      .                        ntable, mtable, sige3_new)
-     			   
-			end if ! use_fourier_z2 .eq. .true. .and. psi.ge. psiorb
-			
-        			          
+                           
+                        end if ! use_fourier_z2 .eq. .true. .and. psi.ge. psiorb
+                        
+                                          
                 
                         if(odd_order .ne. 0) 
      .                     call odd_order_derivs(i, j, n, m, nxmx, nymx, 
@@ -6484,24 +6485,24 @@ c               end if
                      frk = dzx * cexpkxky
                      fqk = dzy * cexpkxky
                      fsk = dzz * cexpkxky
-		     		     
+                                     
                      detd = fsk * (fdk * fak - fek * fgk)
      .                 - fqk * (fdk * fpk - ffk * fgk)
      .                 + frk * (fek * fpk - ffk * fak)
      
 *                    ------------------------------------------------------
 *                    plot all orders dispersion kernel D(x, kx) = capd(i, n)
-*                    ------------------------------------------------------		  
+*                    ------------------------------------------------------               
                      if(j .eq. jdisp .and. m .eq. mdisp)then
-		     
-			capd(i, n) = cabs(detd)
-			 
-			xkb(i, n) = uzx(i, j) * xkxsav(n)
+                     
+                        capd(i, n) = cabs(detd)
+                         
+                        xkb(i, n) = uzx(i, j) * xkxsav(n)
      .                            + uzy(i, j) * xkysav(m)
      .                            + uzz(i, j) * xkphi(i)
-		     end if     
+                     end if     
     
-                  end if  ! end if only do sigma in interior when nboundary = 1 		     
+                  end if  ! end if only do sigma in interior when nboundary = 1                      
 
 
 *                 --------------------------
@@ -6518,7 +6519,7 @@ c     .               .or. nboundary .eq. 0 .and. i .le. 2
 c     .               .or. nboundary .eq. 0 .and. i .ge. nnodexm1
 c     .               .or. nboundary .eq. 0 .and. j .le. 2
 c     .               .or. nboundary .eq. 0 .and. j .ge. nnodeym1) then     
-                            		 
+                                         
                      fdk = cexpkxky
                      fek = 0.0
                      ffk = 0.0
@@ -6535,7 +6536,7 @@ c     .               .or. nboundary .eq. 0 .and. j .ge. nnodeym1) then
                      xc(i,j) = 0.0
                      xd(i,j) = 0.0
                   end if  !  end if matal boundary edge region
-		  		  
+                                  
 
                   if(i .eq. idiag .and. j .eq. jdiag)then
                      fdksav(n, m) = fdk
@@ -6550,8 +6551,8 @@ c     .               .or. nboundary .eq. 0 .and. j .ge. nnodeym1) then
                      fqksav(n, m) = fqk
                      fsksav(n, m) = fsk
                   end if   !  if i .eq. idiag .and. j .eq. jdiag
-		  
-		 		  
+                  
+                                  
 
 *                 ------------------------------------------
 *                 Load the collocation solution matrix, amat
@@ -6576,7 +6577,7 @@ c     .               .or. nboundary .eq. 0 .and. j .ge. nnodeym1) then
                   p_amat(ipos)     = ffk
                   p_amat(ipos + 1) = fpk
                   p_amat(ipos + 2) = fsk
-		  
+                  
                   end if  !   if ismine1
 
                end do
@@ -6584,7 +6585,7 @@ c     .               .or. nboundary .eq. 0 .and. j .ge. nnodeym1) then
 
 
          end do
-      end do		  
+      end do              
 
       
 
@@ -6593,9 +6594,9 @@ c     .               .or. nboundary .eq. 0 .and. j .ge. nnodeym1) then
       if (myid.eq.0) then
          write(6 ,835) tmin
          write(15,835) tmin
-c	 call flush
+c        call flush
       endif
-	
+        
   835 format('time to load matrix =',f9.3,4h min)
 
       call blacs_barrier(icontxt, 'All')
@@ -6619,9 +6620,9 @@ c	 call flush
       
 
       do i = 1, nnodex
-	 do n = nkx1, nkx2	 
+         do n = nkx1, nkx2       
             capd2d(i, n - nkx1 + 1) = capd(i, n)
-	    xkb2d(i, n - nkx1 + 1) = xkb(i, n)
+            xkb2d(i, n - nkx1 + 1) = xkb(i, n)
          end do
       end do 
            
@@ -6673,9 +6674,9 @@ c	 call flush
 
 
       do i = 1, nnodex
-	 do n = nkx1, nkx2
+         do n = nkx1, nkx2
             capd(i, n) = capd2d(i, n - nkx1 + 1) 
-            xkb(i, n) = xkb2d(i, n - nkx1 + 1) 	    
+            xkb(i, n) = xkb2d(i, n - nkx1 + 1)      
          end do
       end do  
 
@@ -6716,31 +6717,88 @@ c	 call flush
         write(6,*) 'Starting p_mat file write for Azzam ...'
         write(6,*) 'ncol = ', ncol
         write(6,*) 'nrow = ', nrow
-        WRITE(rowfmt,'(A,i10,A)') '(',ncol,
-     .     '(1X,"(",e18.10,",",e18.10,")"))'
 
-        OPEN(UNIT=12, FILE="p_mat_for_azzam.txt",
-     .       ACTION="write", STATUS="replace", RECL=(40*ncol+10))
-        write(12,'(i6)') ncol
-        DO i=1,nrow
-          WRITE(12,FMT=rowfmt) (p_amat_copy(i+(j-1)*nrow), j=1,ncol)
-        END DO
-        CLOSE(UNIT=12)
-        OPEN(UNIT=12, FILE="p_brhs_for_azzam.txt",
-     .       ACTION="write", STATUS="replace", RECL=(40))
-        write(12,'(i6)') ncol
-        DO i=1,nrow
-          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs_copy(i)
-        END DO
-        CLOSE(UNIT=12)
- 
-        write(6,*) 'DONE'
+*       Write AMAT out using Ed's approach
+
+        iodev = 12
+        open(UNIT=iodev, FILE="p_mat_for_azzam_ed.txt",
+     .       ACTION="write", STATUS="replace")
+
+        write(iodev,'(i6)') ncol*nrow
+
+*        do ja=1,desc_amat(N_)
+*        do ia=1,desc_amat(M_)
+*        
+*           call pzelget( 'All', ' ', aij, p_amat, 
+*     .          ia, ja, desc_amat)
+*        
+*           if ((myrow.eq.0).and.(mycol.eq.0)) then
+*              write(iodev, 9010) ia, ja, 
+*     .          real(aij,kind=dp), imag(aij)
+*           endif
+*        
+* 9010 format(1x,i6,1x,i6,1pe18.10E3,1pe18.10E3)
+*
+*        enddo
+*        enddo
+
+        do ja=1,ncol
+        do ia=1,nrow
+        
+           if ((myrow.eq.0).and.(mycol.eq.0)) then
+              write(iodev, 9010) ia, ja, 
+     .          real(p_amat_copy(ia+(nrow-1)*ja),kind=dp), 
+     .          imag(p_amat_copy(ia+(nrow-1)*ja))
+           endif
+        
+ 9010 format(1x,i6,1x,i6,1pe18.10E3,1pe18.10E3)
+
+        enddo
+        enddo
+
+        close(UNIT=iodev)
+
+*       Write BRHS out using Ed's approach
+
+        iodev = 12
+        open(UNIT=iodev, FILE="p_brhs_for_azzam_ed.txt",
+     .       ACTION="write", STATUS="replace")
+
+        write(iodev,'(i6)') nrow
+
+*        do ia=1,desc_amat(M_)
+*        
+*           call pzelget( 'All', ' ', aij, p_brhs, 
+*     .          ia, 1, desc_brhs)
+*        
+*           if ((myrow.eq.0).and.(mycol.eq.0)) then
+*              write(iodev, 9012) ia,  
+*     .          real(aij,kind=dp), imag(aij)
+*           endif
+*        
+* 9012 format(1x,i6,1pe18.10E3,1pe18.10E3)
+*
+*        enddo
+
+        do ia=1,nrow
+        
+           if ((myrow.eq.0).and.(mycol.eq.0)) then
+              write(iodev, 9012) ia,  
+     .          real(p_brhs_copy(ia),kind=dp), 
+     .          imag(p_brhs_copy(ia))
+           endif
+        
+ 9012 format(1x,i6,1pe18.10E3,1pe18.10E3)
+
+        enddo
+        close(UNIT=iodev)
+
       end if
 
 
-*	---------------------
-*	Call scalapack solver
-*	---------------------
+*       ---------------------
+*       Call scalapack solver
+*       ---------------------
       call pzgetrf( nrow, ncol, p_amat, 1, 1, desc_amat, p_ipiv, info)
       if (info.ne.0) then
           write(6,*) 'pzgetrf returns info = ', info
@@ -6750,9 +6808,9 @@ c	 call flush
 
       call blacs_barrier(icontxt, 'All')
 
-*	------------------------------
-*	Optional: get condition number
-*	------------------------------
+*       ------------------------------
+*       Optional: get condition number
+*       ------------------------------
        lwork = ndfmax
        lrwork = ndfmax
       anorm = pzlange('1', nrow, ncol, p_amat, 1, 1, desc_amat, rwork)      
@@ -6777,18 +6835,6 @@ c	 call flush
       call blacs_barrier(icontxt, 'All')
       time = second1(dummy) - t1
       time = max(1.0, time)
-
-      if((write_for_azzam) .and. (nprow*npcol.eq.1))then
-        write(6,*) 'Starting solution file write for Azzam ...'
-        OPEN(UNIT=12, FILE="p_solution_for_azzam.txt",
-     .       ACTION="write", STATUS="replace", RECL=(40))
-        write(12,'(i6)') ncol
-        DO i=1,nrow
-          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') p_brhs(i)
-        END DO
-        CLOSE(UNIT=12)
-        write(6,*) 'DONE'
-      end if
 
 c--   Operations for complex matrix factor and solve:
       ops = 8. / 3. * (real(nrow))**3 + 7. * (real(nrow))**2
@@ -6850,16 +6896,45 @@ c--   Operations for complex matrix factor and solve:
       brhs2 = brhs_tmp
 
       if((write_for_azzam) .and. (nprow*npcol.eq.1))then
-        write(6,*) 'Starting solution file write for Azzam ...'
-        OPEN(UNIT=12, FILE="p_solution2_for_azzam.txt",
-     .       ACTION="write", STATUS="replace", RECL=(40))
-        write(12,'(i6)') ncol
-        DO i=1,nrow
-          WRITE(12,'(1X,"(",e18.10,",",e18.10,")")') brhs2(i)
-        END DO
-        CLOSE(UNIT=12)
-        write(6,*) 'DONE'
+
+*       Write out using Ed's approach
+
+        iodev = 12
+        open(UNIT=iodev, FILE="p_solution_for_azzam_ed.txt",
+     .       ACTION="write", STATUS="replace")
+
+        write(iodev,'(i6)') nrow
+
+*        do ia=1,desc_amat(M_)
+*        
+*           call pzelget( 'All', ' ', aij, p_brhs, 
+*     .          ia, 1, desc_brhs)
+*        
+*           if ((myrow.eq.0).and.(mycol.eq.0)) then
+*              write(iodev, 9011) ia,  
+*     .          real(aij,kind=dp), imag(aij)
+*           endif
+*        
+* 9011 format(1x,i6,1pe18.10E3,1pe18.10E3)
+*
+*        enddo
+        do ia=1,nrow
+        
+           if ((myrow.eq.0).and.(mycol.eq.0)) then
+              write(iodev, 9011) ia,  
+     .          real(p_brhs(ia),kind=dp), 
+     .          imag(p_brhs(ia))
+           endif
+        
+ 9011 format(1x,i6,1pe18.10E3,1pe18.10E3)
+
+        enddo
+
+
+        close(UNIT=iodev)
+
       end if
+
 
       if(write_for_azzam)then
 *       Examine solve error 
@@ -6978,7 +7053,7 @@ c         m_lower = nky1
 c         fnmax = 1. / 2. * real(nkx2)
 c         fmmax = real(nky2)
 
-	 
+         
 *        -----------------------------------------------
 *        Anti-aliasing filter on R and Z (one-half rule):
 *        -----------------------------------------------  
@@ -6989,7 +7064,7 @@ c         m_lower = 1. / 2. * nky1
            
 c         fnmax = 1. / 2. * real(nkx2)
 c         fmmax = 1. / 2. * real(nky2)
-	 	 	  	  
+                                  
      
          if (myid .eq. 0) then
          write(6, *) "n_lower = ", n_lower, "   n_upper = ", n_upper
@@ -6998,19 +7073,19 @@ c         fmmax = 1. / 2. * real(nky2)
          end if
                          
          do n = nkx1, nkx2
-            do m = nky1, nky2	
-	    
-   	       nperp = sqrt((real(n) / fnmax)**2 + (real(m) / fmmax)**2)
-	       	
-c   	       if (nperp .gt. 1.0) then 
-   	       if (n .gt. n_upper .or. n .lt. n_lower .or.
+            do m = nky1, nky2   
+            
+               nperp = sqrt((real(n) / fnmax)**2 + (real(m) / fmmax)**2)
+                
+c              if (nperp .gt. 1.0) then 
+               if (n .gt. n_upper .or. n .lt. n_lower .or.
      .            m .gt. m_upper .or. m .lt. m_lower)then
 
                   ealphak(n, m) = 0.0
-   	          ebetak(n, m) = 0.0
-   	          ebk(n, m) = 0.0			   	    
-   	       end if
-	    	    
+                  ebetak(n, m) = 0.0
+                  ebk(n, m) = 0.0                                   
+               end if
+                    
             end do
          end do
                
@@ -7085,7 +7160,7 @@ c     .   myid, nproc, icontxt)
      
       do i = 1, nnodex
          kimag_slow(i) = aimag(csqrt(xkperp2_slow(i,jmid)))
-	 kimag_fast(i) = aimag(csqrt(xkperp2_fast(i,jmid)))
+         kimag_fast(i) = aimag(csqrt(xkperp2_fast(i,jmid)))
       end do
 
       call dgrate(xprime, kimag_slow, 1, nnodex, ans, nxmx)
@@ -7099,7 +7174,7 @@ c     .   myid, nproc, icontxt)
          write(15, *) "spa_slow = ", spa_slow
          write(6,  *) "spa_slow = ", spa_slow
          write(15, *) "spa_fast = ", spa_fast
-         write(6,  *) "spa_fast = ", spa_fast	 	 
+         write(6,  *) "spa_fast = ", spa_fast            
       end if
      
  
@@ -7107,9 +7182,9 @@ c     .   myid, nproc, icontxt)
       tmin = time / 60.
       if (myid.eq.0) then
          write(6, 1837) tmin
-	 write(15, 1837) tmin
+         write(15, 1837) tmin
       endif
-	
+        
  1837 format('time taken to invert Fourier transform =',f9.3,4h min)
 
 
@@ -7120,13 +7195,13 @@ c     .   myid, nproc, icontxt)
       if (myid .eq.0) then
       
          write(53, 1314) nnodex, nnodey
-	 write(53, 310) (capr(i), i = 1, nnodex)
-	 write(53, 310) (y(j), j = 1, nnodey)         	 
+         write(53, 310) (capr(i), i = 1, nnodex)
+         write(53, 310) (y(j), j = 1, nnodey)            
          write(53, 8310)((ealpha(i, j), i = 1, nnodex), j = 1, nnodey)
          write(53, 8310)((ebeta(i, j), i = 1, nnodex), j = 1, nnodey)
          write(53, 8310)((eb(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-	 close (53)
+         
+         close (53)
       end if 
            
 
@@ -7220,7 +7295,7 @@ c     .   myid, nproc, icontxt)
      .                + uzz(i,j) * eb(i,j)
      
             eplus(i,j)  = isq2 * (ealpha(i,j) + zi * ebeta(i,j))
-	    eminus(i,j) = isq2 * (ealpha(i,j) - zi * ebeta(i,j))
+            eminus(i,j) = isq2 * (ealpha(i,j) - zi * ebeta(i,j))
 
          end do
       end do
@@ -7230,29 +7305,29 @@ c     .   myid, nproc, icontxt)
 *-------------------------------------------------------
       do n = 1, nnoderho
          do m = 1, mnodetheta
-	    	   
-	    xgiv = capr_flux(n, m) - rt - xwleft	    
-	    ygiv = capz_flux(n, m) - ybottom	    
-	    
-	    call intplt(xgiv, ygiv, fout, nnodex, nnodey, eplus, 
+                   
+            xgiv = capr_flux(n, m) - rt - xwleft            
+            ygiv = capz_flux(n, m) - ybottom        
+            
+            call intplt(xgiv, ygiv, fout, nnodex, nnodey, eplus, 
      .         nxmx, nymx, dx, dy)
             eplus_flux(n, m) = fout
-	    
-	    call intplt(xgiv, ygiv, fout, nnodex, nnodey, eminus, 
+            
+            call intplt(xgiv, ygiv, fout, nnodex, nnodey, eminus, 
      .         nxmx, nymx, dx, dy)
             eminus_flux(n, m) = fout
-	    
-	    call intplt(xgiv, ygiv, fout, nnodex, nnodey, xkperp_cold, 
+            
+            call intplt(xgiv, ygiv, fout, nnodex, nnodey, xkperp_cold, 
      .         nxmx, nymx, dx, dy)
             xkperp_flux(n, m) = fout
-	    		    
-	    call intplt_re(xgiv, ygiv, fout, nnodex, nnodey, bmod, 
+                            
+            call intplt_re(xgiv, ygiv, fout, nnodex, nnodey, bmod, 
      .         nxmx, nymx, dx, dy)
-            bmod_flux(n, m) = fout	    
-	    
-	              
+            bmod_flux(n, m) = fout          
             
-c	    if(myid .eq. 0)write(6,*)n, m, eplus_flux(n,m)
+                      
+            
+c           if(myid .eq. 0)write(6,*)n, m, eplus_flux(n,m)
 
          end do
       end do
@@ -7262,23 +7337,23 @@ c	    if(myid .eq. 0)write(6,*)n, m, eplus_flux(n,m)
 *---------------------------------------------------
       do i = 1, nnodex
          do j = 1, nnodey
-	    	   
-	    rho_giv = rho(i, j)     
-	    the_giv = theta(i,j) 	    
-	    
-	    call intplt(rho_giv, the_giv, fout, nnoderho, mnodetheta,
+                   
+            rho_giv = rho(i, j)     
+            the_giv = theta(i,j)            
+            
+            call intplt(rho_giv, the_giv, fout, nnoderho, mnodetheta,
      .         eplus_flux, nrhomax, nthetamax, drho, dtheta)     
             eplus_flux_plot(i, j) = fout 
-	    
-	    call intplt(rho_giv, the_giv, fout, nnoderho, mnodetheta,
+            
+            call intplt(rho_giv, the_giv, fout, nnoderho, mnodetheta,
      .         eminus_flux, nrhomax, nthetamax, drho, dtheta)     
             eminus_flux_plot(i, j) = fout 
-	    
-	    call intplt(rho_giv, the_giv, fout, nnoderho, mnodetheta,
-     .         xkperp_flux, nrhomax, nthetamax, drho, dtheta)     
-            xkperp_flux_plot(i, j) = fout  	             
             
-c	    if(myid .eq. 0)write(6,*)i, j, eplus_flux_plot(i, j)
+            call intplt(rho_giv, the_giv, fout, nnoderho, mnodetheta,
+     .         xkperp_flux, nrhomax, nthetamax, drho, dtheta)     
+            xkperp_flux_plot(i, j) = fout                    
+            
+c           if(myid .eq. 0)write(6,*)i, j, eplus_flux_plot(i, j)
 
          end do
       end do      
@@ -7349,10 +7424,10 @@ c	    if(myid .eq. 0)write(6,*)i, j, eplus_flux_plot(i, j)
  
       do i = 1, nnodex
          do j = 1, nnodey
-	 
-	    if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
-	    if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
-	    if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)	    
+         
+            if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
+            if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
+            if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)            
 
 
             if(psi(i,j) .le. psilim .and. nboundary .eq. 1
@@ -7360,50 +7435,50 @@ c	    if(myid .eq. 0)write(6,*)i, j, eplus_flux_plot(i, j)
 
                do n = nkx1, nkx2
                   do m = nky1, nky2
-		  
-		     xkalp = uxx(i, j) * xkxsav(n) 
+                  
+                     xkalp = uxx(i, j) * xkxsav(n) 
      .                     + uxy(i, j) * xkysav(m) 
      .                     + uxz(i, j) * xkphi(i)    
                      xkbet = uyx(i, j) * xkxsav(n) 
      .                     + uyy(i, j) * xkysav(m) 
-     .                     + uyz(i, j) * xkphi(i)		  
+     .                     + uyz(i, j) * xkphi(i)                 
                      xkprl = uzx(i, j) * xkxsav(n)
      .                     + uzy(i, j) * xkysav(m)
      .                     + uzz(i, j) * xkphi(i)
                      xkperp = sqrt(xkalp**2 + xkbet**2) 
-		     xkprl_orig = xkprl          
+                     xkprl_orig = xkprl          
      
 *                    ------------------------------------
 *                    Optional: leave out upshift in xkprl
 *                    --------------------------------- --          
                      if (upshift .eq. 0) xkprl = uzz(i,j) * xkphi(i)
-c		      if (upshift .eq. 0) xkprl = nphi / rt		     
-		     
+c                     if (upshift .eq. 0) xkprl = nphi / rt                  
+                     
                      if (upshift .eq. -1)then
-		        if (xkperp  .gt. xk_cutoff) 
+                        if (xkperp  .gt. xk_cutoff) 
      .                                   xkprl = uzz(i,j) * xkphi(i)
                      end if
-		     		         
+                                         
                      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
-		     if (xkperp .eq. 0.0) xkperp = 1.0e-08		     
-		     		                              
-		     sgn_kprl = sign(1.0, xkprl)
+                     if (xkperp .eq. 0.0) xkperp = 1.0e-08                   
+                                                              
+                     sgn_kprl = sign(1.0, xkprl)
                      akprl = abs(xkprl)
-	      
-		     
+              
+                     
 *                   ----------------------------------------------
 *                   Optional: Don't allow xkprl to be 0 (upshift = -2)
 *                   ----------------------------------------------        
                     if (upshift .eq. -2) then
                        if (akprl .lt. akprl_min) then
                           xkprl = akprl_min * sgn_kprl
-		       end if 
-		    end if			     		     
+                       end if 
+                    end if                                           
            
-		     		     
-		     gammab = abs(omgci2(i,j)/ (2.0 * vthi20 * xkprl**2)
+                                     
+                     gammab = abs(omgci2(i,j)/ (2.0 * vthi20 * xkprl**2)
      .                                     * gradprlb(i,j) / bmod(i,j)) 
-		     
+                     
 *                    ------------------------------------------------
 *                    Calculate Brambilla's xkrpl_eff using l = 1 only
 *                    ------------------------------------------------
@@ -7418,7 +7493,7 @@ c		      if (upshift .eq. 0) xkprl = nphi / rt
      .                        / (2. * gammab * yb)
                         endif
                         xkprl_eff = xkprl / fgam 
-                     end if		     
+                     end if                  
 
                      if(sgn_kprl .lt. 0.0)then
                         fgam = 1.0
@@ -7431,56 +7506,56 @@ c		      if (upshift .eq. 0) xkprl = nphi / rt
                         endif
                         xkprl_eff = xkprl / fgam 
                      end if
-		     
-		     
-		     if (upshift .ne. 0) xkprl = xkprl_eff
+                     
+                     
+                     if (upshift .ne. 0) xkprl = xkprl_eff
        
      
                      if(xkprl .gt. xkprl_max) xkprl_max = xkprl
-		     if(xkprl .lt. xkprl_min) xkprl_min = xkprl
-		     
-		     if(xkprl .gt. 0.0)then
-		       if(xkprl .lt. xkprl_pos_min)xkprl_pos_min = xkprl		     
-		     end if
-		     
-		     if(xkprl .lt. 0.0)then
-		       if(xkprl .gt. xkprl_neg_max)xkprl_neg_max = xkprl		     
-		     end if
-		     
-		     alphae = sqrt(2.0 * xkte(i,j) / xme) 		     
-		     zetai = xkprl_orig * alphae / omgrf
-		     
-		     if(zetai .gt. zetai_max) zetai_max = zetai
-		     if(zetai .lt. zetai_min) zetai_min = zetai
-		     
+                     if(xkprl .lt. xkprl_min) xkprl_min = xkprl
+                     
+                     if(xkprl .gt. 0.0)then
+                       if(xkprl .lt. xkprl_pos_min)xkprl_pos_min = xkprl                     
+                     end if
+                     
+                     if(xkprl .lt. 0.0)then
+                       if(xkprl .gt. xkprl_neg_max)xkprl_neg_max = xkprl                     
+                     end if
+                     
+                     alphae = sqrt(2.0 * xkte(i,j) / xme)                    
+                     zetai = xkprl_orig * alphae / omgrf
+                     
+                     if(zetai .gt. zetai_max) zetai_max = zetai
+                     if(zetai .lt. zetai_min) zetai_min = zetai
+                     
                   end do
-	       end do
-	       
-	    end if
-	    
+               end do
+               
+            end if
+            
          end do
       end do
 
       if (myid .eq. 0) then
       
          write(15, *) "xjx_max = ", xjx_max
-	 write(15, *) "xjy_max = ", xjy_max
-	 write(15, *) "xjz_max = ", xjz_max
-	       
-      	 write(15, *) "xkprl_max = ", xkprl_max
+         write(15, *) "xjy_max = ", xjy_max
+         write(15, *) "xjz_max = ", xjz_max
+               
+         write(15, *) "xkprl_max = ", xkprl_max
          write(15, *) "xkprl_pos_min = ", xkprl_pos_min
-	 write(15, *) "xkprl_neg_max = ", xkprl_neg_max         
-	 write(15, *) "xkprl_min = ", xkprl_min
+         write(15, *) "xkprl_neg_max = ", xkprl_neg_max         
+         write(15, *) "xkprl_min = ", xkprl_min
       
          write(6, *) "xjx_max = ", xjx_max
-	 write(6, *) "xjy_max = ", xjy_max
-	 write(6, *) "xjz_max = ", xjz_max
-	 
-	 write(6, *) "xkprl_max = ", xkprl_max
+         write(6, *) "xjy_max = ", xjy_max
+         write(6, *) "xjz_max = ", xjz_max
+         
+         write(6, *) "xkprl_max = ", xkprl_max
          write(6, *) "xkprl_pos_min = ", xkprl_pos_min
-	 write(6, *) "xkprl_neg_max = ", xkprl_neg_max         
-	 write(6, *) "xkprl_min = ", xkprl_min
-	 	 	       	 
+         write(6, *) "xkprl_neg_max = ", xkprl_neg_max         
+         write(6, *) "xkprl_min = ", xkprl_min
+                                 
       end if
        
 *     ---------------------------------
@@ -7722,9 +7797,9 @@ c		      if (upshift .eq. 0) xkprl = nphi / rt
       tmin = time / 60.
       if (myid .eq. 0) then
          write(6 ,836) tmin
-	 write(15,836) tmin
+         write(15,836) tmin
       endif
-	
+        
   836 format('time to calculate currents =',f9.3,4h min)
 
 
@@ -7878,7 +7953,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
          fqlavg_i3 = 0.0
       end if
                 
-      if(eta4 .ne. 0.0)then	
+      if(eta4 .ne. 0.0)then     
          allocate( bqlavg_i4(nuper, nupar, nnoderho) )
          allocate( cqlavg_i4(nuper, nupar, nnoderho) )
          allocate( eqlavg_i4(nuper, nupar, nnoderho) )
@@ -7888,8 +7963,8 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
          eqlavg_i4 = 0.0
          fqlavg_i4 = 0.0
       end if
-            	
-      if(eta5 .ne. 0.0)then		
+                
+      if(eta5 .ne. 0.0)then             
          allocate( bqlavg_i5(nuper, nupar, nnoderho) )
          allocate( cqlavg_i5(nuper, nupar, nnoderho) )
          allocate( eqlavg_i5(nuper, nupar, nnoderho) )
@@ -7897,10 +7972,10 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
          bqlavg_i5 = 0.0
          cqlavg_i5 = 0.0
          eqlavg_i5 = 0.0
-         fqlavg_i5 = 0.0	
+         fqlavg_i5 = 0.0        
       end if
       
-      if(eta6 .ne. 0.0)then		
+      if(eta6 .ne. 0.0)then             
          allocate( bqlavg_i6(nuper, nupar, nnoderho) )
          allocate( cqlavg_i6(nuper, nupar, nnoderho) )
          allocate( eqlavg_i6(nuper, nupar, nnoderho) )
@@ -7908,7 +7983,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
          bqlavg_i6 = 0.0
          cqlavg_i6 = 0.0
          eqlavg_i6 = 0.0
-         fqlavg_i6 = 0.0	
+         fqlavg_i6 = 0.0        
       end if 
       
         
@@ -8194,7 +8269,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       ! ---------------------- !
 
       if(eta4 .ne. 0.0)then
-      t1i4 = second1(dummy)	 
+      t1i4 = second1(dummy)      
       call ql_myra_write(bqlavg_i4, cqlavg_i4, eqlavg_i4, fqlavg_i4, 
      .   wdoti4, fx0i4, fy0i4, fz0i4, darea, nrhomax, nnoderho, drho,
      .   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
@@ -8261,7 +8336,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       ! --------------------- !
 
       if(eta5 .ne. 0.0)then
-      t1i5 = second1(dummy)	 
+      t1i5 = second1(dummy)      
       call ql_myra_write(bqlavg_i5, cqlavg_i5, eqlavg_i5, fqlavg_i5, 
      .   wdoti5, fx0i5, fy0i5, fz0i5, darea, nrhomax, nnoderho, drho,
      .   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
@@ -8526,7 +8601,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      .   dldbavg)
 
       end if                 
-	
+        
 c      end if
 
 
@@ -8547,12 +8622,12 @@ c      end if
 
       do i = 1, nnodex
          do j = 1, nnodey
-	 
-	    fx0(i,j) = fx0e(i,j) + fx0i1(i,j) + fx0i2(i,j) + fx0i3(i,j)
+         
+            fx0(i,j) = fx0e(i,j) + fx0i1(i,j) + fx0i2(i,j) + fx0i3(i,j)
      .                           + fx0i4(i,j) + fx0i5(i,j) + fx0i6(i,j)
-     	    fy0(i,j) = fy0e(i,j) + fy0i1(i,j) + fy0i2(i,j) + fy0i3(i,j)
+            fy0(i,j) = fy0e(i,j) + fy0i1(i,j) + fy0i2(i,j) + fy0i3(i,j)
      .                           + fy0i4(i,j) + fy0i5(i,j) + fy0i6(i,j)
-     	    fz0(i,j) = fz0e(i,j) + fz0i1(i,j) + fz0i2(i,j) + fz0i3(i,j)
+            fz0(i,j) = fz0e(i,j) + fz0i1(i,j) + fz0i2(i,j) + fz0i3(i,j)
      .                           + fz0i4(i,j) + fz0i5(i,j) + fz0i6(i,j)
  
      
@@ -8560,11 +8635,11 @@ c      end if
      .                             +  byn(i,j) * fy0(i,j) 
      .                             +  bzn(i,j) * fz0(i,j)) 
      
-	    bmod2(i,j) = bmod(i,j)**2
+            bmod2(i,j) = bmod(i,j)**2
 
             capr_fzeta(i,j) = capr(i) * fz0(i,j)
             capr2(i,j) = capr(i)**2
-	 
+         
             wdot(i,j) = wdote(i,j)
      .                + wdoti1(i,j) + wdoti2(i,j) + wdoti3(i,j)
      .                + wdoti4(i,j) + wdoti5(i,j) + wdoti6(i,j)
@@ -8600,19 +8675,19 @@ c      end if
             bxwave(i, j) = 0.0
             bzwave(i, j) = 0.0
             bywave(i, j) = 0.0
-	    
-c	    rhohatx(i,j) = 0.0
+            
+c           rhohatx(i,j) = 0.0
 c            rhohaty(i,j) = 0.0
 
             if (i .ne. 1 .and. i .ne. nnodex) then
                if (j .ne. 1 .and. j .ne. nnodey) then
-	       
-c	            drhodx = (rho(i+1, j) - rho(i-1, j)) / (2.0 * dx)
+               
+c                   drhodx = (rho(i+1, j) - rho(i-1, j)) / (2.0 * dx)
 c                   drhody = (rho(i, j+1) - rho(i, j-1)) / (2.0 * dy)
 
-c                   gradrho = sqrt(drhodx**2 + drhody**2)		   
-c		    if (gradrho .eq. 0.0) gradrho = 1.0e-08
-		   
+c                   gradrho = sqrt(drhodx**2 + drhody**2)                  
+c                   if (gradrho .eq. 0.0) gradrho = 1.0e-08
+                   
 c                   rhohatx(i,j) = drhodx / gradrho
 c                   rhohaty(i,j) = drhody / gradrho
 
@@ -8649,12 +8724,12 @@ c                  divsp(i) = dspxdx(i)
 c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
                end if
             end if
-	    
+            
 *           --------------------------------
 *           Calculate radial and theta force:
-*           --------------------------------	    
-	    
-	    fpsi0(i, j)  = fx0i2(i, j) * rhohatx(i, j) 
+*           --------------------------------        
+            
+            fpsi0(i, j)  = fx0i2(i, j) * rhohatx(i, j) 
      .                   + fy0i2(i, j) * rhohaty(i, j)
      
             ftheta0(i,j) = fy0i2(i, j) * rhohatx(i, j) 
@@ -8665,7 +8740,7 @@ c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
      .                 * fpsi0(i, j) / (capr(i) * bpol(i, j))
      
             ftheta1(i,j) = ftheta0(i,j) * bpol(i,j)
-	    
+            
 *           -------------------------------------------------------------
 *           Calculate driven current from wdote(i,j) for xkprl = nphi / R:
 *           First calculate C_ehst
@@ -8731,9 +8806,9 @@ c                 c_ehst = 1.0
             end if
 
             if (vphase .ge. clight .or. akprl .lt. 1.e-05) c_ehst = 0.0
-	    
-	    xjprl(i,j) = c_ehst * wdote(i,j)
-	
+            
+            xjprl(i,j) = c_ehst * wdote(i,j)
+        
          end do
       end do
       
@@ -8853,9 +8928,9 @@ c                 c_ehst = 1.0
       pi3_ql = pi3_ql * pscale 
       pi4_ql = pi4_ql * pscale 
       pi5_ql = pi5_ql * pscale 
-      pi6_ql = pi6_ql * pscale	 
+      pi6_ql = pi6_ql * pscale   
       pt_ql  = pt_ql  * pscale 
-	 
+         
      
       powtot = powtot * pscale
       ptot = ptot * pscale
@@ -8894,43 +8969,43 @@ c                 c_ehst = 1.0
       do n = 1, nnoderho
          do m = 1, mnodetheta
             eplus_flux(n, m) = eplus_flux(n, m) * sqrt(pscale)
-	    eminus_flux(n, m) = eminus_flux(n, m) * sqrt(pscale)
-	 end do
+            eminus_flux(n, m) = eminus_flux(n, m) * sqrt(pscale)
+         end do
       end do  
 
       do i = 1, nnodex
          do j = 1, nnodey
-	 
-	    eplus_flux_plot(i,j) = eplus_flux_plot(i,j) * sqrt(pscale)
-	    eminus_flux_plot(i,j) = eminus_flux_plot(i,j) * sqrt(pscale)
-	 
+         
+            eplus_flux_plot(i,j) = eplus_flux_plot(i,j) * sqrt(pscale)
+            eminus_flux_plot(i,j) = eminus_flux_plot(i,j) * sqrt(pscale)
+         
             ex(i,j) = ex(i,j) * sqrt(pscale)
             ey(i,j) = ey(i,j) * sqrt(pscale)
             ez(i,j) = ez(i,j) * sqrt(pscale)
-	    
-	    bxwave(i,j) = bxwave(i,j) * sqrt(pscale)
+            
+            bxwave(i,j) = bxwave(i,j) * sqrt(pscale)
             bywave(i,j) = bywave(i,j) * sqrt(pscale)
-            bzwave(i,j) = bzwave(i,j) * sqrt(pscale)	    
+            bzwave(i,j) = bzwave(i,j) * sqrt(pscale)        
 
             ealpha(i,j) = ealpha(i,j) * sqrt(pscale)
             ebeta(i,j) = ebeta(i,j) * sqrt(pscale)
             eb(i,j) = eb(i,j) * sqrt(pscale)
-	    
+            
             eplus(i,j) = eplus(i,j) * sqrt(pscale)
-            eminus(i,j) = eplus(i,j) * sqrt(pscale)	    	    
-	    
-	    ntilda_e(i,j) = ntilda_e(i,j) * sqrt(pscale)
-	    ntilda_e_real(i,j) = real(ntilda_e(i,j))
+            eminus(i,j) = eplus(i,j) * sqrt(pscale)                 
+            
+            ntilda_e(i,j) = ntilda_e(i,j) * sqrt(pscale)
+            ntilda_e_real(i,j) = real(ntilda_e(i,j))
 
             xjpxe(i,j) = xjpxe(i,j) * sqrt(pscale)
             xjpye(i,j) = xjpye(i,j) * sqrt(pscale)
             xjpze(i,j) = xjpze(i,j) * sqrt(pscale)
-	    
+            
             xjpxe_lab(i,j) = xjpxe_lab(i,j) * sqrt(pscale)
             xjpye_lab(i,j) = xjpye_lab(i,j) * sqrt(pscale)
-            xjpze_lab(i,j) = xjpze_lab(i,j) * sqrt(pscale)	    	    
-	
-	    xjpx_ehst(i,j) = xjpx_ehst(i,j) * sqrt(pscale)
+            xjpze_lab(i,j) = xjpze_lab(i,j) * sqrt(pscale)                  
+        
+            xjpx_ehst(i,j) = xjpx_ehst(i,j) * sqrt(pscale)
             xjpy_ehst(i,j) = xjpy_ehst(i,j) * sqrt(pscale)
             xjpz_ehst(i,j) = xjpz_ehst(i,j) * sqrt(pscale)
 
@@ -8964,7 +9039,7 @@ c                 c_ehst = 1.0
 
 
             redotj(i,j) = redotj(i,j) * pscale
-	    divq(i,j) = divq(i,j) * pscale
+            divq(i,j) = divq(i,j) * pscale
 
             pc(i,j) = pc(i,j) * pscale
             pcre(i,j) = pcre(i,j) * pscale
@@ -9002,10 +9077,10 @@ c                 c_ehst = 1.0
             fz0(i,j)   = fz0(i,j)   * pscale
 
             capr_fzeta(i,j) = capr_fzeta(i,j) * pscale
-	    
-	    fpsi0(i, j)  = fpsi0(i, j)  * pscale
+            
+            fpsi0(i, j)  = fpsi0(i, j)  * pscale
             ftheta0(i,j) = ftheta0(i,j) * pscale
-	    bdotf(i,j) = bdotf(i,j) * pscale
+            bdotf(i,j) = bdotf(i,j) * pscale
      
             fpsi1(i,j)= fpsi1(i,j) * pscale
             ftheta1(i,j) = ftheta1(i,j) * pscale
@@ -9018,9 +9093,9 @@ c                 c_ehst = 1.0
          wdoti1_ql(n) = wdoti1_ql(n) * pscale
          wdoti2_ql(n) = wdoti2_ql(n) * pscale
          wdoti3_ql(n) = wdoti3_ql(n) * pscale
-	 wdoti4_ql(n) = wdoti4_ql(n) * pscale
-	 wdoti5_ql(n) = wdoti5_ql(n) * pscale
-	 wdoti6_ql(n) = wdoti6_ql(n) * pscale
+         wdoti4_ql(n) = wdoti4_ql(n) * pscale
+         wdoti5_ql(n) = wdoti5_ql(n) * pscale
+         wdoti6_ql(n) = wdoti6_ql(n) * pscale
 
          do niu = 1, nuper
             do miu = 1, nupar
@@ -9041,40 +9116,40 @@ c                 c_ehst = 1.0
                cqlavg_i2(niu, miu, n) = cqlavg_i2(niu, miu, n) * pscale
                eqlavg_i2(niu, miu, n) = eqlavg_i2(niu, miu, n) * pscale
                fqlavg_i2(niu, miu, n) = fqlavg_i2(niu, miu, n) * pscale
-	       end if
-	       
-	       if(eta3 .ne. 0.0)then	       
-	       bqlavg_i3(niu, miu, n) = bqlavg_i3(niu, miu, n) * pscale
+               end if
+               
+               if(eta3 .ne. 0.0)then           
+               bqlavg_i3(niu, miu, n) = bqlavg_i3(niu, miu, n) * pscale
                cqlavg_i3(niu, miu, n) = cqlavg_i3(niu, miu, n) * pscale
                eqlavg_i3(niu, miu, n) = eqlavg_i3(niu, miu, n) * pscale
                fqlavg_i3(niu, miu, n) = fqlavg_i3(niu, miu, n) * pscale
-	       end if
-	       
-	       if(eta4 .ne. 0.0)then	       
-	       bqlavg_i4(niu, miu, n) = bqlavg_i4(niu, miu, n) * pscale
+               end if
+               
+               if(eta4 .ne. 0.0)then           
+               bqlavg_i4(niu, miu, n) = bqlavg_i4(niu, miu, n) * pscale
                cqlavg_i4(niu, miu, n) = cqlavg_i4(niu, miu, n) * pscale
                eqlavg_i4(niu, miu, n) = eqlavg_i4(niu, miu, n) * pscale
-               fqlavg_i4(niu, miu, n) = fqlavg_i4(niu, miu, n) * pscale	
-	       end if
-	       
-	       if(eta5 .ne. 0.0)then	       
-	       bqlavg_i5(niu, miu, n) = bqlavg_i5(niu, miu, n) * pscale
+               fqlavg_i4(niu, miu, n) = fqlavg_i4(niu, miu, n) * pscale 
+               end if
+               
+               if(eta5 .ne. 0.0)then           
+               bqlavg_i5(niu, miu, n) = bqlavg_i5(niu, miu, n) * pscale
                cqlavg_i5(niu, miu, n) = cqlavg_i5(niu, miu, n) * pscale
                eqlavg_i5(niu, miu, n) = eqlavg_i5(niu, miu, n) * pscale
-               fqlavg_i5(niu, miu, n) = fqlavg_i5(niu, miu, n) * pscale	
-	       end if
-	       
-	       if(eta6 .ne. 0.0)then	       
-	       bqlavg_i6(niu, miu, n) = bqlavg_i6(niu, miu, n) * pscale
+               fqlavg_i5(niu, miu, n) = fqlavg_i5(niu, miu, n) * pscale 
+               end if
+               
+               if(eta6 .ne. 0.0)then           
+               bqlavg_i6(niu, miu, n) = bqlavg_i6(niu, miu, n) * pscale
                cqlavg_i6(niu, miu, n) = cqlavg_i6(niu, miu, n) * pscale
                eqlavg_i6(niu, miu, n) = eqlavg_i6(niu, miu, n) * pscale
-               fqlavg_i6(niu, miu, n) = fqlavg_i6(niu, miu, n) * pscale	
-	       end if   	       
-	                	                    
+               fqlavg_i6(niu, miu, n) = fqlavg_i6(niu, miu, n) * pscale 
+               end if                  
+                                                    
 
             end do
          end do
-	 
+         
       end do
       
       tmin = (second1(dummy) - t1) / 60.
@@ -9106,7 +9181,7 @@ c                 c_ehst = 1.0
       vc3_cgs = vc3_mks * 100.
       vc4_cgs = vc4_mks * 100.
       vc5_cgs = vc5_mks * 100.
-      vc6_cgs = vc6_mks * 100.			       
+      vc6_cgs = vc6_mks * 100.                         
       
       do n = 1, nnoderho
          do niu = 1, nuper
@@ -9116,22 +9191,22 @@ c                 c_ehst = 1.0
                bqlavg_e(niu, miu, n) = bqlavg_e(niu, miu, n) / xnavg(n) 
      .            * vce_cgs**4 * 100. 
                cqlavg_e(niu, miu, n) = cqlavg_e(niu, miu, n) / xnavg(n)
-     .            * vce_cgs**3 * 100. 	       
+     .            * vce_cgs**3 * 100.          
                eqlavg_e(niu, miu, n) = eqlavg_e(niu, miu, n) / xnavg(n)
-     .            * vce_cgs**3 * 100. 	       
+     .            * vce_cgs**3 * 100.          
                fqlavg_e(niu, miu, n) = fqlavg_e(niu, miu, n) / xnavg(n) 
      .            * vce_cgs**2 * 100.
      
                else
-	          bqlavg_e(niu, miu, n) = 0. 
-                  cqlavg_e(niu, miu, n) = 0. 	       
-                  eqlavg_e(niu, miu, n) = 0. 	       
-                  fqlavg_e(niu, miu, n) = 0.	       
+                  bqlavg_e(niu, miu, n) = 0. 
+                  cqlavg_e(niu, miu, n) = 0.           
+                  eqlavg_e(niu, miu, n) = 0.           
+                  fqlavg_e(niu, miu, n) = 0.           
                end if 
-	       
-	       if(xn1avg(n) .ne. 0.0)then       
+               
+               if(xn1avg(n) .ne. 0.0)then       
                bqlavg_i1(niu, miu, n)= bqlavg_i1(niu, miu, n)/ xn1avg(n)
-     .            * vc1_cgs**4 * 100. 	        
+     .            * vc1_cgs**4 * 100.           
                cqlavg_i1(niu, miu, n)= cqlavg_i1(niu, miu, n)/ xn1avg(n)
      .            * vc1_cgs**3 * 100.         
                eqlavg_i1(niu, miu, n)= eqlavg_i1(niu, miu, n)/ xn1avg(n)
@@ -9140,109 +9215,109 @@ c                 c_ehst = 1.0
      .            * vc1_cgs**2 * 100.
      
                else
-	          bqlavg_i1(niu, miu, n)= 0. 	        
+                  bqlavg_i1(niu, miu, n)= 0.            
                   cqlavg_i1(niu, miu, n)= 0.         
                   eqlavg_i1(niu, miu, n)= 0.      
                   fqlavg_i1(niu, miu, n)= 0.  
                end if
-	       	                
-	       if(eta2 .ne. 0.0)then         
+                                
+               if(eta2 .ne. 0.0)then         
                if(xn2avg(n) .ne. 0.0)then
                bqlavg_i2(niu, miu, n)= bqlavg_i2(niu, miu, n)/ xn2avg(n)
      .            * vc2_cgs**4 * 100.         
                cqlavg_i2(niu, miu, n)= cqlavg_i2(niu, miu, n)/ xn2avg(n)
-     .            * vc2_cgs**3 * 100. 	        
+     .            * vc2_cgs**3 * 100.           
                eqlavg_i2(niu, miu, n)= eqlavg_i2(niu, miu, n)/ xn2avg(n)
-     .            * vc2_cgs**3 * 100. 	        
+     .            * vc2_cgs**3 * 100.           
                fqlavg_i2(niu, miu, n)= fqlavg_i2(niu, miu, n)/ xn2avg(n)
      .            * vc2_cgs**2 * 100.
      
                else
                   bqlavg_i2(niu, miu, n)= 0.         
-                  cqlavg_i2(niu, miu, n)= 0. 	        
-                  eqlavg_i2(niu, miu, n)= 0. 	        
-                  fqlavg_i2(niu, miu, n)= 0. 	       
+                  cqlavg_i2(niu, miu, n)= 0.            
+                  eqlavg_i2(niu, miu, n)= 0.            
+                  fqlavg_i2(niu, miu, n)= 0.           
                end if
-	       end if
-	       
-	        
-	       if(eta3 .ne. 0.0)then 
+               end if
+               
+                
+               if(eta3 .ne. 0.0)then 
                if(xn3avg(n) .ne. 0.0)then
                bqlavg_i3(niu, miu, n)= bqlavg_i3(niu, miu, n)/ xn3avg(n)
      .            * vc3_cgs**4 * 100.         
                cqlavg_i3(niu, miu, n)= cqlavg_i3(niu, miu, n)/ xn3avg(n)
-     .            * vc3_cgs**3 * 100. 	        
+     .            * vc3_cgs**3 * 100.           
                eqlavg_i3(niu, miu, n)= eqlavg_i3(niu, miu, n)/ xn3avg(n)
-     .            * vc3_cgs**3 * 100. 	        
+     .            * vc3_cgs**3 * 100.           
                fqlavg_i3(niu, miu, n)= fqlavg_i3(niu, miu, n)/ xn3avg(n)
      .            * vc3_cgs**2 * 100.
      
                else
                   bqlavg_i3(niu, miu, n)= 0.         
-                  cqlavg_i3(niu, miu, n)= 0. 	        
-                  eqlavg_i3(niu, miu, n)= 0. 	        
-                  fqlavg_i3(niu, miu, n)= 0.	       
+                  cqlavg_i3(niu, miu, n)= 0.            
+                  eqlavg_i3(niu, miu, n)= 0.            
+                  fqlavg_i3(niu, miu, n)= 0.           
                end if
-	       end if
-	       
-	       
-	       if(eta4 .ne. 0.0)then
-	       if(xn4avg(n) .ne. 0.0)then
+               end if
+               
+               
+               if(eta4 .ne. 0.0)then
+               if(xn4avg(n) .ne. 0.0)then
                bqlavg_i4(niu, miu, n)= bqlavg_i4(niu, miu, n)/ xn4avg(n)
      .            * vc4_cgs**4 * 100.         
                cqlavg_i4(niu, miu, n)= cqlavg_i4(niu, miu, n)/ xn4avg(n)
-     .            * vc4_cgs**3 * 100. 	        
+     .            * vc4_cgs**3 * 100.           
                eqlavg_i4(niu, miu, n)= eqlavg_i4(niu, miu, n)/ xn4avg(n)
-     .            * vc4_cgs**3 * 100. 	        
+     .            * vc4_cgs**3 * 100.           
                fqlavg_i4(niu, miu, n)= fqlavg_i4(niu, miu, n)/ xn4avg(n)
      .            * vc4_cgs**2 * 100.
      
                else
                   bqlavg_i4(niu, miu, n)= 0.         
-                  cqlavg_i4(niu, miu, n)= 0. 	        
-                  eqlavg_i4(niu, miu, n)= 0. 	        
-                  fqlavg_i4(niu, miu, n)= 0.	       
+                  cqlavg_i4(niu, miu, n)= 0.            
+                  eqlavg_i4(niu, miu, n)= 0.            
+                  fqlavg_i4(niu, miu, n)= 0.           
                end if
-	       end if 
-	       
-	       if(eta5 .ne. 0.0)then
-	       if(xn5avg(n) .ne. 0.0)then
+               end if 
+               
+               if(eta5 .ne. 0.0)then
+               if(xn5avg(n) .ne. 0.0)then
                bqlavg_i5(niu, miu, n)= bqlavg_i5(niu, miu, n)/ xn5avg(n)
      .            * vc5_cgs**4 * 100.         
                cqlavg_i5(niu, miu, n)= cqlavg_i5(niu, miu, n)/ xn5avg(n)
-     .            * vc5_cgs**3 * 100. 	        
+     .            * vc5_cgs**3 * 100.           
                eqlavg_i5(niu, miu, n)= eqlavg_i5(niu, miu, n)/ xn5avg(n)
-     .            * vc5_cgs**3 * 100. 	        
+     .            * vc5_cgs**3 * 100.           
                fqlavg_i5(niu, miu, n)= fqlavg_i5(niu, miu, n)/ xn5avg(n)
      .            * vc5_cgs**2 * 100.
      
                else
                   bqlavg_i5(niu, miu, n)= 0.         
-                  cqlavg_i5(niu, miu, n)= 0. 	        
-                  eqlavg_i5(niu, miu, n)= 0. 	        
-                  fqlavg_i5(niu, miu, n)= 0.	       
+                  cqlavg_i5(niu, miu, n)= 0.            
+                  eqlavg_i5(niu, miu, n)= 0.            
+                  fqlavg_i5(niu, miu, n)= 0.           
                end if
-	       end if 
-	       
-	       if(eta6 .ne. 0.0)then
-	       if(xn6avg(n) .ne. 0.0)then
+               end if 
+               
+               if(eta6 .ne. 0.0)then
+               if(xn6avg(n) .ne. 0.0)then
                bqlavg_i6(niu, miu, n)= bqlavg_i6(niu, miu, n)/ xn6avg(n)
      .            * vc6_cgs**4 * 100.         
                cqlavg_i6(niu, miu, n)= cqlavg_i6(niu, miu, n)/ xn6avg(n)
-     .            * vc6_cgs**3 * 100. 	        
+     .            * vc6_cgs**3 * 100.           
                eqlavg_i6(niu, miu, n)= eqlavg_i6(niu, miu, n)/ xn6avg(n)
-     .            * vc6_cgs**3 * 100. 	        
+     .            * vc6_cgs**3 * 100.           
                fqlavg_i6(niu, miu, n)= fqlavg_i6(niu, miu, n)/ xn6avg(n)
      .            * vc6_cgs**2 * 100.
      
                else
                   bqlavg_i6(niu, miu, n)= 0.         
-                  cqlavg_i6(niu, miu, n)= 0. 	        
-                  eqlavg_i6(niu, miu, n)= 0. 	        
-                  fqlavg_i6(niu, miu, n)= 0.	       
+                  cqlavg_i6(niu, miu, n)= 0.            
+                  eqlavg_i6(niu, miu, n)= 0.            
+                  fqlavg_i6(niu, miu, n)= 0.           
                end if
-	       end if 		       	  	       
-	       		       	                
+               end if                                  
+                                                
 
             end do
          end do
@@ -9257,42 +9332,42 @@ c                 c_ehst = 1.0
           if(eta1 .ne. 0.0 .and. ndisti1 .eq. 1)then
 
             vperp = uperp * vc1_mks
-	    vpara = upara * vc1_mks    
+            vpara = upara * vc1_mks    
       
             do n = 1, nnoderho
                do i_uperp = 1, nuper 
                   do i_upara = 1, nupar
-	             vperp_in = uperp(i_uperp) * vc1_mks_cql3d
-	             vpara_in = upara(i_upara) * vc1_mks_cql3d		  
-	       	      
-	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     vperp_in = uperp(i_uperp) * vc1_mks_cql3d
+                     vpara_in = upara(i_upara) * vc1_mks_cql3d            
+                      
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        bqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, bqlavg_i1,
      .                        nuper, nupar, nnoderho, vperp, vpara, n)
      
-     	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        cqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, cqlavg_i1,
      .                        nuper, nupar, nnoderho, vperp, vpara, n)
      
-     	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        eqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, eqlavg_i1,
      .                        nuper, nupar, nnoderho, vperp, vpara, n)
      
-     	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        fqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, fqlavg_i1,
-     .                        nuper, nupar, nnoderho, vperp, vpara, n)	    
-	          end do
+     .                        nuper, nupar, nnoderho, vperp, vpara, n)      
+                  end do
                end do
             end do      
          
             bqlavg_i1 = bqlavg_work
-	    cqlavg_i1 = cqlavg_work
-	    eqlavg_i1 = eqlavg_work
-	    fqlavg_i1 = fqlavg_work	 	 	  
-	 
+            cqlavg_i1 = cqlavg_work
+            eqlavg_i1 = eqlavg_work
+            fqlavg_i1 = fqlavg_work                       
+         
          end if
 
 
@@ -9300,44 +9375,44 @@ c                 c_ehst = 1.0
          if(eta2 .ne. 0.0 .and. ndisti2 .eq. 1) then
       
             vperp = uperp * vc2_mks
-	    vpara = upara * vc2_mks    
+            vpara = upara * vc2_mks    
       
             do n = 1, nnoderho
                do i_uperp = 1, nuper 
                   do i_upara = 1, nupar
-	             vperp_in = uperp(i_uperp) * vc2_mks_cql3d
-	             vpara_in = upara(i_upara) * vc2_mks_cql3d		  
-	       	      
-	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     vperp_in = uperp(i_uperp) * vc2_mks_cql3d
+                     vpara_in = upara(i_upara) * vc2_mks_cql3d            
+                      
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        bqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, bqlavg_i2,
      .                        nuper, nupar, nnoderho, vperp, vpara, n)
      
-     	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        cqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, cqlavg_i2,
      .                        nuper, nupar, nnoderho, vperp, vpara, n)
      
-     	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        eqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, eqlavg_i2,
      .                        nuper, nupar, nnoderho, vperp, vpara, n)
      
-     	             call intplt_to_cql3d(vperp_in, vpara_in, 
+                     call intplt_to_cql3d(vperp_in, vpara_in, 
      .                        fqlavg_work(i_uperp, i_upara, n),
      .                        nuper, nupar, nnoderho, fqlavg_i2,
-     .                        nuper, nupar, nnoderho, vperp, vpara, n)	    
-	          end do
+     .                        nuper, nupar, nnoderho, vperp, vpara, n)      
+                  end do
                end do
             end do
       
             bqlavg_i2 = bqlavg_work
-	    cqlavg_i2 = cqlavg_work
-	    eqlavg_i2 = eqlavg_work
-	    fqlavg_i2 = fqlavg_work	 	 	        
-	 
+            cqlavg_i2 = cqlavg_work
+            eqlavg_i2 = eqlavg_work
+            fqlavg_i2 = fqlavg_work                             
+         
          end if
-	 
+         
       
       end if
 
@@ -9349,10 +9424,10 @@ c                 c_ehst = 1.0
       
 *        -------------------------------------------------------------------------
 *        Write electron quasilinear diffusion coefficients to file out_cql3d.coefe
-*        -------------------------------------------------------------------------	 
-	 if(ndiste .eq. 1)then
-	 
-	    write (40, 309) nuper
+*        -------------------------------------------------------------------------       
+         if(ndiste .eq. 1)then
+         
+            write (40, 309) nuper
             write (40, 309) nupar
             write (40, 309) nnoderho
 
@@ -9362,7 +9437,7 @@ c                 c_ehst = 1.0
             write (40, 3310) (rhon(n), n = 1, nnoderho)
             write (40, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
             write (40, 3310) (upara(i_upara), i_upara = 1, nupar)
-	 
+         
 
             write (40, 3310) (((bqlavg_e(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
@@ -9377,18 +9452,18 @@ c                 c_ehst = 1.0
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
      
             write (40, 3310) xme
-	    
-	    close (40)	    	   	    	    
-	    call dql_write_nc('out_cql3d.coefe','out_cql3d.coefe.nc') 	    
-	         
+            
+            close (40)                              
+            call dql_write_nc('out_cql3d.coefe','out_cql3d.coefe.nc')       
+                 
          end if
-	 
+         
 *        ----------------------------------------------------------------
 *        Write quasilinear diffusion coefficients to file out_cql3d.coef1
-*        ----------------------------------------------------------------	 
-	 if(ndisti1 .eq. 1)then
-	 
-	    write (41, 309) nuper
+*        ----------------------------------------------------------------        
+         if(ndisti1 .eq. 1)then
+         
+            write (41, 309) nuper
             write (41, 309) nupar
             write (41, 309) nnoderho
 
@@ -9398,7 +9473,7 @@ c                 c_ehst = 1.0
             write (41, 3310) (rhon(n), n = 1, nnoderho)
             write (41, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
             write (41, 3310) (upara(i_upara), i_upara = 1, nupar)
-	 
+         
 
             write (41, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
@@ -9413,19 +9488,19 @@ c                 c_ehst = 1.0
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
      
             write (41, 3310) xmi1
-	    
-            close (41)	    	    
-	    call dql_write_nc('out_cql3d.coef1','out_cql3d.coef1.nc')	    
-	         
+            
+            close (41)              
+            call dql_write_nc('out_cql3d.coef1','out_cql3d.coef1.nc')       
+                 
          end if
-	 
-	 
+         
+         
 *        ----------------------------------------------------------------
 *        Write quasilinear diffusion coefficients to file out_cql3d.coef2
-*        ----------------------------------------------------------------	 	 
-	 if(eta2 .ne. 0.0 .and. ndisti2 .eq. 1)then
-	 
-	    write (42, 309) nuper
+*        ----------------------------------------------------------------                
+         if(eta2 .ne. 0.0 .and. ndisti2 .eq. 1)then
+         
+            write (42, 309) nuper
             write (42, 309) nupar
             write (42, 309) nnoderho
 
@@ -9434,8 +9509,8 @@ c                 c_ehst = 1.0
 
             write (42, 3310) (rhon(n), n = 1, nnoderho)
             write (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
-            write (42, 3310) (upara(i_upara), i_upara = 1, nupar)	    
-	    
+            write (42, 3310) (upara(i_upara), i_upara = 1, nupar)           
+            
             write (42, 3310) (((bqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
@@ -9449,18 +9524,18 @@ c                 c_ehst = 1.0
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
      
             write (42, 3310) xmi2
-	    
-	    close (42)	    	    
-	    call dql_write_nc('out_cql3d.coef2','out_cql3d.coef2.nc')
+            
+            close (42)              
+            call dql_write_nc('out_cql3d.coef2','out_cql3d.coef2.nc')
      
          end if
-	 
+         
 *        ----------------------------------------------------------------
 *        Write quasilinear diffusion coefficients to file out_cql3d.coef3
-*        ----------------------------------------------------------------	 	 
-	 if(eta3 .ne. 0.0 .and. ndisti3 .eq. 1)then
-	 
-	    write (43, 309) nuper
+*        ----------------------------------------------------------------                
+         if(eta3 .ne. 0.0 .and. ndisti3 .eq. 1)then
+         
+            write (43, 309) nuper
             write (43, 309) nupar
             write (43, 309) nnoderho
 
@@ -9484,19 +9559,19 @@ c                 c_ehst = 1.0
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
      
             write (43, 3310) xmi3
-	    
-	    close (43)	    	       	    
-	    call dql_write_nc('out_cql3d.coef3','out_cql3d.coef3.nc')	    
-	         
+            
+            close (43)                      
+            call dql_write_nc('out_cql3d.coef3','out_cql3d.coef3.nc')       
+                 
          end if
-	 
-	 
+         
+         
 *        ----------------------------------------------------------------
 *        Write quasilinear diffusion coefficients to file out_cql3d.coef4
-*        ----------------------------------------------------------------	 	
-	 if(eta4 .ne. 0.0 .and. ndisti4 .eq. 1)then
-	 
-	    write (44, 309) nuper
+*        ----------------------------------------------------------------               
+         if(eta4 .ne. 0.0 .and. ndisti4 .eq. 1)then
+         
+            write (44, 309) nuper
             write (44, 309) nupar
             write (44, 309) nnoderho
 
@@ -9519,20 +9594,20 @@ c                 c_ehst = 1.0
             write (44, 3310) (((fqlavg_i4(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
            
-	    write (44, 3310) xmi4
-	    
-	    close (44)	    	    
-	    call dql_write_nc('out_cql3d.coef4','out_cql3d.coef4.nc')	    
+            write (44, 3310) xmi4
+            
+            close (44)              
+            call dql_write_nc('out_cql3d.coef4','out_cql3d.coef4.nc')       
 
      
          end if
-	 
-	 
+         
+         
       end if
       
       
       tmin = (second1(dummy) - t1) / 60.
-	 
+         
       if (myid.eq.0) then
          write(6 , 2842) tmin
          write(15, 2842) tmin
@@ -9763,29 +9838,29 @@ c     .   nrhomax, dvol)
    
 
 
-	 
+         
 31109    format(3x, "wdoteavg_int = ", 1pe12.5, 1x, "Watts")
 31110    format(3x, "wdote_ql_int = ", 1pe12.5, 1x, "Watts")
-	
+        
 
-	 
+         
 41109    format(3x, "wdoti1avg_int = ", 1pe12.5, 1x, "Watts")
 41110    format(3x, "wdoti1_ql_int = ", 1pe12.5, 1x, "Watts")
-	
+        
 
 51109    format(3x, "wdoti2avg_int = ", 1pe12.5, 1x, "Watts")
 51110    format(3x, "wdoti2_ql_int = ", 1pe12.5, 1x, "Watts")
 
 
-	 
+         
 61109    format(3x, "wdoti3avg_int = ", 1pe12.5, 1x, "Watts")
 61110    format(3x, "wdoti3_ql_int = ", 1pe12.5, 1x, "Watts")
 
 
-	 
+         
 91109    format(3x, "wdoti4avg_int = ", 1pe12.5, 1x, "Watts")
 91110    format(3x, "fwdoti4_ql_int = ", 1pe12.5, 1x, "Watts")
-	
+        
       
 
 
@@ -9883,7 +9958,7 @@ c      end if
       
       dpdpsi(1) = 0.0 
       do n = 2, nnoderho - 1
-	 dpdpsi(n) = (pressiavg(n+1) - pressiavg(n-1)) 
+         dpdpsi(n) = (pressiavg(n+1) - pressiavg(n-1)) 
      .              / (psi_dim_avg(n+1) - psi_dim_avg(n-1))
       end do
 
@@ -9927,13 +10002,13 @@ c      go to 9945
 *     Calculate coefficients for Khat equation
 *     ----------------------------------------
      
-      do n = 1, nnoderho      	 
+      do n = 1, nnoderho         
          if (rhom1avg(n) .gt. 1.0e-15)then
-	    gamma_avg(n) = muhat_avg(n) 
+            gamma_avg(n) = muhat_avg(n) 
      .                   * bmod2_avg(n) / (ipsi_avg(n) / rt)**2
-         endif	 
-	 beta_avg(n) = (epsn(n) / qsafety_avg(n))**2 
-     .                              * (1. + 2.0 * qsafety_avg(n)**2)	 
+         endif   
+         beta_avg(n) = (epsn(n) / qsafety_avg(n))**2 
+     .                              * (1. + 2.0 * qsafety_avg(n)**2)     
       end do
    
       
@@ -9946,13 +10021,13 @@ c      go to 9945
       cnk(1) =   4.0 * dn(1) * beta_avg(2) / dr**2
       ynk(1) = capr_fzeta_avg(1) / rt - rt * bdotf_avg(1) / ipsi_avg(1)
 
-      do n = 2, nnoderho - 1	 
-	 ank(n) = rh(n-1) * beta_avg(n-1) * dh(n-1) / (rn(n) * dr**2)
+      do n = 2, nnoderho - 1     
+         ank(n) = rh(n-1) * beta_avg(n-1) * dh(n-1) / (rn(n) * dr**2)
          cnk(n) = rh(n)   * beta_avg(n+1) * dh(n)   / (rn(n) * dr**2)
          bnk(n) = - gamma_avg(n) 
      .            - rh(n-1) * beta_avg(n) * dh(n-1) / (rn(n) * dr**2)
-     .            - rh(n)   * beta_avg(n) * dh(n)   / (rn(n) * dr**2)	 
-	 ynk(n) = capr_fzeta_avg(n) /rt - rt * bdotf_avg(n) /ipsi_avg(n)
+     .            - rh(n)   * beta_avg(n) * dh(n)   / (rn(n) * dr**2)    
+         ynk(n) = capr_fzeta_avg(n) /rt - rt * bdotf_avg(n) /ipsi_avg(n)
  
       end do
       
@@ -9964,11 +10039,11 @@ c      go to 9945
       call tridag(ank, bnk, cnk, ynk, xkhat, nnoderho)
       
       do n = 1, nnoderho
-      	 kpsi_avg(n) = 0.0
+         kpsi_avg(n) = 0.0
          if (rhom1avg(n) .gt. 1.0e-10)then
-	    kpsi_avg(n) = xkhat(n) / (rhom1avg(n) * ipsi_avg(n) / rt) 
-	                                                 	                                   	    
-         endif	 
+            kpsi_avg(n) = xkhat(n) / (rhom1avg(n) * ipsi_avg(n) / rt) 
+                                                                                                            
+         endif   
       end do      
             
 
@@ -9988,11 +10063,11 @@ c      if(myid .eq. 0) write(15, *)"        n    rhon   pitch angle(deg)"
       
       do n = 1, nnoderho - 1
          angle = atan2(pitch_avg(n), 1.0)
-	 angle = angle / pi * 180.0
+         angle = angle / pi * 180.0
          if(myid .eq. 0)write(6, 1312)n, rhon(n), pitch_avg(n), angle,
      .                       beta_avg(n), qsafety_avg(n), epsn(n)
          if(myid .eq. 0)write(15,1312)n, rhon(n), pitch_avg(n), angle, 
-     .                       beta_avg(n), qsafety_avg(n), epsn(n)	 
+     .                       beta_avg(n), qsafety_avg(n), epsn(n)        
       end do
      
      
@@ -10010,7 +10085,7 @@ c      if(myid .eq. 0) write(15, *)"        n    rhon   pitch angle(deg)"
          an(n) = rh(n-1) * dh(n-1) / (rn(n) * dr**2)
          cn(n) = rh(n) * dh(n)     / (rn(n) * dr**2)
          bn(n) = - an(n) - cn(n)
-	 yn(n) = - capr_fzeta_avg(n) / rt
+         yn(n) = - capr_fzeta_avg(n) / rt
       end do
 
       an(nnoderho) = 0.0
@@ -10033,19 +10108,19 @@ c      if(myid .eq. 0) write(15, *)"        n    rhon   pitch angle(deg)"
       do n = 1, nnoderho
          gpsi_avg(n) = 0.0
          epsi_avg(n) = 0.0
-	 
+         
          if (rhom1avg(n) .gt. 1.0e-10)then
      
-     	    gpsi_avg(n) = (xjhat(n) - rhom1avg(n) * kpsi_avg(n) * b0) 
+            gpsi_avg(n) = (xjhat(n) - rhom1avg(n) * kpsi_avg(n) * b0) 
      .         / (rhom1avg(n) * rt * (1. + 1.5 * epsn(n)**2))
      
             term2 = rhom1avg(n) * kpsi_avg(n) * b0
-	    
-	    if(myid .eq. 0) then
+            
+            if(myid .eq. 0) then
                write(6,  1312)n, xjhat(n), yn(n)
                write(15, 1312)n, xjhat(n), yn(n)
-	    end if 
-	    
+            end if 
+            
             epsi_avg(n) = gpsi_avg(n) 
 c     .                 - fpsi1_avg(n) 
 c     .                 + 1. / (qi2 * xn2avg(n)) * dpdpsi(n)
@@ -10062,7 +10137,7 @@ c     .                 + 1. / (qi2 * xn2avg(n)) * dpdpsi(n)
       dedpsi_avg(1) = 0.0
 
       do n = 2, nnoderho - 1
-      	 dedpsi_avg(n) = (epsi_avg(n+1) - epsi_avg(n-1)) 
+         dedpsi_avg(n) = (epsi_avg(n+1) - epsi_avg(n-1)) 
      .                 / (psi_dim_avg(n+1) - psi_dim_avg(n-1))
       end do
             
@@ -10078,15 +10153,15 @@ c     .                 + 1. / (qi2 * xn2avg(n)) * dpdpsi(n)
       do i = 1, nnodex
          do j = 1, nnodey
             n = int(rho(i,j) / drho) + 1
-	    
+            
             gpsi(i,j) = 0.0
-	    kpsi(i,j) = 0.0
+            kpsi(i,j) = 0.0
             epsi(i,j) = 0.0
             dedpsi(i,j) = 0.0
-	    jhat(i,j) = 0.0
-	    
+            jhat(i,j) = 0.0
+            
             if(n .lt. nnoderho .and. rho(i,j) .le. rholim)then
-	    
+            
                gpsi(i,j) = gpsi_avg(n) + (gpsi_avg(n + 1) - gpsi_avg(n))
      .             / drho * (rho(i,j) - rhon(n))
                kpsi(i,j) = kpsi_avg(n) + (kpsi_avg(n + 1) - kpsi_avg(n))
@@ -10102,13 +10177,13 @@ c     .                 + 1. / (qi2 * xn2avg(n)) * dpdpsi(n)
             end if
 
             if(n .eq. nnoderho .and. rho(i,j) .le. rholim)then
-	    
+            
                gpsi(i,j) = gpsi_avg(n)
-	       kpsi(i,j) = kpsi_avg(n)
+               kpsi(i,j) = kpsi_avg(n)
                epsi(i,j) = epsi_avg(n)
-       	       dedpsi(i,j) = dedpsi_avg(n)
-	       jhat(i,j) = xjhat(n)
-	       
+               dedpsi(i,j) = dedpsi_avg(n)
+               jhat(i,j) = xjhat(n)
+               
             end if
          end do
       end do
@@ -10129,8 +10204,8 @@ c     .                 + 1. / (qi2 * xn2avg(n)) * dpdpsi(n)
 c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
       
             utheta(i,j) = kpsi(i,j) * bpol(i,j)
-	   
-	     
+           
+             
          end do
       end do
       
@@ -10148,39 +10223,39 @@ c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
       if (myid .eq. 0) then
          write(6,  1309) ptot
          write(15, 1309) ptot
-	 
-	 fedge = ptot_edge / ptot * 100.0
-	 fcore = ptot_core / ptot * 100.0
-	 
-	 f_wdot_edge = 0.0
-	 f_wdot_core = 0.0
+         
+         fedge = ptot_edge / ptot * 100.0
+         fcore = ptot_core / ptot * 100.0
+         
+         f_wdot_edge = 0.0
+         f_wdot_core = 0.0
          if (ptot_wdot .ne. 0.0) then
-	    f_wdot_edge = wdot_edge / ptot_wdot * 100.0
-	    f_wdot_core = wdot_core / ptot_wdot * 100.0
-	 end if	 
-	  	 	 	 
+            f_wdot_edge = wdot_edge / ptot_wdot * 100.0
+            f_wdot_core = wdot_core / ptot_wdot * 100.0
+         end if  
+                                 
 
          write(6,  1110) pcrto2, pcito2
          write(15, 1110) pcrto2, pcito2
-	 
+         
          write(6, *) "fraction absorbed in edge = ", fedge, " %"
-         write(6, *) "fraction absorbed in core = ", fcore, " %"	 
+         write(6, *) "fraction absorbed in core = ", fcore, " %"         
          write(15, *) "fraction absorbed in edge = ", fedge, " %"
          write(15, *) "fraction absorbed in core = ", fcore, " %"
-	 
+         
          write(6, *) "wdot fraction in edge = ", f_wdot_edge, " %"
-         write(6, *) "wdot fraction in core = ", f_wdot_core, " %"	 
+         write(6, *) "wdot fraction in core = ", f_wdot_core, " %"       
          write(15, *) "wdot fraction in edge = ", f_wdot_edge, " %"
-         write(15, *) "wdot fraction in core = ", f_wdot_core, " %"	 	 	 
-	 
+         write(15, *) "wdot fraction in core = ", f_wdot_core, " %"                      
+         
 
          write(6,  1216)powtot
          write(15, 1216)powtot
 
          write(6,  1217) xjtot
          write(15, 1217) xjtot
-	 
-	 ntilda_e_max = maxval(ntilda_e_real)  
+         
+         ntilda_e_max = maxval(ntilda_e_real)  
          write(6, *)  "ntilda_e_max = ", ntilda_e_max, "m-3"
          write(15, *) "ntilda_e_max = ", ntilda_e_max, "m-3"  
 
@@ -10244,10 +10319,10 @@ c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
      .                    pedotjt, pcedotjt
      
          z_load = pedotjt / (i_ant**2)
-	 write(15, 169)
-	 write(15, 1148) i_ant
- 1148 format(3x, 35h                  antenna current = ,1e12.5,5h Amps)	 
-	 write(15, 1149) z_load      
+         write(15, 169)
+         write(15, 1148) i_ant
+ 1148 format(3x, 35h                  antenna current = ,1e12.5,5h Amps)         
+         write(15, 1149) z_load      
  1149 format(3x, 35h                  antenna loading = ,1e12.5,5h Ohms)
  
      
@@ -10284,7 +10359,7 @@ c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
      .                    pedotjt, pcedotjt
      
          write(6, 169)
-	 write(6, 1149) z_load      
+         write(6, 1149) z_load      
 
 
 c--      Calculate species fractions from Wdot:
@@ -10305,13 +10380,13 @@ c--      Calculate species fractions from Wdot:
 81667 format(' Species absorption from Wdot:')
 
          pe  = pe  * twopi * rt
-	 pi1 = pi1 * twopi * rt
-	 pi2 = pi2 * twopi * rt
-	 pi3 = pi3 * twopi * rt
-	 pi4 = pi4 * twopi * rt
-	 pi5 = pi5 * twopi * rt
-	 pi6 = pi6 * twopi * rt
-	 pt  = pt  * twopi * rt
+         pi1 = pi1 * twopi * rt
+         pi2 = pi2 * twopi * rt
+         pi3 = pi3 * twopi * rt
+         pi4 = pi4 * twopi * rt
+         pi5 = pi5 * twopi * rt
+         pi6 = pi6 * twopi * rt
+         pt  = pt  * twopi * rt
 
          write(15, 169)
          write(15, 81667)
@@ -10335,21 +10410,21 @@ c--      Calculate species fractions from Wdot:
      .                    pt,  pctt
      
          z_load = pt / (i_ant**2)
-	 write(15, 169)	 
-	 write(15, 1149) z_load       
+         write(15, 169)  
+         write(15, 1149) z_load       
      
      
 81668 format('Species absorption from quasilinear Wdot:')
 
 c         pe_ql  =  wdote_ql_int(nnoderho)
-c	 pi1_ql = wdoti1_ql_int(nnoderho) 
-c	 pi2_ql = wdoti2_ql_int(nnoderho) 
-c	 pi3_ql = wdoti3_ql_int(nnoderho) 
-c	 pi4_ql = wdoti4_ql_int(nnoderho) 
-c	 pi5_ql = wdoti5_ql_int(nnoderho) 
-c	 pi6_ql = wdoti6_ql_int(nnoderho) 
-	 
-c	 pt_ql  = pe_ql + pi1_ql + pi2_ql + pi3_ql 
+c        pi1_ql = wdoti1_ql_int(nnoderho) 
+c        pi2_ql = wdoti2_ql_int(nnoderho) 
+c        pi3_ql = wdoti3_ql_int(nnoderho) 
+c        pi4_ql = wdoti4_ql_int(nnoderho) 
+c        pi5_ql = wdoti5_ql_int(nnoderho) 
+c        pi6_ql = wdoti6_ql_int(nnoderho) 
+         
+c        pt_ql  = pe_ql + pi1_ql + pi2_ql + pi3_ql 
 c     .                   + pi4_ql +pi5_ql + pi6_ql
      
      
@@ -10418,41 +10493,41 @@ c            do j = 1, nnodey
 c               n = int(rho(i,j) / drho) + 1
 c               if(n .lt. nnoderho)then
 c                  dvol(n)  =  dvol(n) + dx * dy * 2.0 * pi * capr(i) 
-c	          darea(n) = darea(n) + dx * dy * capr(i) / rt
+c                 darea(n) = darea(n) + dx * dy * capr(i) / rt
 c               end if
 c            end do
 c         end do
 
 
          write(38, 309) nmax, mmax
-	 write(38, 310) (zetai_table(n), n = 1, nmax)
+         write(38, 310) (zetai_table(n), n = 1, nmax)
          write(38, 310) (dKdL_table(m), m = 1, mmax)
-	 write(38, 310) ((z0_table1(n, m), n = 1, nmax),  m = 1, mmax)
-	 write(38, 310) ((z1_table1(n, m), n = 1, nmax),  m = 1, mmax)
-	 write(38, 310) ((z2_table1(n, m), n = 1, nmax),  m = 1, mmax)	 	 
-	 
-	 
+         write(38, 310) ((z0_table1(n, m), n = 1, nmax),  m = 1, mmax)
+         write(38, 310) ((z1_table1(n, m), n = 1, nmax),  m = 1, mmax)
+         write(38, 310) ((z2_table1(n, m), n = 1, nmax),  m = 1, mmax)           
+         
+         
          write(38, 309) nnodex, nnodey, jmid, idiag, jdiag
          write(38, 310) psilim, prfin, omgrf
          write(38, 310) (x(i), i = 1, nnodex)
          write(38, 310) (y(j), j = 1, nnodey)
          write(38, 310) (capr(i), i = 1, nnodex)
          write(38, 310) (xkphi(i), i = 1, nnodex)
-	 
-	 
-	 
+         
+         
+         
          write(130, 309) nnodex, nnodey, jmid
-	 write(130, 310) psilim
+         write(130, 310) psilim
          write(130, 310) (capr(i), i = 1, nnodex)
-         write(130, 310) (y(j), j = 1, nnodey)	 	 
+         write(130, 310) (y(j), j = 1, nnodey)           
          write(130, 310) ((xkperp2_slow(i, j), i = 1, nnodex), 
-     .      j = 1, nnodey)	 
+     .      j = 1, nnodey)       
          write(130, 310) ((xkperp2_fast(i, j), i = 1, nnodex), 
      .      j = 1, nnodey)
          write(130, 310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
-	 write(130, 310) ((xkprl_a(i,j), i = 1, nnodex), j = 1, nnodey)
-	 write(130, 310) ((P_a(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         write(130, 310) ((xkprl_a(i,j), i = 1, nnodex), j = 1, nnodey)
+         write(130, 310) ((P_a(i, j), i = 1, nnodex), j = 1, nnodey)
+         
 
 
          write(38, 310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
@@ -10463,27 +10538,27 @@ c         end do
          write(38, 310) ((xkti(i, j), i = 1, nnodex), j = 1, nnodey)
 
          write(38, 310) ((xkperp_cold(i,j), i = 1, nnodex),j = 1,nnodey)
-	 write(38, 310) ((xkperp_cold2(i,j), i = 1,nnodex),j = 1,nnodey)
-	 
+         write(38, 310) ((xkperp_cold2(i,j), i = 1,nnodex),j = 1,nnodey)
+         
          write(38, 310) ((acold(i, j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((bcold(i, j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((ccold(i, j), i = 1, nnodex), j = 1, nnodey)
-	 	 
-	 write (38, 310) ((reomg1a(i, j), i = 1, nnodex), j = 1, nnodey)     
+         write(38, 310) ((bcold(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((ccold(i, j), i = 1, nnodex), j = 1, nnodey)
+                 
+         write (38, 310) ((reomg1a(i, j), i = 1, nnodex), j = 1, nnodey)     
          write (38, 310) ((reomg2a(i, j), i = 1, nnodex), j = 1, nnodey)     
          write (38, 310) ((reomg3a(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-         write (38, 310) ((reomglha(i, j), i = 1, nnodex),j = 1, nnodey)	 
-	 
+         
+         write (38, 310) ((reomglha(i, j), i = 1, nnodex),j = 1, nnodey)         
+         
          write(38, 310) ((xjx(i, j),  i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((xjy(i, j),  i = 1, nnodex), j = 1, nnodey)
-         write(38, 310) ((xjz(i, j),  i = 1, nnodex), j = 1, nnodey)	 
+         write(38, 310) ((xjz(i, j),  i = 1, nnodex), j = 1, nnodey)     
 
          write(38, 310) ((ex(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((ey(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((ez(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-	 write (38, 310) ((xjpxe(i,j), i = 1, nnodex), j = 1, nnodey)           
+         
+         write (38, 310) ((xjpxe(i,j), i = 1, nnodex), j = 1, nnodey)           
          write (38, 310) ((xjpye(i,j), i = 1, nnodex), j = 1, nnodey)      
          write (38, 310) ((xjpze(i,j), i = 1, nnodex), j = 1, nnodey)
 
@@ -10527,27 +10602,27 @@ c         end do
          write(38, 310) ((wdote(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((wdoti1(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((wdoti2(i, j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((wdot(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         write(38, 310) ((wdot(i, j), i = 1, nnodex), j = 1, nnodey)
+         
          write (38, 310) ((divq(i, j), i = 1, nnodex), j = 1, nnodey) 
          write (38, 310) ((capd(i, n), i = 1, nnodex), n = nkx1, nkx2)
-	 write (38, 310) ((xkb(i, n), i = 1, nnodex), n = nkx1, nkx2)
-	 
-	 
+         write (38, 310) ((xkb(i, n), i = 1, nnodex), n = nkx1, nkx2)
+         
+         
          do n = nkx1, nkx2
             write(6, *) "n = ", n, "xkb(64, n) = ", xkb(64, n)
-         end do	
-	  	 
+         end do 
+                 
          write(38, 309) nnoderho
          write(38, 310) (rhon(n), n = 1, nnoderho)
-	 write(38, 310) (gradprlb_avg(n), n = 1, nnoderho)
-	 
-	 write(38, 309) mnodetheta	   
-	 write(38, 310) (thetam(m), m = 1, mnodetheta)
-	 
-	 write(38, 310) (dvol(n), n = 1, nnoderho)
-	 write(38, 310) (volume(n), n = 1, nnoderho)
-	 
+         write(38, 310) (gradprlb_avg(n), n = 1, nnoderho)
+         
+         write(38, 309) mnodetheta         
+         write(38, 310) (thetam(m), m = 1, mnodetheta)
+         
+         write(38, 310) (dvol(n), n = 1, nnoderho)
+         write(38, 310) (volume(n), n = 1, nnoderho)
+         
          write(38, 310) (xnavg(n), n = 1, nnoderho)
          write(38, 310) (wdoteavg(n), n = 1, nnoderho)
          write(38, 310) (wdoti1avg(n), n = 1, nnoderho)
@@ -10583,27 +10658,27 @@ c         end do
          write(38, 310) (fz0_int(n), n = 1, nnoderho)
 
          write(38, 310) (xjhat(n), n = 1, nnoderho)
-	 write(38, 310) (xkhat(n), n = 1, nnoderho)
-	 
-	 write(38, 310) (gpsi_avg(n), n = 1, nnoderho)
+         write(38, 310) (xkhat(n), n = 1, nnoderho)
+         
+         write(38, 310) (gpsi_avg(n), n = 1, nnoderho)
          write(38, 310) ((gpsi(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(38, 310) (kpsi_avg(n), n = 1, nnoderho)
          write(38, 310) ((kpsi(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(38, 310) (muhat_avg(n), n = 1, nnoderho)
          write(38, 310) ((muhat(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(38, 310) (nu_star_avg(n), n = 1, nnoderho)
-         write(38, 310) ((nu_star(i, j), i = 1, nnodex), j = 1, nnodey)	 
-	 
-	 write(38, 310) (ipsi_avg(n), n = 1, nnoderho)
-	 write(38, 310) ((ipsi(i, j), i = 1, nnodex), j = 1, nnodey)	 
-	 	 
+         write(38, 310) ((nu_star(i, j), i = 1, nnodex), j = 1, nnodey)  
+         
+         write(38, 310) (ipsi_avg(n), n = 1, nnoderho)
+         write(38, 310) ((ipsi(i, j), i = 1, nnodex), j = 1, nnodey)     
+                 
          write(38, 310) ((omgexb(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((uzeta(i,j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((utheta(i,j), i = 1, nnodex), j = 1, nnodey)
-	 
+         write(38, 310) ((utheta(i,j), i = 1, nnodex), j = 1, nnodey)
+         
          write(38, 310) (xn1avg(n), n = 1, nnoderho)
          write(38, 310) (xn2avg(n), n = 1, nnoderho)
          write(38, 310) (xn3avg(n), n = 1, nnoderho)
@@ -10620,8 +10695,8 @@ c         end do
 
          write(38, 310) ((capr_bpol_mid2(i, j), i = 1,nnodex),
      .                                                    j = 1,nnodey)
-         write(38, 310) (capr_bpol_mid(n), n = 1, nnoderho)	 
-	 
+         write(38, 310) (capr_bpol_mid(n), n = 1, nnoderho)      
+         
          write(38, 310) ((redotj4(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((redotj5(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((redotj6(i, j), i = 1, nnodex), j = 1, nnodey)
@@ -10653,48 +10728,48 @@ c         end do
          write(38, 310) (xkti4avg(n), n = 1, nnoderho)
          write(38, 310) (xkti5avg(n), n = 1, nnoderho)
          write(38, 310) (xkti6avg(n), n = 1, nnoderho)
-	 
-	 write(38, 310) (wdoteavg_int(n),  n = 1, nnoderho)
+         
+         write(38, 310) (wdoteavg_int(n),  n = 1, nnoderho)
          write(38, 310) (wdoti1avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti2avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti3avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti4avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti5avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti6avg_int(n), n = 1, nnoderho)
-	 
-	 write(38, 310) (wdote_ql_int(n),  n = 1, nnoderho)
+         write(38, 310) (wdoti2avg_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti3avg_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti4avg_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti5avg_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti6avg_int(n), n = 1, nnoderho)
+         
+         write(38, 310) (wdote_ql_int(n),  n = 1, nnoderho)
          write(38, 310) (wdoti1_ql_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti2_ql_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti3_ql_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti4_ql_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti5_ql_int(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti6_ql_int(n), n = 1, nnoderho)	 
-	 
-	 write(38, 310) (redotjeavg_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti2_ql_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti3_ql_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti4_ql_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti5_ql_int(n), n = 1, nnoderho)
+         write(38, 310) (wdoti6_ql_int(n), n = 1, nnoderho)      
+         
+         write(38, 310) (redotjeavg_int(n), n = 1, nnoderho)
          write(38, 310) (redotj1avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (redotj2avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (redotj3avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (redotj4avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (redotj5avg_int(n), n = 1, nnoderho)
-	 write(38, 310) (redotj6avg_int(n), n = 1, nnoderho)	 
-	 
-	 
+         write(38, 310) (redotj2avg_int(n), n = 1, nnoderho)
+         write(38, 310) (redotj3avg_int(n), n = 1, nnoderho)
+         write(38, 310) (redotj4avg_int(n), n = 1, nnoderho)
+         write(38, 310) (redotj5avg_int(n), n = 1, nnoderho)
+         write(38, 310) (redotj6avg_int(n), n = 1, nnoderho)     
+         
+         
          write(59,309) nnodex, nnodey
          write(59,310) ((eb(i, j), i = 1, nnodex), j = 1, nnodey)
 
          write(60,309) nnodex, nnodey
          write(60,310) ((ealpha(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(51,309) nnodex, nnodey
          write(51,310) psilim
          write(51,310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(69,309) nnodex, nnodey
          write(69,310) ((wdote(i, j), i = 1, nnodex), j = 1, nnodey)
          write(69,310) ((wdoti1(i, j), i = 1, nnodex), j = 1, nnodey)
          write(69,310) ((wdoti2(i, j), i = 1, nnodex), j = 1, nnodey)
          write(69,310) ((wdoti3(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
 
 *        -------------------------------
 *        write edotj data to edotj.out
@@ -10703,7 +10778,7 @@ c         end do
          open(unit=39, file='out_edotj', status='unknown',
      .      form='formatted')
          rewind(39)
-	 
+         
          write(39, 1314) nnodex, nnodey
          write(39, 310) ((redotje(i, j), i = 1, nnodex), j = 1, nnodey)
          write(39, 310) ((redotji(i, j), i = 1, nnodex), j = 1, nnodey)
@@ -10714,9 +10789,9 @@ c         end do
          write(39, 310) ((redotj4(i, j), i = 1, nnodex), j = 1, nnodey)
          write(39, 310) ((redotj5(i, j), i = 1, nnodex), j = 1, nnodey)
          write(39, 310) ((redotj6(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-	 close (39)
-	 
+         
+         close (39)
+         
 *     -----------------------------------------------
 *     Write file 46, "naoto_2d" for synthetic diagnostic
 *     -----------------------------------------------
@@ -10784,27 +10859,27 @@ c         end do
          write(38, 310) (wdoti1_ql(n), n = 1, nnoderho)
          write(38, 310) (wdoti2_ql(n), n = 1, nnoderho)
          write(38, 310) (wdoti3_ql(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti4_ql(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti5_ql(n), n = 1, nnoderho)
-	 write(38, 310) (wdoti6_ql(n), n = 1, nnoderho)
-	 
-         write(38, 310) (dldbavg(n), n = 1, nnoderho)	 
-	 
+         write(38, 310) (wdoti4_ql(n), n = 1, nnoderho)
+         write(38, 310) (wdoti5_ql(n), n = 1, nnoderho)
+         write(38, 310) (wdoti6_ql(n), n = 1, nnoderho)
+         
+         write(38, 310) (dldbavg(n), n = 1, nnoderho)    
+         
          write(38, 310) ((bxwave(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((bywave(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((bzwave(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-	 write(38, 310) ((ntilda_e(i, j), i = 1, nnodex), j = 1,nnodey)
-	 
-	 write(38, 310) ((fpsi0(i, j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((ftheta0(i, j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((pressi(i,j), i = 1, nnodex), j = 1, nnodey)
+         
+         write(38, 310) ((ntilda_e(i, j), i = 1, nnodex), j = 1,nnodey)
+         
+         write(38, 310) ((fpsi0(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((ftheta0(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((pressi(i,j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((dldb_tot12(i, j), i = 1, nnodex), 
-     .                                      j = 1, nnodey)	 
-	 
-	 write (38, 309) ndisti1, ndisti2, ndisti3
-	 
-	 write (38, 310) ((eplus_flux_plot(i, j), i = 1, nnodex), 
+     .                                      j = 1, nnodey)       
+         
+         write (38, 309) ndisti1, ndisti2, ndisti3
+         
+         write (38, 310) ((eplus_flux_plot(i, j), i = 1, nnodex), 
      .                                             j = 1, nnodey)
      
          write (38, 310) ((eminus_flux_plot(i, j), i = 1, nnodex), 
@@ -10815,8 +10890,8 @@ c         end do
      
      
      
-      	 	 
-	 write (38, 310) ((eplus_flux(n, m), n = 1, nnoderho), 
+                 
+         write (38, 310) ((eplus_flux(n, m), n = 1, nnoderho), 
      .                                       m = 1, mnodetheta)
      
          write (38, 310) ((eminus_flux(n, m), n = 1, nnoderho), 
@@ -10833,23 +10908,23 @@ c         end do
      .                                       m = 1, mnodetheta)     
   
          write(38, 310) ((dxxuyy(i,j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((dyyuzz(i,j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((gradprlb(i,j), i = 1, nnodex), j = 1, nnodey) 
-	 
+         write(38, 310) ((dyyuzz(i,j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((gradprlb(i,j), i = 1, nnodex), j = 1, nnodey) 
+         
          write(38, 310) ((xkperp2_slow(i, j), i = 1, nnodex), 
-     .      j = 1, nnodey)	 
+     .      j = 1, nnodey)       
          write(38, 310) ((xkperp2_fast(i, j), i = 1, nnodex), 
      .      j = 1, nnodey)
-	 write(38, 310) ((xkprl_a(i,j), i = 1, nnodex), j = 1, nnodey)
-	 write(38, 310) ((P_a(i, j), i = 1, nnodex), j = 1, nnodey)	     
+         write(38, 310) ((xkprl_a(i,j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((P_a(i, j), i = 1, nnodex), j = 1, nnodey)          
      
 
          close (38)
 
-	 close (130)
+         close (130)
 
-	 
-	 
+         
+         
       end if
       
       tmin = (second1(dummy) - t1) / 60.
@@ -10868,43 +10943,43 @@ c         end do
       if (myid.eq.0) then
       
          if(nphi .eq. nphi1 .or. nt .eq. 1)then
-	 
-	    write(34,309) nmodesx, nmodesy
-	    write(34,310) rwleft, rwright, ytop, ybottom
+         
+            write(34,309) nmodesx, nmodesy
+            write(34,310) rwleft, rwright, ytop, ybottom
 
             write(34,309) nnodex, nnodey
             write(34,310) (capr(i), i = 1, nnodex)
             write(34,310) (y(j), j = 1, nnodey)
-	    
-	    write(166, 309) nnodex, nnodey
-            write(166, 310) (capr(i), i = 1, nnodex)	 
+            
+            write(166, 309) nnodex, nnodey
+            write(166, 310) (capr(i), i = 1, nnodex)     
             write(166, 310) (y(j), j = 1, nnodey)
-            write(166, 310) psilim	    
-	    write(166, 310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
-	    
-	    write(166, 309) nphi_number
-	    write(166, 309) (nphi_array(n), n = 1, nphi_number)	 	 
+            write(166, 310) psilim          
+            write(166, 310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
+            
+            write(166, 309) nphi_number
+            write(166, 309) (nphi_array(n), n = 1, nphi_number)          
       
             write(34,310) psilim, rt, b0
             write(34,310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
-	    write(34,310) ((xnea(i, j), i = 1, nnodex), j = 1, nnodey)
-	    
- 	    write (34, 309) nuper
+            write(34,310) ((xnea(i, j), i = 1, nnodex), j = 1, nnodey)
+            
+            write (34, 309) nuper
             write (34, 309) nupar
-            write (34, 309) nnoderho	    
-	    
+            write (34, 309) nnoderho        
+            
             if(ndisti1 .eq. 1)write (34, 3310) vc1_cgs
             if(ndisti2 .eq. 1)write (34, 3310) vc2_cgs
-	    
+            
             write (34, 3310) UminPara, UmaxPara
 
             write (34, 3310) (rhon(n), n = 1, nnoderho)
             write (34, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
             write (34, 3310) (upara(i_upara), i_upara = 1, nupar) 
-	    
-	 end if
-	 
-	 write(34,309) nphi
+            
+         end if
+         
+         write(34,309) nphi
       
          write(34,310) ((ealpha(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((ebeta(i, j),  i = 1, nnodex), j = 1, nnodey)
@@ -10913,75 +10988,75 @@ c         end do
          write(166,310) ((eplus(i, j), i = 1, nnodex), j = 1, nnodey)
          write(166,310) ((eminus(i, j),  i = 1, nnodex), j = 1, nnodey)
          write(166,310) ((eb(i, j),     i = 1, nnodex), j = 1, nnodey)
-	 
-	 write(166,310) ((ex(i, j), i = 1, nnodex), j = 1, nnodey)
+         
+         write(166,310) ((ex(i, j), i = 1, nnodex), j = 1, nnodey)
          write(166,310) ((ey(i, j),  i = 1, nnodex), j = 1, nnodey)
          write(166,310) ((ez(i, j),     i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(166,310) ((bxwave(i, j), i = 1, nnodex), j = 1, nnodey)
          write(166,310) ((bywave(i, j), i = 1, nnodex), j = 1, nnodey)
          write(166,310) ((bzwave(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(166,310) ((xjpx(i, j), i = 1, nnodex), j = 1, nnodey)
          write(166,310) ((xjpy(i, j), i = 1, nnodex), j = 1, nnodey)
-         write(166,310) ((xjpz(i, j), i = 1, nnodex), j = 1, nnodey)	 	 		 
-	 	 
+         write(166,310) ((xjpz(i, j), i = 1, nnodex), j = 1, nnodey)                             
+                 
          write(34,310) ((xjpx(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjpy(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjpz(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(34,310) ((xjx(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjy(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjz(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
+         
          write(34,310) ((xjpxe_lab(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjpye_lab(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjpze_lab(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-	 write(34, 310) ((bxwave(i, j), i = 1, nnodex), j = 1, nnodey)
+         
+         write(34, 310) ((bxwave(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34, 310) ((bywave(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34, 310) ((bzwave(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-	 write(34, 310) ((ex(i, j), i = 1, nnodex), j = 1, nnodey)
+         
+         write(34, 310) ((ex(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34, 310) ((ey(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34, 310) ((ez(i, j), i = 1, nnodex), j = 1, nnodey)
-	 
-	 write(34,310) ((ntilda_e(i, j), i = 1, nnodex), j = 1, nnodey)	 
-	 
-	 write(34,310) ptot, pcrto2, pcito2, xjtot, spa_fast
-	 
-	 write(34, 309) nnoderho
-	 write(34, 310) (rhon(n), n = 1, nnoderho)	 
-	 
-	 write(34, 310) (redotjeavg(n), n = 1, nnoderho)
+         
+         write(34,310) ((ntilda_e(i, j), i = 1, nnodex), j = 1, nnodey)  
+         
+         write(34,310) ptot, pcrto2, pcito2, xjtot, spa_fast
+         
+         write(34, 309) nnoderho
+         write(34, 310) (rhon(n), n = 1, nnoderho)       
+         
+         write(34, 310) (redotjeavg(n), n = 1, nnoderho)
          write(34, 310) (redotj1avg(n), n = 1, nnoderho)
          write(34, 310) (redotj2avg(n), n = 1, nnoderho)
-         write(34, 310) (redotj3avg(n), n = 1, nnoderho)	 	 
-	 write(34, 310) (redotj4avg(n), n = 1, nnoderho)
+         write(34, 310) (redotj3avg(n), n = 1, nnoderho)                 
+         write(34, 310) (redotj4avg(n), n = 1, nnoderho)
          write(34, 310) (redotj5avg(n), n = 1, nnoderho)
          write(34, 310) (redotj6avg(n), n = 1, nnoderho)
-	 
-	 write(34, 310) (wdoteavg(n),  n = 1, nnoderho)
+         
+         write(34, 310) (wdoteavg(n),  n = 1, nnoderho)
          write(34, 310) (wdoti1avg(n), n = 1, nnoderho)
          write(34, 310) (wdoti2avg(n), n = 1, nnoderho)
          write(34, 310) (wdoti3avg(n), n = 1, nnoderho)
          write(34, 310) (wdoti4avg(n), n = 1, nnoderho)
          write(34, 310) (wdoti5avg(n), n = 1, nnoderho)
-         write(34, 310) (wdoti6avg(n), n = 1, nnoderho)	
-	 
-	 write(34, 310) (wdote_ql(n),  n = 1, nnoderho)
+         write(34, 310) (wdoti6avg(n), n = 1, nnoderho) 
+         
+         write(34, 310) (wdote_ql(n),  n = 1, nnoderho)
          write(34, 310) (wdoti1_ql(n), n = 1, nnoderho)
          write(34, 310) (wdoti2_ql(n), n = 1, nnoderho)
          write(34, 310) (wdoti3_ql(n), n = 1, nnoderho)
          write(34, 310) (wdoti4_ql(n), n = 1, nnoderho)
-         write(34, 310) (wdoti5_ql(n), n = 1, nnoderho)	  
-	 
-	 write(34, 310) (xjprlavg(n),  n = 1, nnoderho)
-	 	 
+         write(34, 310) (wdoti5_ql(n), n = 1, nnoderho)   
+         
+         write(34, 310) (xjprlavg(n),  n = 1, nnoderho)
+                 
             
-	 
-         if(ndisti1 .eq. 1)then	 
-	    write (34, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
+         
+         if(ndisti1 .eq. 1)then  
+            write (34, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
             write (34, 3310) (((cqlavg_i1(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
@@ -10990,11 +11065,11 @@ c         end do
             write (34, 3310) (((fqlavg_i1(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)     
             write (34, 3310) xmi1
-	 end if
-	 
-	 
-	 if(ndisti2 .eq. 1)then	 
-	    write (34, 3310) (((bqlavg_i2(i_uperp, i_upara, n),
+         end if
+         
+         
+         if(ndisti2 .eq. 1)then  
+            write (34, 3310) (((bqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
             write (34, 3310) (((cqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
@@ -11003,10 +11078,10 @@ c         end do
             write (34, 3310) (((fqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)     
             write (34, 3310) xmi2
-	 end if
-	 
-	 write(6,*) "finished writing fpm; starting plots"    	
-	 
+         end if
+         
+         write(6,*) "finished writing fpm; starting plots"      
+         
       end if
       
  9002 continue
@@ -11019,14 +11094,14 @@ c         end do
 *     ----------------------- 
       if (myid.eq.0) then
          t1 = second1(dummy)
-	 	  
-	 call fieldws(dfquotient, rmin_zoom, rmax_zoom)
-	 
-	 call disp_ono(yplot)
-	 
-	 tmin = (second1(dummy) - t1) / 60.
-	 write(6 , 2846) tmin
-         write(15, 2846) tmin	
+                  
+         call fieldws(dfquotient, rmin_zoom, rmax_zoom)
+         
+         call disp_ono(yplot)
+         
+         tmin = (second1(dummy) - t1) / 60.
+         write(6 , 2846) tmin
+         write(15, 2846) tmin   
       end if            
       
  2846 format('time to do plots =', f9.3, ' min') 
@@ -11304,7 +11379,7 @@ c     .           6x,6h xne  ,6x,6h Acold)
          write(6, 162)
          write(15,899) ttotal
          write(6, 899) ttotal
-c	 close (15)
+c        close (15)
       endif
 
   899 format('total cpu time used =',f9.3,4h min)
@@ -11350,19 +11425,19 @@ c      endif
       
          close(29)
          close(30)
-	 
+         
          close(59)
          close(60)
          close(51)
          close(69)
-	 	 
+                 
          close(28)
-	 	
-	 close(40)
+                
+         close(40)
          close(41)
          close(42)
-	 close(43)
-	 close(44) 
+         close(43)
+         close(44) 
 
       endif
       
@@ -11384,47 +11459,47 @@ c      endif
          deallocate( VPARA )
          deallocate( UPERP_work )
          deallocate( UPARA_work )
-	 
+         
          deallocate( f )
-	 
-	 deallocate( dfdupere )
+         
+         deallocate( dfdupere )
          deallocate( dfdupare )
-         deallocate( fperpe )	 
-	 
-	 
+         deallocate( fperpe )    
+         
+         
          deallocate( dfduper1 )
          deallocate( dfdupar1 )
-	 deallocate( fperp1 )
-	 
-	 deallocate( dfduper2 )
+         deallocate( fperp1 )
+         
+         deallocate( dfduper2 )
          deallocate( dfdupar2 )
-	 deallocate( fperp2 )
-	 	
+         deallocate( fperp2 )
+                
          deallocate( dfduper3 )
          deallocate( dfdupar3 )
-	 deallocate( fperp3 )
-	 
-	 deallocate( dfduper4 )
-         deallocate( dfdupar4 )	
-	 deallocate( fperp4 ) 
-	 
+         deallocate( fperp3 )
+         
+         deallocate( dfduper4 )
+         deallocate( dfdupar4 ) 
+         deallocate( fperp4 ) 
+         
          deallocate( dfduper5 )
          deallocate( dfdupar5 )
-	 deallocate( fperp5 )
-	 
-	 deallocate( dfduper6 )
+         deallocate( fperp5 )
+         
+         deallocate( dfduper6 )
          deallocate( dfdupar6 )
-	 deallocate( fperp6 )	 	 	 
+         deallocate( fperp6 )                    
 
          deallocate( bqlavg_e )
          deallocate( cqlavg_e )
          deallocate( eqlavg_e )
          deallocate( fqlavg_e )
-	 
+         
          deallocate( bqlavg_work )
          deallocate( cqlavg_work )
          deallocate( eqlavg_work )
-         deallocate( fqlavg_work )	 
+         deallocate( fqlavg_work )       
 
          deallocate( bqlavg_i1 )
          deallocate( cqlavg_i1 )
@@ -11436,36 +11511,36 @@ c      endif
             deallocate( cqlavg_i2 )
             deallocate( eqlavg_i2 )
             deallocate( fqlavg_i2 )
-	 end if
+         end if
 
          if(eta3 .ne. 0.0) then 
-	    deallocate( bqlavg_i3 )
+            deallocate( bqlavg_i3 )
             deallocate( cqlavg_i3 )
             deallocate( eqlavg_i3 )
             deallocate( fqlavg_i3 )
-	 end if
-	 	 
-	 if(eta4 .ne. 0.0) then 
+         end if
+                 
+         if(eta4 .ne. 0.0) then 
             deallocate( bqlavg_i4 )
             deallocate( cqlavg_i4 )
             deallocate( eqlavg_i4 )
             deallocate( fqlavg_i4 )
-	 end if
-	 
-	 if(eta5 .ne. 0.0) then 
-	    deallocate( bqlavg_i5 )
+         end if
+         
+         if(eta5 .ne. 0.0) then 
+            deallocate( bqlavg_i5 )
             deallocate( cqlavg_i5 )
             deallocate( eqlavg_i5 )
             deallocate( fqlavg_i5 )
-	 end if	
-	 
-	 if(eta6 .ne. 0.0) then 
-	    deallocate( bqlavg_i6 )
+         end if 
+         
+         if(eta6 .ne. 0.0) then 
+            deallocate( bqlavg_i6 )
             deallocate( cqlavg_i6 )
             deallocate( eqlavg_i6 )
             deallocate( fqlavg_i6 )
-	 end if	  	   
-	 
+         end if            
+         
       end if
       
       if(ndisti1   .ne. 0 .or.
@@ -11480,71 +11555,71 @@ c      endif
          deallocate( UPARA )
          deallocate( VPERP )
          deallocate( VPARA )
-	 	 
+                 
          deallocate( UPERP_work )
          deallocate( UPARA_work )
-	 
+         
          deallocate( f )
-	 
-	 deallocate( dfdupere )
+         
+         deallocate( dfdupere )
          deallocate( dfdupare )
-         deallocate( fperpe )	 
-	 
-	 
+         deallocate( fperpe )    
+         
+         
          deallocate( dfduper1 )
          deallocate( dfdupar1 )
-	 deallocate( fperp1 )
-	 
-	 deallocate( dfduper2 )
+         deallocate( fperp1 )
+         
+         deallocate( dfduper2 )
          deallocate( dfdupar2 )
-	 deallocate( fperp2 )
-	 	
+         deallocate( fperp2 )
+                
          deallocate( dfduper3 )
          deallocate( dfdupar3 )
-	 deallocate( fperp3 )
-	 
-	 deallocate( dfduper4 )
-         deallocate( dfdupar4 )	
-	 deallocate( fperp4 ) 
-	 
+         deallocate( fperp3 )
+         
+         deallocate( dfduper4 )
+         deallocate( dfdupar4 ) 
+         deallocate( fperp4 ) 
+         
          deallocate( dfduper5 )
          deallocate( dfdupar5 )
-	 deallocate( fperp5 )
-	 
-	 deallocate( dfduper6 )
+         deallocate( fperp5 )
+         
+         deallocate( dfduper6 )
          deallocate( dfdupar6 )
-	 deallocate( fperp6 )	  	 	 
-	  	 
+         deallocate( fperp6 )                    
+                 
          deallocate( dfe_cql_uprp )
          deallocate( dfe_cql_uprl )
-	 	 
+                 
          deallocate( df1_cql_uprp )
-         deallocate( df1_cql_uprl )	 
-	 	 
+         deallocate( df1_cql_uprl )      
+                 
          deallocate( df2_cql_uprp )
-         deallocate( df2_cql_uprl )	 
+         deallocate( df2_cql_uprl )      
 
          deallocate( df3_cql_uprp )
-         deallocate( df3_cql_uprl )	 	 
+         deallocate( df3_cql_uprl )              
 
          deallocate( df4_cql_uprp )
-         deallocate( df4_cql_uprl )	 
+         deallocate( df4_cql_uprl )      
 
          deallocate( df5_cql_uprp )
-         deallocate( df5_cql_uprl )	 
+         deallocate( df5_cql_uprl )      
 
          deallocate( df6_cql_uprp )
-         deallocate( df6_cql_uprl )	 
-		 
+         deallocate( df6_cql_uprl )      
+                 
          deallocate( bqlavg_e )
          deallocate( cqlavg_e )
          deallocate( eqlavg_e )
          deallocate( fqlavg_e )
-	 
+         
          deallocate( bqlavg_work )
          deallocate( cqlavg_work )
          deallocate( eqlavg_work )
-         deallocate( fqlavg_work )	 
+         deallocate( fqlavg_work )       
 
          deallocate( bqlavg_i1 )
          deallocate( cqlavg_i1 )
@@ -11556,60 +11631,60 @@ c      endif
             deallocate( cqlavg_i2 )
             deallocate( eqlavg_i2 )
             deallocate( fqlavg_i2 )
-	 end if
+         end if
 
          if(eta3 .ne. 0.0) then 
-	    deallocate( bqlavg_i3 )
+            deallocate( bqlavg_i3 )
             deallocate( cqlavg_i3 )
             deallocate( eqlavg_i3 )
             deallocate( fqlavg_i3 )
-	 end if
+         end if
 
-	 if(eta4 .ne. 0.0) then 
+         if(eta4 .ne. 0.0) then 
             deallocate( bqlavg_i4 )
             deallocate( cqlavg_i4 )
             deallocate( eqlavg_i4 )
             deallocate( fqlavg_i4 )
-	 end if
+         end if
 
-	 if(eta5 .ne. 0.0) then 
-	    deallocate( bqlavg_i5 )
+         if(eta5 .ne. 0.0) then 
+            deallocate( bqlavg_i5 )
             deallocate( cqlavg_i5 )
             deallocate( eqlavg_i5 )
             deallocate( fqlavg_i5 )
-	 end if
-	 
-	 if(eta6 .ne. 0.0) then 
-	    deallocate( bqlavg_i6 )
+         end if
+         
+         if(eta6 .ne. 0.0) then 
+            deallocate( bqlavg_i6 )
             deallocate( cqlavg_i6 )
             deallocate( eqlavg_i6 )
             deallocate( fqlavg_i6 )
-	 end if	 
+         end if  
 
       end if
       
       if (read_solution .eqv. .false.) then      
-	 
+         
 c         deallocate( new_to_org )
-	 
+         
 c         deallocate(niabegin_all )
 c         deallocate( isize_all )
-	
+        
 c        deallocate(Btmp)
 c         deallocate(brhs)
 
 c         deallocate( descBtmp_all )
 c         deallocate( descbrhs_all )
-	 
+         
          deallocate( p_brhs )
          deallocate( p_ipiv )
-	 
+         
 c         deallocate( itable )
 c         deallocate( jtable )
 c         deallocate( mtable )
 c         deallocate( ntable )
-	 
-      end if	 
+         
+      end if     
      
       
  9000 continue 
@@ -11735,27 +11810,27 @@ c         deallocate( ntable )
       deallocate (workc)
 
       if (myid .eq. 0) then
-	 close (963)	 
-	 close (34)
-	 close (166)
+         close (963)     
+         close (34)
+         close (166)
       endif
                   
-      close (63)            	 	  
-	 	 	 	            
+      close (63)                          
+                                            
       if(myid .eq. 0 .and. nphi_number .gt. 1)then
          t1 = second1(dummy)
-	 
+         
          call aorsa2dSum(myid)
-	 
-	 tmin = (second1(dummy) - t1) / 60.
-	 write(6 , 2847) tmin
+         
+         tmin = (second1(dummy) - t1) / 60.
+         write(6 , 2847) tmin
          write(15, 2847) tmin 
-	 
+         
       end if
       
       if (myid .eq. 0) then
-	 close (15)
-	 close (65)
+         close (15)
+         close (65)
       endif
       
       close(6) 
@@ -11793,7 +11868,7 @@ c         deallocate( ntable )
      &        beta, B,ib,jb,descB )
         return
         end
-	
+        
 c
 c***************************************************************************
 c
@@ -11866,7 +11941,7 @@ c      ans(nx1) = 0.0
 
 c      do n = nx1, nx2 - 1
 
-c	 ans(n+1) = ans(n) + f(n) * dvol(n)
+c        ans(n+1) = ans(n) + f(n) * dvol(n)
 
 c      end do
 
