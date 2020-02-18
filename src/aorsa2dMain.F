@@ -6737,7 +6737,7 @@ c        call flush
 *     .          real(aij,kind=dp), imag(aij)
 *           endif
 *        
-* 9010 format(1x,i6,1x,i6,1pe18.10E3,1pe18.10E3)
+* 9010 format(1x,i6,1x,i6,1pe20.10E3,1pe20.10E3)
 *
 *        enddo
 *        enddo
@@ -6747,11 +6747,11 @@ c        call flush
         
            if ((myrow.eq.0).and.(mycol.eq.0)) then
               write(iodev, 9010) ia, ja, 
-     .          real(p_amat_copy(ia+(nrow-1)*ja),kind=dp), 
-     .          imag(p_amat_copy(ia+(nrow-1)*ja))
+     .          real(p_amat_copy(ia+(ja-1)*nrow),kind=dp), 
+     .          imag(p_amat_copy(ia+(ja-1)*nrow))
            endif
         
- 9010 format(1x,i6,1x,i6,1pe18.10E3,1pe18.10E3)
+ 9010 format(1x,i6,1x,i6,1pe20.10E3,1pe20.10E3)
 
         enddo
         enddo
@@ -6776,7 +6776,7 @@ c        call flush
 *     .          real(aij,kind=dp), imag(aij)
 *           endif
 *        
-* 9012 format(1x,i6,1pe18.10E3,1pe18.10E3)
+* 9012 format(1x,i6,1pe20.10E3,1pe20.10E3)
 *
 *        enddo
 
@@ -6788,7 +6788,7 @@ c        call flush
      .          imag(p_brhs_copy(ia))
            endif
         
- 9012 format(1x,i6,1pe18.10E3,1pe18.10E3)
+ 9012 format(1x,i6,1pe20.10E3,1pe20.10E3)
 
         enddo
         close(UNIT=iodev)
@@ -6915,7 +6915,7 @@ c--   Operations for complex matrix factor and solve:
 *     .          real(aij,kind=dp), imag(aij)
 *           endif
 *        
-* 9011 format(1x,i6,1pe18.10E3,1pe18.10E3)
+* 9011 format(1x,i6,1pe20.10E3,1pe20.10E3)
 *
 *        enddo
         do ia=1,nrow
@@ -6926,7 +6926,7 @@ c--   Operations for complex matrix factor and solve:
      .          imag(p_brhs(ia))
            endif
         
- 9011 format(1x,i6,1pe18.10E3,1pe18.10E3)
+ 9011 format(1x,i6,1pe20.10E3,1pe20.10E3)
 
         enddo
 
