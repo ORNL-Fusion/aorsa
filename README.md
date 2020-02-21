@@ -35,7 +35,7 @@
     - `disper.ps` - dielectric properties of the wave. kperp for branches, location of resonances, etc.
     - `eqdsk_setup.ps` - show equilibrium properties from EFIT G-EQDSK file
   
-# Build
+# Build & Run
 ## Dependencies
 
 * netcdf
@@ -44,37 +44,17 @@
 * pgplot
 
 ## Cori
+### Build
 ```
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
 source env.cori
-mkdir -p obj
-make -f makefile.cori
-```
-
-## fusiont6
-```
-git clone https://github.com/ORNL-Fusion/aorsa.git
-cd aorsa
-mkdir -p obj
-make -f makefile.fusiont6
-```
-
-## osx-mojave
-```
-brew install open-mpi
-brew install scalapack
-brew install pgplot
-git clone https://github.com/ORNL-Fusion/aorsa.git
-git checkout osx-mojave
 mkdir obj
-make -f makefile.osx-mojave
-
+mkdir mod
+make clean
+make
 ```
-
-# Run
-
-## Cori
+### Run
 ```
 source env.cori
 ulimit -s unlimited
@@ -82,20 +62,44 @@ cp -r examples $SCRATCH/
 cd $SCRATCH/examples
 cd DIIID_SPONG_ICE
 ```
-### batchscript
+#### batchscript
 ```
 sbatch batchscript.cori
 ```
-### interative
+#### interative
 ```
 salloc -N 1 -C haswell -q interactive -t 01:00:00
 srun -n 1 /path/to/xaorsa2d
 ```
+
 ## fusiont6
+### Build
+```
+git clone https://github.com/ORNL-Fusion/aorsa.git
+cd aorsa
+mkdir obj
+mkdir mod
+make -f makefile.fusiont6
+```
+### Run
 ```
 ulimit -s unlimited
 cd examples/DIIID_SPONG_ICE
 mpirun -n 1 ../../xaorsa2d
+```
+
+## osx-mojave
+### Build
+```
+brew install open-mpi
+brew install scalapack
+brew install pgplot
+git clone https://github.com/ORNL-Fusion/aorsa.git
+cd aorsa
+git checkout osx-mojave
+mkdir obj
+mkdir mod
+make -f makefile.osx-mojave
 ```
 
 # Other Notes
