@@ -1,45 +1,11 @@
-# Name:     makefile for Cori in ~u650
- 
-# IMPORTANT: Before "make" the following are required:
+EXEC = xaorsa2d
 
-#    module unload darshan   
-#    module load cray-netcdf
-#    module load dfftpack
-#i.e. module unload darshan ;module load cray-netcdf ;module load dfftpack   
-# 
-# Function: Provides the make utility with instructions for
-#           compiling the AORSA code into an executable module
-#           using ifort on Edison/Cori.
-
-# Date:     02/15/2013
-# Date:     03/20/2015, BH(u650)
-# Date:     03/24/2015, BH(u650) following Jaeger, compiling cql3d_setup.f90, 
-#                       read_cql3d.f90 with -i4 -r8
-# Date:     03/27/2015, BH(u650) reset n_u_dim=300 to 1000 in cql3d_setup.f90
-# Date:     03/30/2015, BH(u650) reset n_u_max=300 to 1000 in fieldws.f
-# DATE:     11/14/2015, BH(u650) compiled on cori, using Jaeger edison pgplot 
-#                       library.  
-
-# Macro definitions
-
-ARCH = cori
-
-HOME = /global/homes/j/jaegeref
-
-#CODEDIR = AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24
-CODEDIR = AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24
-
-EXEC = xaorsa2d.$(ARCH)
-
-SRC_DIR = $(HOME)/$(CODEDIR)/src
-
-OBJ_DIR = $(HOME)/$(CODEDIR)/obj/$(ARCH)
+SRC_DIR = src
+OBJ_DIR = obj
 
 FFT_DIR = $(SRC_DIR)/FFTPACK
-
 CQL3D_SETUP_DIR = $(SRC_DIR)/CQL3D_SETUP
-
-INCLUDE_DIR = $(SRC_DIR)/CQL3D_SETUP
+NETCDF_INCLUDE_DIR = #$(SRC_DIR)/CQL3D_SETUP
 
 OBJ_FILES = \
  $(OBJ_DIR)/cauchy_mod.o \
@@ -84,11 +50,13 @@ OBJ_FILES = \
  $(OBJ_DIR)/plot.o \
  $(OBJ_DIR)/aorsa2dSum.o 
 
-
 OBJ_FFT = \
  $(OBJ_DIR)/cfftb1.o \
  $(OBJ_DIR)/cfftf1.o \
  $(OBJ_DIR)/cffti1.o \
+ $(OBJ_DIR)/dfftb.o \
+ $(OBJ_DIR)/dfftf.o \
+ $(OBJ_DIR)/dffti.o \
  $(OBJ_DIR)/passb.o \
  $(OBJ_DIR)/passb2.o \
  $(OBJ_DIR)/passb3.o \
@@ -114,41 +82,55 @@ OBJ_CQL3D_SETUP = \
  $(OBJ_DIR)/cubic_B_splines_v.o \
  $(OBJ_DIR)/cql3d_setup.o
 
-INC_FILES = $(INCLUDE_DIR)/netcdf.inc
+INC_FILES = $(NETCDF_INCLUDE_DIR)/netcdf.inc
 
-COMMON_OPTION  = -save -r8 -i8 -I $(INCLUDE_DIR) 
-COMMON_OPTION2 = -r8 -i8 -I $(INCLUDE_DIR)
-COMMON_OPTION3 = -I $(INCLUDE_DIR)
-#Jaeger added following for read_cql3d.f90 and cql_setup.f90, 150322
-COMMON_OPTION4  = -r8 -i4 -I $(INCLUDE_DIR)
+# Determine machine
+# -----------------
 
-F90          = ftn -c $(COMMON_OPTION)
-F90_NOSAVE   = ftn -c $(COMMON_OPTION2)
-F90_r4       = ftn -c $(COMMON_OPTION3)
-#Jaeger added following for read_cql3d.f90 and cql_setup.f90, 150322
-F90_4        = ftn -c $(COMMON_OPTION4)
+UNAME_S := $(shell uname -s)
+UNAME_R := $(shell uname -r)
 
-F90_LOAD     = ftn    $(COMMON_OPTION)
+SYSTEM_IDENTIFIED = 0
+ifeq ($(NERSC_HOST),cori)
+  include makeopts.cori
+  SYSTEM_IDENTIFIED = 1
+endif
+ifeq ($(UNAME_S),Darwin) # OSX
+  ifeq ($(UNAME_V),18.7.0)
+    include makeopts.osx-mojave
+    SYSTEM_IDENTIFIED = 1
+  endif
+endif
+#ifeq ( # assume ubuntu 18 / fusiont6
+#  include makeopts.fusiont6
+#endif
+
+ifeq ($(SYSTEM_IDENTIFIED),0)
+  $(error No build configuration for this system)
+endif
+
+F90          = $(FC) -c $(COMMON_OPTION) -I $(NETCDF_INCLUDE_DIR) 
+F90_NOSAVE   = $(FC) -c $(COMMON_OPTION2) -I $(NETCDF_INCLUDE_DIR)
+F90_r4       = $(FC) -c $(COMMON_OPTION3) -I $(NETCDF_INCLUDE_DIR)
+F90_4        = $(FC) -c $(COMMON_OPTION4) -I $(NETCDF_INCLUDE_DIR)
+F90_LOAD     = $(FC)    $(COMMON_OPTION) -I $(NETCDF_INCLUDE_DIR)
 
 INLINE=
 OPTIMIZATION =  
-F90FLAGS=  $(INLINE) $(OPTIMIZATION)  -I $(INCLUDE_DIR) 
+F90FLAGS = $(INLINE) $(OPTIMIZATION) -I $(NETCDF_INCLUDE_DIR) -g $(MOD_DIR)
 
 COMPILE90          = $(F90)          $(F90FLAGS) 
 COMPILE90_NOSAVE   = $(F90_NOSAVE)   $(F90FLAGS)
 COMPILE_r4         = $(F90_r4)       $(F90FLAGS)
-#Jaeger added folloing for read_cql3d.f90 and cql_setup.f90, 150322
 COMPILE90_4        = $(F90_4)        $(F90FLAGS)  
 
-LOADFLAGS = -mkl=cluster $(DFFTPACK)
-
-LIBS = -L/global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot -lpgplot 
+LOADFLAGS = $(DFFTPACK)
 LOAD = $(F90_LOAD) $(OPTIMIZATION) 
 
 # Compile the program
 
 $(EXEC):  $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP)
-	  $(LOAD) -o ./$(EXEC) $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(LIBS) $(LOADFLAGS) 
+	  $(LOAD) -o ./$(EXEC) $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(LOADFLAGS) $(LIBS) 
 
 # Dependencies
 
@@ -276,7 +258,6 @@ $(OBJ_DIR)/types_mod.o:      $(SRC_DIR)/types_mod.f90 $(INC_FILES)
 $(OBJ_DIR)/zfun_hilbert_mod.o:   $(SRC_DIR)/zfun_hilbert_mod.f90 $(INC_FILES)
 	                         $(COMPILE90) -o $(OBJ_DIR)/zfun_hilbert_mod.o \
                                  $(SRC_DIR)/zfun_hilbert_mod.f90			     			     		   
-				   		
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f $(INC_FILES)
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/rf2x_setup2.o \
                              $(SRC_DIR)/rf2x_setup2.f
@@ -293,9 +274,9 @@ $(OBJ_DIR)/orbit.o:          $(SRC_DIR)/orbit.f $(INC_FILES)
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/orbit.o \
                              $(SRC_DIR)/orbit.f			     
 			     			     			     			     
-$(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f $(INC_FILES)
+$(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f90 $(INC_FILES)
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/eqdsk_plot.o \
-                             $(SRC_DIR)/eqdsk_plot.f				     
+                             $(SRC_DIR)/eqdsk_plot.f90 $(WARNING_FLAGS)				     
 			     			     
 $(OBJ_DIR)/fieldws.o:        $(SRC_DIR)/fieldws.f $(INC_FILES)
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/fieldws.o \
@@ -332,6 +313,18 @@ $(OBJ_DIR)/cfftf1.o :      $(FFT_DIR)/cfftf1.f
 $(OBJ_DIR)/cffti1.o:       $(FFT_DIR)/cffti1.f
 			   $(COMPILE90) -o $(OBJ_DIR)/cffti1.o \
 			   $(FFT_DIR)/cffti1.f
+			   
+$(OBJ_DIR)/dfftb.o :      $(FFT_DIR)/dfftb.f
+			   $(COMPILE90) -o $(OBJ_DIR)/dfftb.o \
+			   $(FFT_DIR)/dfftb.f
+
+$(OBJ_DIR)/dfftf.o :      $(FFT_DIR)/dfftf.f
+			   $(COMPILE90) -o $(OBJ_DIR)/dfftf.o \
+			   $(FFT_DIR)/dfftf.f
+
+$(OBJ_DIR)/dffti.o:       $(FFT_DIR)/dffti.f
+			   $(COMPILE90) -o $(OBJ_DIR)/dffti.o \
+			   $(FFT_DIR)/dffti.f
 
 $(OBJ_DIR)/passb.o :       $(FFT_DIR)/passb.f
 			   $(COMPILE90) -o $(OBJ_DIR)/passb.o \
@@ -427,6 +420,6 @@ $(OBJ_DIR)/cql3d_setup.o:       $(CQL3D_SETUP_DIR)/cql3d_setup.f90 $(INCFILES)
 				
 
 make clean:
-	rm -rf *.o *.lst *.mod $(EXEC)
+	rm -rf *.lst mod/* $(EXEC)
 	rm $(OBJ_DIR)/*.o
 

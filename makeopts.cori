@@ -1,0 +1,9 @@
+# Machine specific options
+# ------------------------
+
+include compileropts.intel
+
+FC = ftn
+LIBS = /global/homes/j/jaegeref/pgplot/5.2/cnl2.0_ifort/pgplot/libpgplot.a  
+
+NETCDF_INCLUDE_DIR = $(NETCDF_DIR)/include

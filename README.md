@@ -48,9 +48,6 @@
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
 source env.cori
-module unload darshan
-module load cray-netcdf
-module load dfftpack
 mkdir -p obj
 make -f makefile.cori
 ```
