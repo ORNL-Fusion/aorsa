@@ -2,7 +2,7 @@ COMMON_OPTION  = -save -r8 #-i8
 COMMON_OPTION2 = -r8 #-i8 
 COMMON_OPTION3 = 
 COMMON_OPTION4  = -r8 #-i4 
-MOD_DIR = -module mod
+MOD_DIR_FLAG = -module $(MOD_DIR)
 
 
 

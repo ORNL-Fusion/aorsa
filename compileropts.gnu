@@ -4,6 +4,6 @@ COMMON_OPTION2 = -fdefault-real-8 -fdefault-double-8
 COMMON_OPTION3 = 
 COMMON_OPTION4 = -fdefault-real-8 -fdefault-double-8 
 WARNING_FLAGS = -O2 -Wall  -Wline-truncation  -Wcharacter-truncation  -Wsurprising  -Waliasing  -Wimplicit-interface  -Wunused-parameter  -fwhole-file  -fcheck=all  -fbacktrace
-MOD_DIR = -Jdir mod
+MOD_DIR_FLAG = -J $(MOD_DIR)
 
 
