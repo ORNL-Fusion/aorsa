@@ -76,7 +76,11 @@ srun -n 1 /path/to/xaorsa2d
 ### Build
 ```
 apt install libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libopenblas-dev libx11-dev
-
+```
+### Run
+```
+cd examples/DIIID_helicon_parkmurakami_SOL_476MHz_2e18
+mpirun -n 1 ../../xaorsa2d
 ```
 
 ## fusiont6
