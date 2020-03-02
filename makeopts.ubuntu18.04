@@ -1,14 +1,15 @@
 include compileropts.gnu
 
 FC = mpif90 
-LIBS += /usr/local/opt/pgplot/lib/libpgplot.a 
 
-NETCDF_DIR = /usr/local/opt/netcdf
-LIBS += $(NETCDF_DIR)/lib/libnetcdff.a -L /usr/local/opt/netcdf/lib -lnetcdf
-INCLUDE_DIRS += -I $(NETCDF_DIR)/include
+LIBS += /usr/lib/libpgplot.a 
 
-LIBS += -L /usr/local/opt/scalapack/lib/ -lscalapack \
-	/usr/local/opt/openblas/lib/libopenblas.a 
+NETCDF_DIR = /usr/lib/x86_64-linux-gnu
+LIBS += $(NETCDF_DIR)/libnetcdff.a -L /usr/local/opt/netcdf -lnetcdf
+INCLUDE_DIRS += -I /usr/include
+
+LIBS += -L /usr/lib/x86_64-linux-gnu -lscalapack-openmpi \
+    /usr/lib/x86_64-linux-gnu/libopenblas.a	 
 	 
-LIBS += /usr/local/opt/libpng/lib/libpng16.a -L /opt/X11/lib -lX11
+LIBS += /usr/lib/x86_64-linux-gnu/libpng.a -lz -L /usr/lib/i386-linux-gnu -lX11
 
