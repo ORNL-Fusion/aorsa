@@ -72,6 +72,13 @@ salloc -N 1 -C haswell -q interactive -t 01:00:00
 srun -n 1 /path/to/xaorsa2d
 ```
 
+## Ubuntu 18.04
+### Build
+```
+apt install libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libopenblas-dev
+
+```
+
 ## fusiont6
 ### Build
 ```
