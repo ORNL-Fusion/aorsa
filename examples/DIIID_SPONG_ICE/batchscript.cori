@@ -9,20 +9,6 @@
 #SBATCH -C haswell
 #SBATCH -o AORSA2D.o%j
 
-cp /global/homes/j/jaegeref/SMITHE_TABLE/ZTABLE.TXT .
-cp /global/homes/j/jaegeref/CQL3D/CQL3D_parallel_060314_xt3/grfont.dat .
-cp /global/homes/j/jaegeref/ZFUNCT_LAB_2D_EDISON_801/Ztable .
-
 #Cori has 16 cores per compute node
 
-#srun -n 1 /global/homes/j/jaegeref/AORSA2D/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/xaorsa2d.cori > log_aorsa2d
-srun -n 1 /global/homes/g/greendl1/code/aorsa/05-08-2014_AORSA_SIMPLE_LOAD_ORBIT_v.24/xaorsa2d.cori > log_aorsa2d
-
-	 
-rm ZTABLE.TXT
-rm grfont.dat
-rm Ztable
-rm out138
-rm bharvey*
-rm naoto
-rm out36
+srun -n 1 /path/to/xaorsa2d > log_aorsa2d
