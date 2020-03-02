@@ -4,8 +4,8 @@
 
  z2_electron = 1,
 
- nzeta_wdote = 48,
- nzeta_wdoti = 48,
+ nzeta_wdote = 0,
+ nzeta_wdoti = 0,
  
  xnuome = 0.01,
  xnuomi = 0.01,
