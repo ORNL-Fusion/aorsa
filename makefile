@@ -112,15 +112,15 @@ ifeq ($(UNAME_S),Darwin) # OSX
 endif
 ifeq ($(LSB_IS),Ubuntu)
   ifeq ($(LSB_RS),18.04)
-    #ifeq ($(HOSTNAME),fusiont6-1)
-    #  include makeopts.fusiont6
-    #  $(info System identified as fusiont6)
-    #  SYSTEM_IDENTIFIED = 1
-    #else
+    ifeq ($(HOSTNAME),fusiont6-1)
+      include makeopts.fusiont6
+      $(info System identified as fusiont6)
+      SYSTEM_IDENTIFIED = 1
+    else
       include makeopts.ubuntu18.04
       $(info System identified as Ubuntu18.04)
       SYSTEM_IDENTIFIED = 1
-    #endif
+    endif
   endif
 endif
 
