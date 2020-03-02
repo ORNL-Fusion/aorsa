@@ -5,7 +5,12 @@ OBJ_DIR = obj
 
 FFT_DIR = $(SRC_DIR)/FFTPACK
 CQL3D_SETUP_DIR = $(SRC_DIR)/CQL3D_SETUP
-NETCDF_INCLUDE_DIR = #$(SRC_DIR)/CQL3D_SETUP
+
+MOD_DIR = mod
+OBJ_DIR = obj
+
+INCLUDE_DIRS = 
+LIBS = 
 
 OBJ_FILES = \
  $(OBJ_DIR)/cauchy_mod.o \
@@ -82,7 +87,6 @@ OBJ_CQL3D_SETUP = \
  $(OBJ_DIR)/cubic_B_splines_v.o \
  $(OBJ_DIR)/cql3d_setup.o
 
-INC_FILES = $(NETCDF_INCLUDE_DIR)/netcdf.inc
 
 # Determine machine
 # -----------------
@@ -96,7 +100,7 @@ ifeq ($(NERSC_HOST),cori)
   SYSTEM_IDENTIFIED = 1
 endif
 ifeq ($(UNAME_S),Darwin) # OSX
-  ifeq ($(UNAME_V),18.7.0)
+  ifeq ($(UNAME_R),18.7.0)
     include makeopts.osx-mojave
     SYSTEM_IDENTIFIED = 1
   endif
@@ -109,15 +113,16 @@ ifeq ($(SYSTEM_IDENTIFIED),0)
   $(error No build configuration for this system)
 endif
 
-F90          = $(FC) -c $(COMMON_OPTION) -I $(NETCDF_INCLUDE_DIR) 
-F90_NOSAVE   = $(FC) -c $(COMMON_OPTION2) -I $(NETCDF_INCLUDE_DIR)
-F90_r4       = $(FC) -c $(COMMON_OPTION3) -I $(NETCDF_INCLUDE_DIR)
-F90_4        = $(FC) -c $(COMMON_OPTION4) -I $(NETCDF_INCLUDE_DIR)
-F90_LOAD     = $(FC)    $(COMMON_OPTION) -I $(NETCDF_INCLUDE_DIR)
+
+F90          = $(FC) -c $(COMMON_OPTION) $(INCLUDE_DIRS)
+F90_NOSAVE   = $(FC) -c $(COMMON_OPTION2) $(INCLUDE_DIRS)
+F90_r4       = $(FC) -c $(COMMON_OPTION3) $(INCLUDE_DIRS)
+F90_4        = $(FC) -c $(COMMON_OPTION4) $(INCLUDE_DIRS)
+F90_LOAD     = $(FC)    $(COMMON_OPTION) $(INCLUDE_DIRS)
 
 INLINE=
 OPTIMIZATION =  
-F90FLAGS = $(INLINE) $(OPTIMIZATION) -I $(NETCDF_INCLUDE_DIR) -g $(MOD_DIR)
+F90FLAGS = $(INLINE) $(OPTIMIZATION) $(INCLUDE_DIRS) -g $(MOD_DIR_FLAG)
 
 COMPILE90          = $(F90)          $(F90FLAGS) 
 COMPILE90_NOSAVE   = $(F90_NOSAVE)   $(F90FLAGS)
@@ -127,299 +132,113 @@ COMPILE90_4        = $(F90_4)        $(F90FLAGS)
 LOADFLAGS = $(DFFTPACK)
 LOAD = $(F90_LOAD) $(OPTIMIZATION) 
 
-# Compile the program
+# remove the "SECONDARY" line and life will be very weird
+.SECONDARY:
 
-$(EXEC):  $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP)
-	  $(LOAD) -o ./$(EXEC) $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(LOADFLAGS) $(LIBS) 
+$(EXEC):  make_directories $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP)
+	$(info LIBS are $(LIBS))
+	$(LOAD) -o $(EXEC) $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(LOADFLAGS) $(LIBS) 
 
 # Dependencies
 
-$(OBJ_DIR)/mets2aorsa.o:     $(SRC_DIR)/mets2aorsa.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/mets2aorsa.o \
-                             $(SRC_DIR)/mets2aorsa.f90
-				
-$(OBJ_DIR)/mets2aorsa_myra.o: $(SRC_DIR)/mets2aorsa_myra.f90 $(INC_FILES)
-	                      $(COMPILE90) -o $(OBJ_DIR)/mets2aorsa_myra.o \
-                              $(SRC_DIR)/mets2aorsa_myra.f90
-				 
-$(OBJ_DIR)/qlsum.o:          $(SRC_DIR)/qlsum.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/qlsum.o \
-                             $(SRC_DIR)/qlsum.f90
-			     
-$(OBJ_DIR)/wdot_sum.o:       $(SRC_DIR)/wdot_sum.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/wdot_sum.o \
-                             $(SRC_DIR)/wdot_sum.f90				     
-				
-$(OBJ_DIR)/cauchy_ppart.o:   $(SRC_DIR)/cauchy_ppart.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/cauchy_ppart.o \
-                             $(SRC_DIR)/cauchy_ppart.f90
-			     
-$(OBJ_DIR)/fftpack5.1d.o:    $(SRC_DIR)/fftpack5.1d.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/fftpack5.1d.o \
-                             $(SRC_DIR)/fftpack5.1d.f90			     	
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.f90
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
 
-$(OBJ_DIR)/vlog.o:           $(SRC_DIR)/vlog.f90 $(INCFILES)
-		             $(COMPILE90) -o $(OBJ_DIR)/vlog.o \
-			     $(SRC_DIR)/vlog.f90
-			     
-$(OBJ_DIR)/aorsa2dMain.o:    $(SRC_DIR)/aorsa2dMain.F $(INC_FILES)
-	                     $(COMPILE90) -DUSE_HPL -o $(OBJ_DIR)/aorsa2dMain.o \
-                             $(SRC_DIR)/aorsa2dMain.F			     
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.f
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
 
-$(OBJ_DIR)/dshell.o:         $(SRC_DIR)/dshell.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/dshell.o \
-                             $(SRC_DIR)/dshell.f
-
-$(OBJ_DIR)/aorsaSubs.o:      $(SRC_DIR)/aorsaSubs.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/aorsaSubs.o \
-                             $(SRC_DIR)/aorsaSubs.f
-
-$(OBJ_DIR)/sigma.o:          $(SRC_DIR)/sigma.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/sigma.o \
-                             $(SRC_DIR)/sigma.f
-                                
-$(OBJ_DIR)/zfunction.o:      $(SRC_DIR)/zfunction.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/zfunction.o \
-                             $(SRC_DIR)/zfunction.f
-                                
-$(OBJ_DIR)/ztable.o:         $(SRC_DIR)/ztable.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/ztable.o \
-                             $(SRC_DIR)/ztable.f90							                                 
-                                 
-$(OBJ_DIR)/bessel.o:         $(SRC_DIR)/bessel.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/bessel.o \
-                             $(SRC_DIR)/bessel.f                                
-                                                              
-$(OBJ_DIR)/current.o:        $(SRC_DIR)/current.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/current.o \
-                             $(SRC_DIR)/current.f
-				
-$(OBJ_DIR)/ql_myra.o:        $(SRC_DIR)/ql_myra.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/ql_myra.o \
-                             $(SRC_DIR)/ql_myra.f
-			     
-$(OBJ_DIR)/wdot_test.o:     $(SRC_DIR)/wdot_test.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/wdot_test.o \
-                             $(SRC_DIR)/wdot_test.f90				     
-                                
-$(OBJ_DIR)/slowDown.o:       $(SRC_DIR)/slowDown.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/slowDown.o \
-                             $(SRC_DIR)/slowDown.f                                                                           
-
-$(OBJ_DIR)/fourier.o:        $(SRC_DIR)/fourier.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/fourier.o \
-                             $(SRC_DIR)/fourier.f			     			     
-                                
-$(OBJ_DIR)/assert.o:         $(SRC_DIR)/assert.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/assert.o \
-                             $(SRC_DIR)/assert.f                            
-                                
-$(OBJ_DIR)/setupblacs.o:     $(SRC_DIR)/setupblacs.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/setupblacs.o \
-                             $(SRC_DIR)/setupblacs.f                                                                                                
-
-$(OBJ_DIR)/check.o:          $(SRC_DIR)/check.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/check.o \
-                             $(SRC_DIR)/check.f
-			     
-$(OBJ_DIR)/cauchy_mod.o:     $(SRC_DIR)/cauchy_mod.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/cauchy_mod.o \
-                             $(SRC_DIR)/cauchy_mod.f90			     
-				
-$(OBJ_DIR)/precision_mod.o:  $(SRC_DIR)/precision_mod.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/precision_mod.o \
-                             $(SRC_DIR)/precision_mod.f90
-			     
-$(OBJ_DIR)/size_mod.o:       $(SRC_DIR)/size_mod.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/size_mod.o \
-                             $(SRC_DIR)/size_mod.f90
-			     
-$(OBJ_DIR)/aorsa2din_mod.o:  $(SRC_DIR)/aorsa2din_mod.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/aorsa2din_mod.o \
-                             $(SRC_DIR)/aorsa2din_mod.f90			     	     
-				 
-$(OBJ_DIR)/profile_mod.o:    $(SRC_DIR)/profile_mod.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/profile_mod.o \
-                             $(SRC_DIR)/profile_mod.f90
-			     
-$(OBJ_DIR)/swim_global_data_mod.o: $(SRC_DIR)/swim_global_data_mod.f90 $(INC_FILES)
-	                           $(COMPILE90) -o $(OBJ_DIR)/swim_global_data_mod.o \
-                                   $(SRC_DIR)/swim_global_data_mod.f90
-				   
-$(OBJ_DIR)/z_erfc_mod.o:     $(SRC_DIR)/z_erfc_mod.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/z_erfc_mod.o \
-                             $(SRC_DIR)/z_erfc_mod.f90
-			     
-			     
-$(OBJ_DIR)/types_mod.o:      $(SRC_DIR)/types_mod.f90 $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/types_mod.o \
-                             $(SRC_DIR)/types_mod.f90
-			     
-$(OBJ_DIR)/zfun_hilbert_mod.o:   $(SRC_DIR)/zfun_hilbert_mod.f90 $(INC_FILES)
-	                         $(COMPILE90) -o $(OBJ_DIR)/zfun_hilbert_mod.o \
-                                 $(SRC_DIR)/zfun_hilbert_mod.f90			     			     		   
-$(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f $(INC_FILES)
+$(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/rf2x_setup2.o \
-                             $(SRC_DIR)/rf2x_setup2.f
+                             $(SRC_DIR)/rf2x_setup2.f $(INCLUDE_DIRS)
 			     
-$(OBJ_DIR)/profile_setup.o:  $(SRC_DIR)/profile_setup.f $(INC_FILES)
+$(OBJ_DIR)/profile_setup.o:  $(SRC_DIR)/profile_setup.f
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/profile_setup.o \
-                             $(SRC_DIR)/profile_setup.f
+                             $(SRC_DIR)/profile_setup.f $(INCLUDE_DIRS)
 			     
-$(OBJ_DIR)/eqdsk_setup.o:    $(SRC_DIR)/eqdsk_setup.f $(INC_FILES)
+$(OBJ_DIR)/eqdsk_setup.o:    $(SRC_DIR)/eqdsk_setup.f
 	                     $(COMPILE90) -o $(OBJ_DIR)/eqdsk_setup.o \
-                             $(SRC_DIR)/eqdsk_setup.f
+                             $(SRC_DIR)/eqdsk_setup.f $(INCLUDE_DIRS)
 				
-$(OBJ_DIR)/orbit.o:          $(SRC_DIR)/orbit.f $(INC_FILES)
+$(OBJ_DIR)/orbit.o:          $(SRC_DIR)/orbit.f
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/orbit.o \
-                             $(SRC_DIR)/orbit.f			     
+                             $(SRC_DIR)/orbit.f $(INCLUDE_DIRS)			     
 			     			     			     			     
-$(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f90 $(INC_FILES)
+$(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f90
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/eqdsk_plot.o \
-                             $(SRC_DIR)/eqdsk_plot.f90 $(WARNING_FLAGS)				     
+                             $(SRC_DIR)/eqdsk_plot.f90 $(INCLUDE_DIRS) $(WARNING_FLAGS)				     
 			     			     
-$(OBJ_DIR)/fieldws.o:        $(SRC_DIR)/fieldws.f $(INC_FILES)
+$(OBJ_DIR)/fieldws.o:        $(SRC_DIR)/fieldws.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/fieldws.o \
-                             $(SRC_DIR)/fieldws.f
+                             $(SRC_DIR)/fieldws.f $(INCLUDE_DIRS)
 			     
-$(OBJ_DIR)/scale.o:          $(SRC_DIR)/scale.f $(INC_FILES)
+$(OBJ_DIR)/scale.o:          $(SRC_DIR)/scale.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/scale.o \
-                             $(SRC_DIR)/scale.f			     
+                             $(SRC_DIR)/scale.f $(INCLUDE_DIRS)			     
 			     
-$(OBJ_DIR)/dql_write.o:      $(SRC_DIR)/dql_write.f $(INC_FILES)
+$(OBJ_DIR)/dql_write.o:      $(SRC_DIR)/dql_write.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/dql_write.o \
-                             $(SRC_DIR)/dql_write.f			     
+                             $(SRC_DIR)/dql_write.f $(INCLUDE_DIRS)			     
 			     
-$(OBJ_DIR)/aorsa2dSum.o:     $(SRC_DIR)/aorsa2dSum.f $(INC_FILES)
-	                     $(COMPILE90) -o $(OBJ_DIR)/aorsa2dSum.o \
-                             $(SRC_DIR)/aorsa2dSum.f				    			    
-		  	    
-$(OBJ_DIR)/plot.o:           $(SRC_DIR)/plot.f $(INC_FILES)
+$(OBJ_DIR)/plot.o:           $(SRC_DIR)/plot.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/plot.o \
-                             $(SRC_DIR)/plot.f				     
+                             $(SRC_DIR)/plot.f $(INCLUDE_DIRS)				     
 			     			     
 			     
 			    		    		     		   			     			     				
 ### FFTPACK files:
 
-$(OBJ_DIR)/cfftb1.o :      $(FFT_DIR)/cfftb1.f
-			   $(COMPILE90) -o $(OBJ_DIR)/cfftb1.o \
-			   $(FFT_DIR)/cfftb1.f
+${OBJ_DIR}/%.o: ${FFT_DIR}/%.f
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
 
-$(OBJ_DIR)/cfftf1.o :      $(FFT_DIR)/cfftf1.f
-			   $(COMPILE90) -o $(OBJ_DIR)/cfftf1.o \
-			   $(FFT_DIR)/cfftf1.f
 
-$(OBJ_DIR)/cffti1.o:       $(FFT_DIR)/cffti1.f
-			   $(COMPILE90) -o $(OBJ_DIR)/cffti1.o \
-			   $(FFT_DIR)/cffti1.f
-			   
-$(OBJ_DIR)/dfftb.o :      $(FFT_DIR)/dfftb.f
-			   $(COMPILE90) -o $(OBJ_DIR)/dfftb.o \
-			   $(FFT_DIR)/dfftb.f
-
-$(OBJ_DIR)/dfftf.o :      $(FFT_DIR)/dfftf.f
-			   $(COMPILE90) -o $(OBJ_DIR)/dfftf.o \
-			   $(FFT_DIR)/dfftf.f
-
-$(OBJ_DIR)/dffti.o:       $(FFT_DIR)/dffti.f
-			   $(COMPILE90) -o $(OBJ_DIR)/dffti.o \
-			   $(FFT_DIR)/dffti.f
-
-$(OBJ_DIR)/passb.o :       $(FFT_DIR)/passb.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passb.o \
-			   $(FFT_DIR)/passb.f
-
-$(OBJ_DIR)/passb2.o :      $(FFT_DIR)/passb2.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passb2.o \
-			   $(FFT_DIR)/passb2.f
-
-$(OBJ_DIR)/passb3.o :      $(FFT_DIR)/passb3.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passb3.o \
-			   $(FFT_DIR)/passb3.f
-
-$(OBJ_DIR)/passb4.o :      $(FFT_DIR)/passb4.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passb4.o \
-			   $(FFT_DIR)/passb4.f
-
-$(OBJ_DIR)/passb5.o :      $(FFT_DIR)/passb5.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passb5.o \
-			   $(FFT_DIR)/passb5.f
-			    
-$(OBJ_DIR)/passf.o :       $(FFT_DIR)/passf.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passf.o \
-			   $(FFT_DIR)/passf.f
-
-$(OBJ_DIR)/passf2.o :      $(FFT_DIR)/passf2.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passf2.o \
-			   $(FFT_DIR)/passf2.f
-
-$(OBJ_DIR)/passf3.o :      $(FFT_DIR)/passf3.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passf3.o \
-			   $(FFT_DIR)/passf3.f
-
-$(OBJ_DIR)/passf4.o :      $(FFT_DIR)/passf4.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passf4.o \
-			   $(FFT_DIR)/passf4.f
-
-$(OBJ_DIR)/passf5.o :      $(FFT_DIR)/passf5.f
-			   $(COMPILE90) -o $(OBJ_DIR)/passf5.o \
-			   $(FFT_DIR)/passf5.f
-
-$(OBJ_DIR)/zfftb.o :       $(FFT_DIR)/zfftb.f
-			   $(COMPILE90) -o $(OBJ_DIR)/zfftb.o \
-			   $(FFT_DIR)/zfftb.f
-
-$(OBJ_DIR)/zfftf.o :       $(FFT_DIR)/zfftf.f
-			   $(COMPILE90) -o $(OBJ_DIR)/zfftf.o \
-			   $(FFT_DIR)/zfftf.f
-
-$(OBJ_DIR)/zffti.o:        $(FFT_DIR)/zffti.f
-			   $(COMPILE90) -o $(OBJ_DIR)/zffti.o \
-			   $(FFT_DIR)/zffti.f
-			   
-				
 ### CQL3D_SETUP files:
 
-$(OBJ_DIR)/basis_functions_m.o: $(CQL3D_SETUP_DIR)/basis_functions_m.f90 $(INCFILES)
+$(OBJ_DIR)/basis_functions_m.o: $(CQL3D_SETUP_DIR)/basis_functions_m.f90
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/basis_functions_m.o \
-                                $(CQL3D_SETUP_DIR)/basis_functions_m.f90
+                                $(CQL3D_SETUP_DIR)/basis_functions_m.f90 $(INCLUDE_DIRS)
 
-$(OBJ_DIR)/f_expanded_m.o:      $(CQL3D_SETUP_DIR)/f_expanded_m.f90 $(INCFILES)
+$(OBJ_DIR)/f_expanded_m.o:      $(CQL3D_SETUP_DIR)/f_expanded_m.f90
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/f_expanded_m.o \
-                                $(CQL3D_SETUP_DIR)/f_expanded_m.f90
+                                $(CQL3D_SETUP_DIR)/f_expanded_m.f90 $(INCLUDE_DIRS)
 
-$(OBJ_DIR)/global_data_m.o:     $(CQL3D_SETUP_DIR)/global_data_m.f90 $(INCFILES)
+$(OBJ_DIR)/global_data_m.o:     $(CQL3D_SETUP_DIR)/global_data_m.f90
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/global_data_m.o \
-                                $(CQL3D_SETUP_DIR)/global_data_m.f90
+                                $(CQL3D_SETUP_DIR)/global_data_m.f90 $(INCLUDE_DIRS)
 
-$(OBJ_DIR)/CQL_kinds_m.o:       $(CQL3D_SETUP_DIR)/CQL_kinds_m.f90 $(INCFILES)
+$(OBJ_DIR)/CQL_kinds_m.o:       $(CQL3D_SETUP_DIR)/CQL_kinds_m.f90
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/CQL_kinds_m.o \
-                                $(CQL3D_SETUP_DIR)/CQL_kinds_m.f90
+                                $(CQL3D_SETUP_DIR)/CQL_kinds_m.f90 $(INCLUDE_DIRS)
 
-$(OBJ_DIR)/vector_write_m.o:    $(CQL3D_SETUP_DIR)/vector_write_m.f90 $(INCFILES)
+$(OBJ_DIR)/vector_write_m.o:    $(CQL3D_SETUP_DIR)/vector_write_m.f90
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/vector_write_m.o \
-                                $(CQL3D_SETUP_DIR)/vector_write_m.f90
+                                $(CQL3D_SETUP_DIR)/vector_write_m.f90 $(INCLUDE_DIRS)
 
-$(OBJ_DIR)/read_cql3d.o:        $(CQL3D_SETUP_DIR)/read_cql3d.f90 $(INCFILES)
+$(OBJ_DIR)/read_cql3d.o:        $(CQL3D_SETUP_DIR)/read_cql3d.f90
 	                        $(COMPILE90_4) -o $(OBJ_DIR)/read_cql3d.o \
-                                $(CQL3D_SETUP_DIR)/read_cql3d.f90
+                                $(CQL3D_SETUP_DIR)/read_cql3d.f90 $(INCLUDE_DIRS)
 			
-$(OBJ_DIR)/ceez.o:              $(CQL3D_SETUP_DIR)/ceez.f $(INCFILES)
+$(OBJ_DIR)/ceez.o:              $(CQL3D_SETUP_DIR)/ceez.f
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/ceez.o \
-                                $(CQL3D_SETUP_DIR)/ceez.f
+                                $(CQL3D_SETUP_DIR)/ceez.f $(INCLUDE_DIRS)
 
-$(OBJ_DIR)/cubic_B_splines_v.o: $(CQL3D_SETUP_DIR)/cubic_B_splines_v.f90 $(INCFILES)
+$(OBJ_DIR)/cubic_B_splines_v.o: $(CQL3D_SETUP_DIR)/cubic_B_splines_v.f90
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/cubic_B_splines_v.o \
-                                $(CQL3D_SETUP_DIR)/cubic_B_splines_v.f90		
+                                $(CQL3D_SETUP_DIR)/cubic_B_splines_v.f90 $(INCLUDE_DIRS)		
 			
-$(OBJ_DIR)/cql3d_setup.o:       $(CQL3D_SETUP_DIR)/cql3d_setup.f90 $(INCFILES)
+$(OBJ_DIR)/cql3d_setup.o:       $(CQL3D_SETUP_DIR)/cql3d_setup.f90
 	                        $(COMPILE90_4) -o $(OBJ_DIR)/cql3d_setup.o \
-                                $(CQL3D_SETUP_DIR)/cql3d_setup.f90
+                                $(CQL3D_SETUP_DIR)/cql3d_setup.f90 $(INCLUDE_DIRS)
 				
-				
+.phony: make_directories
+make_directories: $(OBJ_DIR)/ $(MOD_DIR)/
 
-make clean:
-	rm -rf *.lst mod/* $(EXEC)
-	rm $(OBJ_DIR)/*.o
+$(MOD_DIR)/:
+	mkdir -p $@
+
+$(OBJ_DIR)/:
+	mkdir -p $@
+		
+.phony: clean
+clean:
+	rm -r $(MOD_DIR)/*.mod $(OBJ_DIR)/*.o $(EXEC)
 
