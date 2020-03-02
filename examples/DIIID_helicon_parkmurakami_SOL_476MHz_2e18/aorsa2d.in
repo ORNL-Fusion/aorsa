@@ -40,11 +40,11 @@
  eqdsk = 'g200201.00000',
  netCDF_file2='DIII_NB_FW_0th.max.nc',
    
- nmodesx =448,
- nmodesy = 384,
+ nmodesx = 16,
+ nmodesy = 16,
  
- nprow = 72,
- npcol = 72,
+ nprow = 1,
+ npcol = 1,
  
  nphi_number = 1,
  nphi_array = -94, 
