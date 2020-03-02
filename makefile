@@ -93,21 +93,38 @@ OBJ_CQL3D_SETUP = \
 
 UNAME_S := $(shell uname -s)
 UNAME_R := $(shell uname -r)
+LSB_IS := $(shell lsb_release -is)
+LSB_RS := $(shell lsb_release -rs)
+HOSTNAME := $(shell hostname)
 
 SYSTEM_IDENTIFIED = 0
 ifeq ($(NERSC_HOST),cori)
   include makeopts.cori
+  $(info System identified as Cori)
   SYSTEM_IDENTIFIED = 1
 endif
 ifeq ($(UNAME_S),Darwin) # OSX
   ifeq ($(UNAME_R),18.7.0)
     include makeopts.osx-mojave
+    $(info System identified as osx-mojave)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
-#ifeq ( # assume ubuntu 18 / fusiont6
-#  include makeopts.fusiont6
-#endif
+ifeq ($(LSB_IS),Ubuntu)
+  ifeq ($(LSB_RS),18.04)
+    ifeq ($(HOSTNAME),fusiont6-1)
+      include makeopts.fusiont6
+      $(info System identified as fusiont6)
+      SYSTEM_IDENTIFIED = 1
+    else
+      include makeopts.ubuntu18.04
+      $(info System identified as Ubuntu18.04)
+      SYSTEM_IDENTIFIED = 1
+    endif
+  endif
+endif
+
+#$(error EXIT)
 
 ifeq ($(SYSTEM_IDENTIFIED),0)
   $(error No build configuration for this system)
@@ -146,6 +163,13 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.f90
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.f
 	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.F90
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.F
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+
 
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/rf2x_setup2.o \

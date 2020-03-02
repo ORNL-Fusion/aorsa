@@ -1,0 +1,14 @@
+include compileropts.gnu
+
+FC = mpif90 
+LIBS += /usr/local/opt/pgplot/lib/libpgplot.a 
+
+NETCDF_DIR = /usr/local/opt/netcdf
+LIBS += $(NETCDF_DIR)/lib/libnetcdff.a -L /usr/local/opt/netcdf/lib -lnetcdf
+INCLUDE_DIRS += -I $(NETCDF_DIR)/include
+
+LIBS += -L /usr/local/opt/scalapack/lib/ -lscalapack \
+	/usr/local/opt/openblas/lib/libopenblas.a 
+	 
+LIBS += /usr/local/opt/libpng/lib/libpng16.a -L /opt/X11/lib -lX11
+
