@@ -104,11 +104,11 @@ ifeq ($(NERSC_HOST),cori)
   SYSTEM_IDENTIFIED = 1
 endif
 ifeq ($(UNAME_S),Darwin) # OSX
-  ifeq ($(UNAME_R),18.7.0)
+  #ifeq ($(UNAME_R),18.7.0)
     include makeopts.osx-mojave
     $(info System identified as osx-mojave)
     SYSTEM_IDENTIFIED = 1
-  endif
+  #endif
 endif
 ifeq ($(LSB_IS),Ubuntu)
   ifeq ($(LSB_RS),18.04)
