@@ -7,7 +7,7 @@
 * netcdf / netcdff
 * scalapack / blas / blacs
 * mpi
-* pgplot
+* pgplot and X11
 * cmake > 3.15
 
 ## Cori
