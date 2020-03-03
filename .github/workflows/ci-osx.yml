@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Get xquartz pt 1 
-      run: ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null ; brew install caskroom/cask/brew-cask 2> /dev/null
+      run: brew install caskroom/cask/brew-cask 2> /dev/null
     - name: Get xquartz pt 2
       run: brew cask install --force xquartz
     - name: Install AORSA deps
