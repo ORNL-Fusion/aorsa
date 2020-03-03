@@ -10,9 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install AORSA dependencies
-      run: | 
-      sudo apt-get install gfortran libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev 
-      sudo apt-get install libpng-dev libblas-dev libblacs-openmpi1 libx11-dev
+      run: sudo apt-get install gfortran libblacs-openmpi1 libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libblas-dev libx11-dev
     - name: Build
       run: make
     - name: Test
