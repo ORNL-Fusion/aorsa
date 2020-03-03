@@ -10,7 +10,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install AORSA dependencies
+      run: ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null ; brew install caskroom/cask/brew-cask 2> /dev/null
+      run: brew cask install xquartz
       run: brew install open-mpi scalapack pgplot
+
     - name: Build
       run: make
     - name: Test
