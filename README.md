@@ -75,7 +75,7 @@ srun -n 1 /path/to/xaorsa2d
 ## Ubuntu 18.04
 ### Build
 ```
-apt install libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libopenblas-dev libx11-dev
+apt install gfortran libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libopenblas-dev libx11-dev
 ```
 ### Run
 ```
