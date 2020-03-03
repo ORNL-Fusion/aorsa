@@ -2,6 +2,15 @@ include compileropts.gnu
 
 FC = mpif90 
 
-LIBS += -L/usr/lib/ -lpgplot /usr/lib/x86_64-linux-gnu/libnetcdff.a -L /usr/lib/x86_64-linux-gnu -lscalapack-openmpi /usr/lib/x86_64-linux-gnu/blas/libblas.a /usr/lib/x86_64-linux-gnu/libblacs-openmpi.a -L /usr/lib/x86_64-linux-gnu -lnetcdf /usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a /usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a /usr/lib/x86_64-linux-gnu/libblacs-openmpi.a /usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a /usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a
+LIBS += -L/usr/lib/ -lpgplot /usr/lib/x86_64-linux-gnu/libnetcdff.a \
+	-L /usr/lib/x86_64-linux-gnu -lscalapack-openmpi \
+	/usr/lib/x86_64-linux-gnu/blas/libblas.a \
+	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
+	-L /usr/lib/x86_64-linux-gnu -lnetcdf \
+	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a
 
 INCLUDE_DIRS += -I /usr/include

@@ -1,6 +1,6 @@
 include compileropts.gnu
 
-FC = mpif90 
+FC = mpif90.openmpi
 
 LIBS += /usr/lib/libpgplot.a 
 
@@ -9,7 +9,13 @@ LIBS += $(NETCDF_DIR)/libnetcdff.a -L /usr/local/opt/netcdf -lnetcdf
 INCLUDE_DIRS += -I /usr/include
 
 LIBS += -L /usr/lib/x86_64-linux-gnu -lscalapack-openmpi \
-    /usr/lib/x86_64-linux-gnu/libopenblas.a	 
-	 
+	/usr/lib/x86_64-linux-gnu/blas/libblas.a \
+	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
+	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a
+
 LIBS += /usr/lib/x86_64-linux-gnu/libpng.a -lz -L /usr/lib/i386-linux-gnu -lX11
 
