@@ -1,7 +1,7 @@
 # Build & Run
 ## Dependencies
 
-* netcdf
+* netcdf / netcdff
 * scalapack / blas / blacs
 * mpi
 * pgplot
