@@ -8,6 +8,7 @@
 * scalapack / blas / blacs
 * mpi
 * pgplot
+* cmake > 3.15
 
 ## Cori
 ### Build
@@ -39,7 +40,7 @@ srun -n 1 /path/to/xaorsa2d
 ## Ubuntu 18.04
 ### Build
 ```
-apt install gfortran libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libopenblas-dev libx11-dev
+apt-get install gfortran libblacs-openmpi1 libblacs-mpi-dev libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libblas-dev libx11-dev
 ```
 ### Run
 ```
@@ -64,10 +65,12 @@ mpirun -n 1 ../../xaorsa2d
 ## osx-mojave
 ### Build
 ```
-brew install open-mpi scalapack pgplot
+brew cask install xquartz
+brew install open-mpi scalapack pgplot netcdf
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
 make 
+ctest
 ```
 
 # Inputs
