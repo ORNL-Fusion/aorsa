@@ -12,7 +12,7 @@ jobs:
     - name: Get xquartz pt 2
       run: brew cask install xquartz
     - name: Install AORSA deps
-      run: brew install open-mpi scalapack pgplot
+      run: brew install open-mpi scalapack pgplot netcdf
     - name: Build
       run: make
     - name: Test
