@@ -266,3 +266,15 @@ $(OBJ_DIR)/:
 clean:
 	rm -r $(MOD_DIR)/*.mod $(OBJ_DIR)/*.o $(EXEC)
 
+.phony: cleanrepo
+cleanrepo:
+	cd test/DIIID-helicon
+	./cleanrun.sh
+	cd ../DIIID-whistler
+	./cleanrun.sh
+	cd ../../
+	cd examples/DIIID-helicon
+	./cleanrun.sh
+	cd ../DIIID-whister
+	./cleanrun.sh
+
