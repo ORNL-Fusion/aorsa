@@ -2,7 +2,7 @@
 ## Dependencies
 
 * netcdf
-* scalapack
+* scalapack / blas / blacs
 * mpi
 * pgplot
 
