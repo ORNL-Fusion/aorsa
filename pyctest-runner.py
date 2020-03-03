@@ -22,12 +22,14 @@ pyctest.BUILD_COMMAND = "make"
 
 test = pyctest.test()
 test.SetName("Helicon")
-test.SetProperty("WORKING_DIRECTORY",pyctest.SOURCE_DIRECTORY+"/test/DIIID-helicon")
+#test.SetProperty("WORKING_DIRECTORY",pyctest.SOURCE_DIRECTORY+"/test/DIIID-helicon")
+test.SetProperty("WORKING_DIRECTORY","test/DIIID-helicon")
 test.SetCommand(["./test.sh"])
 
 test = pyctest.test()
 test.SetName("Whistler")
-test.SetProperty("WORKING_DIRECTORY",pyctest.SOURCE_DIRECTORY+"/test/DIIID-whistler")
+#test.SetProperty("WORKING_DIRECTORY",pyctest.SOURCE_DIRECTORY+"/test/DIIID-whistler")
+test.SetProperty("WORKING_DIRECTORY","test/DIIID-whistler")
 test.SetCommand(["./test.sh"])
 
 pyctest.run()

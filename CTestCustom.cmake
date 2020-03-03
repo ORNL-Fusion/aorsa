@@ -1,4 +1,4 @@
-set(CTEST_BUILD_NAME "a")
+set(CTEST_BUILD_NAME "dev")
 set(CTEST_SOURCE_DIRECTORY "/Users/dg6/code/aorsa")
 set(CTEST_BINARY_DIRECTORY "/Users/dg6/code/aorsa")
 set(CTEST_MODEL "Continuous")
