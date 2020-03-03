@@ -6,7 +6,7 @@
 
       implicit none
 
-      character*32 title		                        
+      character*32 title                        
       character*32 titll
       character*32 titlr
       character*32 titlb
@@ -272,7 +272,8 @@ c
      .                            wdoti3avg_int(nrhomax),
      .                            wdoti4avg_int(nrhomax),
      .                            wdoti5avg_int(nrhomax),
-     .                            wdoti6avg_int(nrhomax) 
+     .                            wdoti6avg_int(nrhomax), 
+     .                            wdotisavg_int(nrhomax) 
      
       real wdote_ql_int(nrhomax), wdoti1_ql_int(nrhomax),
      .                            wdoti2_ql_int(nrhomax),
@@ -897,7 +898,7 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       read(38, 310) (wdoti4avg_int(n), n = 1, nnoderho)
       read(38, 310) (wdoti5avg_int(n), n = 1, nnoderho)
       read(38, 310) (wdoti6avg_int(n), n = 1, nnoderho)
-      read(38, 310) (wdotisavg_int(n), n = 1, nnoderho)
+!      read(38, 310) (wdotisavg_int(n), n = 1, nnoderho)
       
       read(38, 310) (wdote_ql_int(n),  n = 1, nnoderho)
       read(38, 310) (wdoti1_ql_int(n), n = 1, nnoderho)
@@ -3579,7 +3580,7 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       ! last ion in slowing down species instead of species 6 JCW Sept 2019
       call ezplot7(title, titll, titlr, titlb, rhon_half, 
      .   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
-     .   wdotisavg, wdoteavg, nnoderho2_half, nrhomax)
+     .   wdoti6avg, wdoteavg, nnoderho2_half, nrhomax)  !wdoti6avg -> wdotisavg
      
       write(72, 309) nnoderho
       do n = 1, nnoderho
