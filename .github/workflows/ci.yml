@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install AORSA dependencies
+      run: sudo apt-get install libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libopenblas-dev libx11-dev
     - name: Build
       run: make
     - name: Test
