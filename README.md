@@ -12,8 +12,6 @@
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
 source env.cori
-mkdir obj
-mkdir mod
 make clean
 make
 ```
@@ -23,7 +21,7 @@ source env.cori
 ulimit -s unlimited
 cp -r examples $SCRATCH/
 cd $SCRATCH/examples
-cd DIIID_SPONG_ICE
+cd DIIID-helicon
 ```
 #### batchscript
 ```
@@ -42,7 +40,7 @@ apt install gfortran libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-
 ```
 ### Run
 ```
-cd examples/DIIID_helicon_parkmurakami_SOL_476MHz_2e18
+cd examples/DIIID-helicon
 mpirun -n 1 ../../xaorsa2d
 ```
 
@@ -51,29 +49,22 @@ mpirun -n 1 ../../xaorsa2d
 ```
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
-mkdir obj
-mkdir mod
-make -f makefile.fusiont6
+make 
 ```
 ### Run
 ```
 ulimit -s unlimited
-cd examples/DIIID_SPONG_ICE
+cd examples/DIIID-helicon
 mpirun -n 1 ../../xaorsa2d
 ```
 
 ## osx-mojave
 ### Build
 ```
-brew install open-mpi
-brew install scalapack
-brew install pgplot
+brew install open-mpi scalapack pgplot
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
-git checkout osx-mojave
-mkdir obj
-mkdir mod
-make -f makefile.osx-mojave
+make 
 ```
 
 # Inputs

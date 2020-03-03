@@ -1,4 +1,4 @@
-name: CI
+name: CI on Ubuntu
 
 on: [push]
 
@@ -16,13 +16,3 @@ jobs:
     - name: Test
       run: ctest
    
-    runs-on: macos-10.15
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install AORSA dependencies
-      run: sudo brew install open-mpi scalapack pgplot
-    - name: Build
-      run: make
-    - name: Test
-      run: ctest
