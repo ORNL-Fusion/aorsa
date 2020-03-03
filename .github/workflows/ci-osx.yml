@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install AORSA dependencies
-      run: sudo brew install open-mpi scalapack pgplot
+      run: brew install open-mpi scalapack pgplot
     - name: Build
       run: make
     - name: Test
