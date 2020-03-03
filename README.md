@@ -1,3 +1,6 @@
+[![Actions Status](https://github.com/ORNL-Fusion/aorsa/workflows/CI%20on%20Mac/badge.svg)](https://github.com/ORNL-Fusion/aorsa/actions)
+[![Actions Status](https://github.com/ORNL-Fusion/aorsa/workflows/CI%20on%20Ubuntu/badge.svg)](https://github.com/ORNL-Fusion/aorsa/actions)
+
 # Build & Run
 ## Dependencies
 
