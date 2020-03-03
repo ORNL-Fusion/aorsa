@@ -1,6 +1,6 @@
 set(CTEST_BUILD_NAME "[Darwin macOS 10.14.6 x86_64] [Python 2.7.16]")
-set(CTEST_SOURCE_DIRECTORY "/Users/dg6/code/aorsa")
-set(CTEST_BINARY_DIRECTORY "/Users/dg6/code/aorsa")
+set(CTEST_SOURCE_DIRECTORY "./")
+set(CTEST_BINARY_DIRECTORY "./")
 set(CTEST_MODEL "Continuous")
 set(CTEST_SITE "dlg-macbookpro3")
 # set(CTEST_CHECKOUT_COMMAND "")
