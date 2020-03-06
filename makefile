@@ -99,9 +99,16 @@ HOSTNAME := $(shell hostname)
 
 SYSTEM_IDENTIFIED = 0
 ifeq ($(NERSC_HOST),cori)
-  include makeopts.cori
-  $(info System identified as Cori)
-  SYSTEM_IDENTIFIED = 1
+  ifeq ($(PE_ENV),GNU)
+    include makeopts.cori.gnu
+    $(info System identified as Cori GNU)
+    SYSTEM_IDENTIFIED = 1
+  endif      
+  ifeq ($(PE_ENV),INTEL)
+    include makeopts.cori.intel
+    $(info System identified as Cori Intel)
+    SYSTEM_IDENTIFIED = 1
+  endif
 endif
 ifeq ($(UNAME_S),Darwin) # OSX
   #ifeq ($(UNAME_R),18.7.0)
