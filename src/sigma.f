@@ -3830,7 +3830,7 @@ c
       implicit none
 
       integer lmax, nmax, ier, l, lmaxdim
-      real factrl, factl
+      real factrl, factl, infinity_check
       complex gamma, expbes(0:lmaxdim), expbesp(0:lmaxdim),
      .   expbesovergam(0:lmaxdim), xilovergam,
      .   xil(0:lmaxdim), xilp(0:lmaxdim), exgam
@@ -3841,6 +3841,16 @@ c
 
       do l = 0, lmax
          factl = factrl(l)
+
+         infinity_check = 1/(2**l * factl)
+        if ( infinity_check .gt. 1e30 ) then
+
+          xil(l) = 0;
+          xilp(l) = 0;
+          xilovergam = 0;
+
+        else
+
          xil(l) = gamma**l / (2**l * factl) *
      .                                 ( 1. + gamma**2 / (4. * (l+1)))
          xilp(l) = gamma**(l-1) / (2**l * factl) *
@@ -3848,6 +3858,8 @@ c
 
          xilovergam = gamma**(l-1) / (2**l * factl) *
      .                                 ( 1. + gamma**2 / (4. * (l+1)))
+
+        endif 
 
          expbes(l) = exgam * xil(l)
          expbesp(l) = exgam * xilp(l)
