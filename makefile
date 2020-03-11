@@ -11,6 +11,10 @@ OBJ_DIR = obj
 
 INCLUDE_DIRS = 
 LIBS = 
+F90FLAGS = 
+
+# per file build flags
+SIGMA_F_FLAGS = 
 
 OBJ_FILES = \
  $(OBJ_DIR)/cauchy_mod.o \
@@ -99,9 +103,16 @@ HOSTNAME := $(shell hostname)
 
 SYSTEM_IDENTIFIED = 0
 ifeq ($(NERSC_HOST),cori)
-  include makeopts.cori
-  $(info System identified as Cori)
-  SYSTEM_IDENTIFIED = 1
+  ifeq ($(PE_ENV),GNU)
+    include makeopts.cori.gnu
+    $(info System identified as Cori GNU)
+    SYSTEM_IDENTIFIED = 1
+  endif      
+  ifeq ($(PE_ENV),INTEL)
+    include makeopts.cori.intel
+    $(info System identified as Cori Intel)
+    SYSTEM_IDENTIFIED = 1
+  endif
 endif
 ifeq ($(UNAME_S),Darwin) # OSX
   #ifeq ($(UNAME_R),18.7.0)
@@ -112,15 +123,9 @@ ifeq ($(UNAME_S),Darwin) # OSX
 endif
 ifeq ($(LSB_IS),Ubuntu)
   ifeq ($(LSB_RS),18.04)
-    #ifeq ($(HOSTNAME),fusiont6-1)
-    #  include makeopts.fusiont6
-    #  $(info System identified as fusiont6)
-    #  SYSTEM_IDENTIFIED = 1
-    #else
-      include makeopts.ubuntu18.04
-      $(info System identified as Ubuntu18.04)
-      SYSTEM_IDENTIFIED = 1
-    #endif
+    include makeopts.ubuntu18.04
+    $(info System identified as Ubuntu18.04)
+    SYSTEM_IDENTIFIED = 1
   endif
 endif
 
@@ -139,7 +144,7 @@ F90_LOAD     = $(FC)    $(COMMON_OPTION) $(INCLUDE_DIRS)
 
 INLINE=
 OPTIMIZATION =  
-F90FLAGS = $(INLINE) $(OPTIMIZATION) $(INCLUDE_DIRS) -g $(MOD_DIR_FLAG)
+F90FLAGS += $(INLINE) $(OPTIMIZATION) $(INCLUDE_DIRS) -g $(MOD_DIR_FLAG)
 
 COMPILE90          = $(F90)          $(F90FLAGS) 
 COMPILE90_NOSAVE   = $(F90_NOSAVE)   $(F90FLAGS)
@@ -169,6 +174,9 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F90
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F
 	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+
+${OBJ_DIR}/sigma.o: ${SRC_DIR}/sigma.f
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${SIGMA_F_FLAGS}
 
 
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 

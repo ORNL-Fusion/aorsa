@@ -48,20 +48,6 @@ cd examples/DIIID-helicon
 mpirun -n 1 ../../xaorsa2d
 ```
 
-## fusiont6
-### Build
-```
-git clone https://github.com/ORNL-Fusion/aorsa.git
-cd aorsa
-make 
-```
-### Run
-```
-ulimit -s unlimited
-cd examples/DIIID-helicon
-mpirun -n 1 ../../xaorsa2d
-```
-
 ## osx-mojave
 ### Build
 ```
