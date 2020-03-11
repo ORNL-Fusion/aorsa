@@ -3318,7 +3318,7 @@ c                  antlc = pi / (xk0 * antlen)
       cur_mod_max = 0.0
       do i = 1, nnodex
          do j = 1, nnodey
-	    cur_mod = sqrt(xjx(i,j)*2 + xjy(i,j)**2 + xjz(i,j)**2)
+	    cur_mod = sqrt(xjx(i,j)**2 + xjy(i,j)**2 + xjz(i,j)**2)
 	    if (cur_mod .gt. cur_mod_max) then
 	       cur_mod_max = cur_mod
 	       i_cur_max = i
