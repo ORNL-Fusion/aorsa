@@ -25,7 +25,7 @@
       
       real :: scrape = 100.           ! scrape-off length in rho for iprofile = 5 (numerical profiles) 
       real :: nmin = 1.0e+18          ! minimum density allowed in scrape-off layer for iprofile = 5 (numerical profiles)
-      real :: Temin = .015          ! minimum temperature (keV) allowed in scrape-off layer for iprofile = 5
+      real :: Temin = .015            ! minimum temperature (keV) allowed in scrape-off layer for iprofile = 5
       real :: rhomax = 1.0            ! maximum value of the rho grid
 
             
