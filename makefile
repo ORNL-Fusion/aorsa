@@ -13,6 +13,9 @@ INCLUDE_DIRS =
 LIBS = 
 F90FLAGS = 
 
+# per file build flags
+SIGMA_F_FLAGS = 
+
 OBJ_FILES = \
  $(OBJ_DIR)/cauchy_mod.o \
  $(OBJ_DIR)/size_mod.o \
@@ -171,6 +174,9 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F90
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F
 	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+
+${OBJ_DIR}/sigma.o: ${SRC_DIR}/sigma.f
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${SIGMA_F_FLAGS}
 
 
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 

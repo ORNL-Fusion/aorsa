@@ -7,3 +7,5 @@ WARNING_FLAGS = -O2 -Wall  -Wline-truncation  -Wcharacter-truncation  -Wsurprisi
 MOD_DIR_FLAG = -J $(MOD_DIR)
 F90FLAGS += -ffpe-trap=invalid
 
+SIGMA_F_FLAGS += -fcheck=all
+

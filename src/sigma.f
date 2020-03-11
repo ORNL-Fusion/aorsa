@@ -3402,6 +3402,7 @@ c      jmid  = nnodey / 2
 
 c      write(6, *)"jmid = ", jmid
 
+c     DLG: find the first R coord past the axis R=r0
       do i = 1, nnodex
          if(capr(i) .ge. r0)then
 	    istart = i
@@ -3409,10 +3410,19 @@ c      write(6, *)"jmid = ", jmid
 	 end if
       end do
 
+      stop "ERROR (sigma.f): no capr(i) >= r0?"
+
   200 continue
 
-
+c     DLG: for the z slice on the magnetic axis (jmid)
       if(rhoij .ge. rho(istart, jmid)) then
+
+         if(rhoij .lt. rho(istart,jmid)) i0 = istart
+         if(rhoij .ge. rho(nnodex,jmid)) then
+            write(*,*) 'WARNING (sigma.f) : rhoij > rho(nnodex,jmid)'
+            i0 = nnodex-1
+         endif
+
          do i = istart, nnodex - 1
             if(rhoij .ge. rho(i,   jmid) .and.
      .         rhoij .lt. rho(i+1, jmid)) i0 = i
@@ -3843,13 +3853,13 @@ c
          factl = factrl(l)
 
          infinity_check = 1/(2**l * factl)
-        if ( infinity_check .gt. 1e30 ) then
+         if ( infinity_check .gt. 1e30 ) then
 
           xil(l) = 0;
           xilp(l) = 0;
           xilovergam = 0;
 
-        else
+         else
 
          xil(l) = gamma**l / (2**l * factl) *
      .                                 ( 1. + gamma**2 / (4. * (l+1)))
@@ -3859,7 +3869,7 @@ c
          xilovergam = gamma**(l-1) / (2**l * factl) *
      .                                 ( 1. + gamma**2 / (4. * (l+1)))
 
-        endif 
+         endif 
 
          expbes(l) = exgam * xil(l)
          expbesp(l) = exgam * xilp(l)
