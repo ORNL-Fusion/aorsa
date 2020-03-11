@@ -438,4 +438,3 @@
      &    use_no_damp, nzeta_wdoti, norm, antang, write_for_azzam               
 
       end module aorsa2din_mod
-

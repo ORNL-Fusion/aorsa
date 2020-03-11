@@ -51,7 +51,7 @@
       parameter (nkpltdim = 2 * nkdim2)
       parameter (mkpltdim = 2 * mkdim2)
 
-      parameter (nxeqdmax = 180, nyeqdmax = 180)
+      parameter (nxeqdmax = 257, nyeqdmax = 257)
 
       real capr_x(6000), capz_x(6000), dx, dy
       integer n_phi, n_phi_max, number_points
@@ -355,7 +355,7 @@
       parameter (nkpltdim = 2 * nkdim2)
       parameter (mkpltdim = 2 * mkdim2)
 
-      parameter (nxeqdmax = 180, nyeqdmax = 180)
+      parameter (nxeqdmax = 257, nyeqdmax = 257)
 
       real capr_x(6000), capz_x(6000), dx, dy
       integer n_phi, n_phi_max, number_points
