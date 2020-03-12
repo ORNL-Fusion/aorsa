@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Update apt
+      run: sudo apt-get update
     - name: Install AORSA dependencies
       run: sudo apt-get install gfortran libblacs-openmpi1 libblacs-mpi-dev libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libblas-dev libx11-dev
     - name: Build
