@@ -6,7 +6,7 @@
 
       implicit none
 
-      character*32 title		                        
+      character*32 title                        
       character*32 titll
       character*32 titlr
       character*32 titlb
@@ -241,6 +241,7 @@ c
       real xkxsav(nkpltdim), xkysav(mkpltdim), pscale
       real wdoti1avg(nrhomax), wdoti2avg(nrhomax), wdoti3avg(nrhomax)
       real wdoti4avg(nrhomax), wdoti5avg(nrhomax), wdoti6avg(nrhomax)
+      real wdotisavg(nrhomax)
       real zdummy(3)
       
       real xjprl_int(nrhomax)
@@ -271,7 +272,8 @@ c
      .                            wdoti3avg_int(nrhomax),
      .                            wdoti4avg_int(nrhomax),
      .                            wdoti5avg_int(nrhomax),
-     .                            wdoti6avg_int(nrhomax) 
+     .                            wdoti6avg_int(nrhomax), 
+     .                            wdotisavg_int(nrhomax) 
      
       real wdote_ql_int(nrhomax), wdoti1_ql_int(nrhomax),
      .                            wdoti2_ql_int(nrhomax),
@@ -896,6 +898,7 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       read(38, 310) (wdoti4avg_int(n), n = 1, nnoderho)
       read(38, 310) (wdoti5avg_int(n), n = 1, nnoderho)
       read(38, 310) (wdoti6avg_int(n), n = 1, nnoderho)
+!      read(38, 310) (wdotisavg_int(n), n = 1, nnoderho)
       
       read(38, 310) (wdote_ql_int(n),  n = 1, nnoderho)
       read(38, 310) (wdoti1_ql_int(n), n = 1, nnoderho)
@@ -952,7 +955,7 @@ c      end do
       do n = 1, nnoderho
          write(57,1312)n, rhon(n), redotjeavg(n), redotj1avg(n),
      .              redotj2avg(n), redotj3avg(n), redotj4avg(n), 
-     .              redotj5avg(n), xjprlavg(n)
+     .              redotj5avg(n), xjprlavg(n), redotjsavg(n)
       end do
       
       
@@ -963,7 +966,8 @@ c      end do
       do n = 1, nnoderho
          write(62,1312)n, rhon(n), wdoteavg(n), wdoti1avg(n),
      .              wdoti2avg(n), wdoti3avg(n), wdoti4avg(n),
-     .              wdoti5avg(n), wdoti6avg(n), xjprlavg(n)
+     .              wdoti5avg(n), wdoti6avg(n), wdotisavg(n),
+     .               xjprlavg(n)
       end do
       
 *     ---------------------
@@ -3544,9 +3548,10 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlr= '       '
       titlb= 'rho'
 
+      ! last ion in slowing down species instead of species 6 JCW Sept 2019
       call ezplot70(title, titll, titlr, titlb, rhon_half, 
      .   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
-     .   redotj6avg, redotjeavg,  nnoderho2_half, nrhomax)        
+     .   redotjsavg, redotjeavg,  nnoderho2_half, nrhomax)        
            
       title= 'Integrated Real(EdotJ)'
       titll= 'P(watts)'
@@ -3571,10 +3576,11 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titll= 'wdot (watts/m3)'
       titlr= '       '
       titlb= 'rho'
-
+      
+      ! last ion in slowing down species instead of species 6 JCW Sept 2019
       call ezplot7(title, titll, titlr, titlb, rhon_half, 
      .   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
-     .   wdoti6avg, wdoteavg, nnoderho2_half, nrhomax)
+     .   wdoti6avg, wdoteavg, nnoderho2_half, nrhomax)  !wdoti6avg -> wdotisavg
      
       write(72, 309) nnoderho
       do n = 1, nnoderho

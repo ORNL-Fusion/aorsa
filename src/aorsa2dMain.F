@@ -1701,6 +1701,15 @@ c      jequat  = nnodey / 2
          write (15, *) "alphati5= ", alphati5
          write (15, *) "betati5 = ", betati5
          write (15, *)
+         write (15, *)
+         write (15, *) "amu_slo    = ", amu_slo
+         write (15, *) "z_slo      = ", z_slo
+         write (15, *) "xnslo     = ", xnslo
+         write (15, *) "xnslolim  = ", xnslolim
+         write (15, *) "alphan_slo = ", alphan_slo
+         write (15, *) "betan_slo = ", betan_slo
+         write (15, *) "eslowev    = ", eslowev
+         write (15, *)
 	 
 	 	 
       
@@ -3438,10 +3447,13 @@ c                  antlc = pi / (xk0 * antlen)
      .                               - z_slo * xna_slo(i, j)   ) / z1
      
                if (xn1a(i, j) .le. 0.0) then
-	          xn1a(i, j) = 1.0e-10
 		  if(myid .eq.0) write(6, *) xnea(i,j), xn1a(i,j), 
      .               xn2a(i,j), xn3a(i,j), xn4a(i,j), xn5a(i,j), 
      .               xn6a(i,j), xna_slo(i,j)
+	          xn1a(i, j) = 1.0e-10
+                  if(myid .eq. 0)then
+                     write(6,*) "xn1a too small, exiting now!"
+                  end if
                   call exit
 	       end if
 	       	       	          	       
@@ -4562,13 +4574,14 @@ c            acold(i,j) = xnphi**2 - capk_perp
          write (15, *) 'eta4 = ', eta4
          write (15, *) 'eta5 = ', eta5
          write (15, *) 'eta6 = ', eta6
+         write (15, *) 'eta_slo = ', eta_slo
 
          write (6, *) 'eta1 = ', eta1
          write (6, *) 'eta2 = ', eta2
          write (6, *) 'eta3 = ', eta3
          write (6, *) 'eta4 = ', eta4
          write (6, *) 'eta5 = ', eta5
-         write (6, *) 'eta6 = ', eta6
+         write (6, *) 'eta_slo = ', eta_slo
 
          write(15, 920)
          write(15, 164)
@@ -6189,6 +6202,7 @@ c               end if
           
                         end if  !  eta6 .ne. 0.0
 
+                        ! write(6,*) "sigmah_slow, qi_slo",qi_slo
                         if(eta_slo .ne. 0.0)
      .                  call sigmah_slow(i, j, n, m,
      .                  xmi_slo, qi_slo, xna_slo(i,j), xnuomi,
@@ -6206,7 +6220,7 @@ c               end if
      .                  kperp_max, i_sav, j_sav)
 
 
-                     end if  ! end if isigma .eq. 1
+                     end if     ! end if isigma .eq. 1
 
 
 
@@ -7701,6 +7715,7 @@ c		      if (upshift .eq. 0) xkprl = nphi / rt
       endif
 
 
+!      write(6,*) "slo",qi_slo
       if(eta_slo .ne. 0.0)
      .   call cur_slo(xj_slox, xj_sloy, xj_sloz, nxmx, nymx,
      .   nnodex, nnodey,
@@ -7714,8 +7729,8 @@ c		      if (upshift .eq. 0) xkprl = nphi / rt
      .   uzx, uzy, uzz,
      .   myrow, mycol, nprow, npcol, icontxt, desc_amat, dlen_,
      .   xx, yy, isigma, xnuomia, psi, psilim, nboundary,
-     .   xkte, zeffcd, myid, nproc)
-
+     .   xkte, zeffcd, myid, nproc,
+     .   zi, eps0, v0i, omgrf, xk0, kperp_max, i_sav, j_sav)
 
 
       time = second1(dummy) - t1
