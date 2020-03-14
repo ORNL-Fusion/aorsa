@@ -1607,7 +1607,6 @@ c	    write(6, 1314) i, j, psix, psilim_
                if(ncell .eq. 0 .and. n_phi .eq. 1)nphi_enter = n_phi
                if(ncell .eq. 0 .and. n_phi .ne. 1)nphi_enter = n_phi - 1
 
-              
                call extint(nmax, phi, y_phi, f, h0, mmax, error)
                ncell = ncell + 1
 
