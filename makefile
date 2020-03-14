@@ -12,9 +12,10 @@ OBJ_DIR = obj
 INCLUDE_DIRS = 
 LIBS = 
 F90FLAGS = 
+WARNING_FLAGS = 
 
-# per file build flags
-SIGMA_F_FLAGS = 
+# per file build warning flags
+ORBIT_F_WARNING_FLAGS = 
 
 OBJ_FILES = \
  $(OBJ_DIR)/cauchy_mod.o \
@@ -164,19 +165,19 @@ $(EXEC):  make_directories $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP)
 # Dependencies
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.f90
-	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${WARNING_FLAGS}
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.f
-	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${WARNING_FLAGS}
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F90
-	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${WARNING_FLAGS}
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F
-	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS}
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${WARNING_FLAGS}
 
-${OBJ_DIR}/sigma.o: ${SRC_DIR}/sigma.f
-	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${SIGMA_F_FLAGS}
+${OBJ_DIR}/orbit.o: ${SRC_DIR}/orbit.f
+	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${SIGMA_F_WARNING_FLAGS}
 
 
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 
@@ -285,4 +286,4 @@ cleanrepo:
 	./cleanrun.sh
 	cd ../DIIID-whister
 	./cleanrun.sh
-
+	cd ../../

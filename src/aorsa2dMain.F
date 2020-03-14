@@ -2805,7 +2805,40 @@ c      akprl_min = abs(nphi / rt)
             write(15, *) "upara ="
             write(15, 310) (upara(i_upara), i_upara = 1, nupar)
          end if
+      else
 
+c        Allocate as single element arrays so compiler warnings can be
+c        enabled. This should really be fixed properly, but lets just
+c        get the compiler warnings turned on first
+
+         allocate( fe_cql_cart (1,1,1) )
+         allocate( dfe_cql_uprp(1,1,1) )
+         allocate( dfe_cql_uprl(1,1,1) )
+      
+         allocate( f1_cql_cart (1,1,1) )
+         allocate( df1_cql_uprp(1,1,1) )
+         allocate( df1_cql_uprl(1,1,1) )
+      
+         allocate( f2_cql_cart (1,1,1) )
+         allocate( df2_cql_uprp(1,1,1) )
+         allocate( df2_cql_uprl(1,1,1) )
+
+         allocate( f3_cql_cart (1,1,1) )
+         allocate( df3_cql_uprp(1,1,1) )
+         allocate( df3_cql_uprl(1,1,1) )
+ 
+         allocate( f4_cql_cart (1,1,1) )
+         allocate( df4_cql_uprp(1,1,1) )
+         allocate( df4_cql_uprl(1,1,1) )
+ 
+         allocate( f5_cql_cart (1,1,1) )
+         allocate( df5_cql_uprp(1,1,1) )
+         allocate( df5_cql_uprl(1,1,1) )
+
+         allocate( f6_cql_cart (1,1,1) )
+         allocate( df6_cql_uprp(1,1,1) )
+         allocate( df6_cql_uprl(1,1,1) )
+ 
       end if
 
       xmax = rwright - rwleft
