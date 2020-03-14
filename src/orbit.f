@@ -100,7 +100,7 @@ c
       parameter (nrmax = 201)
       parameter (nthmax = 64)
 
-      parameter (nxeqdmax = 150, nyeqdmax = 150)
+      parameter (nxeqdmax = 257, nyeqdmax = 257)
 
       parameter (lxdata = nxeqdmax * nyeqdmax)
       parameter (lipwr = 10)
