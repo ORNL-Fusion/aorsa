@@ -1358,7 +1358,12 @@ c     .      form='formatted')
       nrhs = 1
       nmaxe=1
       
-
+      if(nmodesx > nmodesmax .or. nmodesy > mmodesmax) then
+        print*, "Requested modes larger than max modes"
+        print*, nmodesx, "/", nmodesmax, " and ",  nmodesx,
+     .          "/", nmodesmax
+        stop "Adjust nmodesmax or mmodesmax in size_od.f90"
+      end if
       nkx2 = nmodesx / 2
       nkx1 = - nmodesx / 2 + 1
       nnodex = nmodesx
