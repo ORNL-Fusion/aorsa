@@ -1,0 +1,18 @@
+#!/bin/bash -l
+
+#SBATCH -p regular
+#SBATCH --mail-type=END   
+#SBATCH --nodes=162
+#SBATCH --tasks-per-node=32
+#SBATCH -t 12:00:00 
+#SBATCH -J AORSA2D
+#SBATCH -L SCRATCH
+#SBATCH -C haswell
+#SBATCH --account=m224
+
+#SBATCH -o AORSA2D.o%j
+#SBATCH -e AORSA2D.e%j
+
+#Cori has 32 cores per compute node
+
+srun  $AORSA_HOME/xaorsa2d > log_aorsa2d
