@@ -904,7 +904,15 @@ c	complex, dimension(:,:), allocatable :: Btmp
 
       integer indxg2p,indxg2l,indxl2g
       external indxg2p,indxg2l,indxl2g
-      
+     
+! DLG - check to make sure the problem size you are running is <= the
+! compile time parameters, i.e., 
+
+      if (nmodesx .gt. nmodesmax .or. nmodesy .gt. mmodesmax) then
+        stop 'ERROR - nmodesx and nmodesy must be <= nmodesmax and '//
+     .        'mmodesmax respectively (see src/size_mode.f90)'
+      end if
+
 *     ---------------
 *     allocate arrays
 *     ---------------
@@ -8693,9 +8701,10 @@ c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
             ftheta0(i,j) = fy0i2(i, j) * rhohatx(i, j) 
      .                   - fx0i2(i, j) * rhohaty(i, j)
      
-     
+            if (eta2 .gt. 0) then
             fpsi1(i,j) = 1.0 / (qi2 * xn2a(i, j) ) 
      .                 * fpsi0(i, j) / (capr(i) * bpol(i, j))
+            end if
      
             ftheta1(i,j) = ftheta0(i,j) * bpol(i,j)
 	    

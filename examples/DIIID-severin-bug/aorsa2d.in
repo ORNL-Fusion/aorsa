@@ -27,10 +27,10 @@
     n_prof_flux = 1
     eqdsk = 'g165908.03000_1_0MA_2_0T'
     netcdf_file2 = 'DIII_NB_FW_0th.max.nc'
-    nmodesx = 288
-    nmodesy = 504
-    nprow = 72
-    npcol = 72
+    nmodesx = 16 
+    nmodesy = 16 
+    nprow = 1
+    npcol = 1
     nphi_number = 1
     nphi_array = -71, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
