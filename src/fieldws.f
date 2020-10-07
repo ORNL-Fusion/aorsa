@@ -5113,7 +5113,11 @@ c      end do
       write(245, 3412) ((spx(i,j), spy(i,j), spz(i,j), 
      .                                    i = 1, nnodex), j = 1, nnodey)     
       
-      close (245)      
+      write(140, 3970)
+ 3970 format('SCALARS ntilda_e_imag float 1')
+      write(140, 2849)
+      write (140, 3411) ((fimag(i,j), i = 1, nnodex), j = 1, nnodey)
+      close (245)
                                                
 
  5000 continue
