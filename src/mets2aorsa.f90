@@ -3623,7 +3623,7 @@
            fx(1:nupar,9) = SGG(1:nupar,3,3)
 
            nfx = 9
-           call cauchy_ppart6(upar,nupar,upar0,nfx,fx,vint)
+           call cauchy_ppart6(upar,nupar,upar0,nfx,fx,vint, is_uniform)
 
            thetare(1,1) = vint(1)
            thetare(2,1) = vint(2)
