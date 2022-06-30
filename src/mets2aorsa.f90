@@ -40,7 +40,7 @@
     real, dimension(3) :: k1,k2
     integer, intent(in) :: nupar,nuper,nbessj
     real, dimension(nuper) :: xi1,xi2
-    real, dimension(nuper, nbessj), intent(in) :: jnxi1,jnxi2
+    real, dimension(nuper, nbessj), intent(inout) :: jnxi1,jnxi2
     real, intent(in) :: enorm,uparmin,uparmax
     real, dimension(nuper), intent(in) :: uper
     real, dimension(nupar), intent(in):: upar
