@@ -170,11 +170,10 @@
         real*8 xres 
         real*8 x(nx), fx(nx,nfx)
         real*8 pint(nfx)
-        logical  :: is_uniform
+        logical, intent(in), optional  :: is_uniform
 !       ---------------
 !       local variables
 !       ---------------
-
         integer :: i,j,ih,nlog
         real*8, dimension(nx) :: vx, vlogt
         real*8 :: a0,a1,a2,  x1,x2,x3,  f1,f2,f3
@@ -184,6 +183,7 @@
         real*8 :: xleft,xright
         real*8 :: v0,v1,v2
         real*8 :: xc,a,b
+        logical :: use_uniformity
 
         intrinsic :: log,abs,mod
 
@@ -203,7 +203,8 @@
         real*8, parameter :: seven=7.0d0
         real*8, parameter :: eight=8.0d0
         logical :: isok
-
+        use_uniformity = .false.
+        if(present(is_uniform)) use_uniformity = .true.
 
 !       ------------------------------------------------------------
 !       compute piecewise quadratic over 
@@ -231,7 +232,7 @@
         call vlog( vlogt, vx, nlog )
            
 
-        if (is_uniform) then
+        if (use_uniformity) then
 
         dx = (x(nx)-x(1))/dble(nx-1)
         h = dx
