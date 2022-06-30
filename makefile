@@ -115,6 +115,18 @@ ifeq ($(NERSC_HOST),cori)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
+ifeq ($(NERSC_HOST),perlmutter)
+  ifeq ($(PE_ENV),GNU)
+    include makeopts.perlmutter.gnu
+    $(info System identified as Cori GNU)
+    SYSTEM_IDENTIFIED = 1
+  endif      
+  ifeq ($(PE_ENV),INTEL)
+    include makeopts.perlmutter.intel
+    $(info System identified as Cori Intel)
+    SYSTEM_IDENTIFIED = 1
+  endif
+endif
 ifeq ($(UNAME_S),Darwin) # OSX
   #ifeq ($(UNAME_R),18.7.0)
     include makeopts.osx-mojave
