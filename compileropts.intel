@@ -1,8 +1,7 @@
-COMMON_OPTION  = -save -r8 #-i8
-COMMON_OPTION2 = -r8 #-i8 
-COMMON_OPTION3 = 
-COMMON_OPTION4  = -r8 #-i4 
+COMMON_OPTION  = -save -r8 -g -traceback -check all#-i8
+COMMON_OPTION2 = -r8 -g -traceback -check all#-i8 
+COMMON_OPTION3 = -g -traceback -check all
+COMMON_OPTION4  = -r8 -g -traceback -check all#-i4 
 MOD_DIR_FLAG = -module $(MOD_DIR)
-
 
 
