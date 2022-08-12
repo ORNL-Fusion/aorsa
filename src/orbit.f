@@ -845,12 +845,12 @@ C     REAL*8 DY(M)
       COMMON /ERRCOM/ EPS, S(100), Y(100), NMAX
 C     REAL*8 EPS, S, Y
       REAL   EPS, S, Y
-      INTEGER NMAX, NTIMES (100)
+      INTEGER NMAX, NCONV, NTIMES (100)
       IF (M.NE.1) GO TO 1
         DO 3 N = 1, NMAX
     3     NTIMES(N) = 0
-        NCONV = 0
-    1 DO 2 N = 1, NMAX
+    1   NCONV = 0
+      DO 2 N = 1, min(NMAX,M)
 C       IF (.NOT.(DABS(DY(N))/S(N).LT.EPS).OR. CONV(N))  GO TO 2
         IF (.NOT.( ABS(DY(N))/S(N).LT.EPS).OR. CONV(N))  GO TO 2
         NTIMES(N) = NTIMES(N) + 1
