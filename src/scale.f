@@ -34,14 +34,14 @@
       real ans_simpson, ans_trapezoidal, ans_analytic, ymax, ymin
       real dummy, time, t1, t2, second1, pi, x, a, e, dydx, sum
       
-      character*32 title
-      character*32 titlx
-      character*32 tityl
-      character*32 tityr
+      character(32):: title
+      character(32):: titlx
+      character(32):: tityl
+      character(32):: tityr
       
-      character*32 titx
-      character*32 tity
-      character*32 titz
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
       
       integer nblack, nred, nyellow, ngreen, nblue, ncyan, nmagenta,  
      .   nwhite, norange 
@@ -160,7 +160,7 @@ c      yplot = 0.05
 !     ------------------------                    
       do i = 1, nnodex
          xkperp2_slow_plot(i) = xkperp2_slow(i, jplot)
-         xkperp2_fast_plot(i) = xkperp2_fast(i, jplot)		 
+         xkperp2_fast_plot(i) = xkperp2_fast(i, jplot)           
       end do 
       
       xkperp_slow_plot = csqrt(xkperp2_slow_plot)
@@ -216,14 +216,14 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
       
       do i = 1, nnodex
          xkperp_slow_plot(i) = xkperp_slow(i, jplot)
-         xkperp_fast_plot(i) = xkperp_fast(i, jplot)	 
+         xkperp_fast_plot(i) = xkperp_fast(i, jplot)     
       end do          
       
 !     -------------------------------------------------
 !     write the function xkperp_fast_plot(i) to screen
 !     -------------------------------------------------           
-      do i = 1, npoints  	 
-	 write(6, '(i10, 1p5e15.5)') i, xgrid(i), xkperp_fast_plot(i)
+      do i = 1, npoints          
+         write(6, '(i10, 1p,5e15.5)') i, xgrid(i), xkperp_fast_plot(i)
       end do       
       
       title = 'Re(k) - fast and slow roots'      
@@ -259,17 +259,17 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
      
 !     -------------------------
 !     Close the graphics device
-!     -------------------------		  
+!     -------------------------           
       call pgclos 
       
       
 
-      	               
+                       
       close (130)
       
-  310 format(1p6e12.4)
- 3310 format(1p6e18.10)
- 8310 format(1p6e14.6)
+  310 format(1p,6e12.4)
+ 3310 format(1p,6e18.10)
+ 8310 format(1p,6e14.6)
   309 format(10i10)                      
     
       return
@@ -285,17 +285,17 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
       implicit none
 
+      integer nr, nrmax
       real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real x1(nrmax), y1(nrmax), y3(nrmax)
       real y1max,y2max,y3max,y1min,y2min,y3min
       real ymin, ymax, xmin, xmax
 
-      character*32 title
-      character*32 titx
-      character*32 titll
-      character*32 titlr
+      character(32):: title
+      character(32):: titx
+      character(32):: titll
+      character(32):: titlr
       
-      integer nr, nrmax
 
       integer nplot1,ncollab, ncolion,ncolbox, ncyan, ncolelec, 
      .   ncolln2, ncollin, ncolbrd
@@ -346,8 +346,8 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
       
       CALL PGSCI(ncolor)  
       call pgline(nr, x1, y1)    
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       CALL PGSCI(nblack)
       call pgline(nr, x1, y3)
@@ -365,18 +365,18 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
       implicit none
 
+      integer nr, nrmax, n
+
       real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real x1(nrmax),y1(nrmax), y2(nrmax), y3(nrmax)
       real y1max,y2max,y3max,y1min,y2min,y3min
       real ymin,ymax, xmin, xmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr, nrmax, n
-
       integer nplot1,ncollab, ncolion,ncolbox, ncyan, ncolelec, 
      .   ncolln2, ncollin, ncolbrd
       integer nblack,nred,nyellow, ngreen,naqua,npink, nwheat,
@@ -429,7 +429,7 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
       call pgline(nr, x1, y3)
       
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 
@@ -442,18 +442,18 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
       implicit none
 
+      integer nr, nrmax, n
+
       real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real x1(nrmax),y1(nrmax), y2(nrmax), y3(nrmax)
       real y1max,y2max,y3max,y1min,y2min,y3min
       real ymin,ymax, xmin, xmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr, nrmax, n
-
       integer nplot1,ncollab, ncolion,ncolbox, ncyan, ncolelec, 
      .   ncolln2, ncollin, ncolbrd
       integer nblack,nred,nyellow, ngreen,naqua,npink, nwheat,
@@ -506,7 +506,7 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
       call pgline(nr, x1, y3)
       
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 
@@ -518,17 +518,16 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
       implicit none
 
+      integer nr, nrmax, n
       real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real x1(nrmax),y1(nrmax), y2(nrmax), y3(nrmax)
       real y1max,y2max,y3max,y1min,y2min,y3min
       real ymin,ymax, xmin, xmax, ymax_giv, ymin_giv
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
-      
-      integer nr, nrmax, n
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
 
       integer nplot1,ncollab, ncolion,ncolbox, ncyan, ncolelec, 
      .   ncolln2, ncollin, ncolbrd
@@ -588,7 +587,7 @@ c     .   npoints, nmax, ymax, ymin, xmin, xmax, nred)
       call pgline(nr, x1, y3)
       
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 

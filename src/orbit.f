@@ -1,11 +1,10 @@
-
 c
 c***************************************************************************
 c
       subroutine field_line_trace(sgn_vprl_in, i, j, 
      .   nmodesx, nmodesy,
      .   rwleft, rwright, ytop, ybottom, xprime_eq, yprime_eq,
-     .   rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,	    
+     .   rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,     
      .   bxn_eq, byn_eq, bzn_eq, bmod_eq, capr, y, psi, rho_pol2d, 
      .   qsafety, dx_eq, dy_eq,
      .   bmod_mid, capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
@@ -47,7 +46,7 @@ c
           
       integer i_write, n_prof_flux, nphi1, nphi2, nuper, nupar
       
-      CHARACTER*128 :: netCDF_file
+      CHARACTER(128) :: netCDF_file
      
       real capr_x(norb_dim), capz_x(norb_dim), phin_x(norb_dim),
      .   modb_x(norb_dim), dlen_x(norb_dim), dl_vprl(norb_dim),
@@ -217,7 +216,7 @@ c      real surf2, curv2
 
       integer lld,nrow_local,ncol_local
 
-      character*4 suffix
+      character(4):: suffix
 
       nxdim = nxmx
       nydim = nymx
@@ -243,9 +242,9 @@ c      real surf2, curv2
       
 *     --------------------------------------------------------
 *     Set spline parameters and calculate spline coefficients:
-*	sigma = 0.0 for tensor product cubic splines
-*	sigma = 50 for bi-linear interpolation
-*	documentation recommend sigma=1.0 as standard value
+*       sigma = 0.0 for tensor product cubic splines
+*       sigma = 50 for bi-linear interpolation
+*       documentation recommend sigma=1.0 as standard value
 *      --------------------------------------------------------
       sigma = 1.0
       islpsw = 255
@@ -275,10 +274,10 @@ c      real surf2, curv2
       xprimex0 = x_extint - xwleft
       yprimex0 = y_extint - ybottom
       phi0 = 0.0
-      	    	    	 	   	     
+                                             
 *     ---------------------
 *     Set extint parameters
-*     ---------------------	    
+*     ---------------------         
       h0 = 1.0e-04
       nmax = 3
       
@@ -294,47 +293,47 @@ c      real surf2, curv2
 *     -------------------------------------------
       len1 = 0.0
       len2 =  lbmax / 2.
-	 
+         
       len = 0.0
       y_len(1) = xprimex0
       y_len(2) = yprimex0
-      y_len(3) = phi0 	  	      
-      	    	    
+      y_len(3) = phi0                 
+                    
       call f(len, y_len, dy_len)           
 
 *     ---------------------------------------------
 *     Do norb_dim steps of field line trace in len
-*     ----------------------------------------------	          	
-      do n_len = 1, norb_dim	    
+*     ----------------------------------------------                    
+      do n_len = 1, norb_dim        
          fcount = 0
-	               
-         call extint(nmax, len, y_len, f2, h0, mmax, error) 	     	 
-	    
+                       
+         call extint(nmax, len, y_len, f2, h0, mmax, error)              
+            
          xprimex = y_len(1)
          yprimex = y_len(2)
-	 phi     = y_len(3)
+         phi     = y_len(3)
 
          x_extint = xprimex + xwleft
-         y_extint = yprimex + ybottom	    
-	       
+         y_extint = yprimex + ybottom       
+               
 *        --------------------------------------------
 *        Save arrays of R, Z, phi as funtions of length
 *        --------------------------------------------
          len_x(n_len) = len
-	 phin_x(n_len) = phi
+         phin_x(n_len) = phi
          capr_x(n_len) = x_extint + rt
          capz_x(n_len) = y_extint
          modb_x(n_len) = modb
-	    	    	 
+                         
 c        write(6, 2213) n_len, len_x(n_len), 
 c     .     capr_x(n_len), capz_x(n_len), phin_x(n_len), 
 c     .     fcount, h0
      
-         h0 = 2.0e-02	       	          	    		
+         h0 = 2.0e-02                                           
 
-	 if (y_extint .ge. ytop .or. y_extint .le. ybottom) go to 201
+         if (y_extint .ge. ytop .or. y_extint .le. ybottom) go to 201
 
-	 if (capr_x(n_len) .le. rwleft .or. 
+         if (capr_x(n_len) .le. rwleft .or. 
      .                          capr_x(n_len) .ge. rwright) go to 201
 
          if (abs(len) .ge. len2) go to 201
@@ -350,9 +349,9 @@ c     .     fcount, h0
       nlen_exit = n_len
       len_x = len_x * sgn_vprl
       
-              	    	    
+                            
            
-2213  format(1i10, 1p4e12.4, 1i5, 1p1e12.4)      
+2213  format(1i10, 1p,4e12.4, 1i5, 1p,1e12.4)      
 9318  format(a128)
       return
       end
@@ -418,7 +417,7 @@ c
 
       fcount = fcount + 1
 
- 1312 format(1p8e12.4)
+ 1312 format(1p,8e12.4)
 
       return
       end
@@ -511,7 +510,7 @@ c     .   nxmx, nymx, dr, dz)
 
       fcount = fcount + 1
 
- 1312 format(1p8e12.4)
+ 1312 format(1p,8e12.4)
 
       return
       end
@@ -564,17 +563,17 @@ c         sinthi = sin(thetai)
 c         tanthi = tan(thetai)
 
 c         write(6, 100)modb_init
-c  100    format(1p8e12.4)
+c  100    format(1p,8e12.4)
 c         call exit
 
          dtau(n_theta) = 0.0
 
          sinth2_i = b_i / modb_init * sinth2_init(n_theta, i_psi)
-	 costh2_i = 1.0 - sinth2_i
-	 tanth2_i = sinth2_i / costh2_i
-	 costh_i = sqrt(costh2_i)
-	 
-	 if(sinth2_i .gt. 1.0) go to 300
+         costh2_i = 1.0 - sinth2_i
+         tanth2_i = sinth2_i / costh2_i
+         costh_i = sqrt(costh2_i)
+         
+         if(sinth2_i .gt. 1.0) go to 300
 
          argi = 1.0 - (mri - 1.0) * tanth2_i
 

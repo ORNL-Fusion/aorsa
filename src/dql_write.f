@@ -1,17 +1,17 @@
 
-
       subroutine Dql_write_nc(FILE_txt, FILE_nc)
       
 C     This program writes the four quasilinear diffusion coefficients 
 C     calculated by AORSA.  The companion program (dql_read.f) 
 C     reads the netCDF data file created by this program.
       
+      use netcdf
       implicit none
-      include 'netcdf.inc'             
+!     include 'netcdf.inc'
 
 C     This is the name of the data file we will create.
-      character*(*) FILE_nc
-      character*(*) FILE_txt
+      character(*):: FILE_nc
+      character(*):: FILE_txt
 
       integer ncid
 
@@ -21,7 +21,7 @@ c     We will need three netCDF dimensions
       parameter (NDIMS = 3)            
       integer nuper, nupar, nnoderho
       
-      character*(*) uperp_NAME, upara_NAME, rhon_NAME      
+      character(*):: uperp_NAME, upara_NAME, rhon_NAME      
       parameter (uperp_NAME = 'uperp') 
       parameter (upara_NAME = 'upara')
       parameter (rhon_NAME = 'rho')               
@@ -88,7 +88,7 @@ C     It's good practice for each variable to carry a "units" attribute.
       parameter (vc_cgs_UNITS = 'cm/sec')
       parameter (UminPara_UNITS = 'dimensionless')
       parameter (UmaxPara_UNITS = 'dimensionless')      
-      	                 
+                         
 
 C     We will create some quasilinear data to write to FILE_nc.      
 
@@ -111,7 +111,7 @@ C     Error handling.
 C     Create test data by reading quasilinear diffusion coefficients 
 c     from the text file FILE_txt
 
-      open(unit=42, file = FILE_txt, status='unknown', form='formatted')  	 
+      open(unit=42, file = FILE_txt, status='unknown', form='formatted')
       read (42, 309) nuper
       read (42, 309) nupar
       read (42, 309) nnoderho
@@ -123,24 +123,24 @@ c     from the text file FILE_txt
       allocate( cqlavg(nuper, nupar, nnoderho) ) 
       allocate( eqlavg(nuper, nupar, nnoderho) ) 
       allocate( fqlavg(nuper, nupar, nnoderho) )   
-                
+
       read (42, 3310) vc_cgs
       read (42, 3310) UminPara, UmaxPara
       read (42, 3310) (rhon(n), n = 1, nnoderho)
       read (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
-      read (42, 3310) (upara(i_upara), i_upara = 1, nupar)	    	    
+      read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
       read (42, 3310) (((bqlavg(i_uperp, i_upara, n),
-     &        i_uperp = 1, nuper), i_upara = 1, nupar), 
-     .        n = 1, nnoderho)
+     &        i_uperp = 1, nuper), i_upara = 1, nupar),
+     &        n = 1, nnoderho)
       read (42, 3310) (((cqlavg(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), 
-     .        n = 1, nnoderho)
+     &        n = 1, nnoderho)
       read (42, 3310) (((eqlavg(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), 
-     .        n = 1, nnoderho)
+     &        n = 1, nnoderho)
       read (42, 3310) (((fqlavg(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), 
-     .        n = 1, nnoderho)     
+     &        n = 1, nnoderho)     
       read (42, 3310) xmi
       
       close (42)
@@ -151,7 +151,7 @@ c     from the text file FILE_txt
        write (6, *) 'nnoderho = ', nnoderho                          
 
        write (6, *) "bqlavg(32,70,10) = ", bqlavg(32,70,10)
-       write(6,*) 'xmi =', xmi	  	       
+       write(6,*) 'xmi =', xmi                 
        write(6,*) 'vc_cgs =', vc_cgs
        write(6,*) 'UminPara =', UminPara 
        write(6,*) 'UmaxPara =', UmaxPara               
@@ -159,16 +159,16 @@ c     from the text file FILE_txt
              
 
 C     Create the netcdf file. 
-      retval = nf_create(FILE_nc, nf_clobber, ncid)
-      if (retval .ne. nf_noerr) call handle_err(retval)
+      retval = nf90_create(FILE_nc, nf90_clobber, ncid)
+      if (retval .ne. nf90_noerr) call handle_err(retval)
 
 C     Define the dimensions.       
-      retval = nf_def_dim(ncid, uperp_NAME, nuper, uperp_dimid)
-      if (retval .ne. nf_noerr) call handle_err(retval)
-      retval = nf_def_dim(ncid, upara_NAME, nupar, upara_dimid)
-      if (retval .ne. nf_noerr) call handle_err(retval)
-      retval = nf_def_dim(ncid, rhon_NAME, nnoderho, rhon_dimid)
-      if (retval .ne. nf_noerr) call handle_err(retval)
+      retval = nf90_def_dim(ncid, uperp_NAME, nuper, uperp_dimid)
+      if (retval .ne. nf90_noerr) call handle_err(retval)
+      retval = nf90_def_dim(ncid, upara_NAME, nupar, upara_dimid)
+      if (retval .ne. nf90_noerr) call handle_err(retval)
+      retval = nf90_def_dim(ncid, rhon_NAME, nnoderho, rhon_dimid)
+      if (retval .ne. nf90_noerr) call handle_err(retval)
       
       write(6,*) "uperp_dimid = ", uperp_dimid
       write(6,*) "upara_dimid = ", upara_dimid
@@ -178,15 +178,15 @@ C     Define the dimensions.
 C     Define the coordinate variables. They will hold the coordinate
 C     information, that is, the latitudes and longitudes. A varid is
 C     returned for each.                              
-      retval = nf_def_var(ncid, uperp_NAME, NF_REAL, 1, uperp_dimid, 
-     +     uperp_varid)     
-      if (retval .ne. nf_noerr) call handle_err(retval)      
-      retval = nf_def_var(ncid, upara_NAME, NF_REAL, 1, upara_dimid, 
-     +     upara_varid)     
-      if (retval .ne. nf_noerr) call handle_err(retval) 
-      retval = nf_def_var(ncid, rhon_NAME, NF_REAL, 1, rhon_dimid, 
+      retval = nf90_def_var(ncid, uperp_NAME, NF90_REAL, uperp_dimid, 
+     &     uperp_varid)     
+      if (retval .ne. nf90_noerr) call handle_err(retval)      
+      retval = nf90_def_var(ncid, upara_NAME, NF90_REAL, upara_dimid, 
+     &     upara_varid)     
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
+      retval = nf90_def_var(ncid, rhon_NAME, NF90_REAL, rhon_dimid, 
      +     rhon_varid)          
-      if (retval .ne. nf_noerr) call handle_err(retval) 
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
       
       write(6,*) uperp_varid, upara_varid, rhon_varid
            
@@ -194,22 +194,22 @@ C     returned for each.
 C     Assign units attributes to coordinate var data. This attaches a
 C     text attribute to each of the coordinate variables, containing the
 C     units.         
-      retval = nf_put_att_text(ncid, uperp_varid, UNITS, 
-     .     len(uperp_UNITS), uperp_UNITS)          
-      if (retval .ne. nf_noerr) call handle_err(retval) 
+      retval = nf90_put_att(ncid, uperp_varid, UNITS, 
+     .     uperp_UNITS)          
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
                  
-      retval = nf_put_att_text(ncid, upara_varid, UNITS, 
-     .    len(upara_UNITS), upara_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval) 
+      retval = nf90_put_att(ncid, upara_varid, UNITS, 
+     .    upara_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
               
-      retval = nf_put_att_text(ncid, rhon_varid, UNITS, 
-     .    len(rhon_UNITS), rhon_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval) 
+      retval = nf90_put_att(ncid, rhon_varid, UNITS, 
+     .    rhon_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
       
       write(6, *)'uperp_units = ', uperp_units
       write(6, *)'upara_units = ', upara_units
       write(6, *)'rhon_units = ',  rhon_units
-			                           
+                                                   
 
 C     Define the netCDF variables. The dimids array is used to pass the
 C     dimids of the dimensions of the netCDF variables.
@@ -218,61 +218,61 @@ C     dimids of the dimensions of the netCDF variables.
       dimids(3) = rhon_dimid      
 
 C     Define the netCDF variables for the D_quasi-linear data.            
-      retval = nf_def_var(ncid, bqlavg_NAME, NF_double, NDIMS, dimids, 
+      retval=nf90_def_var(ncid, bqlavg_NAME, nf90_double, dimids, 
      +     bqlavg_varid)
-      if (retval .ne. nf_noerr) call handle_err(retval)             
-      retval = nf_def_var(ncid, cqlavg_NAME, NF_double, NDIMS, dimids, 
+      if (retval .ne. nf90_noerr) call handle_err(retval)             
+      retval=nf90_def_var(ncid, cqlavg_NAME, nf90_double, dimids, 
      +     cqlavg_varid)
-      if (retval .ne. nf_noerr) call handle_err(retval)            
-      retval = nf_def_var(ncid, eqlavg_NAME, NF_double, NDIMS, dimids, 
+      if (retval .ne. nf90_noerr) call handle_err(retval)            
+      retval=nf90_def_var(ncid, eqlavg_NAME, nf90_double, dimids, 
      +     eqlavg_varid)
-      if (retval .ne. nf_noerr) call handle_err(retval)           
-      retval = nf_def_var(ncid, fqlavg_NAME, NF_double, NDIMS, dimids, 
+      if (retval .ne. nf90_noerr) call handle_err(retval)           
+      retval=nf90_def_var(ncid, fqlavg_NAME, nf90_double, dimids, 
      +     fqlavg_varid)
-      if (retval .ne. nf_noerr) call handle_err(retval)              
-      retval = nf_def_var(ncid, xmi_Name, NF_double, 0, dimids, 
+      if (retval .ne. nf90_noerr) call handle_err(retval)              
+      retval = nf90_def_var(ncid, xmi_Name, nf90_double, 
      +     xmi_varid)      
-      if (retval .ne. nf_noerr) call handle_err(retval)  
-      retval = nf_def_var(ncid, vc_cgs_Name, NF_double, 0, dimids, 
+      if (retval .ne. nf90_noerr) call handle_err(retval)  
+      retval = nf90_def_var(ncid, vc_cgs_Name, nf90_double,
      +     vc_cgs_varid)      
-      if (retval .ne. nf_noerr) call handle_err(retval)  
+      if (retval .ne. nf90_noerr) call handle_err(retval)  
       
-      retval = nf_def_var(ncid, UminPara_Name, NF_double, 0, dimids, 
+      retval = nf90_def_var(ncid, UminPara_Name, nf90_double,
      +     UminPara_varid)      
-      if (retval .ne. nf_noerr) call handle_err(retval)  
-      retval = nf_def_var(ncid, UmaxPara_Name, NF_double, 0, dimids, 
+      if (retval .ne. nf90_noerr) call handle_err(retval)  
+      retval = nf90_def_var(ncid, UmaxPara_Name, nf90_double,
      +     UmaxPara_varid)      
-      if (retval .ne. nf_noerr) call handle_err(retval)                        
+      if (retval .ne. nf90_noerr) call handle_err(retval)                        
                   
         
 C     Assign units attributes to the netCDF variables.      
       
-      retval = nf_put_att_text(ncid, bqlavg_varid, UNITS, 
-     .   len(bqlavg_UNITS), bqlavg_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval)         
-      retval = nf_put_att_text(ncid, cqlavg_varid, UNITS, 
-     .   len(cqlavg_UNITS), cqlavg_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval)        
-      retval = nf_put_att_text(ncid, eqlavg_varid, UNITS, 
-     .   len(eqlavg_UNITS), eqlavg_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval)      
-      retval = nf_put_att_text(ncid, fqlavg_varid, UNITS, 
-     .   len(fqlavg_UNITS), fqlavg_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval) 
+      retval = nf90_put_att(ncid, bqlavg_varid, UNITS, 
+     .   bqlavg_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval)         
+      retval = nf90_put_att(ncid, cqlavg_varid, UNITS, 
+     .   cqlavg_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval)        
+      retval = nf90_put_att(ncid, eqlavg_varid, UNITS, 
+     .   eqlavg_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval)      
+      retval = nf90_put_att(ncid, fqlavg_varid, UNITS, 
+     .   fqlavg_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
       
-      retval = nf_put_att_text(ncid, xmi_varid, UNITS, 
-     .   len(xmi_UNITS), xmi_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval)   
-      retval = nf_put_att_text(ncid, vc_cgs_varid, UNITS, 
-     .   len(vc_cgs_UNITS), vc_cgs_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval)  
+      retval = nf90_put_att(ncid, xmi_varid, UNITS, 
+     .   xmi_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval)   
+      retval = nf90_put_att(ncid, vc_cgs_varid, UNITS, 
+     .   vc_cgs_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval)  
       
-      retval = nf_put_att_text(ncid, UminPara_varid, UNITS, 
-     .   len(UminPara_UNITS), UminPara_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval)   
-      retval = nf_put_att_text(ncid, UmaxPara_varid, UNITS, 
-     .   len(UmaxPara_UNITS), UmaxPara_UNITS)
-      if (retval .ne. nf_noerr) call handle_err(retval)                   
+      retval = nf90_put_att(ncid, UminPara_varid, UNITS, 
+     .   UminPara_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval)   
+      retval = nf90_put_att(ncid, UmaxPara_varid, UNITS, 
+     .   UmaxPara_UNITS)
+      if (retval .ne. nf90_noerr) call handle_err(retval)                   
       
       write(6, *)'bqlavg_units = ', bqlavg_units
       write(6, *)'cqlavg_units = ', cqlavg_units
@@ -288,17 +288,17 @@ C     Assign units attributes to the netCDF variables.
                              
 
 C     End define mode.
-      retval = nf_enddef(ncid)
-      if (retval .ne. nf_noerr) call handle_err(retval)
+      retval = nf90_enddef(ncid)
+      if (retval .ne. nf90_noerr) call handle_err(retval)
             
 C     Write the coordinate variable data. This will put uperp, upara,
 c     and rhon's of our data grid into the netCDF file.      
-      retval = nf_put_var_real(ncid, uperp_varid, uperp)
-      if (retval .ne. nf_noerr) call handle_err(retval)
-      retval = nf_put_var_real(ncid, upara_varid, upara)
-      if (retval .ne. nf_noerr) call handle_err(retval) 
-      retval = nf_put_var_real(ncid, rhon_varid, rhon)
-      if (retval .ne. nf_noerr) call handle_err(retval) 
+      retval = nf90_put_var(ncid, uperp_varid, uperp)
+      if (retval .ne. nf90_noerr) call handle_err(retval)
+      retval = nf90_put_var(ncid, upara_varid, upara)
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
+      retval = nf90_put_var(ncid, rhon_varid, rhon)
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
       
       write(6,*)uperp_varid, upara_varid, rhon_varid        
            
@@ -310,28 +310,28 @@ C     Write the data. This will write our D_ql data. The arrays only hold one ti
 C     of data. We will just rewrite the same data for each timestep. In
 C     a real application, the data would change between timesteps.
       
-      retval = nf_put_var_double(ncid, bqlavg_varid, bqlavg)
-      if (retval .ne. nf_noerr) call handle_err(retval)	 
-      retval = nf_put_var_double(ncid, cqlavg_varid, cqlavg)
-      if (retval .ne. nf_noerr) call handle_err(retval)	 
-      retval = nf_put_var_double(ncid, eqlavg_varid, eqlavg)
-      if (retval .ne. nf_noerr) call handle_err(retval)	 	 
-      retval = nf_put_var_double(ncid, fqlavg_varid,  fqlavg)
-      if (retval .ne. nf_noerr) call handle_err(retval)	      
-      retval = nf_put_var_double(ncid, xmi_varid, xmi)
-      if (retval .ne. nf_noerr) call handle_err(retval)	
-      retval = nf_put_var_double(ncid, vc_cgs_varid, vc_cgs)
-      if (retval .ne. nf_noerr) call handle_err(retval)	 
+      retval = nf90_put_var(ncid, bqlavg_varid, bqlavg)
+      if (retval .ne. nf90_noerr) call handle_err(retval)  
+      retval = nf90_put_var(ncid, cqlavg_varid, cqlavg)
+      if (retval .ne. nf90_noerr) call handle_err(retval)  
+      retval = nf90_put_var(ncid, eqlavg_varid, eqlavg)
+      if (retval .ne. nf90_noerr) call handle_err(retval)          
+      retval = nf90_put_var(ncid, fqlavg_varid,  fqlavg)
+      if (retval .ne. nf90_noerr) call handle_err(retval)       
+      retval = nf90_put_var(ncid, xmi_varid, xmi)
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
+      retval = nf90_put_var(ncid, vc_cgs_varid, vc_cgs)
+      if (retval .ne. nf90_noerr) call handle_err(retval)  
       
-      retval = nf_put_var_double(ncid, UminPara_varid, UminPara)
-      if (retval .ne. nf_noerr) call handle_err(retval)	
-      retval = nf_put_var_double(ncid, UmaxPara_varid, UmaxPara)
-      if (retval .ne. nf_noerr) call handle_err(retval)                    
+      retval = nf90_put_var(ncid, UminPara_varid, UminPara)
+      if (retval .ne. nf90_noerr) call handle_err(retval) 
+      retval = nf90_put_var(ncid, UmaxPara_varid, UmaxPara)
+      if (retval .ne. nf90_noerr) call handle_err(retval)                    
            
 
 C     Close the file. 
-      retval = nf_close(ncid)
-      if (retval .ne. nf_noerr) call handle_err(retval)
+      retval = nf90_close(ncid)
+      if (retval .ne. nf90_noerr) call handle_err(retval)
    
 C     If we got this far, everything worked as expected. Yipee!
       print *,'*** SUCCESS writing netcdf file, ', FILE_nc, '!'
@@ -345,17 +345,18 @@ C     If we got this far, everything worked as expected. Yipee!
       deallocate( eqlavg) 
       deallocate( fqlavg)         
       
- 3310 format(1p6e18.10)
+ 3310 format(1p,6e18.10)
   309 format(10i10)
   
       return      
       end
 
       subroutine handle_err(errcode)
+      use netcdf
       implicit none
-      include 'netcdf.inc'
+      !include 'netcdf.inc'
       integer errcode
 
-      print *, 'Error: ', nf_strerror(errcode)
+      print *, 'Error: ', nf90_strerror(errcode)
       stop 2
       end

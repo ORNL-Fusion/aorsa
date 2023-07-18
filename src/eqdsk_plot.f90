@@ -5,13 +5,13 @@
       implicit none
 
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titx
-      character*32 tity
-      character*32 titz
-      character*32 titlb
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
+      character(32):: titlb
 
       real logmax
       integer nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
@@ -308,13 +308,13 @@
       implicit none
 
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titx
-      character*32 tity
-      character*32 titz
-      character*32 titlb
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
+      character(32):: titlb
 
       real logmax
       integer nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
@@ -512,7 +512,7 @@
           write(*,*) 'Value of nxeqdmax is too small in eqdsk_plot.f90'
           write(*,*) 'nxeqdmax = ', nxeqdmax
           write(*,*) 'nxeq = ', nxeqd
-          call exit(1)
+          stop 1
       end if
 
       read(138, 310) (x(i), i = 1, nnodex)
@@ -793,6 +793,8 @@
 
 
       title = 'psi surfaces'
+!      write(15,*) 'psi test ',psi
+!      write(6,*) 'psi test ',psi      
       call ezconc(capr, y, psi, ff, nnodex, nnodey, numb, &
          nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
@@ -1352,15 +1354,15 @@
 
       implicit none
 
+      integer nr,nrmax
       real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real x1(nrmax), y1(nrmax)
       real y1max,y2max,y3max,y1min,y2min,y3min
       real ymin,ymax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
 
       integer nplot1,ncollab, ncolion,ncolbox, ncyan, &
           ncolelec, ncolln2, ncollin, ncolbrd

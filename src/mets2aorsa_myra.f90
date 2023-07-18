@@ -19,16 +19,16 @@
 
     implicit none
 
-    integer i_global, j_global, ier, nxdim, nydim, k, lmaxdim, ndist
+    integer:: i_global, j_global, ier, nxdim, nydim, k, lmaxdim, ndist
     integer, intent(IN):: NUPAR, NUPER, lmax
-    integer nkx1, nkx2, nky1, nky2, j_upar, k_uper
-    integer nkdim1, nkdim2, mkdim1, mkdim2
+    integer:: nkx1, nkx2, nky1, nky2, j_upar, k_uper
+    integer:: nkdim1, nkdim2, mkdim1, mkdim2
     integer:: NHARM, IHARM, M, N, i, nzeta
 
-    real  uxx, uxy, uxz, uyx, uyy, uyz, uzx, uzy, uzz
-    real  xkphi
-    real  xkxsav(nkdim1 : nkdim2), xkysav(mkdim1 : mkdim2)
-    real  xkperpn, xkperpni, xkrhon, xketan, xkbn, beta
+    real::  uxx, uxy, uxz, uyx, uyy, uyz, uzx, uzy, uzz
+    real::  xkphi
+    real::  xkxsav(nkdim1 : nkdim2), xkysav(mkdim1 : mkdim2)
+    real::  xkperpn, xkperpni, xkrhon, xketan, xkbn, beta
     real, intent(IN):: W, ZSPEC, ASPEC, BMAG
     real, intent(IN):: ENORM, UPARMIN, UPARMAX
     real, dimension(NUPER), intent(IN):: UPER
@@ -50,21 +50,21 @@
     real, dimension(:,:),   allocatable :: sinbeta
     real, dimension(:,:),   allocatable :: NPARA_sav
 
-    complex epsx, epsy, epsz
-    complex ealphak(nkdim1 : nkdim2, mkdim1 : mkdim2), &
+    complex::epsx, epsy, epsz
+    complex::ealphak(nkdim1 : nkdim2, mkdim1 : mkdim2), &
     &        ebetak(nkdim1 : nkdim2, mkdim1 : mkdim2), &
     &           ebk(nkdim1 : nkdim2, mkdim1 : mkdim2)
-    complex cexpkx, cexpky, zi, zeta
+    complex::cexpkx, cexpky, zi, zeta
 
-    complex xx(nkdim1 : nkdim2, 1 : nxdim),   &
+    complex::xx(nkdim1 : nkdim2, 1 : nxdim),   &
      &      yy(mkdim1 : mkdim2, 1 : nydim)
 
-    complex cexpn, cexpnp1, cexpnm1, cexp11
+    complex::cexpn, cexpnp1, cexpnm1, cexp11
 
-    complex cexp1, cexp2, cexp0
-    complex sum1_11, sum1_31
-    complex sum2_1, sum2_2, sum2_3, sum
-    complex b(100)
+    complex::cexp1, cexp2, cexp0
+    complex::sum1_11, sum1_31
+    complex::sum2_1, sum2_2, sum2_3, sum
+    complex::b(100)
 
 
     real, parameter:: EOVERAMU = 9.64853e7
@@ -116,12 +116,12 @@
              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
              xkbn   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
-	
+        
              NPARA_sav(n, m) = xkbn * C / W
 
              xkperpn = sqrt(xkrhon**2 + xketan**2)
              if(xkperpn .eq. 0.0)xkperpn = 1.0e-08
-	
+        
              cosbeta(n, m) = xkrhon / xkperpn
              sinbeta(n, m) = xketan / xkperpn
 
@@ -157,9 +157,9 @@
              xkbn   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
 
              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
-	
+        
              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
-	
+        
              if (zeta0 .gt. zetamax) zetamax = zeta0
              if (zeta0 .lt. zetamin) zetamin = zeta0
           end do
@@ -177,14 +177,14 @@
        ! ------------------------------------------------- !
        ! ---Pre-calculate Bessel functions on zeta mesh -- !
        ! ------------------------------------------------- !
-	
+        
        do i = 1, nzeta + 1
           zetai(i) = zetamin + (i - 1) * dzeta
           zeta = cmplx(zetai(i), 0.0)
-	
+        
           call besjc(zeta, nharm + 2, b, ier)
 !          if(ier .ne. 0) write(6, *) "ier = ", ier
-	
+        
           do iharm = 0, NHARM + 1
              Jni(iharm,  i) = b(iharm + 1)
              Jni(-iharm, i) = (-1.0)**iharm * b(iharm + 1)
@@ -205,32 +205,32 @@
              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
              xkbn   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
-	
+        
              NPARA_sav(n, m) = xkbn * C * WI
 
              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
              xkperpni = 1.0 / xkperpn
-	
+        
              cosbeta(n, m) = xkrhon * xkperpni
              sinbeta(n, m) = xketan * xkperpni
-	
+        
              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
-	
+        
              i = int((zeta0 - zetamin) * dzetai) + 1
              p = (zeta0 - zetai(i)) * dzetai
              A1 = 0.5 * P * (P - 1.)
              A2 = 1. - P * P
              A3 = 0.5 * P * (P + 1.)
-	
+        
              do iharm = -NHARM - 1, NHARM + 1
-	
+        
                 Jn(iharm, n, m) = Jni(iharm, i) + p * (Jni(iharm, i + 1) - Jni(iharm, i))
                 if(i .ne. 1 )then
                    Jn(iharm, n, m) = A1 * Jni(iharm, i - 1) + A2 * Jni(iharm, i) + A3 * Jni(iharm, i + 1)
                 end if
-	
+        
              end do
-	
+        
           end do
        end do
 
@@ -266,24 +266,24 @@
           do m = nky1, nky2
 
              NPARA1 = NPARA_sav(n, m)
-	
+        
              cexpkx = xx(n, i_global)
              cexpky = yy(m, j_global)
 
              cexp11 = cosbeta(n, m) + zi * sinbeta(n, m)
              cexpn  = cexp11 ** iharm
-		
+                
              cexpnp1 = cexpn * cexp11
              cexpnm1 = cexpn / cexp11
 
              cexp1 = cexpkx * cexpky * cexpnp1
              cexp2 = cexpkx * cexpky * cexpnm1
              cexp0 = cexpkx * cexpky * cexpn
-		
+                
              epsx = isq2 * (ealphak(n, m) - zi * ebetak(n, m)) * cexp1
              epsy = isq2 * (ealphak(n, m) + zi * ebetak(n, m)) * cexp2
              epsz = ebk(n, m) * cexp0
-	
+        
              sum2_1 = sum2_1 + conjg(epsx) * Jn(IHARM + 1, n, m)
              sum2_2 = sum2_2 + conjg(epsy) * Jn(IHARM - 1, n, m)
              sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)
@@ -301,7 +301,7 @@
                 ! --------------- !
 
                 UPAR0 = SQMUT0 / NPARA1 * (1. - NWCW)
-	
+        
                 i = int((UPAR0 - UPAR(1)) * dui) + 1
                 p = (UPAR0 - UPAR(i)) * dui
 
@@ -309,9 +309,9 @@
                 if (i .ne. NUPAR) then
                    dfduper0 = dfduper(k_uper, i) + (dfduper(k_uper, i+1) - dfduper(k_uper, i)) * p
                 end if
-		
+                
                 U0 = DFDUPER0
-	
+        
                 if(ndist .eq. 1) then  !--Non-Maxwellian--!
 
                    DFACTPAR = NPARA1 * UPAR0 * SQMUT0I
@@ -321,29 +321,29 @@
                    if(i .ne. NUPAR)then
                       dfdupar0 = dfdupar(k_uper, i) + (dfdupar(k_uper, i+1) - dfdupar(k_uper, i)) * p
                    end if
-	
+        
                    U0 = (1. - DFACTPAR) * DFDUPER0 + DFACTPER * DFDUPAR0
-		
+                
                 end if
-	
-	
+        
+        
                 U  = PI * SQMUT0 / abs(NPARA1) * U0
 
 
                 temp1 = UPER(k_uper) * UPER(k_uper) * U
                 temp2 = SQ2 * UPER(k_uper) * UPAR0 * U
                 temp3 = 2.0 * UPAR0 * UPAR0 * U
-	
+        
 
-		
+                
                 sum1_11 = sum1_11 + temp1 * Jn(IHARM + 1, n, m) * epsx  &
      &                            + temp1 * Jn(IHARM - 1, n, m) * epsy  &  
      &                            + temp2 * Jn(IHARM, n, m)     * epsz
 
                 sum1_31 = sum1_31 + temp2 * Jn(IHARM + 1, n, m) * epsx  &
      &                            + temp2 * Jn(IHARM - 1, n, m) * epsy  &
-     &                            + temp3 * Jn(IHARM, n, m)     * epsz		
-	
+     &                            + temp3 * Jn(IHARM, n, m)     * epsz          
+        
              end if
 
           end do
@@ -421,16 +421,14 @@
 
        implicit none
 
-       integer lx, i, nlen
-       real fx(lx), x(lx), fx0, x0, dx
+       integer:: lx, i, nlen
+       real:: fx(lx), x(lx), fx0, x0, dx
       
        do i = 1, nlen
-          if (x0 .ge. x(i) .and. x0 .lt. x(i+1) ) go to 100
+          if (x0 .ge. x(i) .and. x0 .lt. x(i+1) ) exit
        end do
        
-   100 continue
-   
-       if(i .eq. nlen)then
+       if(i == nlen) then
           fx0 = fx(nlen)
        else
           dx = x(i+1) - x(i)
@@ -461,9 +459,9 @@
 !  the accompanying function fspline can be used for interpolation
 !======================================================================
 implicit none
-integer n
+integer:: n
 double precision x(n), y(n), b(n), c(n), d(n)
-integer i, j, gap
+integer:: i, j, gap
 double precision h
 
 gap = n-1
@@ -549,9 +547,9 @@ end subroutine spline
 !=======================================================================
 implicit none
 double precision ispline
-integer n
+integer:: n
 double precision  u, x(n), y(n), b(n), c(n), d(n)
-integer i, j, k
+integer:: i, j, k
 double precision dx
 
 ! if u is ouside the x() interval take a boundary value (left or right)

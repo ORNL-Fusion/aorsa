@@ -1,22 +1,22 @@
       subroutine sftinv2d_old(x, y, xkx, xky, f, a, nxdim, nydim,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, xx, yy,
-     .   myid, nproc, icontxt)
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, xx, yy,
+     &   myid, nproc, icontxt)
 
       implicit none
 
-      integer nxdim, nydim, n, m, i, j,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
+      integer:: nxdim, nydim, n, m, i, j,
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
 
-      real x(nxdim), y(nydim)
-      real xkx(nkdim1 : nkdim2), xky(mkdim1 : mkdim2)
-      complex zi, f(nxdim, nydim),
-     .   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
-      complex cexpkxky
+      real:: x(nxdim), y(nydim)
+      real:: xkx(nkdim1 : nkdim2), xky(mkdim1 : mkdim2)
+      complex:: zi, f(nxdim, nydim),
+     &   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
+      complex:: cexpkxky
 
-      complex xx(nkdim1 : nkdim2, 1 : nxdim),
-     .        yy(mkdim1 : mkdim2, 1 : nydim)
+      complex:: xx(nkdim1 : nkdim2, 1 : nxdim),
+     &        yy(mkdim1 : mkdim2, 1 : nydim)
 
 
 
@@ -48,12 +48,12 @@
 
 
 c      f(1:nnodex, 1:nnodey) = matmul(transpose(xx(nkx1:nkx2, 1:nnodex)),
-c     .     matmul(a(nkx1:nkx2, nky1:nky2),  yy(nky1:nky2, 1:nnodey) ))
+c     &     matmul(a(nkx1:nkx2, nky1:nky2),  yy(nky1:nky2, 1:nnodey) ))
 
       call blacs_barrier(icontxt, 'All')
 
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, f,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
 
 
 
@@ -65,25 +65,25 @@ c*******************************************************************
 c
 
       subroutine sftinv_filter(root, x, y, xkx, xky,  
-     .   f, fx, fy,
-     .   a, nxdim, nydim,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, 
-     .   nnodex, nnodey, nkx1, nkx2, nky1, nky2, xx, yy, 
-     .   myid, nproc, icontxt,
-     .   uxx, uxy, uxz, uyx, uyy, uyz, uzx, uzy, uzz,
-     .   z, xkte, xkti, xmi, omgrf, omgci, omgce, xkphi,
-     .   omgpe2, omgpi2, xme, upshift, nphi, rt, ip, capr, capz, jmid,
-     .   n_ono, m_ono, xkperp2_slow_a, xkperp2_fast_a, xkprl_a, P_a, 
-     .   xk_cutoff)
+     &   f, fx, fy,
+     &   a, nxdim, nydim,
+     &   nkdim1, nkdim2, mkdim1, mkdim2, 
+     &   nnodex, nnodey, nkx1, nkx2, nky1, nky2, xx, yy, 
+     &   myid, nproc, icontxt,
+     &   uxx, uxy, uxz, uyx, uyy, uyz, uzx, uzy, uzz,
+     &   z, xkte, xkti, xmi, omgrf, omgci, omgce, xkphi,
+     &   omgpe2, omgpi2, xme, upshift, nphi, rt, ip, capr, capz, jmid,
+     &   n_ono, m_ono, xkperp2_slow_a, xkperp2_fast_a, xkprl_a, P_a, 
+     &   xk_cutoff)
 
 
       implicit none
       
-      CHARACTER*128 :: root      
+      CHARACTER(128) :: root      
 
       integer nxdim, nydim, n, m, i, j, jmid, ipr,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
      
       integer upshift, nphi, ip, iprint, imax, n_ono, m_ono
 
@@ -98,11 +98,11 @@ c
       complex Kxx, Kxy, Kzz, delta, deltam, gamma
       
       real uxx(nxdim, nydim), uxy(nxdim, nydim), uxz(nxdim,nydim),
-     .     uyx(nxdim, nydim), uyy(nxdim, nydim), uyz(nxdim,nydim),
-     .     uzx(nxdim, nydim), uzy(nxdim, nydim), uzz(nxdim,nydim)
+     &     uyx(nxdim, nydim), uyy(nxdim, nydim), uyz(nxdim,nydim),
+     &     uzx(nxdim, nydim), uzy(nxdim, nydim), uzz(nxdim,nydim)
      
       real xkphi(nxdim), omgci(nxdim, nydim), omgce(nxdim, nydim), 
-     .     xkte(nxdim, nydim), xkti(nxdim, nydim)
+     &     xkte(nxdim, nydim), xkti(nxdim, nydim)
       real omgpe2(nxdim, nydim), omgpi2(nxdim, nydim), xme, xk0
      
       real xkalp, xkbet, xkprl, xnprl, xkperp2, cs, xkperp2_eicw, diff
@@ -111,18 +111,18 @@ c
       complex  xkperp2_1, xkperp2_2
       complex  xkperp2_slow, xkperp2_fast 
       complex xkperp2_slow_a(nxdim, nydim), 
-     .        xkperp2_fast_a(nxdim, nydim),
-     .        P_a(nxdim, nydim)
+     &        xkperp2_fast_a(nxdim, nydim),
+     &        P_a(nxdim, nydim)
       real xkprl_a(nxdim, nydim)
       complex zi, z0, z1, z2, zfunct, zetae, zetat, Kzz_e
            
       complex
-     .   f(nxdim, nydim), fx(nxdim, nydim), fy(nxdim, nydim),
-     .   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
+     &   f(nxdim, nydim), fx(nxdim, nydim), fy(nxdim, nydim),
+     &   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
       complex cexpkxky
 
       complex xx(nkdim1 : nkdim2, 1 : nxdim),
-     .        yy(mkdim1 : mkdim2, 1 : nydim)
+     &        yy(mkdim1 : mkdim2, 1 : nydim)
      
       common/upcom/akprl_min     
      
@@ -144,36 +144,36 @@ c      open(unit=130, file='Ono_disp', status='unknown',form='formatted')
 *     Ono's biquadratic dispersion relation
 *     --------------------------------------           
       do i = 1, nnodex
-         do j = 1, nnodey	       	 
+         do j = 1, nnodey                
 
             ngrid = (j - 1) * nnodex + i
             id = mod(ngrid, nproc)
-            if(id .eq. myid)then	    
+            if(id .eq. myid)then            
 
-	       vthe = sqrt(2.0 * xkte(i,j) / xme)
-	       
+               vthe = sqrt(2.0 * xkte(i,j) / xme)
+               
                S = 1.0 - omgpe2(i,j) / (omgrf**2 - omgce(i,j)**2)  
-     .                 - omgpi2(i,j) / (omgrf**2 - omgci(i,j)**2)
+     &                 - omgpi2(i,j) / (omgrf**2 - omgci(i,j)**2)
      
                D = omgce(i,j) / omgrf * omgpe2(i,j) 
-     .                                   / (omgrf**2 - omgce(i,j)**2)  
-     .           + omgci(i,j) / omgrf * omgpi2(i,j) 
-     .                                   / (omgrf**2 - omgci(i,j)**2)              	       	            	              	
+     &                                   / (omgrf**2 - omgce(i,j)**2)  
+     &           + omgci(i,j) / omgrf * omgpi2(i,j) 
+     &                                   / (omgrf**2 - omgci(i,j)**2)                                                           
 
                f(i, j) = 0.0
-	       
+               
 
                do n = nkx1, nkx2
-                  do m = nky1, nky2		  
-		  
-		     xkalp = uxx(i,j) * xkx(n) + uxy(i,j) * xky(m)
-     .                                            + uxz(i,j) * xkphi(i)
+                  do m = nky1, nky2               
+                  
+                     xkalp = uxx(i,j) * xkx(n) + uxy(i,j) * xky(m)
+     &                                            + uxz(i,j) * xkphi(i)
                      xkbet = uyx(i,j) * xkx(n) + uyy(i,j) * xky(m) 
-     .                                            + uyz(i,j) * xkphi(i)
+     &                                            + uyz(i,j) * xkphi(i)
                      xkprl = uzx(i,j) * xkx(n) + uzy(i,j) * xky(m) 
-     .                                            + uzz(i,j) * xkphi(i)     
+     &                                            + uzz(i,j) * xkphi(i)     
                      xkperp2 = xkalp**2 + xkbet**2 
-		     xkperp = sqrt(xkperp2) 
+                     xkperp = sqrt(xkperp2) 
      
 *                    ------------------------------------
 *                    Optional: leave out upshift in xkprl
@@ -183,111 +183,111 @@ c                     if (upshift .eq. 0)  xkprl = nphi / rt
 
                     if (upshift .eq. -1) then      
                         if (xkperp  .gt. xk_cutoff) 
-     .                                   xkprl = uzz(i,j) * xkphi(i)
-                    end if		     
-		     		    
+     &                                   xkprl = uzz(i,j) * xkphi(i)
+                    end if                   
+                                    
                      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
-                     if (xkperp2 .eq. 0.0) xkperp2 = 1.0e-08		        
+                     if (xkperp2 .eq. 0.0) xkperp2 = 1.0e-08                    
      
                      sgn_kprl = sign(1.0, xkprl)
-                     akprl = abs(xkprl)	      
-		     
+                     akprl = abs(xkprl)       
+                     
 *                   ----------------------------------------------
 *                   Optional: Don't allow xkprl to be 0 (upshift = -2)
 *                   ----------------------------------------------        
                     if (upshift .eq. -2) then
                        if (akprl .lt. akprl_min) then
-		           xkprl = akprl_min * sgn_kprl
-		       end if 
-		    end if			
-		     
-                     xnprl = xkprl / xk0		     		     		     
-		     
-		     zetae = omgrf / (xkprl * vthe)		     
-		     
-		     call z_approx(sgn_kprl, zetae, 0.0, z0, z1, z2)
-		     
+                           xkprl = akprl_min * sgn_kprl
+                       end if 
+                    end if                      
+                     
+                     xnprl = xkprl / xk0                                                     
+                     
+                     zetae = omgrf / (xkprl * vthe)                  
+                     
+                     call z_approx(sgn_kprl, zetae, 0.0, z0, z1, z2)
+                     
 
                      Kzz_e = omgpe2(i,j) /omgrf * 2. /(xkprl * vthe) *z2 
 
-		     deltam = omgpe2(i,j) / omgce(i,j)**2 
-     .                  * vthe / clight**2 * omgrf / xkprl * z0 
+                     deltam = omgpe2(i,j) / omgce(i,j)**2 
+     &                  * vthe / clight**2 * omgrf / xkprl * z0 
 
-		     deltax = xkprl * vthe**2 /(2.* clight * omgce(i,j))
-		     
-		     delta = -omgpi2(i,j) / clight**2 * vthi**2 
-     .                  * omgrf**2 / (omgrf**2 - omgci(i,j)**2)**2
-		        		     		     
-		     P = 1.0 - omgpi2(i,j) / omgrf**2  + Kzz_e 
-		         
-		     
-c                     aq = S		     
-c		     bq = - P * (S - xnprl**2) - S**2 + D**2  + S * xnprl**2
-c		     cq =   P * (S - xnprl**2)**2 - D**2 * P  
-		     
+                     deltax = xkprl * vthe**2 /(2.* clight * omgce(i,j))
+                     
+                     delta = -omgpi2(i,j) / clight**2 * vthi**2 
+     &                  * omgrf**2 / (omgrf**2 - omgci(i,j)**2)**2
+                                                             
+                     P = 1.0 - omgpi2(i,j) / omgrf**2  + Kzz_e 
+                         
+                     
+c                     aq = S                 
+c                    bq = - P * (S - xnprl**2) - S**2 + D**2  + S * xnprl**2
+c                    cq =   P * (S - xnprl**2)**2 - D**2 * P  
+                     
                      aq = ( (S - xnprl**2) 
-     .		        + xnprl**2 * (1. + delta**2) ) * (1. - deltam)
-     		     
-		     bq = D**2 - deltax**2 * (S - xnprl**2) * Kzz_e**2
-     .                  - (S - xnprl**2) * (1. - deltam) * P
-     .                  + 2. * deltax * xnprl * (1. + delta) * Kzz_e * D
-     .                  - (S - xnprl**2)**2 
-     .                  - xnprl**2* (1. + delta)**2 * (S - xnprl**2)
-		     
-		     cq = ( (S - xnprl**2)**2 - D**2 ) * P 
-		     		        
-		     descrim = bq**2 - 4. * aq * cq
-		     sqrt_descr = sqrt(descrim)		     	     
-		     		     		     
-		     xkperp2_1 = (-bq + sqrt_descr) / (2. * aq) * xk0**2    
-		     xkperp2_2 = (-bq - sqrt_descr) / (2. * aq) * xk0**2    
-		          		     	     		               		     		     
-		     xkperp2_eicw = xkprl**2  * P / S
-		     
+     &                  + xnprl**2 * (1. + delta**2) ) * (1. - deltam)
+                     
+                     bq = D**2 - deltax**2 * (S - xnprl**2) * Kzz_e**2
+     &                  - (S - xnprl**2) * (1. - deltam) * P
+     &                  + 2. * deltax * xnprl * (1. + delta) * Kzz_e * D
+     &                  - (S - xnprl**2)**2 
+     &                  - xnprl**2* (1. + delta)**2 * (S - xnprl**2)
+                     
+                     cq = ( (S - xnprl**2)**2 - D**2 ) * P 
+                                        
+                     descrim = bq**2 - 4. * aq * cq
+                     sqrt_descr = sqrt(descrim)                      
+                                                     
+                     xkperp2_1 = (-bq + sqrt_descr) / (2. * aq) * xk0**2    
+                     xkperp2_2 = (-bq - sqrt_descr) / (2. * aq) * xk0**2    
+                                                                                                             
+                     xkperp2_eicw = xkprl**2  * P / S
+                     
                      xkperp2_slow = xkperp2_1
                      xkperp2_fast = xkperp2_2
-		     		     
+                                     
 *                    --------------
 *                    Sort the roots
 *                    --------------
-		     if (cabs(xkperp2_1) .ge. cabs(xkperp2_2)) then
-		        xkperp2_slow = xkperp2_1
-			xkperp2_fast = xkperp2_2
-		     end if
-		     
-		     if (cabs(xkperp2_2) .gt. cabs(xkperp2_1)) then
-		        xkperp2_slow = xkperp2_2
-			xkperp2_fast = xkperp2_1
-		     end if		     
-		     		     
-		     
+                     if (cabs(xkperp2_1) .ge. cabs(xkperp2_2)) then
+                        xkperp2_slow = xkperp2_1
+                        xkperp2_fast = xkperp2_2
+                     end if
+                     
+                     if (cabs(xkperp2_2) .gt. cabs(xkperp2_1)) then
+                        xkperp2_slow = xkperp2_2
+                        xkperp2_fast = xkperp2_1
+                     end if                  
+                                     
+                     
 *                    -------------------------------------
 *                    Print xkperp2 for slow and fast roots
-*                    -------------------------------------		     
+*                    -------------------------------------                   
                      if(n .eq. n_ono  .and. m .eq. m_ono
-     .                                     .and. ip .eq. 1) then		     		     
-		        xkperp2_slow_a(i,j) = xkperp2_slow
+     &                                     .and. ip .eq. 1) then                                     
+                        xkperp2_slow_a(i,j) = xkperp2_slow
                         xkperp2_fast_a(i,j) = xkperp2_fast
-			xkprl_a(i,j) = xkprl
-			P_a(i,j) = P      					       		     		                     		     	  
+                        xkprl_a(i,j) = xkprl
+                        P_a(i,j) = P                                                                                                                      
                      end if
-		     
-		     			     
-		     
-		     if (root .eq. 'slow') 
-     .                  diff = abs(xkperp2 - real(xkperp2_slow))
-     .                       / abs(xkperp2)	
+                     
+                                             
+                     
+                     if (root .eq. 'slow') 
+     &                  diff = abs(xkperp2 - real(xkperp2_slow))
+     &                       / abs(xkperp2)     
                     
-		     if (root .eq. 'fast') 
-     .                  diff = abs(xkperp2 - real(xkperp2_fast)) 
-     .                       /abs(xkperp2)
-     		     		     
-		     if (root .eq. 'none') diff = 0.0	     
-		     
-		     
-*		     if(diff .lt. 0.20 .and.abs(xkperp2).le.1.5e+04)then
-		     if(diff .lt. 0.20)then
-		      
+                     if (root .eq. 'fast') 
+     &                  diff = abs(xkperp2 - real(xkperp2_fast)) 
+     &                       /abs(xkperp2)
+                                     
+                     if (root .eq. 'none') diff = 0.0        
+                     
+                     
+*                    if(diff .lt. 0.20 .and.abs(xkperp2).le.1.5e+04)then
+                     if(diff .lt. 0.20)then
+                      
 *                       ----------------------------------------------------
 *                       cexpkxky = exp(zi * (xkx(n) * x(i) + xky(m) * y(j)))
 *                       ----------------------------------------------------
@@ -295,8 +295,8 @@ c		     cq =   P * (S - xnprl**2)**2 - D**2 * P
                         f(i,j) = f(i,j) + a(n,m) * cexpkxky
                         fx(i,j) = f(i,j) + xkx(n) * a(n,m) * cexpkxky
                         fy(i,j) = f(i,j) + xky(n) * a(n,m) * cexpkxky
-		     end if
-		     
+                     end if
+                     
                   end do
                end do
             end if
@@ -306,28 +306,28 @@ c		     cq =   P * (S - xnprl**2)**2 - D**2 * P
       call blacs_barrier(icontxt, 'All')
 
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, f,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, fx,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, fy,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
      
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, xkperp2_slow_a,
-     .   nxdim, -1, -1)          
+     &   nxdim, -1, -1)          
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, xkperp2_fast_a,
-     .   nxdim, -1, -1)       
+     &   nxdim, -1, -1)       
       call dgsum2d(icontxt, 'All', ' ', nnodex, nnodey, xkprl_a,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, P_a,
-     .   nxdim, -1, -1)      
+     &   nxdim, -1, -1)      
      
 c      if (myid .eq. 0) then
 c         do i = 1, nnodex      
 c            write(130, *) '      xgrid(', i, ') = ',  capr(i) 
 c            write(130, *) '      xkperp2_slow(', i,') = ', 
-c     .                                    xkperp2_slow_a(i, jmid)
-c	    write(130, *) '      xkperp2_fast(', i,') = ', 
-c     .                                    xkperp2_fast_a(i, jmid)   
+c     &                                    xkperp2_slow_a(i, jmid)
+c           write(130, *) '      xkperp2_fast(', i,') = ', 
+c     &                                    xkperp2_fast_a(i, jmid)   
 c         end do
 c      end if    
      
@@ -343,21 +343,21 @@ c*******************************************************************
 c
 
       subroutine sftinv2dp(x, y, xkx, xky,  
-     .   f, fx, fy,
-     .   a, nxdim, nydim,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, 
-     .   nnodex, nnodey, nkx1, nkx2, nky1, nky2, xx, yy, 
-     .   myid, nproc, icontxt,
-     .   uxx, uxy, uxz, uyx, uyy, uyz, uzx, uzy, uzz,
-     .   z, xkte, xkti, xmi, omgrf, omgci, omgce, xkphi,
-     .   omgpe2, omgpi2, xme)
+     &   f, fx, fy,
+     &   a, nxdim, nydim,
+     &   nkdim1, nkdim2, mkdim1, mkdim2, 
+     &   nnodex, nnodey, nkx1, nkx2, nky1, nky2, xx, yy, 
+     &   myid, nproc, icontxt,
+     &   uxx, uxy, uxz, uyx, uyy, uyz, uzx, uzy, uzz,
+     &   z, xkte, xkti, xmi, omgrf, omgci, omgce, xkphi,
+     &   omgpe2, omgpi2, xme)
 
 
       implicit none
 
       integer nxdim, nydim, n, m, i, j,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
 
       real x(nxdim), y(nydim), eps0, xmu0, debye2
       real xkx(nkdim1 : nkdim2), xky(mkdim1 : mkdim2)
@@ -369,11 +369,11 @@ c
       complex Kxx, Kxy, Kzz, delta, deltam, deltax
       
       real uxx(nxdim, nydim), uxy(nxdim, nydim), uxz(nxdim,nydim),
-     .     uyx(nxdim, nydim), uyy(nxdim, nydim), uyz(nxdim,nydim),
-     .     uzx(nxdim, nydim), uzy(nxdim, nydim), uzz(nxdim,nydim)
+     &     uyx(nxdim, nydim), uyy(nxdim, nydim), uyz(nxdim,nydim),
+     &     uzx(nxdim, nydim), uzy(nxdim, nydim), uzz(nxdim,nydim)
      
       real xkphi(nxdim), omgci(nxdim, nydim), omgce(nxdim, nydim), 
-     .     xkte(nxdim, nydim), xkti(nxdim, nydim)
+     &     xkte(nxdim, nydim), xkti(nxdim, nydim)
       real omgpe2(nxdim, nydim), omgpi2(nxdim, nydim), xme, xk0
      
       real xkalp, xkbet, xkprl, xnprl, xkperp2, cs, xkperp2_eicw, diff
@@ -383,12 +383,12 @@ c
       complex zi, z0, z1, z2, zfunct, zetae, zetat
            
       complex
-     .   f(nxdim, nydim), fx(nxdim, nydim), fy(nxdim, nydim),
-     .   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
+     &   f(nxdim, nydim), fx(nxdim, nydim), fy(nxdim, nydim),
+     &   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
       complex cexpkxky
 
       complex xx(nkdim1 : nkdim2, 1 : nxdim),
-     .        yy(mkdim1 : mkdim2, 1 : nydim)
+     &        yy(mkdim1 : mkdim2, 1 : nydim)
      
       pi = 3.141592654
       
@@ -406,150 +406,150 @@ c
             ngrid = (j - 1) * nnodex + i
             id = mod(ngrid, nproc)
             if(id .eq. myid)then
-	    
-	       cs = sqrt(z * xkte(i,j) / xmi)	    
-	       xkperp2_eicw = (omgrf**2 - omgci(i,j)**2) / cs**2
-	       
-	       va2 = clight**2 * omgci(i,j)**2 / omgpi2(i,j)
-	       vthe = sqrt(2.0 * xkte(i,j) / xme)
-	       vthi = sqrt(2.0 * xkti(i,j) / xmi)
-	       debye2 = vthe**2 / 2. / omgpe2(i,j)
-	       
-	            
+            
+               cs = sqrt(z * xkte(i,j) / xmi)       
+               xkperp2_eicw = (omgrf**2 - omgci(i,j)**2) / cs**2
+               
+               va2 = clight**2 * omgci(i,j)**2 / omgpi2(i,j)
+               vthe = sqrt(2.0 * xkte(i,j) / xme)
+               vthi = sqrt(2.0 * xkti(i,j) / xmi)
+               debye2 = vthe**2 / 2. / omgpe2(i,j)
+               
+                    
                R = 1.0 - omgpe2(i,j) / (omgrf * (omgrf + omgce(i,j)))
-     .                 - omgpi2(i,j) / (omgrf * (omgrf + omgci(i,j))) 
+     &                 - omgpi2(i,j) / (omgrf * (omgrf + omgci(i,j))) 
      
                L = 1.0 - omgpe2(i,j) / (omgrf * (omgrf - omgce(i,j)))
-     .                 - omgpi2(i,j) / (omgrf * (omgrf - omgci(i,j))) 
+     &                 - omgpi2(i,j) / (omgrf * (omgrf - omgci(i,j))) 
      
                S = (R + L) / 2.
-	       D = (R - L) / 2. 
-	       
+               D = (R - L) / 2. 
+               
 !              ----------------------------------------
 !              Cynthia's incorrect approximation for S:
 !              ----------------------------------------
 c               S = 1.0 - omgpe2(i,j) / omgce(i,j)**2
-c     .                 - omgpi2(i,j) / omgci(i,j)**2
-     	              	
+c     &                 - omgpi2(i,j) / omgci(i,j)**2
+                        
 
                f(i, j) = 0.0
                do n = nkx1, nkx2
                   do m = nky1, nky2
-		  
-		     xkalp = uxx(i,j) * xkx(n) + uxy(i,j) * xky(m)
-     .                                            + uxz(i,j) * xkphi(i)
+                  
+                     xkalp = uxx(i,j) * xkx(n) + uxy(i,j) * xky(m)
+     &                                            + uxz(i,j) * xkphi(i)
                      xkbet = uyx(i,j) * xkx(n) + uyy(i,j) * xky(m) 
-     .                                            + uyz(i,j) * xkphi(i)
+     &                                            + uyz(i,j) * xkphi(i)
                      xkprl = uzx(i,j) * xkx(n) + uzy(i,j) * xky(m) 
-     .                                            + uzz(i,j) * xkphi(i)
+     &                                            + uzz(i,j) * xkphi(i)
      
                      sgn_kprl = sign(1.0, xkprl)
                      xnprl = xkprl / xk0
-		     
+                     
                      xkperp2 = xkalp**2 + xkbet**2 
-		     
-		     zetae = omgrf / (xkprl * vthe)		     
-		     
-		     call z_approx(sgn_kprl, zetae, 0.0, z0, z1, z2)
-		     
-		  go to 5500
+                     
+                     zetae = omgrf / (xkprl * vthe)                  
+                     
+                     call z_approx(sgn_kprl, zetae, 0.0, z0, z1, z2)
+                     
+                  go to 5500
 
 !                    -------------------------------------
 !                    Small argument expansion (high kpar)
 !                    -------------------------------------
-                     if(sgn_kprl .ge. 0.0)then	             
+                     if(sgn_kprl .ge. 0.0)then               
                         zetat = zetae
-		        zfunct = - 2.0 * zetat
-     .                    + 4./ 3. * zetat**3 
-     .                    - 8./15. * zetat**5 
-     .                    + 16./105. * zetat**7
+                        zfunct = - 2.0 * zetat
+     &                    + 4./ 3. * zetat**3 
+     &                    - 8./15. * zetat**5 
+     &                    + 16./105. * zetat**7
      
                         z0 = zfunct
                         z1 = 1.0 + zetae * zfunct
                         z2 =  zetae * (1.0 + zetae * zfunct)
                      end if
-		     
-                     if(sgn_kprl .lt. 0.0)then	             
+                     
+                     if(sgn_kprl .lt. 0.0)then               
                         zetat = -zetae
-		        zfunct = - 2.0 * zetat
-     .                    + 4./ 3. * zetat**3 
-     .                    - 8./15. * zetat**5 
-     .                    + 16./105. * zetat**7
+                        zfunct = - 2.0 * zetat
+     &                    + 4./ 3. * zetat**3 
+     &                    - 8./15. * zetat**5 
+     &                    + 16./105. * zetat**7
      
                         z0 = -zfunct
                         z1 = 1.0 - zetae * zfunct
                         z2 =  zetae * (1.0 - zetae * zfunct)
-                     end if			     		     
+                     end if                                          
 
-5500              continue		     
+5500              continue                   
     
-		      
-c		     P = 1.0 - omgpi2(i,j) / omgrf**2
-c     .                 - omgpe2(i,j) / (xkprl**2 * vthe**2) * (-2. * z1) 
+                      
+c                    P = 1.0 - omgpi2(i,j) / omgrf**2
+c     &                 - omgpe2(i,j) / (xkprl**2 * vthe**2) * (-2. * z1) 
      
-c		     P = omgpe2(i,j) / omgrf * 2. / (xkprl * vthe) * z2 
-		     
-		     P = 1.0 - omgpi2(i,j) / omgrf**2 
-     .                  + omgpe2(i,j) / omgrf * 2. / (xkprl * vthe) * z2  		     
+c                    P = omgpe2(i,j) / omgrf * 2. / (xkprl * vthe) * z2 
+                     
+                     P = 1.0 - omgpi2(i,j) / omgrf**2 
+     &                  + omgpe2(i,j) / omgrf * 2. / (xkprl * vthe) * z2                     
   
                      aq = S
                      bq = - P * (S - xnprl**2) - R * L + S * xnprl**2 
                      cq = P * (R - xnprl**2) * (L - xnprl**2)
-		     
-c		     Kxx = S
-c		     Kxy = D
-c		     Kzz = P
-		     		     
-c		     delta  = -omgpi2(i,j) * omgrf**2 * vthi**2 
-c     .                  / (clight**2 * (omgrf**2 - omgci(i,j)**2)**2)
+                     
+c                    Kxx = S
+c                    Kxy = D
+c                    Kzz = P
+                                     
+c                    delta  = -omgpi2(i,j) * omgrf**2 * vthi**2 
+c     &                  / (clight**2 * (omgrf**2 - omgci(i,j)**2)**2)
      
-c		     deltam = omgpe2(i,j) / omgce(i,j)**2 
-c     .                          * vthe**2 / clight**2
-c     .                          * zetae * z0
+c                    deltam = omgpe2(i,j) / omgce(i,j)**2 
+c     &                          * vthe**2 / clight**2
+c     &                          * zetae * z0
      
-c		     deltax = vthe**2 * xkprl /(2.* clight * omgce(i,j))
-		     		     
-		     		     
+c                    deltax = vthe**2 * xkprl /(2.* clight * omgce(i,j))
+                                     
+                                     
 c                     aq = ((xnprl**2 -Kxx) - xnprl**2 * (1.+ delta)**2)
-c     .                                           * (1. - deltam)
+c     &                                           * (1. - deltam)
      
-c		     bq = - Kxy**2 
-c     .                    - deltax**2 * (xnprl**2 - Kxx)  * Kzz**2
-c     .                    - (xnprl**2 - Kxx) * (1. - deltam) * Kzz
-c     .                    + 2. * deltax * xnprl * (1. + delta) 
-c     .                                                       * Kzz * Kxy
-c     .                    + (xnprl**2 - Kxx)**2
-c     .                    - xnprl**2 * (1. + delta)**2 
-c     .                                                * (xnprl**2 - Kxx) 
+c                    bq = - Kxy**2 
+c     &                    - deltax**2 * (xnprl**2 - Kxx)  * Kzz**2
+c     &                    - (xnprl**2 - Kxx) * (1. - deltam) * Kzz
+c     &                    + 2. * deltax * xnprl * (1. + delta) 
+c     &                                                       * Kzz * Kxy
+c     &                    + (xnprl**2 - Kxx)**2
+c     &                    - xnprl**2 * (1. + delta)**2 
+c     &                                                * (xnprl**2 - Kxx) 
      
-c                     cq = (Kxy**2 - (xnprl**2 - Kxx)**2) * Kzz		     
-		     
-		     		     		     
-		     xnperp2_slow = (-bq + sqrt(bq**2 - 4. * aq * cq) )
-     .                                                    / (2. * aq)     
-		     xnperp2_fast = (-bq - sqrt(bq**2 - 4. * aq * cq) )
-     .                                                    / (2. * aq)     
-		     
+c                     cq = (Kxy**2 - (xnprl**2 - Kxx)**2) * Kzz              
+                     
+                                                     
+                     xnperp2_slow = (-bq + sqrt(bq**2 - 4. * aq * cq) )
+     &                                                    / (2. * aq)     
+                     xnperp2_fast = (-bq - sqrt(bq**2 - 4. * aq * cq) )
+     &                                                    / (2. * aq)     
+                     
      
                      xkperp2_slow = xk0**2 * real(xnperp2_slow)
-		     xkperp2_fast = xk0**2 * real(xnperp2_fast)
-		     	     
-		     
+                     xkperp2_fast = xk0**2 * real(xnperp2_fast)
+                             
+                     
 *                    -------------------
 *                    Stix p.62: Eq. (39)
 *                    -------------------
 c                    xdebye2 = cs**2 / omgpi2(i,j)     
 c                    S = 1.0 + omgpe2(i,j) / (omgce(i,j)**2 - omgrf**2)  
-c     .                       + omgpi2(i,j) / (omgci(i,j)**2 - omgrf**2)      
-c		     P = 1.0 - omgpi2(i,j) / omgrf**2 
-c     .                       + 1.0 / (xkprl**2 * xdebye2)     
-      		     		     
-		     xkperp2_eicw = xkprl**2  * P / S
-		     	        		     		     
-	             diff = abs(xkperp2 - xkperp2_slow)	/ abs(xkperp2)		     
-		     
-		     
-		     if(diff .lt. 0.2)then  
+c     &                       + omgpi2(i,j) / (omgci(i,j)**2 - omgrf**2)      
+c                    P = 1.0 - omgpi2(i,j) / omgrf**2 
+c     &                       + 1.0 / (xkprl**2 * xdebye2)     
+                                     
+                     xkperp2_eicw = xkprl**2  * P / S
+                                                                     
+                     diff = abs(xkperp2 - xkperp2_slow) / abs(xkperp2)               
+                     
+                     
+                     if(diff .lt. 0.2)then  
 *                       ----------------------------------------------------
 *                       cexpkxky = exp(zi * (xkx(n) * x(i) + xky(m) * y(j)))
 *                       ----------------------------------------------------
@@ -557,8 +557,8 @@ c     .                       + 1.0 / (xkprl**2 * xdebye2)
                         f(i,j) = f(i,j) + a(n,m) * cexpkxky
                         fx(i,j) = f(i,j) + xkx(n) * a(n,m) * cexpkxky
                         fy(i,j) = f(i,j) + xky(n) * a(n,m) * cexpkxky
-		     end if
-		     
+                     end if
+                     
                   end do
                end do
             end if
@@ -567,16 +567,16 @@ c     .                       + 1.0 / (xkprl**2 * xdebye2)
 
 
 c      f(1:nnodex, 1:nnodey) = matmul(transpose(xx(nkx1:nkx2, 1:nnodex)),
-c     .     matmul(a(nkx1:nkx2, nky1:nky2),  yy(nky1:nky2, 1:nnodey) ))
+c     &     matmul(a(nkx1:nkx2, nky1:nky2),  yy(nky1:nky2, 1:nnodey) ))
 
       call blacs_barrier(icontxt, 'All')
 
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, f,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, fx,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, fy,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
 
 
 
@@ -929,10 +929,10 @@ c
 !       forward transform, using zfftf in dfftpack
 !       -------------------------------------------
       integer  n,nseq,ldc
-      complex*16 C(ldc,*)
+      complex C(ldc,*)
 
-      real*8 wsave(4*(4*n+15))
-      complex*16 cvec(n)
+      real wsave(4*(4*n+15))
+      complex cvec(n)
       integer  i,j
 
         call zffti( n, wsave )
@@ -954,10 +954,10 @@ c
 !       backward transform, using zfftb in dfftpack
 !       -------------------------------------------
       integer  n,nseq,ldc
-      complex*16 C(ldc,*)
+      complex C(ldc,*)
 
-      real*8 wsave(2*(4*n+15))
-      complex*16 cvec(n)
+      real wsave(2*(4*n+15))
+      complex cvec(n)
       integer  i,j
 
         call zffti( n, wsave )
@@ -978,15 +978,15 @@ c
         
       subroutine convert2d_row(row_in, row_out,
      &   xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, dx, dy, ndfmax,
-     .   nmodesx, nmodesy,  use_fft)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, dx, dy, ndfmax,
+     &   nmodesx, nmodesy,  use_fft)
 
       implicit none
 
       integer nnodex, nnodey, nxdim, nydim, nkdim1, nkdim2,
-     .   mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2,
-     .   ndfmax, ncol, nmodesx, nmodesy
+     &   mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2,
+     &   ndfmax, ncol, nmodesx, nmodesy
 
       real xlen, ylen, dx, dy
 
@@ -1466,9 +1466,9 @@ c*******************************************************************
 c
 
       subroutine sft_row(row, rowk, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, dx, dy, ndfmax,
-     .   nmodesx, nmodesy)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, dx, dy, ndfmax,
+     &   nmodesx, nmodesy)
 
 *     ----------------------------------------------
 *     performs a Fourier transform on one row of the
@@ -1480,18 +1480,18 @@ c
       implicit none
 
       integer nnodex, nnodey, nxdim, nydim, nkdim1, nkdim2,
-     .   mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2,
-     .   ndfmax, ncol, nmodesx, nmodesy
+     &   mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2,
+     &   ndfmax, ncol, nmodesx, nmodesy
 
       real xlen, ylen, dx, dy
 
       complex ealphak(nkdim1 : nkdim2, mkdim1 : mkdim2),
-     .        ebetak(nkdim1 : nkdim2, mkdim1 : mkdim2),
-     .        ebk(nkdim1 : nkdim2, mkdim1 : mkdim2)
+     &        ebetak(nkdim1 : nkdim2, mkdim1 : mkdim2),
+     &        ebk(nkdim1 : nkdim2, mkdim1 : mkdim2)
 
       complex ealpha(nxdim, nydim),
-     .        ebeta(nxdim, nydim),
-     .        eb(nxdim, nydim)
+     &        ebeta(nxdim, nydim),
+     &        eb(nxdim, nydim)
 
       complex xx(nkdim1 : nkdim2, nxdim), yy(mkdim1 : mkdim2, nydim)
       complex row(ndfmax), rowk(ndfmax)
@@ -1506,16 +1506,16 @@ c
       end do
 
       call sft2d_mat(ealpha, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, ealphak, dx, dy)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, ealphak, dx, dy)
 
       call sft2d_mat(ebeta, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, ebetak, dx, dy)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, ebetak, dx, dy)
 
       call sft2d_mat(eb, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, ebk, dx, dy)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, ebk, dx, dy)
 
 
 
@@ -1541,13 +1541,13 @@ c*******************************************************************
 c
 
       subroutine sft2d_mat(f, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, fk, dx, dy)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, fk, dx, dy)
 
       implicit none
 
       integer nnodex, nnodey, nxdim, nydim, nkdim1, nkdim2,
-     .    mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2
+     &    mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2
 
       real xlen, ylen, dx, dy
 
@@ -1578,7 +1578,7 @@ c
 !
 !       character transa, transb
 !       integer m,n,k,  lda,ldb,ldc
-!       complex*16 alpha,beta, A(*),B(*),C(*)
+!       complex alpha,beta, A(*),B(*),C(*)
 !       end subroutine zgemm
 !       end interface
         
@@ -1718,27 +1718,27 @@ c*******************************************************************
 c
 
       subroutine sftinv2d(x, y, xkx, xky,
-     .   f, fx, fy,
-     .   a, nxdim, nydim,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, myid, nproc, icontxt)
+     &   f, fx, fy,
+     &   a, nxdim, nydim,
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, myid, nproc, icontxt)
 
 
       implicit none
 
       integer nxdim, nydim, n, m, i, j,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, myid, nproc, id, ngrid, icontxt
 
       real x(nxdim), y(nydim)
       real xkx(nkdim1 : nkdim2), xky(mkdim1 : mkdim2)
       complex
-     .   f(nxdim, nydim), fx(nxdim, nydim), fy(nxdim, nydim),
-     .   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
+     &   f(nxdim, nydim), fx(nxdim, nydim), fy(nxdim, nydim),
+     &   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
       complex cexpkxky
 
       complex xx(nkdim1 : nkdim2, 1 : nxdim),
-     .        yy(mkdim1 : mkdim2, 1 : nydim)
+     &        yy(mkdim1 : mkdim2, 1 : nydim)
 
 
 
@@ -1767,16 +1767,16 @@ c
 
 
 c      f(1:nnodex, 1:nnodey) = matmul(transpose(xx(nkx1:nkx2, 1:nnodex)),
-c     .     matmul(a(nkx1:nkx2, nky1:nky2),  yy(nky1:nky2, 1:nnodey) ))
+c     &     matmul(a(nkx1:nkx2, nky1:nky2),  yy(nky1:nky2, 1:nnodey) ))
 
       call blacs_barrier(icontxt, 'All')
 
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, f,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, fx,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, fy,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
 
 
 
@@ -1787,28 +1787,28 @@ c*******************************************************************
 c
 
       subroutine deriv_fourier_r(x, y, xkx, xky,
-     .   a, nxdim, nydim,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, xx, yy,
-     .   f, fx, fxx, fy, fyy, fxy)
+     &   a, nxdim, nydim,
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, xx, yy,
+     &   f, fx, fxx, fy, fyy, fxy)
 
       implicit none
 
       integer nxdim, nydim, n, m, i, j,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2
 
       real x(nxdim), y(nydim)
       real xkx(nkdim1 : nkdim2), xky(mkdim1 : mkdim2)
       complex zi,
-     .   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
+     &   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
       real f(nxdim, nydim), fx(nxdim, nydim), fxx(nxdim, nydim),
-     .  fy(nxdim, nydim), fyy(nxdim, nydim), fxy(nxdim, nydim)
+     &  fy(nxdim, nydim), fyy(nxdim, nydim), fxy(nxdim, nydim)
 
       complex cexpkxky
 
       complex xx(nkdim1 : nkdim2, nxdim),
-     .        yy(mkdim1 : mkdim2, nydim)
+     &        yy(mkdim1 : mkdim2, nydim)
 
 
 
@@ -1836,17 +1836,17 @@ c
                   f(i,j) = f(i,j) + real(a(n,m) * cexpkxky)
 
                   fx(i,j) = fx(i,j)
-     .                        + real(zi * xkx(n) * a(n,m) * cexpkxky)
+     &                        + real(zi * xkx(n) * a(n,m) * cexpkxky)
                   fxx(i,j) = fxx(i,j)
-     .                          - real(xkx(n)**2 * a(n,m) * cexpkxky)
+     &                          - real(xkx(n)**2 * a(n,m) * cexpkxky)
 
                   fy(i,j) = fy(i,j)
-     .                        + real(zi * xky(m) * a(n,m) * cexpkxky)
+     &                        + real(zi * xky(m) * a(n,m) * cexpkxky)
                   fyy(i,j) = fyy(i,j)
-     .                          - real(xky(m)**2 * a(n,m) * cexpkxky)
+     &                          - real(xky(m)**2 * a(n,m) * cexpkxky)
 
                   fxy(i,j) = fxy(i,j)
-     .                      - real(xkx(n) * xky(m) * a(n,m) * cexpkxky)
+     &                      - real(xkx(n) * xky(m) * a(n,m) * cexpkxky)
 
 
                end do
@@ -1863,28 +1863,28 @@ c*******************************************************************
 c
 
       subroutine deriv_fourier(x, y, xkx, xky,
-     .   a, nxdim, nydim,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2, xx, yy,
-     .   f, fx, fxx, fy, fyy, fxy)
+     &   a, nxdim, nydim,
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, xx, yy,
+     &   f, fx, fxx, fy, fyy, fxy)
 
       implicit none
 
       integer nxdim, nydim, n, m, i, j,
-     .   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
-     .   nkx1, nkx2, nky1, nky2
+     &   nkdim1, nkdim2, mkdim1, mkdim2, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2
 
       real x(nxdim), y(nydim)
       real xkx(nkdim1 : nkdim2), xky(mkdim1 : mkdim2)
       complex zi,
-     .   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
+     &   a(nkdim1 : nkdim2, mkdim1 : mkdim2)
       complex f(nxdim, nydim), fx(nxdim, nydim), fxx(nxdim, nydim),
-     .  fy(nxdim, nydim), fyy(nxdim, nydim), fxy(nxdim, nydim)
+     &  fy(nxdim, nydim), fyy(nxdim, nydim), fxy(nxdim, nydim)
 
       complex cexpkxky
 
       complex xx(nkdim1 : nkdim2, nxdim),
-     .        yy(mkdim1 : mkdim2, nydim)
+     &        yy(mkdim1 : mkdim2, nydim)
 
 
 
@@ -1918,7 +1918,7 @@ c
                   fyy(i,j) = fyy(i,j) - xky(m)**2 * a(n,m) * cexpkxky
 
                   fxy(i,j) = fxy(i,j)
-     .                          - xkx(n) * xky(m) * a(n,m) * cexpkxky
+     &                          - xkx(n) * xky(m) * a(n,m) * cexpkxky
 
 
                end do
@@ -1935,14 +1935,14 @@ c*******************************************************************
 c
 
       subroutine sft2d(f, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx_inv, yy_inv, fk, dx, dy,
-     .   myid, nproc, icontxt)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx_inv, yy_inv, fk, dx, dy,
+     &   myid, nproc, icontxt)
 
       implicit none
 
       integer nnodex, nnodey, nxdim, nydim, nkdim1, nkdim2,
-     .    mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2
+     &    mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2
 
       integer  myid, nproc, id, ngrid, icontxt
 
@@ -1951,7 +1951,7 @@ c
       complex fk(nkdim1 : nkdim2, mkdim1 : mkdim2), xint, cexpkxky
       complex f(nxdim, nydim)
       complex xx_inv(nkdim1 : nkdim2, nxdim),
-     .        yy_inv(mkdim1 : mkdim2, nydim)
+     &        yy_inv(mkdim1 : mkdim2, nydim)
 
       fact = dx / xlen * dy / ylen
 
@@ -1988,14 +1988,14 @@ c*******************************************************************
 c
 
       subroutine sft2d_parallel(f, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx_inv, yy_inv, fk, dx, dy,
-     .   myid, nproc, icontxt)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx_inv, yy_inv, fk, dx, dy,
+     &   myid, nproc, icontxt)
 
       implicit none
 
       integer nnodex, nnodey, nxdim, nydim, nkdim1, nkdim2,
-     .    mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2
+     &    mkdim1, mkdim2, i, j, n, m, nkx1, nkx2, nky1, nky2
 
       integer  myid, nproc, id, ngrid, icontxt
 
@@ -2004,7 +2004,7 @@ c
       complex fk(nkdim1 : nkdim2, mkdim1 : mkdim2), xint, cexpkxky
       complex f(nxdim, nydim), fksav(nxdim, nydim)
       complex xx_inv(nkdim1 : nkdim2, nxdim),
-     .        yy_inv(mkdim1 : mkdim2, nydim)
+     &        yy_inv(mkdim1 : mkdim2, nydim)
      
       fksav(:,:) = (0.0,0.0)
 
@@ -2035,10 +2035,10 @@ c      print*,myid,"fourier: nnodex  nnodey",nnodex,nnodey
 !                     xint = f(i, j) * cexpkxky
 !
 !                     fksav(n - nkx1 + 1, m - nky1 + 1)
-!     .                 = fksav(n - nkx1 + 1, m - nky1 + 1) + xint * fact
+!     &                 = fksav(n - nkx1 + 1, m - nky1 + 1) + xint * fact
                      fksav(n - nkx1 + 1, m - nky1 + 1)
-     .                 = fksav(n - nkx1 + 1, m - nky1 + 1) +
-     .                   f(i,j) * xx_inv(n,i) * yy_inv(m,j) *fact
+     &                 = fksav(n - nkx1 + 1, m - nky1 + 1) +
+     &                   f(i,j) * xx_inv(n,i) * yy_inv(m,j) *fact
 
                   end do
                end do
@@ -2052,7 +2052,7 @@ c      print*,myid,"fourier: nnodex  nnodey",nnodex,nnodey
 
 
       call zgsum2d(icontxt, 'All', ' ', nnodex, nnodey, fksav,
-     .   nxdim, -1, -1)
+     &   nxdim, -1, -1)
 
 
       do n = nkx1, nkx2
@@ -2075,14 +2075,14 @@ c
 
 
       subroutine sft2d_old(x, y, f, xlen, ylen, nnodex, nnodey,
-     .   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
-     .   nkx1, nkx2, nky1, nky2, xx, yy, fk, dx, dy)
+     &   nxdim, nydim, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   nkx1, nkx2, nky1, nky2, xx, yy, fk, dx, dy)
 
       implicit none
 
       integer nnodex, nnodey, nxdim, nydim, nkdim1, nkdim2,
-     .    mkdim1, mkdim2,
-     .   i, j, n, m, nkx1, nkx2, nky1, nky2
+     &    mkdim1, mkdim2,
+     &   i, j, n, m, nkx1, nkx2, nky1, nky2
       real x(nxdim), y(nydim), xlen, ylen
       real f(nxdim, nydim), dx, dy
       complex fk(nkdim1 : nkdim2, mkdim1 : mkdim2), xint
@@ -2098,12 +2098,12 @@ c
             do i = 1, nnodex - 1
                do j = 1, nnodey -1
                   xint = (f(i, j)     / (xx(n, i)   * yy(m, j))
-     .                  + f(i+1, j)   / (xx(n, i+1) * yy(m, j))
-     .                  + f(i, j+1)   / (xx(n, i)   * yy(m, j+1))
-     .                  + f(i+1, j+1) / (xx(n, i+1) * yy(m, j+1))
-     .                          )/ 4.0
+     &                  + f(i+1, j)   / (xx(n, i+1) * yy(m, j))
+     &                  + f(i, j+1)   / (xx(n, i)   * yy(m, j+1))
+     &                  + f(i+1, j+1) / (xx(n, i+1) * yy(m, j+1))
+     &                          )/ 4.0
                   fk(n, m) = fk(n, m) + xint * (x(i+1) - x(i)) / xlen
-     .                                       * (y(j+1) - y(j)) / ylen
+     &                                       * (y(j+1) - y(j)) / ylen
 
 
                end do

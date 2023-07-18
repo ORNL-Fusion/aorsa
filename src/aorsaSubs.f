@@ -2,14 +2,13 @@ c
 c***************************************************************************
 c
 
-
        subroutine maxwell_dist(u0, NUPAR, NUPER,
-     .                       UminPara, UmaxPara,
-     .                       UPERP, UPARA, DFDUPER, DFDUPAR, FPERP)
+     &                       UminPara, UmaxPara,
+     &                       UPERP, UPARA, DFDUPER, DFDUPAR, FPERP)
        implicit none
 
        integer, intent(in) ::NUPAR,NUPER
-       integer n,m
+       integer:: n,m
 
        real :: UminPara,UmaxPara
        real :: UPERP(NUPER)
@@ -26,8 +25,8 @@ c
        do n = 1, NUPER
           do m = 1, NUPAR
              u2 = UPERP(n)**2 + UPARA(m)**2
-             f = fnorm * exp(-u2 * u02)	     
-	     fperp(n) = fnorm * exp(-UPERP(n)**2 * u02)
+             f = fnorm * exp(-u2 * u02)      
+             fperp(n) = fnorm * exp(-UPERP(n)**2 * u02)
              DFDUPER(n, m) = f *(-2.0 * UPERP(n) * u02)
              DFDUPAR(n, m) = f *(-2.0 * UPARA(m) * u02)
           end do
@@ -71,7 +70,7 @@ c
 c on output              b
 c                          complex vector of length n+1 containing the
 c                          bessel function values j-sub-0(z),j-sub-1(z),
-c                          ...,j-sub-n(z) in b(1),b(2),...,b(n+1).
+c                          &..,j-sub-n(z) in b(1),b(2),...,b(n+1).
 c                        ier
 c                          an integer error flag.
 c                          =0 if all desired orders have been calculated
@@ -105,7 +104,7 @@ c                        relative error (or absolute error when it was
 c                        larger) observed was about 8.2e-14.
 c
 c timing                 on ncar"s control data 7600, besic takes about
-c                        .32+.008*n milliseconds when z=(1.0,1.0).
+c                        &32+.008*n milliseconds when z=(1.0,1.0).
 c
 c portability            ansi 1966 standard
 c
@@ -124,13 +123,13 @@ c
       if (ncalc .ge. 0) go to 102
       if (n .ge. 0) go to 101
       ier = 2
-      call uliber (ier,25h in besjc, n out of range,25)
+      call uliber (ier," in besjc, n out of range",25)
       go to 103
   101 ier = 1
-      call uliber (ier,25h in besjc, x out of range,25)
+      call uliber (ier," in besjc, x out of range",25)
       go to 103
   102 ier = 2+ncalc
-      call uliber (ier,40h in besjc, accuracy lost for some orders,40)
+      call uliber (ier," in besjc, accuracy lost for some orders",40)
   103 return
       end
 
@@ -145,7 +144,7 @@ c***************************************************************************
 c
 
       subroutine polavg(f, favg, rho, nxdim, nydim, nrhodim,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, r0, vol, fvol)
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, r0, vol, fvol)
 
       implicit none
 
@@ -153,7 +152,7 @@ c
       integer n, i, j
 
       real f(nxdim, nydim), favg(nrhodim), rho(nxdim, nydim), r0,
-     .   drho, dx, dy, fvol(nrhodim), vol(nrhodim), capr(nxdim)
+     &   drho, dx, dy, fvol(nrhodim), vol(nrhodim), capr(nxdim)
 
       logical use_vol_ij
       parameter(use_vol_ij=.false.)
@@ -240,23 +239,26 @@ c
 
 
       SUBROUTINE TRIDI(N,A,B,C,Y,X)
-
+!not presently used JCW july 2023
+      ! Workspace size of 1001 limits problems size
       implicit none
 
-      real A(1),B(1),C(1),Y(1),X(1),D(1001),W(1001)
-      real dn
-      integer n, nm, j, k
+      integer:: n, nm, j, k
+      real:: A(n),B(n),C(n),Y(n),X(n),D(1001),W(1001)
+      real:: dn
       NM=N-1
       D(1)=C(1)/B(1)
       W(1)=Y(1)/B(1)
-      DO 1 J=2,NM
+      DO J=2,NM
       DN=B(J)-A(J)*D(J-1)
       D(J)=C(J)/DN
-    1 W(J)=(Y(J)-A(J)*W(J-1))/DN
+      W(J)=(Y(J)-A(J)*W(J-1))/DN
+      END DO
       X(N)=(Y(N)-A(N)*W(N-1))/(B(N)-A(N)*D(N-1))
-      DO 2 J=1,NM
+      DO J=1,NM
       K=N-J
-    2 X(K)=W(K)-D(K)*X(K+1)
+      X(K)=W(K)-D(K)*X(K+1)
+      END DO
       RETURN
       END
 
@@ -274,7 +276,7 @@ c
       integer j
       real bet, gam(nmax)
 
-      if(b(1) .eq. 0) pause 'tridag: rewrite equations'
+      if(b(1) .eq. 0) write(*,*) 'Caution: tridag: rewrite equations'
       bet = b(1)
       u(1) = r(1) / bet
 
@@ -284,17 +286,17 @@ c
 c         if(bet .eq. 0) pause 'tridag failed'
 
          if(bet .eq. 0) then
-	    write (6, *) "j = ", j
-	    write (6, *) "a(j) = ", a(j)
-	    write (6, *) "b(j) = ", b(j)
-	    write (6, *) "c(j) = ", c(j)
-	    write (6, *) "gam(j) = ", gam(j)
-	    write (6, *) "bet = ", bet
-	    write (6, *) "tridag failed"
-	    call exit	    
-	 end if
-	 
-	 
+            write (6, *) "j = ", j
+            write (6, *) "a(j) = ", a(j)
+            write (6, *) "b(j) = ", b(j)
+            write (6, *) "c(j) = ", c(j)
+            write (6, *) "gam(j) = ", gam(j)
+            write (6, *) "bet = ", bet
+            write (6, *) "tridag failed"
+            stop 2
+         end if
+         
+         
          u(j) = (r(j) - a(j) * u(j-1)) / bet
       end do
 
@@ -375,10 +377,10 @@ c
       d2fdxy = 0.0
 
       if (i .ne. 1 .and. i .ne. imax .and.
-     .    j .ne. 1 .and. j .ne. jmax) then
+     &    j .ne. 1 .and. j .ne. jmax) then
 
          d2fdxy = (f(i+1,j+1) - f(i-1,j+1) - f(i+1,j-1) + f(i-1,j-1) )
-     .      / (4.0 * dx * dy)
+     &      / (4.0 * dx * dy)
 
       end if
 
@@ -392,7 +394,7 @@ c
 
 
       subroutine sgrator(x, y, f, nx1, nx2, ny1, ny2, ans,
-     .   capr, r0, nxmax, nymax)
+     &   capr, r0, nxmax, nymax)
 
       implicit none
 
@@ -409,9 +411,9 @@ c
          do j = ny1, ny2 - 1
             dy = y(j+1) - y(j)
             ans = ans + dx * dy* (capr(i)   * f(i, j)
-     .                          + capr(i+1) * f(i+1, j)
-     .                          + capr(i)   * f(i, j+1)
-     .                          + capr(i+1) * f(i+1, j+1) ) / 4.0
+     &                          + capr(i+1) * f(i+1, j)
+     &                          + capr(i)   * f(i, j+1)
+     &                          + capr(i+1) * f(i+1, j+1) ) / 4.0
          end do
       end do
 
@@ -424,7 +426,7 @@ c
 c***************************************************************************
 c
       subroutine sgrator_core(x, y, f, nx1, nx2, ny1, ny2, ans,
-     .   capr, r0, nxmax, nymax, rho)
+     &   capr, r0, nxmax, nymax, rho)
 
       implicit none
 
@@ -440,11 +442,11 @@ c
 
          do j = ny1, ny2 - 1
             dy = y(j+1) - y(j)
-	    if (rho(i,j) .le. 1.0) then
+            if (rho(i,j) .le. 1.0) then
                ans = ans + dx * dy* (capr(i)   * f(i, j)
-     .                             + capr(i+1) * f(i+1, j)
-     .                             + capr(i)   * f(i, j+1)
-     .                             + capr(i+1) * f(i+1, j+1) ) / 4.0
+     &                             + capr(i+1) * f(i+1, j)
+     &                             + capr(i)   * f(i, j+1)
+     &                             + capr(i+1) * f(i+1, j+1) ) / 4.0
             end if
          end do
       end do
@@ -458,7 +460,7 @@ c
 c***************************************************************************
 c
       subroutine sgrator_edge(x, y, f, nx1, nx2, ny1, ny2, ans,
-     .   capr, r0, nxmax, nymax, rho)
+     &   capr, r0, nxmax, nymax, rho)
 
       implicit none
 
@@ -474,11 +476,11 @@ c
 
          do j = ny1, ny2 - 1
             dy = y(j+1) - y(j)
-	    if(rho(i,j) .gt. 1.0) then
+            if(rho(i,j) .gt. 1.0) then
                ans = ans + dx * dy* (capr(i)   * f(i, j)
-     .                             + capr(i+1) * f(i+1, j)
-     .                             + capr(i)   * f(i, j+1)
-     .                             + capr(i+1) * f(i+1, j+1) ) / 4.0
+     &                             + capr(i+1) * f(i+1, j)
+     &                             + capr(i)   * f(i, j+1)
+     &                             + capr(i+1) * f(i+1, j+1) ) / 4.0
             end if
          end do
       end do
@@ -494,7 +496,7 @@ c
 
 
       subroutine sgrator1(x, y, f, nx1, nx2, ny1, ny2, ans,
-     .   capr, r0, nxmax, nymax, j)
+     &   capr, r0, nxmax, nymax, j)
 
       implicit none
 
@@ -509,7 +511,7 @@ c
          dx = x(i+1) - x(i)
 
          ans = ans + dx * (capr(i)   * f(i, j)
-     .                      + capr(i+1) * f(i+1, j) ) / 2.0
+     &                      + capr(i+1) * f(i+1, j) ) / 2.0
       end do
 
       ans = ans / r0
@@ -565,11 +567,13 @@ C***     WEIGHTS ARE DERIVED FROM A 3 POINT INTEGRATION SCHEME.
       W(1)=CONOI*3.75E-1
       W(2)=CONOI*1.1666666667E+0
       W(3)=CONOI*9.5833333333E-1
-      DO 20 I=1,3
+      DO I=1,3
         NMIP1=N-I+1
-   20 W(NMIP1)=W(I)
-      DO 30 I=4,NM3
-   30 W(I)=CONOI
+        W(NMIP1)=W(I)
+      END DO  
+      DO I=4,NM3
+        W(I)=CONOI
+      END DO
       NO2=N/2
       NO2P1=NO2+1
       X=ZERO
@@ -580,7 +584,7 @@ C***     WEIGHTS ARE DERIVED FROM A 3 POINT INTEGRATION SCHEME.
       TEMP2=CEXP(-TEMP1*TEMP1)
       C(NO2P1)=REAL(TEMP2)*W(NO2P1)
       D(NO2P1)=AIMAG(TEMP2)*W(NO2P1)
-      DO 200 I=1,NO2
+      DO I=1,NO2
       X=DELTA*real(I)
       NPI=NO2P1+I
       NMI=NO2P1-I
@@ -594,7 +598,7 @@ C***     WEIGHTS ARE DERIVED FROM A 3 POINT INTEGRATION SCHEME.
       E(NPI)=X
       F(NPI)=Y
       F(NMI)=Y
-  200 CONTINUE
+      END DO
       TPIOD=TPI/DELTA
       TPIIOD=CMPLX(ZERO,TPIOD)
 C***     BEGIN CALCULATIONS.
@@ -634,6 +638,7 @@ C***     ASYMPTOTIC EXPANSION.
     5 CALL AEXPAN(Z,G,H,YY,FU)
     6 RETURN
       END
+      
       SUBROUTINE AEXPAN(Z,G,H,YY,FU)
 C
 C     ROUTINE WHICH COMPUTES THE PLASMA DISPERSION FUNCTION USING
@@ -880,7 +885,7 @@ c*******************************************************************************
 c
 
       subroutine intplt_z(xgiv, ygiv, fout, nx, ny, f, 
-     .   nxmax, nymax, xa, ya)
+     &   nxmax, nymax, xa, ya)
 
       implicit none
 
@@ -899,7 +904,7 @@ c
       ymax = ya(ny)                 
       
       if(x .le. xmax .and. x .ge. xmin .and. 
-     .   y .le. ymax .and. y .ge. ymin) then
+     &   y .le. ymax .and. y .ge. ymin) then
       
          dx = (xmax - xmin) / (nx - 1)
          dy = (ymax - ymin) / (ny - 1)
@@ -916,7 +921,7 @@ c
          d = f(n+1, m+1) + f(n, m) - f(n+1, m) - f(n, m+1)
 
          fout = a + b * zeta + c * eta + d * zeta * eta
-	 
+         
       end if
 
       return

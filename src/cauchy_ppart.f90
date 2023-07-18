@@ -1,5 +1,5 @@
         subroutine cauchy_ppart2(x,nx,xres,fx,pint)
-	
+
 !     -----------------------------------------------
 !     Returns principal part of int(x,fx/(x-xres))
 !     -----------------------------------------------
@@ -152,8 +152,8 @@
           
         return
         end subroutine cauchy_ppart2
-	
-	
+
+
 !
 !*************************************************************************
 !
@@ -167,23 +167,23 @@
         integer, parameter :: idebug = 0
 
         integer   nx,nfx
-        real*8 xres 
-        real*8 x(nx), fx(nx,nfx)
-        real*8 pint(nfx)
+        real xres 
+        real x(nx), fx(nx,nfx)
+        real pint(nfx)
         logical  :: is_uniform
 !       ---------------
 !       local variables
 !       ---------------
 
         integer :: i,j,ih,nlog
-        real*8, dimension(nx) :: vx, vlogt
-        real*8 :: a0,a1,a2,  x1,x2,x3,  f1,f2,f3
-        real*8 :: tmp1,tmp2,  d1,d2,d3,  d31,d21
-        real*8 :: d3md1, d2md1
-        real*8, dimension(nfx) :: value0,value1,value2 
-        real*8 :: xleft,xright
-        real*8 :: v0,v1,v2
-        real*8 :: xc,a,b
+        real, dimension(nx) :: vx, vlogt
+        real :: a0,a1,a2,  x1,x2,x3,  f1,f2,f3
+        real :: tmp1,tmp2,  d1,d2,d3,  d31,d21
+        real :: d3md1, d2md1
+        real, dimension(nfx) :: value0,value1,value2 
+        real :: xleft,xright
+        real :: v0,v1,v2
+        real :: xc,a,b
 
         intrinsic :: log,abs,mod
 
@@ -192,16 +192,16 @@
 
         logical, parameter :: use_pade = .true.
         
-        real*8 ::  h,t,dx,t2, logt
-        real*8, parameter :: zero=0.0d0
-        real*8, parameter :: one=1.0d0
-        real*8, parameter :: two=2.0d0
-        real*8, parameter :: three=3.0d0
-        real*8, parameter :: four=4.0d0
-        real*8, parameter :: five=5.0d0
-        real*8, parameter :: six=6.0d0
-        real*8, parameter :: seven=7.0d0
-        real*8, parameter :: eight=8.0d0
+        real ::  h,t,dx,t2, logt
+        real, parameter :: zero=0.0d0
+        real, parameter :: one=1.0d0
+        real, parameter :: two=2.0d0
+        real, parameter :: three=3.0d0
+        real, parameter :: four=4.0d0
+        real, parameter :: five=5.0d0
+        real, parameter :: six=6.0d0
+        real, parameter :: seven=7.0d0
+        real, parameter :: eight=8.0d0
         logical :: isok
 
 

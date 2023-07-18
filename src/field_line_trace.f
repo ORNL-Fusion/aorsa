@@ -3,11 +3,11 @@ c***************************************************************************
 c
 
       subroutine field_line_trace(myid, eqdsk, nmodesx, nmodesy, 
-     .   rwleft, rwright, ytop, ybottom,
-     .   rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,	    
-     .   bxn_eq, byn_eq, bzn_eq, bmod_eq, psi, rho_pol2d, qsafety, 
-     .   bmod_mid, capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
-     .   i_psi, dldb_tot12, dldbavg, n_prof_flux, rhomax)
+     &   rwleft, rwright, ytop, ybottom,
+     &   rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,     
+     &   bxn_eq, byn_eq, bzn_eq, bmod_eq, psi, rho_pol2d, qsafety, 
+     &   bmod_mid, capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
+     &   i_psi, dldb_tot12, dldbavg, n_prof_flux, rhomax)
      
       use size_mod            
       
@@ -16,12 +16,12 @@ c
       external f2, error
 
       common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     .   dx, dy,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, caprx
+     &   dx, dy,
+     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, caprx
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
-     .   xprime, yprime
+     &   xprime, yprime
 
       common/errcom/eps, s_err(100), y_len(100), nmax
       
@@ -31,7 +31,7 @@ c
       integer icell, jcell, icell_prev, jcell_prev, ncell, i_stop
       
       real, allocatable :: rho_ij(:,:), rho_in(:), profile_in(:),
-     .   profile_out(:,:)
+     &   profile_out(:,:)
      
       integer i0_eq, j0_eq, ileft, iright, jtop, jbottom
       integer i_box, i_sgn_vprl, i_err, i_sav, j_sav, i0, j0, i_max
@@ -42,22 +42,22 @@ c
       real len, phi0
       real h0, eps, delta_b, caprx, r_max, drg, dzg, drg32, dzg32
       real x_extint, y_extint, xprimex, yprimex,  
-     .   xprimex0, yprimex0
+     &   xprimex0, yprimex0
       integer norb_dim, nphi_enter, nlen_exit, nphii
       integer islpsw, islpsw1, ierr, nrho
       real sigma, psix, rmaxis, zmaxis, psix_prev
       
       real betan3, betan_slo, betate, alphati6, betan, betan2, betan5, 
-     .  betan6, betati4, betati, betati2, betan4, alphan3, alphan_slo, 
-     .  alphan4, eta6, xnu6ad, alphan2, alphati3, alphati4, alphti5, 
-     .  alphan5, alphan6, betati5, iql, i_antenna, antlc, 
-     .  nzeta_wdot, n_bin, antlen, xkperp_cutoff, damping, xnu4ad, amu5,
-     .  z4, eta4, xnu5ad, amu6, z5, eta5, xn6lim, xnslo, xn4lim, xn5lim,
-     .  xn6, amu4, xn4, xn5, ndisti3, ndisti4, ndisti1, ndisti2, nkperp,
-     .  upshift, ndisti5, ndisti6, alphati5, betati6, z6, alphati2, 
-     .  theta_ant, ndiste, betati3, taue, psipti5, psipti6, xn3lim, 
-     .  xnslolim, freqcy, xn2lim, ti05, ti06, ti04, ti6lim, psipti4, 
-     .  ti4lim, ti5lim
+     &  betan6, betati4, betati, betati2, betan4, alphan3, alphan_slo, 
+     &  alphan4, eta6, xnu6ad, alphan2, alphati3, alphati4, alphti5, 
+     &  alphan5, alphan6, betati5, iql, i_antenna, antlc, 
+     &  nzeta_wdot, n_bin, antlen, xkperp_cutoff, damping, xnu4ad, amu5,
+     &  z4, eta4, xnu5ad, amu6, z5, eta5, xn6lim, xnslo, xn4lim, xn5lim,
+     &  xn6, amu4, xn4, xn5, ndisti3, ndisti4, ndisti1, ndisti2, nkperp,
+     &  upshift, ndisti5, ndisti6, alphati5, betati6, z6, alphati2, 
+     &  theta_ant, ndiste, betati3, taue, psipti5, psipti6, xn3lim, 
+     &  xnslolim, freqcy, xn2lim, ti05, ti06, ti04, ti6lim, psipti4, 
+     &  ti4lim, ti5lim
      
       integer i_write, n_prof_flux, nphi1, nphi2, nuper, nupar
       
@@ -67,12 +67,12 @@ c
       parameter (norb_dim = 6000)
 
       real capr_x(norb_dim), capz_x(norb_dim), phin_x(norb_dim),
-     .   modb_x(norb_dim), dlen_x(norb_dim), dl_vprl(norb_dim),
-     .   dl_bratio(norb_dim),
-     .   dl_vprlh, len_x(norb_dim), length, length_prev
+     &   modb_x(norb_dim), dlen_x(norb_dim), dl_vprl(norb_dim),
+     &   dl_bratio(norb_dim),
+     &   dl_vprlh, len_x(norb_dim), length, length_prev
       real capr_x0, capz_x0
       real delta_x, delta_y, delta_z, delta_l, xprime_prev, delta_phi, 
-     .   yprime_prev, phi_prev
+     &   yprime_prev, phi_prev
       real yprime_want, dxdphi, dydphi, dxdphi_prev, dydphi_prev
       real xprime_want
 
@@ -82,17 +82,17 @@ c
 
       integer nnode_local, nnode_overlap, iprofile
       real eslowev, ftrap, z_slo, yzoom1, psimol, yzoom2,
-     .   amu_slo, eta_slo, fmid
+     &   amu_slo, eta_slo, fmid
 
       integer nxmx, nymx, idiag, jdiag, ieq
       integer ndfmax,
-     .    ninteg, nd, izoom1, izoom2, ndf, nmaxe, irnc
+     &    ninteg, nd, izoom1, izoom2, ndf, nmaxe, irnc
       integer nrow, ncol, norder
 
       integer mkdim1, mkdim2
 
       integer nkdim1, nkdim2, nkx1, nkx2, nldim, nldim3,
-     .   nky1, nky2, iant, jant1, jant2
+     &   nky1, nky2, iant, jant1, jant2
 
       integer nxeqdmax, nyeqdmax
 
@@ -100,7 +100,7 @@ c
       real tmin, gflops, gflopsp, ops, teev, dum
       real sqx, gausspsi, dpsiant
       real dthetant0, dpsiant0, psiant, psipne, psipte,
-     .   psipti1, psipti2, psipti3, dtheta, rhomin
+     &   psipti1, psipti2, psipti3, dtheta, rhomin
       real rmin, rmax, zmin, zmax, psio, ro, zo
 
 c      integer nmodesmax, mmodesmax
@@ -147,13 +147,13 @@ c      parameter (mmodesmax = 450)
       parameter (ndim = 2)
       parameter (ndeg = 2)
 c      parameter (lenws = lxdata * (lxdata + 9)
-c     .                  + lipwr * (lxdata + 1) + 2 * ndim)
+c     &                  + lipwr * (lxdata + 1) + 2 * ndim)
 
 
 c*** ceez.f arrays:
 
-	real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
-	real zxy11, zxym1, zxy1n, zxymn
+        real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
+        real zxy11, zxym1, zxy1n, zxymn
       real zbxn(nxmx, nymx, 3)
       real zbyn(nxmx, nymx, 3)
       real zbzn(nxmx, nymx, 3)
@@ -161,7 +161,7 @@ c*** ceez.f arrays:
       real zbratio(nxmx, nymx, 3)
       real zpsi(nxmx, nymx, 3)
 
-	real temp(2 *(nxmx + nymx) )
+        real temp(2 *(nxmx + nymx) )
       real surf2, curv2
 
 
@@ -182,7 +182,7 @@ c      real rho_a(n_psi_max)
       integer n_theta_(n_psi_max)
 
       real dtau(n_theta_max), dtau_tot(n_theta_max), 
-     .   dtau_first(n_theta_max)
+     &   dtau_first(n_theta_max)
      
       real dtau_first_12, dtau_tot12
 c      real dtau_ratio(nxmx, nymx, n_theta_max)
@@ -195,15 +195,15 @@ c      real tau_bounce(nxmx, nymx, n_theta_max)
       integer n_theta, n_u, n_psi
       integer i_theta, i_u, i_psi
       real vc, vc_mks, sinthi, modbi, argi, vprl, dtau_sum, modbh,
-     .   dtau_tot_sum, dldb_tot_sum, dldb_tot1, dldb_tot2
+     &   dtau_tot_sum, dldb_tot_sum, dldb_tot1, dldb_tot2
 
 
 
 c***  EQDSK arrays:
 
       real rhoeqdsk(nxeqdmax), psigrid(nxeqdmax), agrid(nxeqdmax),
-     .   fpsi(nxeqdmax), dfpsida(nxeqdmax),
-     .   qpsi(nxeqdmax), dqpsida(nxeqdmax)
+     &   fpsi(nxeqdmax), dfpsida(nxeqdmax),
+     &   qpsi(nxeqdmax), dqpsida(nxeqdmax)
 
       real rho_tors(nxeqdmax)
 
@@ -220,17 +220,17 @@ c      double precision ws(lenws)
 
 
       real capr_eqdsk(nrmax, nthmax),
-     .     capz_eqdsk(nrmax, nthmax),
-     .     bmod_eqdsk(nrmax, nthmax)
+     &     capz_eqdsk(nrmax, nthmax),
+     &     bmod_eqdsk(nrmax, nthmax)
 
       real bx_eqdsk(nrmax, nthmax),
-     .     by_eqdsk(nrmax, nthmax),
-     .     bz_eqdsk(nrmax, nthmax),
-     .     drdth_eqdsk(nrmax, nthmax),
-     .     dzdth_eqdsk(nrmax, nthmax)
+     &     by_eqdsk(nrmax, nthmax),
+     &     bz_eqdsk(nrmax, nthmax),
+     &     drdth_eqdsk(nrmax, nthmax),
+     &     dzdth_eqdsk(nrmax, nthmax)
 
       real rho_eqdsk(nrmax),
-     .     theta_eqdsk(nthmax)
+     &     theta_eqdsk(nthmax)
 
       real psisep, psimag, router, z0
       integer nxeqd, nyeqd
@@ -238,9 +238,9 @@ c      double precision ws(lenws)
       real dzdrhok, dzdthk, drdrhok, drdthk, xjacob
 
       real dbdrhok, dbdthk,
-     .     dbxdrhok, dbxdthk,
-     .     dbydrhok, dbydthk,
-     .     dbzdrhok, dbzdthk
+     &     dbxdrhok, dbxdthk,
+     &     dbydrhok, dbydthk,
+     &     dbzdrhok, dbzdthk
 
       real rhok, thetak, theprm, rho1, bmodk, bxk, byk, bzk, psi1
       real xk(nxmx), yk(nymx)
@@ -256,45 +256,45 @@ c      double precision ws(lenws)
 
 
       real xkxsav(nkdim1 : nkdim2), xkysav(mkdim1 : mkdim2),
-     .     xkperp, xketa,
-     .     xkprl, ptot, pcito2, pcrto2, powtot, pscale,
-     .     cosalp, sinalp, t1, gaussian, frho, q07qa, psimax,
-     .     rhomax, xnprl, rhoant, gaussantx, gaussanty,
-     .     dthetant, gaussantth, xnuomg, gaussiant, lenmax
+     &     xkperp, xketa,
+     &     xkprl, ptot, pcito2, pcrto2, powtot, pscale,
+     &     cosalp, sinalp, t1, gaussian, frho, q07qa, psimax,
+     &     rhomax, xnprl, rhoant, gaussantx, gaussanty,
+     &     dthetant, gaussantth, xnuomg, gaussiant, lenmax
 
 
       integer nmodesx, nmodesy, nwdot, lmax, ibessel,
-     .    inu, iprint, iexact,
-     .    iroot, iequat, igeom,
-     .    iqx, iqprof, iez, icurve, izfunc,
-     .    nstep, nabs,
-     .    isigma, itemp,
-     .    nfreqm,  nkzm,
-     .    idens,  ibackground, iabsorb,
-     .    nzfun, nnodex, nnodey, i, j,
-     .    jequat, iflag, liw, lw, nrhs, icenter, nboundary
+     &    inu, iprint, iexact,
+     &    iroot, iequat, igeom,
+     &    iqx, iqprof, iez, icurve, izfunc,
+     &    nstep, nabs,
+     &    isigma, itemp,
+     &    nfreqm,  nkzm,
+     &    idens,  ibackground, iabsorb,
+     &    nzfun, nnodex, nnodey, i, j,
+     &    jequat, iflag, liw, lw, nrhs, icenter, nboundary
 
       integer nnoderho
 
       integer n, m, nphi
 
       real ti0, xnuead, xnu1ad, xnu2ad, xant, te0,
-     .    delta0, xwall, xnwall, delta,
-     .    epszet, amu1, amu2, z1, z2, eta,
-     .    b0, rt, ytop, ybottom, xnurf, aplasm, xnlim,
-     .    xn0, flat, b1rat, b2rat, curdnx, curdny, curdnz,
-     .    xnuabs, xbnch, xleft, xright,
-     .    telim, tilim, ti2lim, ti3lim, rhoplasm,
-     .    alphan, alphate, alphati,
-     .    dfreq,  dkz, reomg1, reomg2, reomg3,
-     .    r0, xnudip, adip, efold,
-     .    amu3, z3, eta3, xnu3ad,
-     .    xdelta, wdelta, xdelt2, wdelt2, zeffcd,
-     .    rzoom1, rzoom2, q0, prfin,
-     .    alim, grad, qavg0, ymax,
-     .    rhonorm, ekappa, xiota0, rholim, psilim, psilim_, yant,
-     .    rwleft, rwright, xwleft, xwright, psi_lim,
-     .    rwleft_auto, rwright_auto, ytop_auto, ybottom_auto
+     &    delta0, xwall, xnwall, delta,
+     &    epszet, amu1, amu2, z1, z2, eta,
+     &    b0, rt, ytop, ybottom, xnurf, aplasm, xnlim,
+     &    xn0, flat, b1rat, b2rat, curdnx, curdny, curdnz,
+     &    xnuabs, xbnch, xleft, xright,
+     &    telim, tilim, ti2lim, ti3lim, rhoplasm,
+     &    alphan, alphate, alphati,
+     &    dfreq,  dkz, reomg1, reomg2, reomg3,
+     &    r0, xnudip, adip, efold,
+     &    amu3, z3, eta3, xnu3ad,
+     &    xdelta, wdelta, xdelt2, wdelt2, zeffcd,
+     &    rzoom1, rzoom2, q0, prfin,
+     &    alim, grad, qavg0, ymax,
+     &    rhonorm, ekappa, xiota0, rholim, psilim, psilim_, yant,
+     &    rwleft, rwright, xwleft, xwright, psi_lim,
+     &    rwleft_auto, rwright_auto, ytop_auto, ybottom_auto
      
       real ytop_max, ybottom_max
 
@@ -302,27 +302,27 @@ c      double precision ws(lenws)
       real rplasm, rlim
 
       real xkthrho, wphase, vsound, domgk, xkthdx, omgestar, rhoi10,
-     .   v0i, vthi10, vthe, vthi, vphase, rnz, xn2, eta2,
-     .   xk0, shearedge, eta1, xn1, xmi1, xmh, xme, qi1, xmi2,
-     .   xmi3, t0i, t0i2, t0i3, t0e, q, teedge, clight, xmu0, xlnlam,
-     .   omgci10, omgrf, xmax, qe,i3, qi2, pi, eps0, xn3, qi3,
-     .   costh, sinth, radius, rnx,  rny, rnphi, ti02, ti03, twopi
+     &   v0i, vthi10, vthe, vthi, vphase, rnz, xn2, eta2,
+     &   xk0, shearedge, eta1, xn1, xmi1, xmh, xme, qi1, xmi2,
+     &   xmi3, t0i, t0i2, t0i3, t0e, q, teedge, clight, xmu0, xlnlam,
+     &   omgci10, omgrf, xmax, qe,i3, qi2, pi, eps0, xn3, qi3,
+     &   costh, sinth, radius, rnx,  rny, rnphi, ti02, ti03, twopi
 
       real xjantx, xjanty, xjantz, xjant
 
 
       real xprimec(nxmx), caprc(nxmx), xcourse(nxmx), capr(nxmx),
-     .   xprime(nxmx), x(nxmx), dx, dxc
+     &   xprime(nxmx), x(nxmx), dx, dxc
      
       real rhon(nrhomax), wdoti1avg(nrhomax), wdoti2avg(nrhomax),
-     .   wdoteavg(nrhomax), drho, dvol(nrhomax), fvol(nrhomax),
-     .   capr_bpol_mid(nrhomax), bmod_midavg(nrhomax), dldbavg(nrhomax)
+     &   wdoteavg(nrhomax), drho, dvol(nrhomax), fvol(nrhomax),
+     &   capr_bpol_mid(nrhomax), bmod_midavg(nrhomax), dldbavg(nrhomax)
       real dvol_xy(nrhomax), dvol_dl(nrhomax)
       real xnavg(nrhomax), fyavg(nrhomax), qhat, omgte, omgti,
-     .     vthe0, vthi0, xnuee, xnuii, xnu7omg
+     &     vthe0, vthi0, xnuee, xnuii, xnu7omg
       real redotj1avg(nrhomax), redotj2avg(nrhomax),
-     .     redotjeavg(nrhomax), redotj3avg(nrhomax),
-     .     redotjtavg(nrhomax)
+     &     redotjeavg(nrhomax), redotj3avg(nrhomax),
+     &     redotjtavg(nrhomax)
       real fypavg(nrhomax), fypi1avg(nrhomax), fypi2avg(nrhomax)
       real vyavg(nrhomax),  vyi1avg(nrhomax),  vyi2avg(nrhomax)
       real xnupiavg(nrhomax), rhomavg(nrhomax)
@@ -332,58 +332,58 @@ c      double precision ws(lenws)
      
 c      real xjx(nxmx, nymx), xjy(nxmx, nymx), xjz(nxmx, nymx)
 c      real bxn(nxmx, nymx), byn(nxmx, nymx), bzn(nxmx, nymx),
-c     .     bmod(nxmx, nymx),
-c     .     bratio(nxmx, nymx),
-c     .     capr_bpol(nxmx, nymx)    
+c     &     bmod(nxmx, nymx),
+c     &     bratio(nxmx, nymx),
+c     &     capr_bpol(nxmx, nymx)    
 c      real work(nxmx, nymx)                  
 c      real psi_dim(nxmx, nymx)
 c      real rho(nxmx, nymx), 
-c     .     theta0(nxmx, nymx),
-c     .     bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
-c     .     btau(nxmx, nymx), bzeta(nxmx, nymx),
-c     .     dxdth(nxmx, nymx), dzdth(nxmx, nymx), xntau(nxmx, nymx),
-c     .     xn(nxmx, nymx), xkte(nxmx, nymx), xkti(nxmx, nymx),
-c     .     xkti2(nxmx, nymx), xkti3(nxmx, nymx),
-c     .     xn1a(nxmx, nymx), xnea(nxmx, nymx), xn2a(nxmx, nymx),
-c     .     xn3a(nxmx, nymx), omgce(nxmx, nymx),
-c     .     omgci1(nxmx, nymx), omgci2(nxmx, nymx), omgci3(nxmx, nymx),
-c     .     omgpe2(nxmx, nymx),
-c     .     omgp12(nxmx, nymx), omgp22(nxmx, nymx), omgp32(nxmx, nymx),
-c     .     xiota(nxmx, nymx), xlprl(nxmx, nymx),
-c     .     bpol(nxmx, nymx)
+c     &     theta0(nxmx, nymx),
+c     &     bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
+c     &     btau(nxmx, nymx), bzeta(nxmx, nymx),
+c     &     dxdth(nxmx, nymx), dzdth(nxmx, nymx), xntau(nxmx, nymx),
+c     &     xn(nxmx, nymx), xkte(nxmx, nymx), xkti(nxmx, nymx),
+c     &     xkti2(nxmx, nymx), xkti3(nxmx, nymx),
+c     &     xn1a(nxmx, nymx), xnea(nxmx, nymx), xn2a(nxmx, nymx),
+c     &     xn3a(nxmx, nymx), omgce(nxmx, nymx),
+c     &     omgci1(nxmx, nymx), omgci2(nxmx, nymx), omgci3(nxmx, nymx),
+c     &     omgpe2(nxmx, nymx),
+c     &     omgp12(nxmx, nymx), omgp22(nxmx, nymx), omgp32(nxmx, nymx),
+c     &     xiota(nxmx, nymx), xlprl(nxmx, nymx),
+c     &     bpol(nxmx, nymx)
 c      real psi_tor2d(nxmx, nymx), psi_pol2d(nxmx, nymx)
 c      real rhomtot(nxmx, nymx) 
 c      real xnupi(nxmx, nymx) 
 c      real dbxdx(nxmx, nymx), dbydx(nxmx, nymx), dbzdx(nxmx, nymx),
-c     .     dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
-c     .     dbdx(nxmx, nymx),  dbdy(nxmx, nymx)
+c     &     dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
+c     &     dbdx(nxmx, nymx),  dbdy(nxmx, nymx)
 c      real gradprlb(nxmx, nymx)
 c      real dxxbxn(nxmx, nymx), dxxbyn(nxmx, nymx), dxxbzn(nxmx, nymx),
-c     .     dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
-c     .     dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
-c     .     dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx, nymx)
+c     &     dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
+c     &     dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
+c     &     dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx, nymx)
 c      real spx(nxmx, nymx), spy(nxmx, nymx), spz(nxmx, nymx)
 
       real, dimension(:,:), allocatable :: xjx, xjy, xjz,
-     .   capr_bpol, 
-     .   work, psi_dim, rho, theta0, bx, by, bz, btau, bzeta,
-     .   dxdth, dzdth, xntau, xn, xkte, xkti, xkti2, xkti3,
-     .   xn1a, xnea, xn2a, xn3a, omgce, omgci1, omgci2, omgci3,
-     .   omgpe2, omgp12, omgp22, omgp32, xiota, xlprl, bpol,
-     .   psi_tor2d, psi_pol2d, rhomtot, 
-     .   xnupi, dbxdx, dbydx, dbzdx, dbxdy, dbydy, dbzdy,
-     .   dbdx,  dbdy, gradprlb, dxxbxn, dxxbyn, dxxbzn,
-     .   dxybxn, dxybyn, dxybzn, dyybxn, dyybyn, dyybzn,
-     .   dxxmodb, dxymodb, dyymodb, spx, spy, spz         
+     &   capr_bpol, 
+     &   work, psi_dim, rho, theta0, bx, by, bz, btau, bzeta,
+     &   dxdth, dzdth, xntau, xn, xkte, xkti, xkti2, xkti3,
+     &   xn1a, xnea, xn2a, xn3a, omgce, omgci1, omgci2, omgci3,
+     &   omgpe2, omgp12, omgp22, omgp32, xiota, xlprl, bpol,
+     &   psi_tor2d, psi_pol2d, rhomtot, 
+     &   xnupi, dbxdx, dbydx, dbzdx, dbxdy, dbydy, dbzdy,
+     &   dbdx,  dbdy, gradprlb, dxxbxn, dxxbyn, dxxbzn,
+     &   dxybxn, dxybyn, dxybzn, dyybxn, dyybyn, dyybzn,
+     &   dxxmodb, dxymodb, dyymodb, spx, spy, spz         
       
       real rho_tor2d(nxmx, nymx), rho_pol2d(nxmx, nymx)
       real capr_bpol_mid2(nxmx, nymx),  bmod_mid(nxmx, nymx)
       real bxn_eq(nxmx, nymx), byn_eq(nxmx, nymx), 
-     .     bzn_eq(nxmx, nymx), bmod_eq(nxmx, nymx)
+     &     bzn_eq(nxmx, nymx), bmod_eq(nxmx, nymx)
       real psi(nxmx, nymx), qsafety(nxmx, nymx) 
       real bxn(nxmx, nymx), byn(nxmx, nymx), 
-     .   bzn(nxmx, nymx), bmod(nxmx, nymx), 
-     .   bratio(nxmx, nymx)
+     &   bzn(nxmx, nymx), bmod(nxmx, nymx), 
+     &   bratio(nxmx, nymx)
      
       real rhome, rhomi1, rhomi2, rhomi3, prod      
 
@@ -395,7 +395,7 @@ c      real spx(nxmx, nymx), spy(nxmx, nymx), spz(nxmx, nymx)
 
 
       real yprimec(nxmx), ycourse(nxmx),
-     .     yprime(nxmx), y(nxmx), dy, dyc
+     &     yprime(nxmx), y(nxmx), dy, dyc
 
 
       CHARACTER*128 :: eqdsk
@@ -436,35 +436,35 @@ c      external numroc
       nydim = nymx
 
       allocate ( xjx(nxmx, nymx), xjy(nxmx, nymx), xjz(nxmx, nymx), 
-     .   capr_bpol(nxmx, nymx),   
-     .   work(nxmx, nymx),                  
-     .   psi_dim(nxmx, nymx),
-     .   rho(nxmx, nymx), 
-     .   theta0(nxmx, nymx),
-     .   bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
-     .   btau(nxmx, nymx), bzeta(nxmx, nymx),
-     .   dxdth(nxmx, nymx), dzdth(nxmx, nymx), xntau(nxmx, nymx),
-     .   xn(nxmx, nymx), xkte(nxmx, nymx), xkti(nxmx, nymx),
-     .   xkti2(nxmx, nymx), xkti3(nxmx, nymx),
-     .   xn1a(nxmx, nymx), xnea(nxmx, nymx), xn2a(nxmx, nymx),
-     .   xn3a(nxmx, nymx), omgce(nxmx, nymx),
-     .   omgci1(nxmx, nymx), omgci2(nxmx, nymx), omgci3(nxmx, nymx),
-     .   omgpe2(nxmx, nymx),
-     .   omgp12(nxmx, nymx), omgp22(nxmx, nymx), omgp32(nxmx, nymx),
-     .   xiota(nxmx, nymx), xlprl(nxmx, nymx),
-     .   bpol(nxmx, nymx),
-     .   psi_tor2d(nxmx, nymx), psi_pol2d(nxmx, nymx),
-     .   rhomtot(nxmx, nymx), 
-     .   xnupi(nxmx, nymx), 
-     .   dbxdx(nxmx, nymx), dbydx(nxmx, nymx), dbzdx(nxmx, nymx),
-     .   dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
-     .   dbdx(nxmx, nymx),  dbdy(nxmx, nymx),
-     .   gradprlb(nxmx, nymx),
-     .   dxxbxn(nxmx, nymx), dxxbyn(nxmx, nymx), dxxbzn(nxmx, nymx),
-     .   dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
-     .   dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
-     .   dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx, nymx),
-     .   spx(nxmx, nymx), spy(nxmx, nymx), spz(nxmx, nymx) )
+     &   capr_bpol(nxmx, nymx),   
+     &   work(nxmx, nymx),                  
+     &   psi_dim(nxmx, nymx),
+     &   rho(nxmx, nymx), 
+     &   theta0(nxmx, nymx),
+     &   bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
+     &   btau(nxmx, nymx), bzeta(nxmx, nymx),
+     &   dxdth(nxmx, nymx), dzdth(nxmx, nymx), xntau(nxmx, nymx),
+     &   xn(nxmx, nymx), xkte(nxmx, nymx), xkti(nxmx, nymx),
+     &   xkti2(nxmx, nymx), xkti3(nxmx, nymx),
+     &   xn1a(nxmx, nymx), xnea(nxmx, nymx), xn2a(nxmx, nymx),
+     &   xn3a(nxmx, nymx), omgce(nxmx, nymx),
+     &   omgci1(nxmx, nymx), omgci2(nxmx, nymx), omgci3(nxmx, nymx),
+     &   omgpe2(nxmx, nymx),
+     &   omgp12(nxmx, nymx), omgp22(nxmx, nymx), omgp32(nxmx, nymx),
+     &   xiota(nxmx, nymx), xlprl(nxmx, nymx),
+     &   bpol(nxmx, nymx),
+     &   psi_tor2d(nxmx, nymx), psi_pol2d(nxmx, nymx),
+     &   rhomtot(nxmx, nymx), 
+     &   xnupi(nxmx, nymx), 
+     &   dbxdx(nxmx, nymx), dbydx(nxmx, nymx), dbzdx(nxmx, nymx),
+     &   dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
+     &   dbdx(nxmx, nymx),  dbdy(nxmx, nymx),
+     &   gradprlb(nxmx, nymx),
+     &   dxxbxn(nxmx, nymx), dxxbyn(nxmx, nymx), dxxbzn(nxmx, nymx),
+     &   dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
+     &   dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
+     &   dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx, nymx),
+     &   spx(nxmx, nymx), spy(nxmx, nymx), spz(nxmx, nymx) )
 
 
 c--set default values of input data:
@@ -597,8 +597,8 @@ c--set default values of input data:
 
       if (myid .eq. 0) then
         open(unit=138,file='out138',status='unknown',form='formatted')
-	open(unit=18, file='bharvey3_3d', status='unknown', 
-     .                                               form='formatted')
+        open(unit=18, file='bharvey3_3d', status='unknown', 
+     &                                               form='formatted')
         open(unit=115,file='out115',status='unknown',form='formatted')
       end if
       
@@ -874,17 +874,17 @@ c      write (115, *) "ytop = ", ytop
 c      write (115, *) "ybottom = ", ybottom
 
 !     ------------------------------
-!	read cql3d data in u and theta
+!       read cql3d data in u and theta
 !     ------------------------------
 
-!	read (39, 9311) n_u
-!	read (39, 9311) n_psi
-!	read (39, 310) vc
+!       read (39, 9311) n_u
+!       read (39, 9311) n_psi
+!       read (39, 310) vc
 
 !        read (39, 310) (u(i_u), i_u = 1, n_u)
-!	read (39, 9311) (n_theta_(i_psi), i_psi = 1, n_psi)
+!       read (39, 9311) (n_theta_(i_psi), i_psi = 1, n_psi)
 !        read (39, 310) ((theta_(i_theta, i_psi),
-!     .         i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
+!     &         i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
 
 !        read (39, 310) (rho_a(i_psi), i_psi = 1, n_psi)
 
@@ -892,20 +892,20 @@ c      write (115, *) "ybottom = ", ybottom
       vc_mks = vc * 1.0e-02
 
 !     ---------------------
-!	Write some CQL3D data
+!       Write some CQL3D data
 !     ---------------------
 
-c	WRITE (115,*)
-c	WRITE (115,*) "n_theta_max = ", n_theta_max
-c	WRITE (115,*) "n_u = ", n_u
-c	WRITE (115,*) "n_psi = ", n_psi
-c	WRITE (115,*) "n_theta_(i) = ", n_theta_
-c	WRITE (115,*) "vc = ", vc
-c	WRITE (115,*) "vc_mks = ", vc_mks, "m/sec"
+c       WRITE (115,*)
+c       WRITE (115,*) "n_theta_max = ", n_theta_max
+c       WRITE (115,*) "n_u = ", n_u
+c       WRITE (115,*) "n_psi = ", n_psi
+c       WRITE (115,*) "n_theta_(i) = ", n_theta_
+c       WRITE (115,*) "vc = ", vc
+c       WRITE (115,*) "vc_mks = ", vc_mks, "m/sec"
 
 
 
-c	WRITE(115,*)
+c       WRITE(115,*)
 
 c      write(115, *)
 c      write(115, *) "rho/a(i_psi)"
@@ -934,10 +934,10 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
 *     ------------------------------
 
       call readeq_ga(nxeqdmax, nyeqdmax, rhoeqdsk,
-     .   psigrid, agrid, psimag, psisep,
-     .   rmin, rmax, zmin, zmax, rmaxis, zmaxis, b0,
-     .   rg, zg, psig, nxeqd, nyeqd, fpsi,
-     .   psio, ro, zo, qpsi, eqdsk, psi_tor_max, myid)
+     &   psigrid, agrid, psimag, psisep,
+     &   rmin, rmax, zmin, zmax, rmaxis, zmaxis, b0,
+     &   rg, zg, psig, nxeqd, nyeqd, fpsi,
+     &   psio, ro, zo, qpsi, eqdsk, psi_tor_max, myid)
      
       psig2 = psig
       if(psig(nxeqd/2, nyeqd/2) .lt. 0.0) psig2 = -psig 
@@ -962,10 +962,10 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
       rwright_auto = 0.0     
 
       do i = 2, nxeqd
-	 if (psig2(i,j) .gt. 0. .and. psig2(i-1,j) .lt. 0.)
-     .                                              rwleft_auto= rg(i)	 
-	 if (psig2(i,j) .lt. 0. .and. psig2(i-1,j) .gt. 0.)
-     .                                              rwright_auto=rg(i)	 
+         if (psig2(i,j) .gt. 0. .and. psig2(i-1,j) .lt. 0.)
+     &                                              rwleft_auto= rg(i)   
+         if (psig2(i,j) .lt. 0. .and. psig2(i-1,j) .gt. 0.)
+     &                                              rwright_auto=rg(i)   
       end do
       
              
@@ -976,22 +976,22 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
       
       i = imaxis * .7
       
-      ytop_auto = 0.0       	                  
+      ytop_auto = 0.0                             
       do j = nyeqd/2, nyeqd
-	 if (psig2(i,j) .lt. 0. .and. psig2(i,j-1) .gt. 0.)
-     .                                                ytop_auto = zg(j)	 
+         if (psig2(i,j) .lt. 0. .and. psig2(i,j-1) .gt. 0.)
+     &                                                ytop_auto = zg(j)  
       end do
            
       ybottom_auto = 0.0      
       do j = 2, nyeqd / 2
- 	 if (psig2(i,j) .gt. 0. .and. psig2(i,j-1) .lt. 0.)
-     .                                             ybottom_auto = zg(j)	 
+         if (psig2(i,j) .gt. 0. .and. psig2(i,j-1) .lt. 0.)
+     &                                             ybottom_auto = zg(j)  
       end do
-            	    	                                         
+                                                                 
 *     -------------------------
 *     adjust boundaries outward
-*     -------------------------                  	         
-      ytop_auto    = ytop_auto    + dzg32	    
+*     -------------------------                                  
+      ytop_auto    = ytop_auto    + dzg32           
       ybottom_auto = ybottom_auto - dzg32                                                       
       rwright_auto = rwright_auto + drg32 * 2.0     
       rwleft_auto  = rwleft_auto  - drg32 * 2.0
@@ -1010,9 +1010,9 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
       do i = 1, nxeqd
          do j = 1, nyeqd
             call deriv_r(psig, nxeqdmax, nyeqdmax, i, j, nxeqd, nyeqd,
-     .          rg, psirg(i,j), dum)
+     &          rg, psirg(i,j), dum)
             call deriv_z(psig, nxeqdmax, nyeqdmax, i, j, nxeqd, nyeqd,
-     .          zg, psizg(i,j), dum)
+     &          zg, psizg(i,j), dum)
          end do
       end do
 
@@ -1025,7 +1025,7 @@ c      write(6, 310) (zg(j), j = 1, nyeqd)
 
 c      do i = 1, nxeqd
 c         write(6, 1312)i, rg(i), psig(i, nyeqd/2),
-c     .        psirg(i, nyeqd/2), psizg(i, nyeqd/2), psirzg(i, nyeqd/2)
+c     &        psirg(i, nyeqd/2), psizg(i, nyeqd/2), psirzg(i, nyeqd/2)
 c      end do
 
 
@@ -1081,18 +1081,18 @@ c--   x(i) : -xmax / 2.0   to   xmax / 2.0
 
       do i = 1, nnodex
          xprime(i) = (i - 1) * dx
-     .      + dx / 2.0
+     &      + dx / 2.0
 c--   Note: the code gives slightly smoother results with dx/2.0 added
          x(i) = xprime(i) + xwleft
          capr(i) = rt + x(i)
 
          xkphi(i) = nphi / capr(i)
-	 
-	 diff = abs(capr(i) - r0)	 
-	 if(diff .lt. diffmin) then
-	    diffmin = diff
-	    i0 = i
-	 end if
+         
+         diff = abs(capr(i) - r0)        
+         if(diff .lt. diffmin) then
+            diffmin = diff
+            i0 = i
+         end if
 
 c         write(6, 1314)i, i0, xprime(i), x(i), capr(i), diff
 
@@ -1111,15 +1111,15 @@ c--   y(j) : -ymax / 2.0   to   ymax / 2.0
 
       do j = 1, nnodey
          yprime(j) = (j - 1) * dy 
-     .      + dy / 2.0
+     &      + dy / 2.0
 c--      Note: the code gives slightly smoother results with dy/2.0 added
          y(j) = yprime(j) + ybottom
-	 
-	 diff = abs(y(j) - z0)	 
-	 if(diff .lt. diffmin) then
-	    diffmin = diff
-	    j0 = j
-	 end if	 
+         
+         diff = abs(y(j) - z0)   
+         if(diff .lt. diffmin) then
+            diffmin = diff
+            j0 = j
+         end if  
 
 c         write(6, 1314)j, j0, yprime(j), y(j), diff, z0
       end do
@@ -1156,21 +1156,21 @@ c         write(6, 1312)n, rhon(n)
 *------------------------------
 
       call aorsa_grid(nnodex, nnodey, capr, y, nxmx, nymx,
-     .    psisep, psimag, bx, by, bz, bxn, byn, bzn, bmod,
-     .    psi_pol2d, rho_pol2d, rg, zg, psig, psirg, psizg, psirzg,
-     .    psis, fs, fs1, nxeqdmax, nyeqdmax, nxeqd, nyeqd, ma, psio,
-     .    qs, qs1, qsafety, r0, b0, 
-     .    rho_tors, rho_tor2d)
+     &    psisep, psimag, bx, by, bz, bxn, byn, bzn, bmod,
+     &    psi_pol2d, rho_pol2d, rg, zg, psig, psirg, psizg, psirzg,
+     &    psis, fs, fs1, nxeqdmax, nyeqdmax, nxeqd, nyeqd, ma, psio,
+     &    qs, qs1, qsafety, r0, b0, 
+     &    rho_tors, rho_tor2d)
      
      
       if (myid .eq. 0) then
          write(6, *) 
-     . "   i       R(x)        x          bx           by         bphi" 
+     & "   i       R(x)        x          bx           by         bphi" 
          write(15,*) 
-     . "   i       R(x)        x          bx           by         bphi"
+     & "   i       R(x)        x          bx           by         bphi"
       end if
-	  	 
-      j = jequat	 
+                 
+      j = jequat         
       do i = 1, nnodex
          if (myid .eq. 0) then
             write(6, 2163)i, capr(i), x(i), bx(i, j), by(i,j), bz(i,j)
@@ -1185,9 +1185,9 @@ c         write(6, 1312)n, rhon(n)
 *        ----------------------------------------------------   
 
             do i = 1, nnodex
-               do j = 1, nnodey 	    
-	          rho(i,j) = rho_pol2d(i,j)
-	          psi(i,j) = psi_pol2d(i,j)
+               do j = 1, nnodey             
+                  rho(i,j) = rho_pol2d(i,j)
+                  psi(i,j) = psi_pol2d(i,j)
                   psi_dim(i,j) = psi(i,j) * psio
                end do
             end do
@@ -1201,14 +1201,14 @@ c         write(6, 1312)n, rhon(n)
          if(n_prof_flux .ne. 0)then
             do i = 1, nnodex
                do j = 1, nnodey 
-	          psi_tor2d(i,j) = rho_tor2d(i,j)**2
-		     
-		  if(rho(i,j) .lt. 1.0)then	       	    
-	             rho(i,j) = rho_tor2d(i,j)
-	             psi(i,j) = psi_tor2d(i,j) 
-	             psi_dim(i,j) = psi(i,j) * psi_tor_max
-	       	  end if 
-		      
+                  psi_tor2d(i,j) = rho_tor2d(i,j)**2
+                     
+                  if(rho(i,j) .lt. 1.0)then                 
+                     rho(i,j) = rho_tor2d(i,j)
+                     psi(i,j) = psi_tor2d(i,j) 
+                     psi_dim(i,j) = psi(i,j) * psi_tor_max
+                  end if 
+                      
                end do
             end do
          end if
@@ -1216,10 +1216,10 @@ c         write(6, 1312)n, rhon(n)
       if (myid .eq. 0)then
       
          write(6, *)  "psio = ", psio
-	 write(15, *) "psio = ", psio
-	 write(6, *)  "psi_tor_max = ", psi_tor_max
-	 write(15, *) "psi_tor_max = ", psi_tor_max
-	       
+         write(15, *) "psio = ", psio
+         write(6, *)  "psi_tor_max = ", psi_tor_max
+         write(15, *) "psi_tor_max = ", psi_tor_max
+               
          do i = 1, nnodex
             write(6,  1312)i, capr(i), rho(i,16) 
             write(15, 1312)i, capr(i), rho(i,16)
@@ -1248,7 +1248,7 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
       do i = 1, nnodex
          do j = 1, nnodey
             btau(i,j) = sqrt(bxn(i,j)**2 + byn(i,j)**2)
-	    bpol(i,j) = btau(i,j) * bmod(i,j)
+            bpol(i,j) = btau(i,j) * bmod(i,j)
             bzeta(i,j) = bzn(i,j)
          end do
       end do
@@ -1259,45 +1259,45 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
 *     -------------------------------------
       do i = 1, nnodex
          do j = 1, nnodey
-	    capr_bpol(i,j) = capr(i) * bpol(i,j)
-	    
-	 end do
+            capr_bpol(i,j) = capr(i) * bpol(i,j)
+            
+         end do
       end do
 
       do i = 1, nnodex
          do j = 1, nnodey
             call midplane(i, j, capr_bpol, capr_bpol_mid2(i,j),
-     .          rho, nxmx, nymx, nnodex, nnodey, capr, rt, 0.0, jmid)
-     	   end do
+     &          rho, nxmx, nymx, nnodex, nnodey, capr, rt, 0.0, jmid)
+           end do
       end do
          
 
       call polavg(capr_bpol_mid2, capr_bpol_mid, rho, nxmx, nymx,
-     .   nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)   
+     &   nrhomax,
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)   
          
      
       if (myid .eq. 0)then
       
          write(15, *)"rt = ", rt
-	 write(15, *)"b0 = ", b0
-	 write(15, *)"dx = ", dx
-	 write(15, *)"dy = ", dy
-	 write(15, *)"drho = ", drho	 
+         write(15, *)"b0 = ", b0
+         write(15, *)"dx = ", dx
+         write(15, *)"dy = ", dy
+         write(15, *)"drho = ", drho     
 
          write(15, *)
          write(15, *) "     i    capr  rhoij  capr_bpol  capr_bpol_mid2"
          write(15, *)
-	
+        
          write(6, *)
          write(6, *)  "     i    capr  rhoij  capr_bpol  capr_bpol_mid2"
          write(6, *)
-	 
+         
          do i = 1, nnodex
             write(6,  1312)i, capr(i), rho(i, jequat), 
-     .                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
+     &                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
             write(15, 1312)i, capr(i), rho(i, jequat), 
-     .                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
+     &                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
          end do
 
          write(15, *)
@@ -1320,17 +1320,17 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
       do i = 1, nnodex
          do j = 1, nnodey
             call midplane(i, j, bmod, bmod_mid(i,j), rho,
-     .                nxmx, nymx, nnodex, nnodey, capr, rt, b0, jmid)
+     &                nxmx, nymx, nnodex, nnodey, capr, rt, b0, jmid)
          end do
       end do
 
       call polavg(bmod_mid, bmod_midavg, rho, nxmx, nymx,
-     .   nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
+     &   nrhomax,
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
      
      
 c      if (myid .eq. 0)then
-      	 
+         
 c         write(15, *)
 c         write(15, *) "     n        bmod_midavg"
 
@@ -1342,7 +1342,7 @@ c         do n = 1, nnoderho
 c            write(6,  1312)n, bmod_midavg(n)
 c            write(15, 1312)n, bmod_midavg(n)
 c         end do
-	 
+         
 c      end if
      
      
@@ -1352,7 +1352,7 @@ c      end if
             bratio(i,j) = bmod_mid(i,j) / bmod(i,j)
 c            if(bratio(i,j) .gt. 1.0)
 c            if(bratio(i,j) .lt. 0.0)
-c     .         write(6, *)i, j, bratio(i,j),rho(i,j)
+c     &         write(6, *)i, j, bratio(i,j),rho(i,j)
          end do
       end do
 
@@ -1400,7 +1400,7 @@ c      end do
 
          write(18, 309) nnodex, nnodey
 c         write(18, 310) rwleft, rwright, ytop, ybottom
-c         write(18, 310) rmaxis, zmaxis, b0, psio, psimag, psi_tor_max	    
+c         write(18, 310) rmaxis, zmaxis, b0, psio, psimag, psi_tor_max      
          write(18, 310) ((bxn(i,j), i = 1, nnodex), j = 1, nnodey)
          write(18, 310) ((byn(i,j), i = 1, nnodex), j = 1, nnodey)
          write(18, 310) ((bzn(i,j), i = 1, nnodex), j = 1, nnodey)
@@ -1421,34 +1421,34 @@ c         write(18, 310) ((rho_tor2d(i, j), i = 1,nnodex),j = 1,nnodey)
       do i = 1, nnodex
          do j = 1, nnodey
             call deriv_r(bxn, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbxdx(i,j), dxxbxn(i,j))
+     &         dbxdx(i,j), dxxbxn(i,j))
             call deriv_r(byn, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbydx(i,j), dxxbyn(i,j))
+     &         dbydx(i,j), dxxbyn(i,j))
             call deriv_r(bzn, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbzdx(i,j), dxxbzn(i,j))
+     &         dbzdx(i,j), dxxbzn(i,j))
 
 
             call deriv_z(bxn, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbxdy(i,j), dyybxn(i,j))
+     &         dbxdy(i,j), dyybxn(i,j))
             call deriv_z(byn, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbydy(i,j), dyybyn(i,j) )
+     &         dbydy(i,j), dyybyn(i,j) )
             call deriv_z(bzn, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbzdy(i,j), dyybzn(i,j) )
+     &         dbzdy(i,j), dyybzn(i,j) )
 
 
             call deriv_rz(bxn, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxybxn(i,j))
+     &         capr, y, dxybxn(i,j))
             call deriv_rz(byn, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxybyn(i,j))
+     &         capr, y, dxybyn(i,j))
             call deriv_rz(bzn, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxybzn(i,j))
+     &         capr, y, dxybzn(i,j))
 
             call deriv_r(bmod, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbdx(i,j), dxxmodb(i,j))
+     &         dbdx(i,j), dxxmodb(i,j))
             call deriv_z(bmod, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbdy(i,j), dyymodb(i,j) )
+     &         dbdy(i,j), dyymodb(i,j) )
             call deriv_rz(bmod, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxymodb(i,j))
+     &         capr, y, dxymodb(i,j))
 
 
             gradprlb(i,j) = bxn(i,j) * dbdx(i,j) + byn(i,j) * dbdy(i,j)
@@ -1457,48 +1457,48 @@ c         write(18, 310) ((rho_tor2d(i, j), i = 1,nnodex),j = 1,nnodey)
       end do
 
 
-*	--------------------------------------------------------
+*       --------------------------------------------------------
 *     Set spline parameters and calculate spline coefficients:
-*	sigma = 0.0 for tensor product cubic splines
-*	sigma = 50 for bi-linear interpolation
-*	documentation recommend sigma=1.0 as standard value
-*	--------------------------------------------------------
- 	sigma = 1.0
+*       sigma = 0.0 for tensor product cubic splines
+*       sigma = 50 for bi-linear interpolation
+*       documentation recommend sigma=1.0 as standard value
+*       --------------------------------------------------------
+        sigma = 1.0
       islpsw = 255
       islpsw1 = 3
 
       call surf1 (nnodex, nnodey, xprime, yprime, bxn, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbxn, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbxn, temp,
+     &            sigma, ierr)
       call surf1 (nnodex, nnodey, xprime, yprime, byn, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbyn, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbyn, temp,
+     &            sigma, ierr)
       call surf1 (nnodex, nnodey, xprime, yprime, bzn, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbzn, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbzn, temp,
+     &            sigma, ierr)
       call surf1 (nnodex, nnodey, xprime, yprime, bmod, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbmod, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbmod, temp,
+     &            sigma, ierr)
      
       call surf1 (nnodex, nnodey, xprime, yprime, bratio, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbratio, temp,
-     .            sigma, ierr)     
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbratio, temp,
+     &            sigma, ierr)     
      
       call surf1 (nnodex, nnodey, xprime, yprime, psi, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zpsi, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zpsi, temp,
+     &            sigma, ierr)
      
 
 
@@ -1510,37 +1510,37 @@ c         write(18, 310) ((rho_tor2d(i, j), i = 1,nnodex),j = 1,nnodey)
           do j = j0, j0
 
 c            capr_x0 = capr(i) + dx / 2.0
-c            capz_x0 = y(j) + dy / 2.0	    
+c            capz_x0 = y(j) + dy / 2.0      
             capr_x0 = capr(i) 
-            capz_x0 = y(j) 	    
+            capz_x0 = y(j)          
 
             x_extint = capr_x0 - rt
             y_extint = capz_x0
 
             xprimex0 = x_extint - xwleft
             yprimex0 = y_extint - ybottom
-	    phi0 = 0.0
-	    
-	    psix_prev = psix
-	    
+            phi0 = 0.0
+            
+            psix_prev = psix
+            
             psix =surf2(xprimex0, yprimex0, nnodex, nnodey, 
-     .         xprime, yprime,
-     .         psi, nxmx, zpsi, sigma)
+     &         xprime, yprime,
+     &         psi, nxmx, zpsi, sigma)
      
-            if(psix .gt. psilim_ .and. psix_prev .le. psilim_)i_max =i-1     	    
-	    if(psix .le. psilim_)then
-	    
+            if(psix .gt. psilim_ .and. psix_prev .le. psilim_)i_max =i-1            
+            if(psix .le. psilim_)then
+            
             i_psi = 1
-	 	
-	    do i_sgn_vprl = 1, 2
-	    
-	    if(i_sgn_vprl .eq. 1) sgn_vprl = -1.0   
+                
+            do i_sgn_vprl = 1, 2
+            
+            if(i_sgn_vprl .eq. 1) sgn_vprl = -1.0   
             if(i_sgn_vprl .eq. 2) sgn_vprl =  1.0     
-	    
+            
 *           ---------------------
 *           Set extint parameters
 *           ---------------------
-	    
+            
             h0 = 1.0e-04
             nmax = 3
       
@@ -1554,17 +1554,17 @@ c            capz_x0 = y(j) + dy / 2.0
 *           -------------------------------------------
 *           Set initial conditions for field line trace
 *           -------------------------------------------
-c	    lenmax = twopi * capr(i) * qsafety(i,j)
+c           lenmax = twopi * capr(i) * qsafety(i,j)
             lenmax = twopi * capr(i)
 
             y_len(1) = xprimex0
             y_len(2) = yprimex0
-	    y_len(3) = phi0
-	    len = 0.0
-	    
+            y_len(3) = phi0
+            len = 0.0
+            
             dtau_tot_sum = 0.0
-	    dldb_tot_sum = 0.0
-	    
+            dldb_tot_sum = 0.0
+            
             call f(len, y_len, dy_len)
             modb_init = modb
 
@@ -1578,21 +1578,21 @@ c	    lenmax = twopi * capr(i) * qsafety(i,j)
 *           ----------------------------------------------
             i_stop = 0
             i_box  = 1
-	    
-	    sgn_vprl = -1.0	
+            
+            sgn_vprl = -1.0     
             do n_len = 1, norb_dim
-	    
-	       fcount = 0
+            
+               fcount = 0
               
                call extint(nmax, len, y_len, f2, h0, mmax, error)
 
                xprimex = y_len(1)
                yprimex = y_len(2)
-	       phi     = y_len(3)
+               phi     = y_len(3)
 
                x_extint = xprimex + xwleft
                y_extint = yprimex + ybottom
-	       
+               
 *              --------------------------------------------
 *              Save arrays of R, Z, phi as funtions of length
 *              --------------------------------------------
@@ -1604,20 +1604,20 @@ c	    lenmax = twopi * capr(i) * qsafety(i,j)
 
                if(myid .eq. 0) then
                   write(6, 2213) n_len, h0, 
-     .            capr_x(n_len), capz_x(n_len), phin_x(n_len),
-     .            bratio_phi, fcount         
+     &            capr_x(n_len), capz_x(n_len), phin_x(n_len),
+     &            bratio_phi, fcount         
 
                   write(115, 2213) n_len, h0, 
-     .            capr_x(n_len), capz_x(n_len), phin_x(n_len),
-     .            bratio_phi, fcount   
+     &            capr_x(n_len), capz_x(n_len), phin_x(n_len),
+     &            bratio_phi, fcount   
                end if
      
  2213          format(1i10, 1p5e12.4, 3i5)     
 
-               h0 = twopi / 360.		
+               h0 = twopi / 360.                
                if(len .gt. lenmax)go to 201
 
-		
+                
             end do       ! end of n_len loop along orbit !
 *           -----------------------
 *           End of field line trace
@@ -1634,75 +1634,75 @@ c	    lenmax = twopi * capr(i) * qsafety(i,j)
             do nphii = nphi_enter + 1, nlen_exit - 1
                      dtau_sum = dtau_sum + dl_vprl(nphii)
             end do
-		  
+                  
             dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_enter)
             dtau_sum = dtau_sum + 0.5 * dl_vprl(nlen_exit)
 
-		  
-		  
+                  
+                  
 
 
             dtau_tot_sum = dtau_tot_sum + dtau_sum
 
 c           write(6, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
 
 
 c            write(115, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
 
             dldb_tot_sum = 0.0
-	   
-	    do nphii = 2, n_len - 1
-	       dldb_tot_sum = dldb_tot_sum + dl_bratio(nphii)
-	    end do
-	    
-	    dldb_tot_sum = dldb_tot_sum + 0.5 * dl_bratio(1)
+           
+            do nphii = 2, n_len - 1
+               dldb_tot_sum = dldb_tot_sum + dl_bratio(nphii)
+            end do
+            
+            dldb_tot_sum = dldb_tot_sum + 0.5 * dl_bratio(1)
             dldb_tot_sum = dldb_tot_sum + 0.5 * dl_bratio(nphi)
 
             n_len_max = n_len - 1
-	   
-	    do n_theta = 1, n_theta_(i_psi)
-	   
-	       if (i_sgn_vprl .eq. 1) then
-	          dtau_tot1(n_theta) = dtau_tot(n_theta)
-		  dtau_first1(n_theta) = dtau_first(n_theta)
-	       end if
-	      
-	       if (i_sgn_vprl .eq. 2) then
-	          dtau_tot2(n_theta) = dtau_tot(n_theta)
-		  dtau_first2(n_theta) = dtau_first(n_theta)
-	       end if
-	      
-	    end do
-	   
-	    if(i_sgn_vprl .eq. 1)dldb_tot1 = dldb_tot_sum
-	    if(i_sgn_vprl .eq. 2)dldb_tot2 = dldb_tot_sum
-	   
-	    end do       ! end of i_sgn_vprl loop !	   
+           
+            do n_theta = 1, n_theta_(i_psi)
+           
+               if (i_sgn_vprl .eq. 1) then
+                  dtau_tot1(n_theta) = dtau_tot(n_theta)
+                  dtau_first1(n_theta) = dtau_first(n_theta)
+               end if
+              
+               if (i_sgn_vprl .eq. 2) then
+                  dtau_tot2(n_theta) = dtau_tot(n_theta)
+                  dtau_first2(n_theta) = dtau_first(n_theta)
+               end if
+              
+            end do
+           
+            if(i_sgn_vprl .eq. 1)dldb_tot1 = dldb_tot_sum
+            if(i_sgn_vprl .eq. 2)dldb_tot2 = dldb_tot_sum
+           
+            end do       ! end of i_sgn_vprl loop !        
 
-	    do n_theta = 1, n_theta_(i_psi)
-	      dtau_first_12 = dtau_first1(n_theta) + dtau_first2(n_theta)
-	      dtau_tot12 = dtau_tot1(n_theta) + dtau_tot2(n_theta)
-c	      dtau_ratio(i, j, n_theta) = dtau_first_12/ dtau_tot12
-c	      tau_bounce(i, j, n_theta) = dtau_tot12
-	    end do
-	   
-	    dldb_tot12(i,j) = dldb_tot1 + dldb_tot2
-	   
-c	    write(6, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
-c	    write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
-	   
-	    i_sav = i
-	    j_sav = j
-	   	   
-	    end if  !endif for psix .le. psilim_	   
+            do n_theta = 1, n_theta_(i_psi)
+              dtau_first_12 = dtau_first1(n_theta) + dtau_first2(n_theta)
+              dtau_tot12 = dtau_tot1(n_theta) + dtau_tot2(n_theta)
+c             dtau_ratio(i, j, n_theta) = dtau_first_12/ dtau_tot12
+c             tau_bounce(i, j, n_theta) = dtau_tot12
+            end do
+           
+            dldb_tot12(i,j) = dldb_tot1 + dldb_tot2
+           
+c           write(6, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
+c           write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
+           
+            i_sav = i
+            j_sav = j
+                   
+            end if  !endif for psix .le. psilim_           
 
          end do  ! end do for y big loop
       end do     ! end do for x  big loop
@@ -1712,7 +1712,7 @@ c	    write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
       
       rho_ij = rho(1:nnodex, 1:nnodey)
       allocate (rho_in(nrho), profile_in(nrho),
-     .                                   profile_out(nnodex, nnodey))
+     &                                   profile_out(nnodex, nnodey))
      
       profile_in = dldb_tot12(i0:i_max, j0)
       rho_in =            rho(i0:i_max, j0)
@@ -1724,15 +1724,15 @@ c	    write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
 *     deposit dldb on 2D flux grid:
 *     -----------------------------         
       call flux_to_rz(nnodex, nnodey, profile_in, 
-     .   profile_out, rho_in, nrho, rho_ij) 
+     &   profile_out, rho_in, nrho, rho_ij) 
           
       dldb_tot12(1:nnodex, 1:nnodey) = profile_out 
                       
       call polavg(dldb_tot12, dldbavg, rho, nxmx, nymx, nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
      
       call volume_xy(rho, nxmx, nymx, nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol_xy)
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol_xy)
      
 
      
@@ -1805,7 +1805,7 @@ c	    write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
       write(138, 310) (capz_x(n_len), n_len = 1, n_len_max)
       
       write(138, 310) ((dldb_tot12(i, j), i = 1, nnodex), 
-     .                                   j = 1, nnodey)
+     &                                   j = 1, nnodey)
       write(138, 310) (dldbavg(n), n = 1, nnoderho)
       
 
@@ -1823,10 +1823,10 @@ c	    write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
       t1 = second1(dummy)
    
       if(myid .eq. 0)call eqdsk_plot
-	 
+         
       tmin = (second1(dummy) - t1) / 60.
 c      write(6 , 2846) tmin
-c      write(115, 2846) tmin	
+c      write(115, 2846) tmin    
      
  2846 format('time to do plots =', f9.3, ' min') 
  
@@ -1834,53 +1834,53 @@ c      write(115, 2846) tmin
     
 
 
-  310 format(1p6e12.4)
+  310 format(1p,6e12.4)
   309 format(10i10)
- 9310 format(1p7e12.4)
-  311 format(1p10e12.4)
+ 9310 format(1p,7e12.4)
+  311 format(1p,10e12.4)
  9311 format(10i10)
- 3117 format(1p11e12.4)
- 1312 format(i10, 1p8e12.4)
- 1314 format (2i10, 1p8e12.4)
- 1414 format (1i10, 1p5e12.4, 1i10)
-13149 format (4i10, 1p8e12.4)
+ 3117 format(1p,11e12.4)
+ 1312 format(i10, 1p,8e12.4)
+ 1314 format (2i10, 1p,8e12.4)
+ 1414 format (1i10, 1p,5e12.4, 1i10)
+13149 format (4i10, 1p,8e12.4)
  1313 format(10i10)
- 1311 format(1p9e12.4)
-   10 format(i10,1p4e10.3,i10,1pe10.3)
+ 1311 format(1p,9e12.4)
+   10 format(i10,1p,4e10.3,i10,1p,e10.3)
  1010 format(1f4.0,4f8.3,3f7.3,1f8.3,1f9.3,2f8.3)
- 1009 format(3x,21h        frequency  = ,1pe12.4,7h hertz )
- 1012 format(3x,21h             omgrf = ,1pe12.4,7h hertz )
+ 1009 format(3x,21h        frequency  = ,1p,e12.4,7h hertz )
+ 1012 format(3x,21h             omgrf = ,1p,e12.4,7h hertz )
  2012 format(3x,51h2*pi*rt/Ly * real part of impedance (resistance) = ,
-     1   1pe12.4,10h ohms     )
+     1   1p,e12.4,10h ohms     )
  2013 format(3x,
      1   55h2*pi*rt/Ly * imaginary part of impedance (reactance) = ,
-     1   1pe12.4,10h ohms     )
- 1014 format(3x,21h               xkz = ,1pe12.4,7h m-1   )
- 1321 format(3x,21h         vph / vth = ,1pe12.4,7h       )
- 1391 format(3x,21h critical shear(0) = ,1pe12.4,7h s-1   )
- 1392 format(3x,21h critical shear(a) = ,1pe12.4,7h s-1   )
- 1393 format(3x,21h         mu neo(a) = ,1pe12.4,7h s-1   )
- 1322 format(3x,21h               vph = ,1pe12.4,7h       )
- 1323 format(3x,21h               vth = ,1pe12.4,7h       )
- 1714 format(3x,21h               xk0 = ,1pe12.4,7h m-1   )
- 1021 format(3x,21h        n parallel = ,1pe12.4,7h       )
- 1022 format(3x,21h           rhonorm = ,1pe12.4,7h m     )
- 1812 format(3x,21h                rt = ,1pe12.4,7h m     )
- 1822 format(3x,21h            aplasm = ,1pe12.4,7h m     )
- 1823 format(3x,21h              rant = ,1pe12.4,7h m     )
- 1809 format(3x,21h                b0 = ,1pe12.4,7h T     )
- 1813 format(3x,21h              xn10 = ,1pe12.4,7h m-3   )
- 6813 format(3x,21h              xne0 = ,1pe12.4,7h m-3   )
- 1814 format(3x,21h              xn20 = ,1pe12.4,7h m-3   )
- 1834 format(3x,21h              xn30 = ,1pe12.4,7h m-3   )
- 6834 format(3x,21h              eta1 = ,1pe12.4,7h       )
- 6835 format(3x,21h              eta2 = ,1pe12.4,7h       )
- 6836 format(3x,21h              eta3 = ,1pe12.4,7h       )
- 1815 format(3x,21h               te0 = ,1pe12.4,7h eV    )
- 1821 format(3x,21h               ti0 = ,1pe12.4,7h eV    )
- 1016 format(3x,21h xnue/omgrf ad hoc = ,1pe12.4,7h       )
- 1017 format(3x,21h xnu1/omgrf ad hoc = ,1pe12.4,7h       )
- 1018 format(3x,21h xnu2/omgrf ad hoc = ,1pe12.4,7h       )
+     1   1p,e12.4,10h ohms     )
+ 1014 format(3x,21h               xkz = ,1p,e12.4,7h m-1   )
+ 1321 format(3x,21h         vph / vth = ,1p,e12.4,7h       )
+ 1391 format(3x,21h critical shear(0) = ,1p,e12.4,7h s-1   )
+ 1392 format(3x,21h critical shear(a) = ,1p,e12.4,7h s-1   )
+ 1393 format(3x,21h         mu neo(a) = ,1p,e12.4,7h s-1   )
+ 1322 format(3x,21h               vph = ,1p,e12.4,7h       )
+ 1323 format(3x,21h               vth = ,1p,e12.4,7h       )
+ 1714 format(3x,21h               xk0 = ,1p,e12.4,7h m-1   )
+ 1021 format(3x,21h        n parallel = ,1p,e12.4,7h       )
+ 1022 format(3x,21h           rhonorm = ,1p,e12.4,7h m     )
+ 1812 format(3x,21h                rt = ,1p,e12.4,7h m     )
+ 1822 format(3x,21h            aplasm = ,1p,e12.4,7h m     )
+ 1823 format(3x,21h              rant = ,1p,e12.4,7h m     )
+ 1809 format(3x,21h                b0 = ,1p,e12.4,7h T     )
+ 1813 format(3x,21h              xn10 = ,1p,e12.4,7h m-3   )
+ 6813 format(3x,21h              xne0 = ,1p,e12.4,7h m-3   )
+ 1814 format(3x,21h              xn20 = ,1p,e12.4,7h m-3   )
+ 1834 format(3x,21h              xn30 = ,1p,e12.4,7h m-3   )
+ 6834 format(3x,21h              eta1 = ,1p,e12.4,7h       )
+ 6835 format(3x,21h              eta2 = ,1p,e12.4,7h       )
+ 6836 format(3x,21h              eta3 = ,1p,e12.4,7h       )
+ 1815 format(3x,21h               te0 = ,1p,e12.4,7h eV    )
+ 1821 format(3x,21h               ti0 = ,1p,e12.4,7h eV    )
+ 1016 format(3x,21h xnue/omgrf ad hoc = ,1p,e12.4,7h       )
+ 1017 format(3x,21h xnu1/omgrf ad hoc = ,1p,e12.4,7h       )
+ 1018 format(3x,21h xnu2/omgrf ad hoc = ,1p,e12.4,7h       )
  1013 format(3x,21h              nphi = ,i12,7h       )
  7013 format(3x,21h           nmodesx = ,i12,7h       /
      1       3x,21h           nmodesy = ,i12,7h       )
@@ -1890,46 +1890,46 @@ c      write(115, 2846) tmin
  7014 format(3x,21h              lmax = ,i12,7h       )
  7015 format(3x,21h           ibessel = ,i12,7h       )
  7115 format(3x,21h             nzfun = ,i12,7h       )
- 7016 format(3x,21h         rhoi1 / L = ,1pe12.4,7h       )
- 7017 format(3x,21h             rhoi1 = ,1pe12.4,7h m     )
- 7217 format(3x,21h             qavg0 = ,1pe12.4,7h       )
+ 7016 format(3x,21h         rhoi1 / L = ,1p,e12.4,7h       )
+ 7017 format(3x,21h             rhoi1 = ,1p,e12.4,7h m     )
+ 7217 format(3x,21h             qavg0 = ,1p,e12.4,7h       )
  1020 format(3x,21h            nnodex = ,i12, 7h       /
      1       3x,21h            nnodey = ,i12, 7h       )
 
  3013 format(3x,21h                i0 = ,i12,7h       )
 30131 format(3x,21h             ileft = ,i12,7h       )
 30132 format(3x,21h            iright = ,i12,7h       )
- 3014 format(3x,21h xnuii(0)/omgti(0) = ,1pe12.4,7h s-1   )
- 3015 format(3x,21h           vthi(0) = ,1pe12.4,7h m/s   )
- 3016 format(3x,21h          omgti(0) = ,1pe12.4,7h s-1   )
- 3017 format(3x,21h           xnup(0) = ,1pe12.4,7h s-1   )
- 3018 format(3x,21h          eps**1.5 = ,1pe12.4,7h       )
-71160 format(3x,21h         xnu / omg = ,1pe12.4,7h       )
+ 3014 format(3x,21h xnuii(0)/omgti(0) = ,1p,e12.4,7h s-1   )
+ 3015 format(3x,21h           vthi(0) = ,1p,e12.4,7h m/s   )
+ 3016 format(3x,21h          omgti(0) = ,1p,e12.4,7h s-1   )
+ 3017 format(3x,21h           xnup(0) = ,1p,e12.4,7h s-1   )
+ 3018 format(3x,21h          eps**1.5 = ,1p,e12.4,7h       )
+71160 format(3x,21h         xnu / omg = ,1p,e12.4,7h       )
 
 
   162 format(1h1)
   169 format(1h )
   163 format(1h0)
- 2162 format(1p8e12.4)
- 2163 format(i5, 1p11e12.3)
- 2165 format(3i10,1p5e12.3)
+ 2162 format(1p,8e12.4)
+ 2163 format(i5, 1p,11e12.3)
+ 2165 format(3i10,1p,5e12.3)
  1002 format(2i10,7e10.3)
-11313 format(2i10, 1p8e12.4)
+11313 format(2i10, 1p,8e12.4)
  1000 format(1i10,7e10.3)
  2000 format(1i10,1e10.3,1i10,1e10.3)
  1001 format(8e10.3)
 
       deallocate ( xjx, xjy, xjz,
-     .   capr_bpol, 
-     .   work, psi_dim, rho, theta0, bx, by, bz, btau, bzeta,
-     .   dxdth, dzdth, xntau, xn, xkte, xkti, xkti2, xkti3,
-     .   xn1a, xnea, xn2a, xn3a, omgce, omgci1, omgci2, omgci3,
-     .   omgpe2, omgp12, omgp22, omgp32, xiota, xlprl, bpol,
-     .   psi_tor2d, psi_pol2d, rhomtot, 
-     .   xnupi, dbxdx, dbydx, dbzdx, dbxdy, dbydy, dbzdy,
-     .   dbdx,  dbdy, gradprlb, dxxbxn, dxxbyn, dxxbzn,
-     .   dxybxn, dxybyn, dxybzn, dyybxn, dyybyn, dyybzn,
-     .   dxxmodb, dxymodb, dyymodb, spx, spy, spz )
+     &   capr_bpol, 
+     &   work, psi_dim, rho, theta0, bx, by, bz, btau, bzeta,
+     &   dxdth, dzdth, xntau, xn, xkte, xkti, xkti2, xkti3,
+     &   xn1a, xnea, xn2a, xn3a, omgce, omgci1, omgci2, omgci3,
+     &   omgpe2, omgp12, omgp22, omgp32, xiota, xlprl, bpol,
+     &   psi_tor2d, psi_pol2d, rhomtot, 
+     &   xnupi, dbxdx, dbydx, dbzdx, dbxdy, dbydy, dbzdy,
+     &   dbdx,  dbdy, gradprlb, dxxbxn, dxxbyn, dxxbzn,
+     &   dxybxn, dxybyn, dxybzn, dyybxn, dyybyn, dyybzn,
+     &   dxxmodb, dxymodb, dyymodb, spx, spy, spz )
      
       deallocate (rho_ij)
       deallocate (rho_in, profile_in, profile_out)
@@ -1983,11 +1983,11 @@ c
 
 
       subroutine aorsa_grid(nnodex, nnodey, capr, capz, nxmx, nymx,
-     .   psisep, psimag, bx0, by0, bz0, bxn, byn, bzn, bmod,
-     .   psi, rho, rg, zg, psig, psirg, psizg, psirzg,
-     .   psis, fs, fs1, nxeqdmax, nyeqdmax, mr, mz, ma, psio,
-     .   qs, qs1, qsafety, r0, b0, 
-     .   rho_tors, rho_tor2d)
+     &   psisep, psimag, bx0, by0, bz0, bxn, byn, bzn, bmod,
+     &   psi, rho, rg, zg, psig, psirg, psizg, psirzg,
+     &   psis, fs, fs1, nxeqdmax, nyeqdmax, mr, mz, ma, psio,
+     &   qs, qs1, qsafety, r0, b0, 
+     &   rho_tors, rho_tor2d)
 
       implicit none
 
@@ -1997,12 +1997,12 @@ c
 
       integer islpsw, islpsw1, ierr
       real sigma, slp1, slpn
-	real zx1(nyeqdmax), zxm(nyeqdmax), zy1(nxeqdmax), zyn(nxeqdmax)
-	real zxy11, zxym1, zxy1n, zxymn
+        real zx1(nyeqdmax), zxm(nyeqdmax), zy1(nxeqdmax), zyn(nxeqdmax)
+        real zxy11, zxym1, zxy1n, zxymn
       real zp(nxeqdmax, nyeqdmax, 3)
       real zpr(nxeqdmax, nyeqdmax, 3)
       real zpz(nxeqdmax, nyeqdmax, 3)
-	real temp(2 *(nxeqdmax + nyeqdmax) )
+        real temp(2 *(nxeqdmax + nyeqdmax) )
       real surf2, curv2
 
       real capr(nxmx), capz(nymx), r, z, psio, r0, b0
@@ -2052,40 +2052,40 @@ c      end do
 
 
 
-c	----------------------------------
-c	sigma = 0.0 for tensor product cubic splines
-c	sigma = 50 for bi-linear interpolation
-c	documentation recommend sigma=1.0 as standard value
-c	----------------------------------
- 	sigma = 1.0
+c       ----------------------------------
+c       sigma = 0.0 for tensor product cubic splines
+c       sigma = 50 for bi-linear interpolation
+c       documentation recommend sigma=1.0 as standard value
+c       ----------------------------------
+        sigma = 1.0
       islpsw = 255
       islpsw1 = 3
       call surf1 (mr, mz, rg, zg, psig, nxeqdmax,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zp, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zp, temp,
+     &            sigma, ierr)
 
       call surf1 (mr, mz, rg, zg, psirg, nxeqdmax,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zpr, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zpr, temp,
+     &            sigma, ierr)
 
       call surf1 (mr, mz, rg, zg, psizg, nxeqdmax,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zpz, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zpz, temp,
+     &            sigma, ierr)
 
       call curv1 (ma, psis, fs, slp1, slpn, islpsw1,
-     .       ypf, temp1, sigma, ierr)
+     &       ypf, temp1, sigma, ierr)
 
       call curv1 (ma, psis, qs, slp1, slpn, islpsw1,
-     .       ypq, temp1, sigma, ierr)
+     &       ypq, temp1, sigma, ierr)
 
       call curv1 (ma, psis, rho_tors, slp1, slpn, islpsw1,
-     .       yprho, temp1, sigma, ierr)
+     &       yprho, temp1, sigma, ierr)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -2098,13 +2098,13 @@ c           calculate fields:
 
 
             ps = surf2 (r, z, mr, mz, rg, zg, psig, nxeqdmax,
-     .           zp, sigma)
+     &           zp, sigma)
 
             psr = surf2 (r, z, mr, mz, rg, zg, psirg, nxeqdmax,
-     .           zpr, sigma)
+     &           zpr, sigma)
 
             psz = surf2 (r, z, mr, mz, rg, zg, psizg, nxeqdmax,
-     .           zpz, sigma)
+     &           zpz, sigma)
 
 
             a = (ps - psio) / (0.0 - psio)
@@ -2167,8 +2167,8 @@ c            if(j .eq. jequat)write(6, 1312) i, r, br, bz, bphi, f
       b0 = f / r0
 
 
- 1312 format(i10, 1p8e12.4)
-  310 format(1p6e12.4)
+ 1312 format(i10, 1p,8e12.4)
+  310 format(1p,6e12.4)
 
       return
       end
@@ -2177,10 +2177,10 @@ c
 c***************************************************************************
 c
       subroutine readeq_ga(nw, nh, rhoeqdskw,
-     .   psigridw, agrid, psimag, psilim,
-     .   rmin, rmax, zmin, zmax, rma, zma, beqd,
-     .   rmhdgrid, zmhdgrid, psi, nxeqd, nyeqd, fpsiw,
-     .   psio, ro, zo, qpsiw, eqdsk, psi_tor_max, myid)
+     &   psigridw, agrid, psimag, psilim,
+     &   rmin, rmax, zmin, zmax, rma, zma, beqd,
+     &   rmhdgrid, zmhdgrid, psi, nxeqd, nyeqd, fpsiw,
+     &   psio, ro, zo, qpsiw, eqdsk, psi_tor_max, myid)
 
       implicit none
 
@@ -2202,7 +2202,7 @@ c
       real dpsi, psisep, sdimeqd, redeqd, reqd, ydimeqd
 
       real zax1, zax2, xax1, xax2, ymideqd, xdimeqd,
-     .    toteqd, beqd, psimx2, psimx1, zma, rma, psi_tor_max
+     &    toteqd, beqd, psimx2, psimx1, zma, rma, psi_tor_max
 
       real psigrid(nw), rhoeqdsk(nw), psi(nw,nh), qpsi(nw), qpsiw(nw)
       real psigridw(nw), rhoeqdskw(nw), agrid(nw)
@@ -2215,11 +2215,11 @@ c
       real rmin, rmax, zmin, zmax
 
       call plasma_state_eq(nw, nh, ntitle, nxeqd ,nyeqd, eqdsrce,
-     .   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
-     .   rma, zma, psimag, psilim, beqd,
-     .   toteqd, psimx1, psimx2, xax1, xax2,
-     .   zax1, zax2, psisep, rsep, zsep, fpsi,
-     .   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk, myid)
+     &   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
+     &   rma, zma, psimag, psilim, beqd,
+     &   toteqd, psimx1, psimx2, xax1, xax2,
+     &   zax1, zax2, psisep, rsep, zsep, fpsi,
+     &   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk, myid)
 
 c      write(6, *) "fpsi(j) = "
 c      write(6,8200) (fpsi(j), j=nxeqd, 1, -1)
@@ -2248,8 +2248,8 @@ c
       end do
 
 
- 1312 format(i10, 1p8e12.4)
-  310 format(1p6e12.4)
+ 1312 format(i10, 1p,8e12.4)
+  310 format(1p,6e12.4)
 
 
       do i = 1, nxeqd
@@ -2311,12 +2311,12 @@ c      write(6, *)
          fpsiw(j) = fpsi(nxeqd + 1 - j)
          qpsiw(j) = qpsi(nxeqd + 1 - j)
          agrid(j) = (psigridw(j) - psimag) / (psilim - psimag)
-	 test = psio * agrid(j)
+         test = psio * agrid(j)
          if (j.eq.1) agrid(j) = 0.0
 c         write(6,692) rhoeqdskw(j), psigridw(j), agrid(j), test
       end do
 
-  692 format(4(2x,1pe12.4))
+  692 format(4(2x,1p,e12.4))
   700 format(2i10)
 
 
@@ -2336,19 +2336,19 @@ c
       if(i .ne. 1 .and. i .ne. imax)then
          dfdr = (f(i+1, j) - f(i-1, j)) / (rg(i+1) - rg(i-1))
          d2fdr2 = (f(i+1, j) - 2.0 * f(i,j) + f(i-1, j)) /
-     .              (rg(i+1) - rg(i))**2
+     &              (rg(i+1) - rg(i))**2
       end if
 
       if(i .eq. 1)then
          dfdr = (f(i+1, j) - f(i, j)) / (rg(i+1) - rg(i))
          d2fdr2 = (f(i+2, j) - 2.0 * f(i+1,j) + f(i, j)) /
-     .              (rg(i+1) - rg(i))**2
+     &              (rg(i+1) - rg(i))**2
       end if
 
       if(i .eq. imax)then
          dfdr = (f(i, j) - f(i-1, j)) /  (rg(i) - rg(i-1))
          d2fdr2 = (f(i, j) - 2.0 * f(i-1,j) + f(i-2, j)) /
-     .              (rg(i) - rg(i-1))**2
+     &              (rg(i) - rg(i-1))**2
       end if
 
       return
@@ -2367,19 +2367,19 @@ c
       if(j .ne. 1 .and. j .ne. jmax)then
          dfdz = (f(i, j+1) - f(i, j-1)) / (zg(j+1) - zg(j-1))
          d2fdz2 = (f(i, j+1) - 2.0 * f(i,j) + f(i, j-1)) /
-     .      (zg(j+1) - zg(j))**2
+     &      (zg(j+1) - zg(j))**2
       end if
 
       if(j .eq. 1)then
          dfdz = (f(i, j+1) - f(i, j)) / (zg(j+1) - zg(j))
          d2fdz2 = (f(i, j+2) - 2.0 * f(i,j+1) + f(i, j)) /
-     .      (zg(j+1) - zg(j))**2
+     &      (zg(j+1) - zg(j))**2
       end if
 
       if(j .eq. jmax)then
          dfdz = (f(i, j) - f(i, j-1)) /  (zg(j) - zg(j-1))
          d2fdz2 = (f(i, j) - 2.0 * f(i,j-1) + f(i, j-2)) /
-     .      (zg(j) - zg(j-1))**2
+     &      (zg(j) - zg(j-1))**2
       end if
 
       return
@@ -2398,10 +2398,10 @@ c
       d2fdrz = 0.0
 
       if(i .ne. 1 .and. i .ne. imax  .and.
-     .   j .ne. 1 .and. j .ne. jmax)then
+     &   j .ne. 1 .and. j .ne. jmax)then
 
          d2fdrz = (f(i+1,j+1) - f(i+1,j-1) - f(i-1,j+1) + f(i-1,j-1))
-     .      / ((zg(j+1) - zg(j-1)) * (rg(i+1) - rg(i-1)))
+     &      / ((zg(j+1) - zg(j-1)) * (rg(i+1) - rg(i-1)))
 
       end if
 
@@ -2420,38 +2420,38 @@ c
       real f(id, jd), rg(id), zg(jd), dfdrz
 
       if(i .ne. 1 .and. i .ne. imax .and. j .ne. 1 .and. j .ne. jmax)
-     .   dfdrz = (f(i+1, j+1) - f(i+1, j-1) - f(i-1, j+1) + f(i-1, j-1))
-     .         / ((rg(i+1) - rg(i-1)) * (zg(j+1) - zg(j-1)))
+     &   dfdrz = (f(i+1, j+1) - f(i+1, j-1) - f(i-1, j+1) + f(i-1, j-1))
+     &         / ((rg(i+1) - rg(i-1)) * (zg(j+1) - zg(j-1)))
 
 
       if(i .eq. 1 .and. j .ne. 1 .and. j .ne. jmax)
-     .   dfdrz = (f(i+1, j+1) - f(i+1, j-1) - f(i, j+1) + f(i, j-1))
-     .         / ((rg(i+1) - rg(i)) * (zg(j+1) - zg(j-1)))
+     &   dfdrz = (f(i+1, j+1) - f(i+1, j-1) - f(i, j+1) + f(i, j-1))
+     &         / ((rg(i+1) - rg(i)) * (zg(j+1) - zg(j-1)))
       if(i .eq. imax .and. j .ne. 1 .and. j .ne. jmax)
-     .   dfdrz = (f(i, j+1) - f(i, j-1) - f(i-1, j+1) + f(i-1, j-1))
-     .         / ((rg(i) - rg(i-1)) * (zg(j+1) - zg(j-1)))
+     &   dfdrz = (f(i, j+1) - f(i, j-1) - f(i-1, j+1) + f(i-1, j-1))
+     &         / ((rg(i) - rg(i-1)) * (zg(j+1) - zg(j-1)))
       if(j .eq. 1 .and. i .ne. 1 .and. i .ne. imax )
-     .   dfdrz = (f(i+1, j+1) - f(i+1, j) - f(i-1, j+1) + f(i-1, j))
-     .         / ((rg(i+1) - rg(i-1)) * (zg(j+1) - zg(j)))
+     &   dfdrz = (f(i+1, j+1) - f(i+1, j) - f(i-1, j+1) + f(i-1, j))
+     &         / ((rg(i+1) - rg(i-1)) * (zg(j+1) - zg(j)))
       if(j .eq. jmax .and. i .ne. 1 .and. i .ne. imax )
-     .   dfdrz = (f(i+1, j) - f(i+1, j-1) - f(i-1, j) + f(i-1, j-1))
-     .         / ((rg(i+1) - rg(i-1)) * (zg(j) - zg(j-1)))
+     &   dfdrz = (f(i+1, j) - f(i+1, j-1) - f(i-1, j) + f(i-1, j-1))
+     &         / ((rg(i+1) - rg(i-1)) * (zg(j) - zg(j-1)))
 
       if(i .eq. 1 .and. j .eq. 1)
-     .   dfdrz = (f(i+1, j+1) - f(i+1, j) - f(i, j+1) + f(i, j))
-     .         / ((rg(i+1) - rg(i)) * (zg(j+1) - zg(j)))
+     &   dfdrz = (f(i+1, j+1) - f(i+1, j) - f(i, j+1) + f(i, j))
+     &         / ((rg(i+1) - rg(i)) * (zg(j+1) - zg(j)))
 
       if(i .eq. 1 .and. j .eq. jmax)
-     .   dfdrz = (f(i+1, j) - f(i+1, j-1) - f(i, j) + f(i, j-1))
-     .         / ((rg(i+1) - rg(i)) * (zg(j) - zg(j-1)))
+     &   dfdrz = (f(i+1, j) - f(i+1, j-1) - f(i, j) + f(i, j-1))
+     &         / ((rg(i+1) - rg(i)) * (zg(j) - zg(j-1)))
 
       if(i .eq. imax .and. j .eq. 1)
-     .   dfdrz = (f(i, j+1) - f(i, j) - f(i-1, j+1) + f(i-1, j))
-     .         / ((rg(i) - rg(i-1)) * (zg(j+1) - zg(j)))
+     &   dfdrz = (f(i, j+1) - f(i, j) - f(i-1, j+1) + f(i-1, j))
+     &         / ((rg(i) - rg(i-1)) * (zg(j+1) - zg(j)))
 
       if(i .eq. imax .and. j .eq. jmax)
-     .   dfdrz = (f(i, j) - f(i, j-1) - f(i-1, j) + f(i-1, j-1))
-     .         / ((rg(i) - rg(i-1)) * (zg(j) - zg(j-1)))
+     &   dfdrz = (f(i, j) - f(i, j-1) - f(i-1, j) + f(i-1, j-1))
+     &         / ((rg(i) - rg(i-1)) * (zg(j) - zg(j-1)))
 
 
       return
@@ -2469,11 +2469,11 @@ c
       real f(jd), x(jd), dfdx
 
       if(j .ne. 1 .and. j .ne. jmax)
-     .   dfdx = (f(j+1) - f(j-1)) / (x(j+1) - x(j-1))
+     &   dfdx = (f(j+1) - f(j-1)) / (x(j+1) - x(j-1))
       if(j .eq. 1)
-     .   dfdx = (f(j+1) - f(j)) / (x(j+1) - x(j))
+     &   dfdx = (f(j+1) - f(j)) / (x(j+1) - x(j))
       if(j .eq. jmax)
-     .   dfdx = (f(j) - f(j-1)) /  (x(j) - x(j-1))
+     &   dfdx = (f(j) - f(j-1)) /  (x(j) - x(j-1))
 
       return
       end
@@ -2499,10 +2499,10 @@ c
           do i = 2, nnodex - 1
              do j = 2, nnodey -1
                 work(i,j) = 0.5 * (f(i,j)
-     .            + 0.25 * (f(i+1,j) + f(i-1,j) + f(i,j-1) +f(i,j+1)))        
+     &            + 0.25 * (f(i+1,j) + f(i-1,j) + f(i,j-1) +f(i,j+1)))        
              end do
           end do
-	  
+          
           f = work
 
       end do
@@ -2531,10 +2531,10 @@ c
           do i = 2, nnodex - 1
              do j = 2, nnodey -1
                 work(i,j) = 0.5 * (f(i,j)
-     .            + 0.25 * (f(i+1,j) + f(i-1,j) + f(i,j-1) +f(i,j+1)))        
+     &            + 0.25 * (f(i+1,j) + f(i-1,j) + f(i,j-1) +f(i,j+1)))        
              end do
           end do
-	  
+          
           f = work
 
       end do
@@ -2547,7 +2547,7 @@ c***************************************************************************
 c
 
       subroutine volume_xy(rho, nxdim, nydim, nrhodim,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, r0, vol)
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, r0, vol)
 
       implicit none
 
@@ -2555,7 +2555,7 @@ c
       integer n, i, j
 
       real rho(nxdim, nydim), r0, drho, dx, dy, vol(nrhodim), 
-     .   capr(nxdim), pi, twopi
+     &   capr(nxdim), pi, twopi
      
       pi = 3.14159
       twopi = 2.0 * pi
@@ -2574,7 +2574,7 @@ c
       end do
 
 
-  100 format (1i10, 1p8e12.4)
+  100 format (1i10, 1p,8e12.4)
   102 format (2i10)
       return
       end
@@ -2583,11 +2583,11 @@ c***************************************************************************
 c
 
       subroutine plasma_state_eq(nw, nh, ntitle, nxeqd ,nyeqd, eqdsrce,
-     .   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
-     .   rma, zma, psimag, psilim, beqd,
-     .   toteqd, psimx1, psimx2, xax1, xax2,
-     .   zax1, zax2, psisep, rsep, zsep, fpsi,
-     .   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk, myid)
+     &   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
+     &   rma, zma, psimag, psilim, beqd,
+     &   toteqd, psimx1, psimx2, xax1, xax2,
+     &   zax1, zax2, psisep, rsep, zsep, fpsi,
+     &   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk, myid)
 
       implicit none
 
@@ -2602,7 +2602,7 @@ c
       real fpsi(nw), presspsi(nw), ffppsi(nw), pppsi(nw)
       real psigrid(nw), rhoeqdsk(nw), psi(nw, nh), qpsi(nw), qpsiw(nw)
       real zax1, zax2, xax1, xax2, ymideqd, xdimeqd,
-     .     toteqd, beqd, psimx2, psimx1, zma, rma
+     &     toteqd, beqd, psimx2, psimx1, zma, rma
       real zsep, rsep, sum, dpsii, qval, rhomax
       real psilim, psimag, current
       real dpsi, psisep, sdimeqd, redeqd, reqd, ydimeqd
@@ -2616,7 +2616,7 @@ c
       rewind (5)
 
       read (5, 8190) (ntitle(j),j=1,5), dati, ipestg,
-     .                                      nxeqd ,nyeqd, eqdsrce
+     &                                      nxeqd ,nyeqd, eqdsrce
       read(5,8200) xdimeqd, ydimeqd, reqd, redeqd, ymideqd
       read(5,8200) rma, zma, psimag, psilim, beqd
       read(5,8200) toteqd, psimx1, psimx2, xax1, xax2
@@ -2635,19 +2635,19 @@ c
          write(15, *)       
          write(15, *) "B_axis = ", beqd
          write(15, *) "current = ", current
-	 write(15, *) "psimag = ", psimag
+         write(15, *) "psimag = ", psimag
          write(15, *) "psilim = ", psilim   
-	 	 	 
+                         
          write(6, *)      
          write(6, *) "B_axis = ", beqd
          write(6, *) "current = ", current 
          write(6, *) "psimag = ", psimag
-         write(6, *) "psilim = ", psilim	 	      
+         write(6, *) "psilim = ", psilim                      
       end if        
       
       if(psilim .gt. psimag) then
          if(myid .eq. 0) write(15, *) "normal eqdsk"
-         if(myid .eq. 0) write(6,  *) "normal eqdsk"	 
+         if(myid .eq. 0) write(6,  *) "normal eqdsk"     
 c         if (current .gt. 0.0) psi = -psi         
       else
          if (myid .eq. 0) write(15, *) "abnormal eqdsk"
@@ -2673,11 +2673,11 @@ c***************************************************************************
 c
 
       subroutine eqdsk_setup2(myid, eqdsk, nmodesx, nmodesy, 
-     .   rwleft, rwright, ytop, ybottom,
-     .   rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,	    
-     .   bxn_eq, byn_eq, bzn_eq, bmod_eq, psi, rho_pol2d, qsafety, 
-     .   bmod_mid, capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
-     .   i_psi, dldb_tot12, dldbavg, n_prof_flux, rhomax)
+     &   rwleft, rwright, ytop, ybottom,
+     &   rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,     
+     &   bxn_eq, byn_eq, bzn_eq, bmod_eq, psi, rho_pol2d, qsafety, 
+     &   bmod_mid, capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
+     &   i_psi, dldb_tot12, dldbavg, n_prof_flux, rhomax)
      
       use size_mod            
       
@@ -2686,12 +2686,12 @@ c
       external f, error
 
       common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     .   dx, dy,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, caprx
+     &   dx, dy,
+     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, caprx
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
-     .   xprime, yprime
+     &   xprime, yprime
 
       common/errcom/eps, s_err(100), y_phi(100), nmax
       
@@ -2701,7 +2701,7 @@ c
       integer icell, jcell, icell_prev, jcell_prev, ncell, i_stop
       
       real, allocatable :: rho_ij(:,:), rho_in(:), profile_in(:),
-     .   profile_out(:,:)
+     &   profile_out(:,:)
      
       integer i0_eq, j0_eq, ileft, iright, jtop, jbottom
       integer i_box, i_sgn_vprl, i_err, i_sav, j_sav, i0, j0, i_max
@@ -2711,22 +2711,22 @@ c
       real xphi, yphi, phi, dy_phi(100), psi_tor_max
       real h0, eps, delta_b, caprx, r_max, drg, dzg, drg32, dzg32
       real x_extint, y_extint, xprimex, yprimex,  
-     .   xprimex0, yprimex0
+     &   xprimex0, yprimex0
       integer norb_dim, nphi_enter, nphi_exit, nphii
       integer islpsw, islpsw1, ierr, nrho
       real sigma, psix, rmaxis, zmaxis, psix_prev
       
       real betan3, betan_slo, betate, alphati6, betan, betan2, betan5, 
-     .  betan6, betati4, betati, betati2, betan4, alphan3, alphan_slo, 
-     .  alphan4, eta6, xnu6ad, alphan2, alphati3, alphati4, alphti5, 
-     .  alphan5, alphan6, betati5, iql, i_antenna, antlc, 
-     .  nzeta_wdot, n_bin, antlen, xkperp_cutoff, damping, xnu4ad, amu5,
-     .  z4, eta4, xnu5ad, amu6, z5, eta5, xn6lim, xnslo, xn4lim, xn5lim,
-     .  xn6, amu4, xn4, xn5, ndisti3, ndisti4, ndisti1, ndisti2, nkperp,
-     .  upshift, ndisti5, ndisti6, alphati5, betati6, z6, alphati2, 
-     .  theta_ant, ndiste, betati3, taue, psipti5, psipti6, xn3lim, 
-     .  xnslolim, freqcy, xn2lim, ti05, ti06, ti04, ti6lim, psipti4, 
-     .  ti4lim, ti5lim
+     &  betan6, betati4, betati, betati2, betan4, alphan3, alphan_slo, 
+     &  alphan4, eta6, xnu6ad, alphan2, alphati3, alphati4, alphti5, 
+     &  alphan5, alphan6, betati5, iql, i_antenna, antlc, 
+     &  nzeta_wdot, n_bin, antlen, xkperp_cutoff, damping, xnu4ad, amu5,
+     &  z4, eta4, xnu5ad, amu6, z5, eta5, xn6lim, xnslo, xn4lim, xn5lim,
+     &  xn6, amu4, xn4, xn5, ndisti3, ndisti4, ndisti1, ndisti2, nkperp,
+     &  upshift, ndisti5, ndisti6, alphati5, betati6, z6, alphati2, 
+     &  theta_ant, ndiste, betati3, taue, psipti5, psipti6, xn3lim, 
+     &  xnslolim, freqcy, xn2lim, ti05, ti06, ti04, ti6lim, psipti4, 
+     &  ti4lim, ti5lim
      
       integer i_write, n_prof_flux, nphi1, nphi2, nuper, nupar
       
@@ -2736,12 +2736,12 @@ c
       parameter (norb_dim = 6000)
 
       real capr_x(norb_dim), capz_x(norb_dim), phin_x(norb_dim),
-     .   modb_x(norb_dim), dlen_x(norb_dim), dl_vprl(norb_dim),
-     .   dl_bratio(norb_dim),
-     .   dl_vprlh, len_x(norb_dim), length, length_prev
+     &   modb_x(norb_dim), dlen_x(norb_dim), dl_vprl(norb_dim),
+     &   dl_bratio(norb_dim),
+     &   dl_vprlh, len_x(norb_dim), length, length_prev
       real capr_x0, capz_x0
       real delta_x, delta_y, delta_z, delta_l, xprime_prev, delta_phi, 
-     .   yprime_prev, phi_prev
+     &   yprime_prev, phi_prev
       real yprime_want, dxdphi, dydphi, dxdphi_prev, dydphi_prev
       real xprime_want
 
@@ -2751,17 +2751,17 @@ c
 
       integer nnode_local, nnode_overlap, iprofile
       real eslowev, ftrap, z_slo, yzoom1, psimol, yzoom2,
-     .   amu_slo, eta_slo, fmid
+     &   amu_slo, eta_slo, fmid
 
       integer nxmx, nymx, idiag, jdiag, ieq
       integer ndfmax,
-     .    ninteg, nd, izoom1, izoom2, ndf, nmaxe, irnc
+     &    ninteg, nd, izoom1, izoom2, ndf, nmaxe, irnc
       integer nrow, ncol, norder
 
       integer mkdim1, mkdim2
 
       integer nkdim1, nkdim2, nkx1, nkx2, nldim, nldim3,
-     .   nky1, nky2, iant, jant1, jant2
+     &   nky1, nky2, iant, jant1, jant2
 
       integer nxeqdmax, nyeqdmax
 
@@ -2769,7 +2769,7 @@ c
       real tmin, gflops, gflopsp, ops, teev, dum
       real sqx, gausspsi, dpsiant
       real dthetant0, dpsiant0, psiant, psipne, psipte,
-     .   psipti1, psipti2, psipti3, dtheta, rhomin
+     &   psipti1, psipti2, psipti3, dtheta, rhomin
       real rmin, rmax, zmin, zmax, psio, ro, zo
 
 c      integer nmodesmax, mmodesmax
@@ -2816,13 +2816,13 @@ c      parameter (mmodesmax = 450)
       parameter (ndim = 2)
       parameter (ndeg = 2)
 c      parameter (lenws = lxdata * (lxdata + 9)
-c     .                  + lipwr * (lxdata + 1) + 2 * ndim)
+c     &                  + lipwr * (lxdata + 1) + 2 * ndim)
 
 
 c*** ceez.f arrays:
 
-	real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
-	real zxy11, zxym1, zxy1n, zxymn
+        real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
+        real zxy11, zxym1, zxy1n, zxymn
       real zbxn(nxmx, nymx, 3)
       real zbyn(nxmx, nymx, 3)
       real zbzn(nxmx, nymx, 3)
@@ -2830,7 +2830,7 @@ c*** ceez.f arrays:
       real zbratio(nxmx, nymx, 3)
       real zpsi(nxmx, nymx, 3)
 
-	real temp(2 *(nxmx + nymx) )
+        real temp(2 *(nxmx + nymx) )
       real surf2, curv2
 
 
@@ -2851,7 +2851,7 @@ c      real rho_a(n_psi_max)
       integer n_theta_(n_psi_max)
 
       real dtau(n_theta_max), dtau_tot(n_theta_max), 
-     .   dtau_first(n_theta_max)
+     &   dtau_first(n_theta_max)
      
       real dtau_first_12, dtau_tot12
 c      real dtau_ratio(nxmx, nymx, n_theta_max)
@@ -2864,15 +2864,15 @@ c      real tau_bounce(nxmx, nymx, n_theta_max)
       integer n_theta, n_u, n_psi
       integer i_theta, i_u, i_psi
       real vc, vc_mks, sinthi, modbi, argi, vprl, dtau_sum, modbh,
-     .   dtau_tot_sum, dldb_tot_sum, dldb_tot1, dldb_tot2
+     &   dtau_tot_sum, dldb_tot_sum, dldb_tot1, dldb_tot2
 
 
 
 c***  EQDSK arrays:
 
       real rhoeqdsk(nxeqdmax), psigrid(nxeqdmax), agrid(nxeqdmax),
-     .   fpsi(nxeqdmax), dfpsida(nxeqdmax),
-     .   qpsi(nxeqdmax), dqpsida(nxeqdmax)
+     &   fpsi(nxeqdmax), dfpsida(nxeqdmax),
+     &   qpsi(nxeqdmax), dqpsida(nxeqdmax)
 
       real rho_tors(nxeqdmax)
 
@@ -2889,17 +2889,17 @@ c      double precision ws(lenws)
 
 
       real capr_eqdsk(nrmax, nthmax),
-     .     capz_eqdsk(nrmax, nthmax),
-     .     bmod_eqdsk(nrmax, nthmax)
+     &     capz_eqdsk(nrmax, nthmax),
+     &     bmod_eqdsk(nrmax, nthmax)
 
       real bx_eqdsk(nrmax, nthmax),
-     .     by_eqdsk(nrmax, nthmax),
-     .     bz_eqdsk(nrmax, nthmax),
-     .     drdth_eqdsk(nrmax, nthmax),
-     .     dzdth_eqdsk(nrmax, nthmax)
+     &     by_eqdsk(nrmax, nthmax),
+     &     bz_eqdsk(nrmax, nthmax),
+     &     drdth_eqdsk(nrmax, nthmax),
+     &     dzdth_eqdsk(nrmax, nthmax)
 
       real rho_eqdsk(nrmax),
-     .     theta_eqdsk(nthmax)
+     &     theta_eqdsk(nthmax)
 
       real psisep, psimag, router, z0
       integer nxeqd, nyeqd
@@ -2907,9 +2907,9 @@ c      double precision ws(lenws)
       real dzdrhok, dzdthk, drdrhok, drdthk, xjacob
 
       real dbdrhok, dbdthk,
-     .     dbxdrhok, dbxdthk,
-     .     dbydrhok, dbydthk,
-     .     dbzdrhok, dbzdthk
+     &     dbxdrhok, dbxdthk,
+     &     dbydrhok, dbydthk,
+     &     dbzdrhok, dbzdthk
 
       real rhok, thetak, theprm, rho1, bmodk, bxk, byk, bzk, psi1
       real xk(nxmx), yk(nymx)
@@ -2928,45 +2928,45 @@ c      double precision ws(lenws)
 
 
       real xkxsav(nkdim1 : nkdim2), xkysav(mkdim1 : mkdim2),
-     .     xkperp, xketa,
-     .     xkprl, ptot, pcito2, pcrto2, powtot, pscale,
-     .     cosalp, sinalp, t1, gaussian, frho, q07qa, psimax,
-     .     rhomax, xnprl, rhoant, gaussantx, gaussanty,
-     .     dthetant, gaussantth, xnuomg, gaussiant
+     &     xkperp, xketa,
+     &     xkprl, ptot, pcito2, pcrto2, powtot, pscale,
+     &     cosalp, sinalp, t1, gaussian, frho, q07qa, psimax,
+     &     rhomax, xnprl, rhoant, gaussantx, gaussanty,
+     &     dthetant, gaussantth, xnuomg, gaussiant
 
 
       integer nmodesx, nmodesy, nwdot, lmax, ibessel,
-     .    inu, iprint, iexact,
-     .    iroot, iequat, igeom,
-     .    iqx, iqprof, iez, icurve, izfunc,
-     .    nstep, nabs,
-     .    isigma, itemp,
-     .    nfreqm,  nkzm,
-     .    idens,  ibackground, iabsorb,
-     .    nzfun, nnodecx, nnodecy, nnodex, nnodey, i, j,
-     .    jequat, iflag, liw, lw, nrhs, icenter, nboundary
+     &    inu, iprint, iexact,
+     &    iroot, iequat, igeom,
+     &    iqx, iqprof, iez, icurve, izfunc,
+     &    nstep, nabs,
+     &    isigma, itemp,
+     &    nfreqm,  nkzm,
+     &    idens,  ibackground, iabsorb,
+     &    nzfun, nnodecx, nnodecy, nnodex, nnodey, i, j,
+     &    jequat, iflag, liw, lw, nrhs, icenter, nboundary
 
       integer nnoderho
 
       integer n, m, nphi
 
       real ti0, xnuead, xnu1ad, xnu2ad, xant, te0,
-     .    delta0, xwall, xnwall, delta,
-     .    epszet, amu1, amu2, z1, z2, eta,
-     .    b0, rt, ytop, ybottom, xnurf, aplasm, xnlim,
-     .    xn0, flat, b1rat, b2rat, curdnx, curdny, curdnz,
-     .    xnuabs, xbnch, xleft, xright,
-     .    telim, tilim, ti2lim, ti3lim, rhoplasm,
-     .    alphan, alphate, alphati,
-     .    dfreq,  dkz, reomg1, reomg2, reomg3,
-     .    r0, xnudip, adip, efold,
-     .    amu3, z3, eta3, xnu3ad,
-     .    xdelta, wdelta, xdelt2, wdelt2, zeffcd,
-     .    rzoom1, rzoom2, q0, prfin,
-     .    alim, grad, qavg0, ymax,
-     .    rhonorm, ekappa, xiota0, rholim, psilim, psilim_, yant,
-     .    rwleft, rwright, xwleft, xwright, psi_lim,
-     .    rwleft_auto, rwright_auto, ytop_auto, ybottom_auto
+     &    delta0, xwall, xnwall, delta,
+     &    epszet, amu1, amu2, z1, z2, eta,
+     &    b0, rt, ytop, ybottom, xnurf, aplasm, xnlim,
+     &    xn0, flat, b1rat, b2rat, curdnx, curdny, curdnz,
+     &    xnuabs, xbnch, xleft, xright,
+     &    telim, tilim, ti2lim, ti3lim, rhoplasm,
+     &    alphan, alphate, alphati,
+     &    dfreq,  dkz, reomg1, reomg2, reomg3,
+     &    r0, xnudip, adip, efold,
+     &    amu3, z3, eta3, xnu3ad,
+     &    xdelta, wdelta, xdelt2, wdelt2, zeffcd,
+     &    rzoom1, rzoom2, q0, prfin,
+     &    alim, grad, qavg0, ymax,
+     &    rhonorm, ekappa, xiota0, rholim, psilim, psilim_, yant,
+     &    rwleft, rwright, xwleft, xwright, psi_lim,
+     &    rwleft_auto, rwright_auto, ytop_auto, ybottom_auto
      
       real ytop_max, ybottom_max
 
@@ -2974,42 +2974,42 @@ c      double precision ws(lenws)
       real rplasm, rlim
 
       real xkthrho, wphase, vsound, domgk, xkthdx, omgestar, rhoi10,
-     .   v0i, vthi10, vthe, vthi, vphase, rnz, xn2, eta2,
-     .   xk0, shearedge, eta1, xn1, xmi1, xmh, xme, qi1, xmi2,
-     .   xmi3, t0i, t0i2, t0i3, t0e, q, teedge, clight, xmu0, xlnlam,
-     .   omgci10, omgrf, xmax, qe,i3, qi2, pi, eps0, xn3, qi3,
-     .   costh, sinth, radius, rnx,  rny, rnphi, ti02, ti03, twopi
+     &   v0i, vthi10, vthe, vthi, vphase, rnz, xn2, eta2,
+     &   xk0, shearedge, eta1, xn1, xmi1, xmh, xme, qi1, xmi2,
+     &   xmi3, t0i, t0i2, t0i3, t0e, q, teedge, clight, xmu0, xlnlam,
+     &   omgci10, omgrf, xmax, qe,i3, qi2, pi, eps0, xn3, qi3,
+     &   costh, sinth, radius, rnx,  rny, rnphi, ti02, ti03, twopi
 
       real xjantx, xjanty, xjantz, xjant
       real xjx(nxmx, nymx), xjy(nxmx, nymx), xjz(nxmx, nymx)
       complex xb(nxmx, nymx), xc(nxmx, nymx), xd(nxmx, nymx)
 
       real xprimec(nxmx), caprc(nxmx), xcourse(nxmx), capr(nxmx),
-     .   xprime(nxmx), x(nxmx), dx, dxc
+     &   xprime(nxmx), x(nxmx), dx, dxc
 
 
       real bxn(nxmx, nymx), byn(nxmx, nymx), bzn(nxmx, nymx),
-     .     bmod(nxmx, nymx), bmod_mid(nxmx, nymx),
-     .     bratio(nxmx, nymx),
-     .     capr_bpol(nxmx, nymx), capr_bpol_mid2(nxmx, nymx)
+     &     bmod(nxmx, nymx), bmod_mid(nxmx, nymx),
+     &     bratio(nxmx, nymx),
+     &     capr_bpol(nxmx, nymx), capr_bpol_mid2(nxmx, nymx)
      
       real bxn_eq(nxmx, nymx), byn_eq(nxmx, nymx), 
-     .     bzn_eq(nxmx, nymx), bmod_eq(nxmx, nymx)
+     &     bzn_eq(nxmx, nymx), bmod_eq(nxmx, nymx)
 
       real work(nxmx, nymx)
 
 
       real rhon(nrhomax), wdoti1avg(nrhomax), wdoti2avg(nrhomax),
-     .   wdoteavg(nrhomax), drho, dvol(nrhomax), fvol(nrhomax),
-     .   capr_bpol_mid(nrhomax), bmod_midavg(nrhomax), dldbavg(nrhomax)
+     &   wdoteavg(nrhomax), drho, dvol(nrhomax), fvol(nrhomax),
+     &   capr_bpol_mid(nrhomax), bmod_midavg(nrhomax), dldbavg(nrhomax)
 
       real dvol_xy(nrhomax), dvol_dl(nrhomax)
       real xnavg(nrhomax), fyavg(nrhomax), qhat, omgte, omgti,
-     .     vthe0, vthi0, xnuee, xnuii, xnu7omg
+     &     vthe0, vthi0, xnuee, xnuii, xnu7omg
 
       real redotj1avg(nrhomax), redotj2avg(nrhomax),
-     .     redotjeavg(nrhomax), redotj3avg(nrhomax),
-     .     redotjtavg(nrhomax)
+     &     redotjeavg(nrhomax), redotj3avg(nrhomax),
+     &     redotjtavg(nrhomax)
 
       real fypavg(nrhomax), fypi1avg(nrhomax), fypi2avg(nrhomax)
       real vyavg(nrhomax),  vyi1avg(nrhomax),  vyi2avg(nrhomax)
@@ -3020,19 +3020,19 @@ c      double precision ws(lenws)
 
 
       real psi(nxmx, nymx), rho(nxmx, nymx), 
-     .     theta0(nxmx, nymx),
-     .     bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
-     .     btau(nxmx, nymx), bzeta(nxmx, nymx),
-     .     dxdth(nxmx, nymx), dzdth(nxmx, nymx), xntau(nxmx, nymx),
-     .     xn(nxmx, nymx), xkte(nxmx, nymx), xkti(nxmx, nymx),
-     .     xkti2(nxmx, nymx), xkti3(nxmx, nymx),
-     .     xn1a(nxmx, nymx), xnea(nxmx, nymx), xn2a(nxmx, nymx),
-     .     xn3a(nxmx, nymx), omgce(nxmx, nymx),
-     .     omgci1(nxmx, nymx), omgci2(nxmx, nymx), omgci3(nxmx, nymx),
-     .     omgpe2(nxmx, nymx),
-     .     omgp12(nxmx, nymx), omgp22(nxmx, nymx), omgp32(nxmx, nymx),
-     .     xiota(nxmx, nymx), qsafety(nxmx, nymx), xlprl(nxmx, nymx),
-     .     bpol(nxmx, nymx)
+     &     theta0(nxmx, nymx),
+     &     bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
+     &     btau(nxmx, nymx), bzeta(nxmx, nymx),
+     &     dxdth(nxmx, nymx), dzdth(nxmx, nymx), xntau(nxmx, nymx),
+     &     xn(nxmx, nymx), xkte(nxmx, nymx), xkti(nxmx, nymx),
+     &     xkti2(nxmx, nymx), xkti3(nxmx, nymx),
+     &     xn1a(nxmx, nymx), xnea(nxmx, nymx), xn2a(nxmx, nymx),
+     &     xn3a(nxmx, nymx), omgce(nxmx, nymx),
+     &     omgci1(nxmx, nymx), omgci2(nxmx, nymx), omgci3(nxmx, nymx),
+     &     omgpe2(nxmx, nymx),
+     &     omgp12(nxmx, nymx), omgp22(nxmx, nymx), omgp32(nxmx, nymx),
+     &     xiota(nxmx, nymx), qsafety(nxmx, nymx), xlprl(nxmx, nymx),
+     &     bpol(nxmx, nymx)
 
       real rho_tor2d(nxmx, nymx), rho_pol2d(nxmx, nymx)
       real psi_tor2d(nxmx, nymx), psi_pol2d(nxmx, nymx)
@@ -3042,15 +3042,15 @@ c      double precision ws(lenws)
 
 
       real dbxdx(nxmx, nymx), dbydx(nxmx, nymx), dbzdx(nxmx, nymx),
-     .     dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
-     .     dbdx(nxmx, nymx),  dbdy(nxmx, nymx)
+     &     dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
+     &     dbdx(nxmx, nymx),  dbdy(nxmx, nymx)
 
       real gradprlb(nxmx, nymx)
 
       real dxxbxn(nxmx, nymx), dxxbyn(nxmx, nymx), dxxbzn(nxmx, nymx),
-     .     dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
-     .     dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
-     .     dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx, nymx)
+     &     dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
+     &     dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
+     &     dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx, nymx)
 
 
       complex ex(nxmx, nymx), ey(nxmx, nymx), ez(nxmx, nymx)
@@ -3070,56 +3070,56 @@ c      double precision ws(lenws)
       real p, pi1, pi2, pit, pi3, pe
 
       complex sigexx, sigexy, sigexz,
-     .        sigeyx, sigeyy, sigeyz,
-     .        sigezx, sigezy, sigezz
+     &        sigeyx, sigeyy, sigeyz,
+     &        sigezx, sigezy, sigezz
 
       complex sig1xx, sig1xy, sig1xz,
-     .        sig1yx, sig1yy, sig1yz,
-     .        sig1zx, sig1zy, sig1zz
+     &        sig1yx, sig1yy, sig1yz,
+     &        sig1zx, sig1zy, sig1zz
 
       complex sig2xx, sig2xy, sig2xz,
-     .        sig2yx, sig2yy, sig2yz,
-     .        sig2zx, sig2zy, sig2zz
+     &        sig2yx, sig2yy, sig2yz,
+     &        sig2zx, sig2zy, sig2zz
 
       complex sig3xx, sig3xy, sig3xz,
-     .        sig3yx, sig3yy, sig3yz,
-     .        sig3zx, sig3zy, sig3zz
+     &        sig3yx, sig3yy, sig3yz,
+     &        sig3zx, sig3zy, sig3zz
 
 
       complex
-     .     sigxx, sigxy, sigxz,
-     .     sigyx, sigyy, sigyz,
-     .     sigzx, sigzy, sigzz
+     &     sigxx, sigxy, sigxz,
+     &     sigyx, sigyy, sigyz,
+     &     sigzx, sigzy, sigzz
 
       complex
-     .     xkxx, xkxy, xkxz,
-     .     xkyx, xkyy, xkyz,
-     .     xkzx, xkzy, xkzz
+     &     xkxx, xkxy, xkxz,
+     &     xkyx, xkyy, xkyz,
+     &     xkzx, xkzy, xkzz
       complex scap, scold
 
       complex xk1xx, xk1xy, xk1xz,
-     .        xk1yx, xk1yy, xk1yz,
-     .        xk1zx, xk1zy, xk1zz
+     &        xk1yx, xk1yy, xk1yz,
+     &        xk1zx, xk1zy, xk1zz
 
       complex xk2xx, xk2xy, xk2xz,
-     .        xk2yx, xk2yy, xk2yz,
-     .        xk2zx, xk2zy, xk2zz
+     &        xk2yx, xk2yy, xk2yz,
+     &        xk2zx, xk2zy, xk2zz
 
 
       complex
-     .     dxx, dxy, dxz,
-     .     dyx, dyy, dyz,
-     .     dzx, dzy, dzz
+     &     dxx, dxy, dxz,
+     &     dyx, dyy, dyz,
+     &     dzx, dzy, dzz
 
       complex
-     .     bxx, bxy, bxz,
-     .     byx, byy, byz,
-     .     bzx, bzy, bzz
+     &     bxx, bxy, bxz,
+     &     byx, byy, byz,
+     &     bzx, bzy, bzz
 
       complex sk1, sk2, sk3, sk4, sk5, sk0
 
       real yprimec(nxmx), ycourse(nxmx),
-     .     yprime(nxmx), y(nxmx), dy, dyc
+     &     yprime(nxmx), y(nxmx), dy, dyc
 
 
       CHARACTER*128 :: eqdsk
@@ -3568,17 +3568,17 @@ c      write (115, *) "ytop = ", ytop
 c      write (115, *) "ybottom = ", ybottom
 
 !     ------------------------------
-!	read cql3d data in u and theta
+!       read cql3d data in u and theta
 !     ------------------------------
 
-!	read (39, 9311) n_u
-!	read (39, 9311) n_psi
-!	read (39, 310) vc
+!       read (39, 9311) n_u
+!       read (39, 9311) n_psi
+!       read (39, 310) vc
 
 !        read (39, 310) (u(i_u), i_u = 1, n_u)
-!	read (39, 9311) (n_theta_(i_psi), i_psi = 1, n_psi)
+!       read (39, 9311) (n_theta_(i_psi), i_psi = 1, n_psi)
 !        read (39, 310) ((theta_(i_theta, i_psi),
-!     .         i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
+!     &         i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
 
 !        read (39, 310) (rho_a(i_psi), i_psi = 1, n_psi)
 
@@ -3586,20 +3586,20 @@ c      write (115, *) "ybottom = ", ybottom
       vc_mks = vc * 1.0e-02
 
 !     ---------------------
-!	Write some CQL3D data
+!       Write some CQL3D data
 !     ---------------------
 
-c	WRITE (115,*)
-c	WRITE (115,*) "n_theta_max = ", n_theta_max
-c	WRITE (115,*) "n_u = ", n_u
-c	WRITE (115,*) "n_psi = ", n_psi
-c	WRITE (115,*) "n_theta_(i) = ", n_theta_
-c	WRITE (115,*) "vc = ", vc
-c	WRITE (115,*) "vc_mks = ", vc_mks, "m/sec"
+c       WRITE (115,*)
+c       WRITE (115,*) "n_theta_max = ", n_theta_max
+c       WRITE (115,*) "n_u = ", n_u
+c       WRITE (115,*) "n_psi = ", n_psi
+c       WRITE (115,*) "n_theta_(i) = ", n_theta_
+c       WRITE (115,*) "vc = ", vc
+c       WRITE (115,*) "vc_mks = ", vc_mks, "m/sec"
 
 
 
-c	WRITE(115,*)
+c       WRITE(115,*)
 
 c      write(115, *)
 c      write(115, *) "rho/a(i_psi)"
@@ -3628,10 +3628,10 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
 *     ------------------------------
 
       call readeq_ga2(nxeqdmax, nyeqdmax, rhoeqdsk,
-     .   psigrid, agrid, psimag, psisep,
-     .   rmin, rmax, zmin, zmax, rmaxis, zmaxis, b0,
-     .   rg, zg, psig, nxeqd, nyeqd, fpsi,
-     .   psio, ro, zo, qpsi, eqdsk, psi_tor_max, nrhoeqd)
+     &   psigrid, agrid, psimag, psisep,
+     &   rmin, rmax, zmin, zmax, rmaxis, zmaxis, b0,
+     &   rg, zg, psig, nxeqd, nyeqd, fpsi,
+     &   psio, ro, zo, qpsi, eqdsk, psi_tor_max, nrhoeqd)
           
      
       psig2 = psig
@@ -3657,10 +3657,10 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
       rwright_auto = 0.0     
 
       do i = 2, nxeqd
-	 if (psig2(i,j) .gt. 0. .and. psig2(i-1,j) .lt. 0.)
-     .                                              rwleft_auto= rg(i)	 
-	 if (psig2(i,j) .lt. 0. .and. psig2(i-1,j) .gt. 0.)
-     .                                              rwright_auto=rg(i)	 
+         if (psig2(i,j) .gt. 0. .and. psig2(i-1,j) .lt. 0.)
+     &                                              rwleft_auto= rg(i)   
+         if (psig2(i,j) .lt. 0. .and. psig2(i-1,j) .gt. 0.)
+     &                                              rwright_auto=rg(i)   
       end do
       
              
@@ -3671,22 +3671,22 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
       
       i = imaxis * .7
       
-      ytop_auto = 0.0       	                  
+      ytop_auto = 0.0                             
       do j = nyeqd/2, nyeqd
-	 if (psig2(i,j) .lt. 0. .and. psig2(i,j-1) .gt. 0.)
-     .                                                ytop_auto = zg(j)	 
+         if (psig2(i,j) .lt. 0. .and. psig2(i,j-1) .gt. 0.)
+     &                                                ytop_auto = zg(j)  
       end do
            
       ybottom_auto = 0.0      
       do j = 2, nyeqd / 2
- 	 if (psig2(i,j) .gt. 0. .and. psig2(i,j-1) .lt. 0.)
-     .                                             ybottom_auto = zg(j)	 
+         if (psig2(i,j) .gt. 0. .and. psig2(i,j-1) .lt. 0.)
+     &                                             ybottom_auto = zg(j)  
       end do
-            	    	                                         
+                                                                 
 *     -------------------------
 *     adjust boundaries outward
-*     -------------------------                  	         
-      ytop_auto    = ytop_auto    + dzg32	    
+*     -------------------------                                  
+      ytop_auto    = ytop_auto    + dzg32           
       ybottom_auto = ybottom_auto - dzg32                                                       
       rwright_auto = rwright_auto + drg32 * 2.0     
       rwleft_auto  = rwleft_auto  - drg32 * 2.0
@@ -3705,9 +3705,9 @@ c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
       do i = 1, nxeqd
          do j = 1, nyeqd
             call deriv_r(psig, nxeqdmax, nyeqdmax, i, j, nxeqd, nyeqd,
-     .          rg, psirg(i,j), dum)
+     &          rg, psirg(i,j), dum)
             call deriv_z(psig, nxeqdmax, nyeqdmax, i, j, nxeqd, nyeqd,
-     .          zg, psizg(i,j), dum)
+     &          zg, psizg(i,j), dum)
          end do
       end do
 
@@ -3725,7 +3725,7 @@ c      write(6, *) "ybottom = ", ybottom
 
 c      do i = 1, nxeqd
 c         write(6, 1312)i, rg(i), psig(i, nyeqd/2),
-c     .        psirg(i, nyeqd/2), psizg(i, nyeqd/2), psirzg(i, nyeqd/2)
+c     &        psirg(i, nyeqd/2), psizg(i, nyeqd/2), psirzg(i, nyeqd/2)
 c      end do
 
 
@@ -3783,18 +3783,18 @@ c--   x(i) : -xmax / 2.0   to   xmax / 2.0
 
       do i = 1, nnodex
          xprime(i) = (i - 1) * dx
-     .      + dx / 2.0
+     &      + dx / 2.0
 c--   Note: the code gives slightly smoother results with dx/2.0 added
          x(i) = xprime(i) + xwleft
          capr(i) = rt + x(i)
 
          xkphi(i) = nphi / capr(i)
-	 
-	 diff = abs(capr(i) - r0)	 
-	 if(diff .lt. diffmin) then
-	    diffmin = diff
-	    i0 = i
-	 end if
+         
+         diff = abs(capr(i) - r0)        
+         if(diff .lt. diffmin) then
+            diffmin = diff
+            i0 = i
+         end if
 
 c         write(6, 1314)i, i0, xprime(i), x(i), capr(i), diff
 
@@ -3813,15 +3813,15 @@ c--   y(j) : -ymax / 2.0   to   ymax / 2.0
 
       do j = 1, nnodey
          yprime(j) = (j - 1) * dy 
-     .      + dy / 2.0
+     &      + dy / 2.0
 c--      Note: the code gives slightly smoother results with dy/2.0 added
          y(j) = yprime(j) + ybottom
-	 
-	 diff = abs(y(j) - z0)	 
-	 if(diff .lt. diffmin) then
-	    diffmin = diff
-	    j0 = j
-	 end if	 
+         
+         diff = abs(y(j) - z0)   
+         if(diff .lt. diffmin) then
+            diffmin = diff
+            j0 = j
+         end if  
 
 c         write(6, 1314)j, j0, yprime(j), y(j), diff, z0
       end do
@@ -3858,21 +3858,21 @@ c         write(6, 1312)n, rhon(n)
 *------------------------------
 
       call aorsa_grid(nnodex, nnodey, capr, y, nxmx, nymx,
-     .    psisep, psimag, bx, by, bz, bxn, byn, bzn, bmod,
-     .    psi_pol2d, rho_pol2d, rg, zg, psig, psirg, psizg, psirzg,
-     .    psis, fs, fs1, nxeqdmax, nyeqdmax, nxeqd, nyeqd, ma, psio,
-     .    qs, qs1, qsafety, r0, b0, 
-     .    rho_tors, rho_tor2d)
+     &    psisep, psimag, bx, by, bz, bxn, byn, bzn, bmod,
+     &    psi_pol2d, rho_pol2d, rg, zg, psig, psirg, psizg, psirzg,
+     &    psis, fs, fs1, nxeqdmax, nyeqdmax, nxeqd, nyeqd, ma, psio,
+     &    qs, qs1, qsafety, r0, b0, 
+     &    rho_tors, rho_tor2d)
      
      
       if (myid .eq. 0) then
          write(6, *) 
-     . "   i       R(x)        x          bx           by           bz" 
+     & "   i       R(x)        x          bx           by           bz" 
          write(15,*) 
-     . "   i       R(x)        x          bx           by           bz"
+     & "   i       R(x)        x          bx           by           bz"
       end if
-	  	 
-      j = jequat	 
+                 
+      j = jequat         
       do i = 1, nnodex
          if (myid .eq. 0) then
             write(6, 2163)i, capr(i), x(i), bx(i, j), by(i,j), bz(i,j)
@@ -3887,9 +3887,9 @@ c         write(6, 1312)n, rhon(n)
 *        ----------------------------------------------------   
 
             do i = 1, nnodex
-               do j = 1, nnodey 	    
-	          rho(i,j) = rho_pol2d(i,j)
-	          psi(i,j) = psi_pol2d(i,j)
+               do j = 1, nnodey             
+                  rho(i,j) = rho_pol2d(i,j)
+                  psi(i,j) = psi_pol2d(i,j)
                   psi_dim(i,j) = psi(i,j) * psio
                end do
             end do
@@ -3903,14 +3903,14 @@ c         write(6, 1312)n, rhon(n)
          if(n_prof_flux .ne. 0)then
             do i = 1, nnodex
                do j = 1, nnodey 
-	          psi_tor2d(i,j) = rho_tor2d(i,j)**2
-		     
-		  if(rho(i,j) .lt. 1.0)then	       	    
-	             rho(i,j) = rho_tor2d(i,j)
-	             psi(i,j) = psi_tor2d(i,j) 
-	             psi_dim(i,j) = psi(i,j) * psi_tor_max
-	       	  end if 
-		      
+                  psi_tor2d(i,j) = rho_tor2d(i,j)**2
+                     
+                  if(rho(i,j) .lt. 1.0)then                 
+                     rho(i,j) = rho_tor2d(i,j)
+                     psi(i,j) = psi_tor2d(i,j) 
+                     psi_dim(i,j) = psi(i,j) * psi_tor_max
+                  end if 
+                      
                end do
             end do
          end if
@@ -3918,10 +3918,10 @@ c         write(6, 1312)n, rhon(n)
       if (myid .eq. 0)then
       
          write(6, *)  "psio = ", psio
-	 write(15, *) "psio = ", psio
-	 write(6, *)  "psi_tor_max = ", psi_tor_max
-	 write(15, *) "psi_tor_max = ", psi_tor_max
-	       
+         write(15, *) "psio = ", psio
+         write(6, *)  "psi_tor_max = ", psi_tor_max
+         write(15, *) "psi_tor_max = ", psi_tor_max
+               
          do i = 1, nnodex
             write(6,  1312)i, capr(i), rho(i,16) 
             write(15, 1312)i, capr(i), rho(i,16)
@@ -3950,7 +3950,7 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
       do i = 1, nnodex
          do j = 1, nnodey
             btau(i,j) = sqrt(bxn(i,j)**2 + byn(i,j)**2)
-	    bpol(i,j) = btau(i,j) * bmod(i,j)
+            bpol(i,j) = btau(i,j) * bmod(i,j)
             bzeta(i,j) = bzn(i,j)
          end do
       end do
@@ -3961,45 +3961,45 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
 *     -------------------------------------
       do i = 1, nnodex
          do j = 1, nnodey
-	    capr_bpol(i,j) = capr(i) * bpol(i,j)
-	    
-	 end do
+            capr_bpol(i,j) = capr(i) * bpol(i,j)
+            
+         end do
       end do
 
       do i = 1, nnodex
          do j = 1, nnodey
             call midplane(i, j, capr_bpol, capr_bpol_mid2(i,j),
-     .          rho, nxmx, nymx, nnodex, nnodey, capr, rt, 0.0, jmid)
-     	   end do
+     &          rho, nxmx, nymx, nnodex, nnodey, capr, rt, 0.0, jmid)
+           end do
       end do
          
 
       call polavg(capr_bpol_mid2, capr_bpol_mid, rho, nxmx, nymx,
-     .   nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)   
+     &   nrhomax,
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)   
          
      
       if (myid .eq. 0)then
       
          write(15, *)"rt = ", rt
-	 write(15, *)"b0 = ", b0
-	 write(15, *)"dx = ", dx
-	 write(15, *)"dy = ", dy
-	 write(15, *)"drho = ", drho	 
+         write(15, *)"b0 = ", b0
+         write(15, *)"dx = ", dx
+         write(15, *)"dy = ", dy
+         write(15, *)"drho = ", drho     
 
          write(15, *)
          write(15, *) "     i    capr  rhoij  capr_bpol  capr_bpol_mid2"
          write(15, *)
-	
+        
          write(6, *)
          write(6, *)  "     i    capr  rhoij  capr_bpol  capr_bpol_mid2"
          write(6, *)
-	 
+         
          do i = 1, nnodex
             write(6,  1312)i, capr(i), rho(i, jequat), 
-     .                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
+     &                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
             write(15, 1312)i, capr(i), rho(i, jequat), 
-     .                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
+     &                  capr_bpol(i,  jequat), capr_bpol_mid2(i, jequat)
          end do
 
          write(15, *)
@@ -4022,17 +4022,17 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
       do i = 1, nnodex
          do j = 1, nnodey
             call midplane(i, j, bmod, bmod_mid(i,j), rho,
-     .                nxmx, nymx, nnodex, nnodey, capr, rt, b0, jmid)
+     &                nxmx, nymx, nnodex, nnodey, capr, rt, b0, jmid)
          end do
       end do
 
       call polavg(bmod_mid, bmod_midavg, rho, nxmx, nymx,
-     .   nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
+     &   nrhomax,
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
      
      
 c      if (myid .eq. 0)then
-      	 
+         
 c         write(15, *)
 c         write(15, *) "     n        bmod_midavg"
 
@@ -4044,7 +4044,7 @@ c         do n = 1, nnoderho
 c            write(6,  1312)n, bmod_midavg(n)
 c            write(15, 1312)n, bmod_midavg(n)
 c         end do
-	 
+         
 c      end if
      
      
@@ -4054,7 +4054,7 @@ c      end if
             bratio(i,j) = bmod_mid(i,j) / bmod(i,j)
 c            if(bratio(i,j) .gt. 1.0)
 c            if(bratio(i,j) .lt. 0.0)
-c     .         write(6, *)i, j, bratio(i,j),rho(i,j)
+c     &         write(6, *)i, j, bratio(i,j),rho(i,j)
          end do
       end do
 
@@ -4102,7 +4102,7 @@ c      if(myid .eq. 0) then
 
 c         write(40, 309) nnodex, nnodey
 c         write(40, 310) rwleft, rwright, ytop, ybottom
-c         write(40, 310) rmaxis, zmaxis, b0, psio, psimag, psi_tor_max	    
+c         write(40, 310) rmaxis, zmaxis, b0, psio, psimag, psi_tor_max      
 c         write(40, 310) ((bxn(i,j), i = 1, nnodex), j = 1, nnodey)
 c         write(40, 310) ((byn(i,j), i = 1, nnodex), j = 1, nnodey)
 c         write(40, 310) ((bzn(i,j), i = 1, nnodex), j = 1, nnodey)
@@ -4121,34 +4121,34 @@ c      end if
       do i = 1, nnodex
          do j = 1, nnodey
             call deriv_r(bxn, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbxdx(i,j), dxxbxn(i,j))
+     &         dbxdx(i,j), dxxbxn(i,j))
             call deriv_r(byn, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbydx(i,j), dxxbyn(i,j))
+     &         dbydx(i,j), dxxbyn(i,j))
             call deriv_r(bzn, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbzdx(i,j), dxxbzn(i,j))
+     &         dbzdx(i,j), dxxbzn(i,j))
 
 
             call deriv_z(bxn, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbxdy(i,j), dyybxn(i,j))
+     &         dbxdy(i,j), dyybxn(i,j))
             call deriv_z(byn, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbydy(i,j), dyybyn(i,j) )
+     &         dbydy(i,j), dyybyn(i,j) )
             call deriv_z(bzn, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbzdy(i,j), dyybzn(i,j) )
+     &         dbzdy(i,j), dyybzn(i,j) )
 
 
             call deriv_rz(bxn, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxybxn(i,j))
+     &         capr, y, dxybxn(i,j))
             call deriv_rz(byn, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxybyn(i,j))
+     &         capr, y, dxybyn(i,j))
             call deriv_rz(bzn, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxybzn(i,j))
+     &         capr, y, dxybzn(i,j))
 
             call deriv_r(bmod, nxmx, nymx, i, j, nnodex, nnodey, capr,
-     .         dbdx(i,j), dxxmodb(i,j))
+     &         dbdx(i,j), dxxmodb(i,j))
             call deriv_z(bmod, nxmx, nymx, i, j, nnodex, nnodey, y,
-     .         dbdy(i,j), dyymodb(i,j) )
+     &         dbdy(i,j), dyymodb(i,j) )
             call deriv_rz(bmod, nxmx, nymx, i, j, nnodex, nnodey,
-     .         capr, y, dxymodb(i,j))
+     &         capr, y, dxymodb(i,j))
 
 
             gradprlb(i,j) = bxn(i,j) * dbdx(i,j) + byn(i,j) * dbdy(i,j)
@@ -4157,48 +4157,48 @@ c      end if
       end do
 
 
-*	--------------------------------------------------------
+*       --------------------------------------------------------
 *     Set spline parameters and calculate spline coefficients:
-*	sigma = 0.0 for tensor product cubic splines
-*	sigma = 50 for bi-linear interpolation
-*	documentation recommend sigma=1.0 as standard value
-*	--------------------------------------------------------
- 	sigma = 1.0
+*       sigma = 0.0 for tensor product cubic splines
+*       sigma = 50 for bi-linear interpolation
+*       documentation recommend sigma=1.0 as standard value
+*       --------------------------------------------------------
+        sigma = 1.0
       islpsw = 255
       islpsw1 = 3
 
       call surf1 (nnodex, nnodey, xprime, yprime, bxn, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbxn, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbxn, temp,
+     &            sigma, ierr)
       call surf1 (nnodex, nnodey, xprime, yprime, byn, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbyn, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbyn, temp,
+     &            sigma, ierr)
       call surf1 (nnodex, nnodey, xprime, yprime, bzn, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbzn, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbzn, temp,
+     &            sigma, ierr)
       call surf1 (nnodex, nnodey, xprime, yprime, bmod, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbmod, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbmod, temp,
+     &            sigma, ierr)
      
       call surf1 (nnodex, nnodey, xprime, yprime, bratio, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zbratio, temp,
-     .            sigma, ierr)     
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zbratio, temp,
+     &            sigma, ierr)     
      
       call surf1 (nnodex, nnodey, xprime, yprime, psi, nxmx,
-     .            zx1, zxm, zy1, zyn,
-     .            zxy11, zxym1, zxy1n, zxymn,
-     .            islpsw, zpsi, temp,
-     .            sigma, ierr)
+     &            zx1, zxm, zy1, zyn,
+     &            zxy11, zxym1, zxy1n, zxymn,
+     &            islpsw, zpsi, temp,
+     &            sigma, ierr)
      
 
 
@@ -4220,32 +4220,32 @@ c        do j = 1, nnodey - 1
 
             xprimex0 = x_extint - xwleft
             yprimex0 = y_extint - ybottom
-	    
-	    psix_prev = psix
-	    
+            
+            psix_prev = psix
+            
             psix =surf2(xprimex0, yprimex0, nnodex, nnodey, 
-     .         xprime, yprime,
-     .         psi, nxmx, zpsi, sigma)
+     &         xprime, yprime,
+     &         psi, nxmx, zpsi, sigma)
      
             if(psix .gt. psilim_ .and. psix_prev .le. psilim_)i_max =i-1     
-	    
-	    if(psix .le. psilim_)then
-	    
-c	    write(6, 1314) i, j, psix, psilim_
+            
+            if(psix .le. psilim_)then
+            
+c           write(6, 1314) i, j, psix, psilim_
 
             i_psi = 1
-	 
-	
-	    do i_sgn_vprl = 1, 2
-	    
-	    if(i_sgn_vprl .eq. 1) sgn_vprl = -1.0   
+         
+        
+            do i_sgn_vprl = 1, 2
+            
+            if(i_sgn_vprl .eq. 1) sgn_vprl = -1.0   
             if(i_sgn_vprl .eq. 2) sgn_vprl =  1.0     
 
-	    
+            
 *           ---------------------
 *           Set extint parameters
 *           ---------------------
-	    
+            
             h0 = 1.0e-04
             nmax = 2
       
@@ -4266,14 +4266,14 @@ c	    write(6, 1314) i, j, psix, psilim_
 
             y_phi(1) = xprimex0
             y_phi(2) = yprimex0
-	    
-	    icell = int(xprimex0 / dx) + 1
+            
+            icell = int(xprimex0 / dx) + 1
             jcell = int(yprimex0 / dy) + 1
 
             length = 0.0
             dtau_tot_sum = 0.0
-	    dldb_tot_sum = 0.0
-	    
+            dldb_tot_sum = 0.0
+            
             call f(phi, y_phi, dy_phi)
             modb_init = modb
 
@@ -4281,7 +4281,7 @@ c	    write(6, 1314) i, j, psix, psilim_
                dtau_tot(n_theta) = 0.0
                sinth2_init(n_theta, i_psi)=sin(theta_(n_theta,i_psi))**2
             end do
-	    
+            
 
 
 *           -------------------------------------
@@ -4289,14 +4289,14 @@ c	    write(6, 1314) i, j, psix, psilim_
 *           -------------------------------------
 
             i_stop = 0
-	    i_box  = 1
-	
+            i_box  = 1
+        
             do n_phi = 1, norb_dim
 
-	       fcount = 0
+               fcount = 0
                xprime_prev = y_phi(1)
                yprime_prev = y_phi(2)
-	       phi_prev    = phi
+               phi_prev    = phi
                length_prev = length
 
                dxdphi_prev = dxdphi
@@ -4307,7 +4307,7 @@ c	    write(6, 1314) i, j, psix, psilim_
 
                if(ncell .eq. 0 .and. n_phi .eq. 1)nphi_enter = n_phi
                if(ncell .eq. 0 .and. n_phi .ne. 1)nphi_enter = n_phi - 1
-	       
+               
 
                call extint(nmax, phi, y_phi, f, h0, mmax, error)
 
@@ -4322,17 +4322,17 @@ c	    write(6, 1314) i, j, psix, psilim_
 
                delta_x = xprimex - xprime_prev
                delta_y = yprimex - yprime_prev
-	       delta_phi = phi - phi_prev
-	       delta_z = caprx * delta_phi
-	       
-	       delta_l = sqrt(delta_x**2 + delta_y**2 + delta_z**2)
+               delta_phi = phi - phi_prev
+               delta_z = caprx * delta_phi
+               
+               delta_l = sqrt(delta_x**2 + delta_y**2 + delta_z**2)
                length = length + delta_l
 
 
                x_extint = xprimex + xwleft
                y_extint = yprimex + ybottom
 
-	       
+               
 *              ----------------------------------------------
 *              Save arrays of phi, R, Z, Bmod and l = length
 *              ----------------------------------------------
@@ -4349,10 +4349,10 @@ c	    write(6, 1314) i, j, psix, psilim_
 *              Numerical dtau integral
 *              -----------------------
                if (n_phi .ge. 2) then
-		  dl_bratio(n_phi) = delta_l * bratio_phi
+                  dl_bratio(n_phi) = delta_l * bratio_phi
 
                   argi = 1.0 - modb / modb_init 
-     .		              * sinth2_init(n_theta_check, i_psi)
+     &                        * sinth2_init(n_theta_check, i_psi)
 
                   dl_vprl(n_phi) = 0.0
 
@@ -4366,19 +4366,19 @@ c	    write(6, 1314) i, j, psix, psilim_
 
 
 c               write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     .            capr_x(n_phi), len_x(n_phi),
-c     .            zprimex, bratio_phi, icell, jcell, fcount
+c     &            capr_x(n_phi), len_x(n_phi),
+c     &            zprimex, bratio_phi, icell, jcell, fcount
 
 c               write(115,1213)n_phi, ncell, phin_x(n_phi),
-c     .            capr_x(n_phi), len_x(n_phi),
-c     .            zprimex, bratio_phi, icell, jcell, fcount
+c     &            capr_x(n_phi), len_x(n_phi),
+c     &            zprimex, bratio_phi, icell, jcell, fcount
 
 
 
 c               h0 = twopi / 720.
                 h0 = twopi / 360.
-		
-		go to 200
+                
+                go to 200
 
 *              ---------------------------------------------------------
 *              If cell changes in x, redo the step to land on x boundary
@@ -4386,7 +4386,7 @@ c               h0 = twopi / 720.
 
                if (icell .ne. icell_prev .and. ncell .ne. 1) then
 
-	          fcount = 0
+                  fcount = 0
                   y_phi(1) = xprime_prev
                   y_phi(2) = yprime_prev
                   phi      = phi_prev
@@ -4405,9 +4405,9 @@ c               h0 = twopi / 720.
 
 
                   call extint(nmax, phi, y_phi, f, h0, mmax, error)
-		  
-	          xprimex = y_phi(1)
-	          yprimex = y_phi(2)
+                  
+                  xprimex = y_phi(1)
+                  yprimex = y_phi(2)
 
                   icell = int(xprimex / dx) + 1
                   jcell = int(yprimex / dy) + 1
@@ -4416,11 +4416,11 @@ c               h0 = twopi / 720.
 
                   delta_x = xprimex - xprime_prev
                   delta_y = yprimex - yprime_prev
-	          delta_phi = phi - phi_prev
-	          delta_z = caprx * delta_phi
-	       
-	          delta_l = sqrt(delta_x**2 + delta_y**2 + delta_z**2)
-		  
+                  delta_phi = phi - phi_prev
+                  delta_z = caprx * delta_phi
+               
+                  delta_l = sqrt(delta_x**2 + delta_y**2 + delta_z**2)
+                  
                   length = length + delta_l
 
                   x_extint = xprimex + xwleft
@@ -4437,10 +4437,10 @@ c               h0 = twopi / 720.
 *                Numerical dtau integral
 *                -----------------------
                  if (n_phi .ge. 2) then
-		    dl_bratio(n_phi) = delta_l * bratio_phi
+                    dl_bratio(n_phi) = delta_l * bratio_phi
 
                     argi = 1.0 - modb / modb_init 
-     .		              * sinth2_init(n_theta_check, i_psi)
+     &                        * sinth2_init(n_theta_check, i_psi)
 
                     dl_vprl(n_phi) = 0.0
 
@@ -4454,12 +4454,12 @@ c               h0 = twopi / 720.
 
 
 c                  write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     .               capr_x(n_phi), len_x(n_phi),
-c     .               zprimex, bratio_phi, icell, jcell, fcount
+c     &               capr_x(n_phi), len_x(n_phi),
+c     &               zprimex, bratio_phi, icell, jcell, fcount
 
 c                  write(115,1213)n_phi, ncell, phin_x(n_phi),
-c     .               capr_x(n_phi), len_x(n_phi),
-c     .               zprimex, bratio_phi, icell, jcell, fcount
+c     &               capr_x(n_phi), len_x(n_phi),
+c     &               zprimex, bratio_phi, icell, jcell, fcount
 
                   ncell = 0
 
@@ -4467,8 +4467,8 @@ c     .               zprimex, bratio_phi, icell, jcell, fcount
 
 c                  write(6, *)"nphi_enter = ", nphi_enter
 c                  write(6, *)"nphi_exit = ",  nphi_exit
-		  
-c		  write(115, *)"nphi_enter = ", nphi_enter
+                  
+c                 write(115, *)"nphi_enter = ", nphi_enter
 c                  write(115, *)"nphi_exit = ",  nphi_exit
 
 
@@ -4476,15 +4476,15 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
 *                 Analytic dtau integral:
 *                 ------------------------
                   call fdtau(dtau, nxmx, nymx, len_x, modb_x,
-     .               n_theta_max, n_psi_max, norb_dim, sinth2_init, 
-     .               modb_init, n_theta_,
-     .               i_psi, i, j, nphi_enter, nphi_exit, sgn_vprl)
+     &               n_theta_max, n_psi_max, norb_dim, sinth2_init, 
+     &               modb_init, n_theta_,
+     &               i_psi, i, j, nphi_enter, nphi_exit, sgn_vprl)
 
                   do n_theta = 1, n_theta_(i_psi)
                      dtau_tot(n_theta) = dtau_tot(n_theta)
-     .                                           + dtau(n_theta)
+     &                                           + dtau(n_theta)
                      if(i_box .eq. 1) dtau_first(n_theta) 
-     .                                  =   dtau(n_theta)
+     &                                  =   dtau(n_theta)
                   end do
 
 
@@ -4497,32 +4497,32 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
                   do nphii = nphi_enter + 1, nphi_exit - 1
                      dtau_sum = dtau_sum + dl_vprl(nphii)
                   end do
-		  
+                  
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_enter)
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_exit)
-		  
-		  
+                  
+                  
 c                  do nphii = nphi_enter, nphi_exit
 c                     write(6, 1312)nphii, dl_vprl(nphii)
-c                  end do		  
+c                  end do                 
 
 
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
-		  
+                  
 
 c                  write(6, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
 
 c                  write(115, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
  
- 		  i_box = i_box + 1
+                  i_box = i_box + 1
 
                   go to 200
 
@@ -4534,7 +4534,7 @@ c     .                i_box
 
                if (jcell .ne. jcell_prev .and. ncell .ne. 1) then
 
-	          fcount = 0
+                  fcount = 0
                   y_phi(1) = xprime_prev
                   y_phi(2) = yprime_prev
                   phi      = phi_prev
@@ -4551,20 +4551,20 @@ c     .                i_box
                   h0 = abs(2.0 * delta_y / (dydphi + dydphi_prev))
 
                   call extint(nmax, phi, y_phi, f, h0, mmax, error)
-		  
-	          xprimex = y_phi(1)
-	          yprimex = y_phi(2)
+                  
+                  xprimex = y_phi(1)
+                  yprimex = y_phi(2)
 
                   icell = int(xprimex / dx) + 1
                   jcell = int(yprimex / dy) + 1
 
                   delta_x = xprimex - xprime_prev
                   delta_y = yprimex - yprime_prev
-	          delta_phi = phi - phi_prev
-	          delta_z = caprx * delta_phi
-	       
-	          delta_l = sqrt(delta_x**2 + delta_y**2 + delta_z**2)
-		  
+                  delta_phi = phi - phi_prev
+                  delta_z = caprx * delta_phi
+               
+                  delta_l = sqrt(delta_x**2 + delta_y**2 + delta_z**2)
+                  
                   length = length + delta_l
 
                   x_extint = xprimex + xwleft
@@ -4582,10 +4582,10 @@ c     .                i_box
 *                Numerical dtau integral
 *                -----------------------
                  if (n_phi .ge. 2) then
-		    dl_bratio(n_phi) = delta_l * bratio_phi
+                    dl_bratio(n_phi) = delta_l * bratio_phi
 
                     argi = 1.0 - modb / modb_init 
-     .		              * sinth2_init(n_theta_check, i_psi)
+     &                        * sinth2_init(n_theta_check, i_psi)
 
                     dl_vprl(n_phi) = 0.0
 
@@ -4598,12 +4598,12 @@ c     .                i_box
 
 
 c                  write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     .               capr_x(n_phi), len_x(n_phi),
-c     .               zprimex, bratio_phi, icell, jcell, fcount
+c     &               capr_x(n_phi), len_x(n_phi),
+c     &               zprimex, bratio_phi, icell, jcell, fcount
 
 c                  write(115, 1213)n_phi, ncell, phin_x(n_phi),
-c     .               capr_x(n_phi), len_x(n_phi),
-c     .               zprimex, bratio_phi, icell, jcell, fcount
+c     &               capr_x(n_phi), len_x(n_phi),
+c     &               zprimex, bratio_phi, icell, jcell, fcount
 
                   ncell = 0
 
@@ -4611,7 +4611,7 @@ c     .               zprimex, bratio_phi, icell, jcell, fcount
 
 c                  write(6, *)"nphi_enter = ", nphi_enter
 c                  write(6, *)"nphi_exit = ",  nphi_exit
-		  
+                  
 c                  write(115, *)"nphi_enter = ", nphi_enter
 c                  write(115, *)"nphi_exit = ",  nphi_exit
 
@@ -4619,15 +4619,15 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
 *                 Analytic dtau integral:
 *                 ----------------------
                   call fdtau(dtau, nxmx, nymx, len_x, modb_x,
-     .               n_theta_max, n_psi_max, norb_dim, sinth2_init, 
-     .               modb_init, n_theta_,
-     .               i_psi, i, j, nphi_enter, nphi_exit, sgn_vprl)
+     &               n_theta_max, n_psi_max, norb_dim, sinth2_init, 
+     &               modb_init, n_theta_,
+     &               i_psi, i, j, nphi_enter, nphi_exit, sgn_vprl)
 
                   do n_theta = 1, n_theta_(i_psi)
                      dtau_tot(n_theta) = dtau_tot(n_theta)
-     .                                           + dtau(n_theta)
+     &                                           + dtau(n_theta)
                      if(i_box .eq. 1) dtau_first(n_theta) 
-     .                                  =   dtau(n_theta)
+     &                                  =   dtau(n_theta)
                   end do
 
 
@@ -4643,24 +4643,24 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
 
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_enter)
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_exit)
-		  
+                  
 
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
-		  
+                  
 
 c                  write(6, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
 
 c                  write(115, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
 
-		   i_box = i_box + 1
+                   i_box = i_box + 1
 
                   go to 200
 
@@ -4673,11 +4673,11 @@ c     .                i_box
 *             (i.e. B decreases)
 *             -----------------------------------------------
               if(n_phi .ge. 2)then
-	         delta_b = (modb_x(n_phi) - modb_x(n_phi -1))
-	         if (delta_b .ge. 1.0e-05 .and. i_stop .eq. 0)i_stop = 1
+                 delta_b = (modb_x(n_phi) - modb_x(n_phi -1))
+                 if (delta_b .ge. 1.0e-05 .and. i_stop .eq. 0)i_stop = 1
                  if (delta_b .lt. -1.0e-05 .and. i_stop .eq. 1)go to 201
               end if
-		
+                
            end do       ! end of n_phi loop along orbit !
 *          -----------------------
 *          End of field line trace
@@ -4688,7 +4688,7 @@ c     .                i_box
 
 c                  write(6, *)"nphi_enter = ", nphi_enter
 c                  write(6, *)"nphi_exit = ",  nphi_exit
-		  
+                  
 c                  write(115, *)"nphi_enter = ", nphi_enter
 c                  write(115, *)"nphi_exit = ",  nphi_exit
   
@@ -4700,77 +4700,77 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
                   do nphii = nphi_enter + 1, nphi_exit - 1
                      dtau_sum = dtau_sum + dl_vprl(nphii)
                   end do
-		  
+                  
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_enter)
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_exit)
 
-		  
+                  
 c                  do nphii = nphi_enter, nphi_exit
 c                     write(6, 1312)nphii, dl_vprl(nphii)
-c                  end do		  
+c                  end do                 
 
 
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
 
 c                  write(6, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
 
 c                  write(115, 1414) n_theta_check,
-c     .                theta_(n_theta_check, i_psi),
-c     .                dtau_sum, dtau_tot_sum,
-c     .                dldb_sum, dldb_tot_sum, 
-c     .                i_box
+c     &                theta_(n_theta_check, i_psi),
+c     &                dtau_sum, dtau_tot_sum,
+c     &                dldb_sum, dldb_tot_sum, 
+c     &                i_box
 
            dldb_tot_sum = 0.0
-	   
-	   do nphii = 2, n_phi - 1
-	      dldb_tot_sum = dldb_tot_sum + dl_bratio(nphii)
-	   end do
-	    
-	   dldb_tot_sum = dldb_tot_sum + 0.5 * dl_bratio(1)
+           
+           do nphii = 2, n_phi - 1
+              dldb_tot_sum = dldb_tot_sum + dl_bratio(nphii)
+           end do
+            
+           dldb_tot_sum = dldb_tot_sum + 0.5 * dl_bratio(1)
            dldb_tot_sum = dldb_tot_sum + 0.5 * dl_bratio(nphi)
 
            n_phi_max = n_phi - 1
-	   
-	   do n_theta = 1, n_theta_(i_psi)
-	   
-	      if (i_sgn_vprl .eq. 1) then
-	         dtau_tot1(n_theta) = dtau_tot(n_theta)
-		 dtau_first1(n_theta) = dtau_first(n_theta)
-	      end if
-	      
-	      if (i_sgn_vprl .eq. 2) then
-	         dtau_tot2(n_theta) = dtau_tot(n_theta)
-		 dtau_first2(n_theta) = dtau_first(n_theta)
-	      end if
-	      
-	   end do
-	   
-	   if(i_sgn_vprl .eq. 1)dldb_tot1 = dldb_tot_sum
-	   if(i_sgn_vprl .eq. 2)dldb_tot2 = dldb_tot_sum
-	   
-	   end do       ! end of i_sgn_vprl loop !
-	   
+           
+           do n_theta = 1, n_theta_(i_psi)
+           
+              if (i_sgn_vprl .eq. 1) then
+                 dtau_tot1(n_theta) = dtau_tot(n_theta)
+                 dtau_first1(n_theta) = dtau_first(n_theta)
+              end if
+              
+              if (i_sgn_vprl .eq. 2) then
+                 dtau_tot2(n_theta) = dtau_tot(n_theta)
+                 dtau_first2(n_theta) = dtau_first(n_theta)
+              end if
+              
+           end do
+           
+           if(i_sgn_vprl .eq. 1)dldb_tot1 = dldb_tot_sum
+           if(i_sgn_vprl .eq. 2)dldb_tot2 = dldb_tot_sum
+           
+           end do       ! end of i_sgn_vprl loop !
+           
 
-	   do n_theta = 1, n_theta_(i_psi)
-	      dtau_first_12 = dtau_first1(n_theta) + dtau_first2(n_theta)
-	      dtau_tot12 = dtau_tot1(n_theta) + dtau_tot2(n_theta)
-c	      dtau_ratio(i, j, n_theta) = dtau_first_12/ dtau_tot12
-c	      tau_bounce(i, j, n_theta) = dtau_tot12
-	   end do
-	   
-	   dldb_tot12(i,j) = dldb_tot1 + dldb_tot2
-	   
-c	   write(6, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
-c	   write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
-	   
-	   i_sav = i
-	   j_sav = j
-	   	   
-	   end if  !endif for psix .le. psilim_	   
+           do n_theta = 1, n_theta_(i_psi)
+              dtau_first_12 = dtau_first1(n_theta) + dtau_first2(n_theta)
+              dtau_tot12 = dtau_tot1(n_theta) + dtau_tot2(n_theta)
+c             dtau_ratio(i, j, n_theta) = dtau_first_12/ dtau_tot12
+c             tau_bounce(i, j, n_theta) = dtau_tot12
+           end do
+           
+           dldb_tot12(i,j) = dldb_tot1 + dldb_tot2
+           
+c          write(6, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
+c          write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
+           
+           i_sav = i
+           j_sav = j
+                   
+           end if  !endif for psix .le. psilim_    
 
          end do  ! end do for y big loop
       end do     ! end do for x  big loop
@@ -4780,7 +4780,7 @@ c	   write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
       
       rho_ij = rho(1:nnodex, 1:nnodey)
       allocate (rho_in(nrho), profile_in(nrho),
-     .                                   profile_out(nnodex, nnodey))
+     &                                   profile_out(nnodex, nnodey))
      
       profile_in = dldb_tot12(i0:i_max, j0)
       rho_in =            rho(i0:i_max, j0)
@@ -4792,22 +4792,22 @@ c	   write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
 *     deposit dldb on 2D flux grid:
 *     -----------------------------         
       call flux_to_rz(nnodex, nnodey, profile_in, 
-     .   profile_out, rho_in, nrho, rho_ij) 
+     &   profile_out, rho_in, nrho, rho_ij) 
           
       dldb_tot12(1:nnodex, 1:nnodey) = profile_out 
                       
       call polavg(dldb_tot12, dldbavg, rho, nxmx, nymx, nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
      
       call volume_xy(rho, nxmx, nymx, nrhomax,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol_xy)
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol_xy)
      
 
      
 9318  format(a128)
 
- 1213 format(2i10, 1p5e12.4, 3i5)
- 1214 format(1p4e12.4, 3i5)
+ 1213 format(2i10, 1p,5e12.4, 3i5)
+ 1214 format(1p,4e12.4, 3i5)
  
  
       if(myid .eq. 0)then
@@ -4873,7 +4873,7 @@ c	   write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
       write(138, 310) (capz_x(n_phi), n_phi = 1, n_phi_max)
       
       write(138, 310) ((dldb_tot12(i, j), i = 1, nnodex), 
-     .                                   j = 1, nnodey)
+     &                                   j = 1, nnodey)
       write(138, 310) (dldbavg(n), n = 1, nnoderho)
       
 
@@ -4891,10 +4891,10 @@ c	   write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
       t1 = second1(dummy)
       
       if(myid .eq. 0)call eqdsk_plot
-	 
+         
       tmin = (second1(dummy) - t1) / 60.
 c      write(6 , 2846) tmin
-c      write(115, 2846) tmin	
+c      write(115, 2846) tmin    
      
  2846 format('time to do plots =', f9.3, ' min') 
  
@@ -4902,53 +4902,53 @@ c      write(115, 2846) tmin
     
 
 
-  310 format(1p6e12.4)
+  310 format(1p,6e12.4)
   309 format(10i10)
- 9310 format(1p7e12.4)
-  311 format(1p10e12.4)
+ 9310 format(1p,7e12.4)
+  311 format(1p,10e12.4)
  9311 format(10i10)
- 3117 format(1p11e12.4)
- 1312 format(i10, 1p8e12.4)
- 1314 format (2i10, 1p8e12.4)
- 1414 format (1i10, 1p5e12.4, 1i10)
-13149 format (4i10, 1p8e12.4)
+ 3117 format(1p,11e12.4)
+ 1312 format(i10, 1p,8e12.4)
+ 1314 format (2i10, 1p,8e12.4)
+ 1414 format (1i10, 1p,5e12.4, 1i10)
+13149 format (4i10, 1p,8e12.4)
  1313 format(10i10)
- 1311 format(1p9e12.4)
-   10 format(i10,1p4e10.3,i10,1pe10.3)
+ 1311 format(1p,9e12.4)
+   10 format(i10,1p,4e10.3,i10,1p,e10.3)
  1010 format(1f4.0,4f8.3,3f7.3,1f8.3,1f9.3,2f8.3)
- 1009 format(3x,21h        frequency  = ,1pe12.4,7h hertz )
- 1012 format(3x,21h             omgrf = ,1pe12.4,7h hertz )
+ 1009 format(3x,21h        frequency  = ,1p,e12.4,7h hertz )
+ 1012 format(3x,21h             omgrf = ,1p,e12.4,7h hertz )
  2012 format(3x,51h2*pi*rt/Ly * real part of impedance (resistance) = ,
-     1   1pe12.4,10h ohms     )
+     1   1p,e12.4,10h ohms     )
  2013 format(3x,
      1   55h2*pi*rt/Ly * imaginary part of impedance (reactance) = ,
-     1   1pe12.4,10h ohms     )
- 1014 format(3x,21h               xkz = ,1pe12.4,7h m-1   )
- 1321 format(3x,21h         vph / vth = ,1pe12.4,7h       )
- 1391 format(3x,21h critical shear(0) = ,1pe12.4,7h s-1   )
- 1392 format(3x,21h critical shear(a) = ,1pe12.4,7h s-1   )
- 1393 format(3x,21h         mu neo(a) = ,1pe12.4,7h s-1   )
- 1322 format(3x,21h               vph = ,1pe12.4,7h       )
- 1323 format(3x,21h               vth = ,1pe12.4,7h       )
- 1714 format(3x,21h               xk0 = ,1pe12.4,7h m-1   )
- 1021 format(3x,21h        n parallel = ,1pe12.4,7h       )
- 1022 format(3x,21h           rhonorm = ,1pe12.4,7h m     )
- 1812 format(3x,21h                rt = ,1pe12.4,7h m     )
- 1822 format(3x,21h            aplasm = ,1pe12.4,7h m     )
- 1823 format(3x,21h              rant = ,1pe12.4,7h m     )
- 1809 format(3x,21h                b0 = ,1pe12.4,7h T     )
- 1813 format(3x,21h              xn10 = ,1pe12.4,7h m-3   )
- 6813 format(3x,21h              xne0 = ,1pe12.4,7h m-3   )
- 1814 format(3x,21h              xn20 = ,1pe12.4,7h m-3   )
- 1834 format(3x,21h              xn30 = ,1pe12.4,7h m-3   )
- 6834 format(3x,21h              eta1 = ,1pe12.4,7h       )
- 6835 format(3x,21h              eta2 = ,1pe12.4,7h       )
- 6836 format(3x,21h              eta3 = ,1pe12.4,7h       )
- 1815 format(3x,21h               te0 = ,1pe12.4,7h eV    )
- 1821 format(3x,21h               ti0 = ,1pe12.4,7h eV    )
- 1016 format(3x,21h xnue/omgrf ad hoc = ,1pe12.4,7h       )
- 1017 format(3x,21h xnu1/omgrf ad hoc = ,1pe12.4,7h       )
- 1018 format(3x,21h xnu2/omgrf ad hoc = ,1pe12.4,7h       )
+     1   1p,e12.4,10h ohms     )
+ 1014 format(3x,21h               xkz = ,1p,e12.4,7h m-1   )
+ 1321 format(3x,21h         vph / vth = ,1p,e12.4,7h       )
+ 1391 format(3x,21h critical shear(0) = ,1p,e12.4,7h s-1   )
+ 1392 format(3x,21h critical shear(a) = ,1p,e12.4,7h s-1   )
+ 1393 format(3x,21h         mu neo(a) = ,1p,e12.4,7h s-1   )
+ 1322 format(3x,21h               vph = ,1p,e12.4,7h       )
+ 1323 format(3x,21h               vth = ,1p,e12.4,7h       )
+ 1714 format(3x,21h               xk0 = ,1p,e12.4,7h m-1   )
+ 1021 format(3x,21h        n parallel = ,1p,e12.4,7h       )
+ 1022 format(3x,21h           rhonorm = ,1p,e12.4,7h m     )
+ 1812 format(3x,21h                rt = ,1p,e12.4,7h m     )
+ 1822 format(3x,21h            aplasm = ,1p,e12.4,7h m     )
+ 1823 format(3x,21h              rant = ,1p,e12.4,7h m     )
+ 1809 format(3x,21h                b0 = ,1p,e12.4,7h T     )
+ 1813 format(3x,21h              xn10 = ,1p,e12.4,7h m-3   )
+ 6813 format(3x,21h              xne0 = ,1p,e12.4,7h m-3   )
+ 1814 format(3x,21h              xn20 = ,1p,e12.4,7h m-3   )
+ 1834 format(3x,21h              xn30 = ,1p,e12.4,7h m-3   )
+ 6834 format(3x,21h              eta1 = ,1p,e12.4,7h       )
+ 6835 format(3x,21h              eta2 = ,1p,e12.4,7h       )
+ 6836 format(3x,21h              eta3 = ,1p,e12.4,7h       )
+ 1815 format(3x,21h               te0 = ,1p,e12.4,7h eV    )
+ 1821 format(3x,21h               ti0 = ,1p,e12.4,7h eV    )
+ 1016 format(3x,21h xnue/omgrf ad hoc = ,1p,e12.4,7h       )
+ 1017 format(3x,21h xnu1/omgrf ad hoc = ,1p,e12.4,7h       )
+ 1018 format(3x,21h xnu2/omgrf ad hoc = ,1p,e12.4,7h       )
  1013 format(3x,21h              nphi = ,i12,7h       )
  7013 format(3x,21h           nmodesx = ,i12,7h       /
      1       3x,21h           nmodesy = ,i12,7h       )
@@ -4959,31 +4959,31 @@ c      write(115, 2846) tmin
  7014 format(3x,21h              lmax = ,i12,7h       )
  7015 format(3x,21h           ibessel = ,i12,7h       )
  7115 format(3x,21h             nzfun = ,i12,7h       )
- 7016 format(3x,21h         rhoi1 / L = ,1pe12.4,7h       )
- 7017 format(3x,21h             rhoi1 = ,1pe12.4,7h m     )
- 7217 format(3x,21h             qavg0 = ,1pe12.4,7h       )
+ 7016 format(3x,21h         rhoi1 / L = ,1p,e12.4,7h       )
+ 7017 format(3x,21h             rhoi1 = ,1p,e12.4,7h m     )
+ 7217 format(3x,21h             qavg0 = ,1p,e12.4,7h       )
  1020 format(3x,21h            nnodex = ,i12, 7h       /
      1       3x,21h            nnodey = ,i12, 7h       )
 
  3013 format(3x,21h                i0 = ,i12,7h       )
 30131 format(3x,21h             ileft = ,i12,7h       )
 30132 format(3x,21h            iright = ,i12,7h       )
- 3014 format(3x,21h xnuii(0)/omgti(0) = ,1pe12.4,7h s-1   )
- 3015 format(3x,21h           vthi(0) = ,1pe12.4,7h m/s   )
- 3016 format(3x,21h          omgti(0) = ,1pe12.4,7h s-1   )
- 3017 format(3x,21h           xnup(0) = ,1pe12.4,7h s-1   )
- 3018 format(3x,21h          eps**1.5 = ,1pe12.4,7h       )
-71160 format(3x,21h         xnu / omg = ,1pe12.4,7h       )
+ 3014 format(3x,21h xnuii(0)/omgti(0) = ,1p,e12.4,7h s-1   )
+ 3015 format(3x,21h           vthi(0) = ,1p,e12.4,7h m/s   )
+ 3016 format(3x,21h          omgti(0) = ,1p,e12.4,7h s-1   )
+ 3017 format(3x,21h           xnup(0) = ,1p,e12.4,7h s-1   )
+ 3018 format(3x,21h          eps**1.5 = ,1p,e12.4,7h       )
+71160 format(3x,21h         xnu / omg = ,1p,e12.4,7h       )
 
 
   162 format(1h1)
   169 format(1h )
   163 format(1h0)
- 2162 format(1p8e12.4)
- 2163 format(i5, 1p11e12.3)
- 2165 format(3i10,1p5e12.3)
+ 2162 format(1p,8e12.4)
+ 2163 format(i5, 1p,11e12.3)
+ 2165 format(3i10,1p,5e12.3)
  1002 format(2i10,7e10.3)
-11313 format(2i10, 1p8e12.4)
+11313 format(2i10, 1p,8e12.4)
  1000 format(1i10,7e10.3)
  2000 format(1i10,1e10.3,1i10,1e10.3)
  1001 format(8e10.3)
@@ -5008,10 +5008,10 @@ c***************************************************************************
 c
 
       subroutine readeq_ga2(nw, nh, rhoeqdskw,
-     .   psigridw, agrid, psimag, psilim,
-     .   rmin, rmax, zmin, zmax, rma, zma, beqd,
-     .   rmhdgrid, zmhdgrid, psi, nxeqd, nyeqd, fpsiw,
-     .   psio, ro, zo, qpsiw, eqdsk, psi_tor_max, nrhoeqd)
+     &   psigridw, agrid, psimag, psilim,
+     &   rmin, rmax, zmin, zmax, rma, zma, beqd,
+     &   rmhdgrid, zmhdgrid, psi, nxeqd, nyeqd, fpsiw,
+     &   psio, ro, zo, qpsiw, eqdsk, psi_tor_max, nrhoeqd)
 
       implicit none
 
@@ -5033,7 +5033,7 @@ c
       real dpsi, psisep, sdimeqd, redeqd, reqd, ydimeqd
 
       real zax1, zax2, xax1, xax2, ymideqd, xdimeqd,
-     .    toteqd, beqd, psimx2, psimx1, zma, rma, psi_tor_max
+     &    toteqd, beqd, psimx2, psimx1, zma, rma, psi_tor_max
 
       real psigrid(nw), rhoeqdsk(nw), psi(nw,nh), qpsi(nw), qpsiw(nw)
       real psigridw(nw), rhoeqdskw(nw), agrid(nw)
@@ -5046,12 +5046,12 @@ c
       real rmin, rmax, zmin, zmax
 
       call plasma_state_eq2(nw, nh, ntitle, nxeqd ,nyeqd, nrhoeqd, 
-     .   eqdsrce,
-     .   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
-     .   rma, zma, psimag, psilim, beqd,
-     .   toteqd, psimx1, psimx2, xax1, xax2,
-     .   zax1, zax2, psisep, rsep, zsep, fpsi,
-     .   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk)
+     &   eqdsrce,
+     &   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
+     &   rma, zma, psimag, psilim, beqd,
+     &   toteqd, psimx1, psimx2, xax1, xax2,
+     &   zax1, zax2, psisep, rsep, zsep, fpsi,
+     &   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk)
 
 c      write(6, *) "fpsi(j) = "
 c      write(6,8200) (fpsi(j), j=nxeqd, 1, -1)
@@ -5080,8 +5080,8 @@ c
       end do
 
 
- 1312 format(i10, 1p8e12.4)
-  310 format(1p6e12.4)
+ 1312 format(i10, 1p,8e12.4)
+  310 format(1p,6e12.4)
 
 
       do i = 1, nxeqd
@@ -5148,13 +5148,13 @@ c      write(6, *)
          fpsiw(j) = fpsi(nrhoeqd + 1 - j)
          qpsiw(j) = qpsi(nrhoeqd + 1 - j)
          agrid(j) = (psigridw(j) - psimag) / (psilim - psimag)
-	 test = psio * agrid(j)
+         test = psio * agrid(j)
          if (j.eq.1) agrid(j) = 0.0
 c         write(6,692) rhoeqdskw(j), psigridw(j), agrid(j), test
       end do
       
 
-  692 format(4(2x,1pe12.4))
+  692 format(4(2x,1p,e12.4))
   700 format(2i10)
 
 
@@ -5165,12 +5165,12 @@ c***************************************************************************
 c
 
       subroutine plasma_state_eq2(nw, nh, ntitle, nxeqd ,nyeqd,nrhoeqd, 
-     .   eqdsrce,
-     .   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
-     .   rma, zma, psimag, psilim, beqd,
-     .   toteqd, psimx1, psimx2, xax1, xax2,
-     .   zax1, zax2, psisep, rsep, zsep, fpsi,
-     .   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk)
+     &   eqdsrce,
+     &   xdimeqd, ydimeqd, reqd, redeqd, ymideqd,
+     &   rma, zma, psimag, psilim, beqd,
+     &   toteqd, psimx1, psimx2, xax1, xax2,
+     &   zax1, zax2, psisep, rsep, zsep, fpsi,
+     &   presspsi, ffppsi, pppsi, psi, qpsi, eqdsk)
 
       implicit none
 
@@ -5185,7 +5185,7 @@ c
       real fpsi(nw), presspsi(nw), ffppsi(nw), pppsi(nw)
       real psigrid(nw), rhoeqdsk(nw), psi(nw, nh), qpsi(nw), qpsiw(nw)
       real zax1, zax2, xax1, xax2, ymideqd, xdimeqd,
-     .     toteqd, beqd, psimx2, psimx1, zma, rma
+     &     toteqd, beqd, psimx2, psimx1, zma, rma
       real zsep, rsep, sum, dpsii, qval, rhomax
       real psilim, psimag
       real dpsi, psisep, sdimeqd, redeqd, reqd, ydimeqd
@@ -5199,7 +5199,7 @@ c
       rewind (5)
 
       read (5, 8190) (ntitle(j),j=1,5), dati, ipestg,
-     .                               nxeqd ,nyeqd, nrhoeqd, eqdsrce     
+     &                               nxeqd ,nyeqd, nrhoeqd, eqdsrce     
       if (nrhoeqd .eq. 0)nrhoeqd = nxeqd
       
       read(5,8200) xdimeqd, ydimeqd, reqd, redeqd, ymideqd
@@ -5209,7 +5209,7 @@ c
 
       
 c      write (6, 8190) (ntitle(j),j=1,5), dati, ipestg,
-c     .                               nxeqd ,nyeqd, nrhoeqd, eqdsrce                
+c     &                               nxeqd ,nyeqd, nrhoeqd, eqdsrce                
 
             
       read(5,8200) (fpsi(j), j = nrhoeqd, 1, -1)

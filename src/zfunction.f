@@ -31,7 +31,7 @@ c      dz = zmax / (npts - 1)
       
       f0 = 0.0
       f1 = 0.0
-      f2 = 0.0      	 
+      f2 = 0.0           
       
       do  j = 1, npts
          z(j) = (j - 1) * dz     
@@ -39,12 +39,12 @@ c      dz = zmax / (npts - 1)
          if (j .ge. npts - j_filt) then
              mult = cos((float(j - j_filt) / float(j_filt))
      .            * 2.0 * atan(1.0))   
-         end if	 	    
-	 cexpx = exp(zi * z(j) - 0.25 * (z(j) * beta * zetai)**2) * mult	 
+         end if             
+         cexpx = exp(zi * z(j) - 0.25 * (z(j) * beta * zetai)**2) * mult         
          f0(j) = zi * zetai * beta * cexpx
-	 
+         
          f1(j) = 0.5 * zetai**2 * beta**3 * z(j) * cexpx
-	 
+         
          f2(j) = 0.5 * zi * zetai * beta**3
      .      * (1.0 -  0.5 * (beta * zetai * z(j))**2) * cexpx              
      
@@ -103,17 +103,17 @@ c      use zfun_hilbert
          endif
 
          zetat = fgam * zeta
-	 
+         
 c        zfunct = fzeta(zetat)
          call zfun (zetat, zfunct)
 c        call zfun_erfc (zetat, zfunct)
-c	 call zfun_hil(zetat, zfunct, flag)
-	 
-	 
+c        call zfun_hil(zetat, zfunct, flag)
+         
+         
          z0 = fgam * zfunct
          z1 = fgam * (1.0 + fgam * zeta * zfunct)
          z2 =  fgam**2 * zeta * (1.0 + fgam * zeta * zfunct)
-	 	 
+                 
       end if
 
 
@@ -129,16 +129,16 @@ c	 call zfun_hil(zetat, zfunct, flag)
          endif
 
          zetat = - fgam * zeta
-	 
+         
 c         zfunct = fzeta( zetat)
          call zfun (zetat, zfunct)
 c        call zfun_erfc (zetat, zfunct)
-c	 call zfun_hil(zetat, zfunct, flag)	 
-	 	 
+c        call zfun_hil(zetat, zfunct, flag)      
+                 
          z0 = - fgam * zfunct
          z1 = y / abs(y) * fgam * (1.0 - fgam * zeta * zfunct)
-         z2 =  fgam**2 * zeta * (1.0 - fgam * zeta * zfunct)	 	 	 
-     	 
+         z2 =  fgam**2 * zeta * (1.0 - fgam * zeta * zfunct)                     
+         
       end if
       
       zetai_giv = 1.0 / real(zeta) 
@@ -202,17 +202,16 @@ c      use zfun_hilbert
          endif
 
          zetat = fgam * zeta
-	 
+         
 c        zfunct = fzeta(zetat)
          call zfun (zetat, zfunct)
 c        call zfun_erfc (zetat, zfunct)
-c	 call zfun_hil(zetat, zfunct, flag)
-	 
-	 
+c        call zfun_hil(zetat, zfunct, flag)
+ 
+ 
          z0 = fgam * zfunct
          z1 = fgam * (1.0 + fgam * zeta * zfunct)
          z2 =  fgam**2 * zeta * (1.0 + fgam * zeta * zfunct)
-	 	 
       end if
 
 
@@ -228,16 +227,16 @@ c	 call zfun_hil(zetat, zfunct, flag)
          endif
 
          zetat = - fgam * zeta
-	 
+         
 c         zfunct = fzeta( zetat)
          call zfun (zetat, zfunct)
 c        call zfun_erfc (zetat, zfunct)
-c	 call zfun_hil(zetat, zfunct, flag)	 
-	 	 
+c        call zfun_hil(zetat, zfunct, flag)      
+                 
          z0 = - fgam * zfunct
          z1 = y / abs(y) * fgam * (1.0 - fgam * zeta * zfunct)
-         z2 =  fgam**2 * zeta * (1.0 - fgam * zeta * zfunct)	 	 	 
-     	 
+         z2 =  fgam**2 * zeta * (1.0 - fgam * zeta * zfunct)                     
+         
       end if
       
       return
@@ -292,18 +291,18 @@ c	 call zfun_hil(zetat, zfunct, flag)
 
 *        ------------
 *        calculate Z2
-*        ------------	 
+*        ------------    
 
          do  j = 1, npts
             x(j) = (j-1) * dx     
-            beta = 1. / sqrt(1. - zi * delta * x(j)**2 )	    
-	    cexpx(j) = exp(zi * zeta * x(j) - x(j)**2 / 4. * beta**2)
+            beta = 1. / sqrt(1. - zi * delta * x(j)**2 )            
+            cexpx(j) = exp(zi * zeta * x(j) - x(j)**2 / 4. * beta**2)
             f(j) = zi / 2.0 * (1.0 -  x(j)**2 / 2. * beta**2)
      .           * cexpx(j) * beta**3
 
          end do
 
-         call dgrat1(x, f, 1, npts, z2, nmaxdim)	 
+         call dgrat1(x, f, 1, npts, z2, nmaxdim)         
 
 
 
@@ -466,13 +465,13 @@ c      use zfun_hilbert
          endif
 
          zetat = fgam * zeta
-	 
+         
 c        zfunct = fzeta(zetat)
          call zfun (zetat, zfunct)
 c        call zfun_erfc (zetat, zfunct)
-c	 call zfun_hil(zetat, zfunct, flag)
-	 
-	 
+c        call zfun_hil(zetat, zfunct, flag)
+         
+         
          z0 = fgam * zfunct
          z1 = fgam * (1.0 + fgam * zeta * zfunct)
          z2 =  fgam**2 * zeta * (1.0 + fgam * zeta * zfunct)
@@ -492,12 +491,12 @@ c	 call zfun_hil(zetat, zfunct, flag)
 
 
          zetat = - fgam * zeta
-	 
+         
 c         zfunct = fzeta( zetat)
          call zfun (zetat, zfunct)
 c        call zfun_erfc (zetat, zfunct)
-c	 call zfun_hil(zetat, zfunct, flag)	 
-	 	 
+c        call zfun_hil(zetat, zfunct, flag)      
+                 
          z0 = - fgam * zfunct
          z1 = y / abs(y) * fgam * (1.0 - fgam * zeta * zfunct)
          z2 =  fgam**2 * zeta * (1.0 - fgam * zeta * zfunct)

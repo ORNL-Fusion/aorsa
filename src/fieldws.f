@@ -6,29 +6,29 @@
 
       implicit none
 
-      character*32 title		                        
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
-      character*32 titx
-      character*32 tity
-      character*32 titz
+      character(32):: title                                        
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
       
-      integer  ncolln10, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion,
-     1   ncolelec, norange
+      integer:: ncolln10, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion,
+     &   ncolelec, norange
      
-      integer nlmx, n, ibackground
+      integer:: nlmx, n, ibackground
      
       parameter (nlmx = 256)
      
-      integer npoints, nnodelb, lnwidth
-      integer pgopen, pgbeg, ier, np, nl     
-      real xklsavp(nlmx), Elnp(nlmx)
-      real lb(nlmx), lbprime(nlmx)    
+      integer:: npoints, nnodelb, lnwidth
+      integer:: pgopen, pgbeg, ier, np, nl     
+      real:: xklsavp(nlmx), Elnp(nlmx)
+      real:: lb(nlmx), lbprime(nlmx)    
       complex El(nlmx)
 
 
@@ -100,7 +100,7 @@ c
       titlb='l(m)' 
       
       call ezplot1q(title, titll, titlr, titlb, lb, real(El),
-     .    nnodelb, nlmx)      
+     &    nnodelb, nlmx)      
       
 c
 c--plot El spectrum
@@ -111,12 +111,12 @@ c
       titlb='kl (m-1)' 
       
       call ezplot1q(title, titll, titlr, titlb, xklsavp, Elnp,
-     .    npoints, nlmx)
+     &    npoints, nlmx)
                 
       call pgclos            
 
 
-  310 format(1p6e12.4)
+  310 format(1p,6e12.4)
   309 format(10i10)      
             
       close (938)
@@ -133,43 +133,43 @@ c
 
       implicit none
 
-      character*32 title		                        
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
-      character*32 titx
-      character*32 tity
-      character*32 titz
+      character(32):: title                                        
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
       
-      real dfquotient
+      real:: dfquotient
       
-      real logmax, ycut, dy, xmax, ymax, xmi, E_eV, vperp_mks,
-     .   vpara_mks, vperp_cgs, uperp_1kev, duperp, dz, dx
-      real exkmin, exkmax, prfin, rmin_zoom, rmax_zoom 
+      real:: logmax, ycut, dy, xmax, ymax, xmi, E_eV, vperp_mks,
+     &   vpara_mks, vperp_cgs, uperp_1kev, duperp, dz, dx
+      real:: exkmin, exkmax, prfin, rmin_zoom, rmax_zoom 
      
-      integer pgopen, pgbeg, ier, nmid, mmid, it, mmax, nmax
-      integer n_theta_max, n_u_max, n_psi_max, idiag, jdiag
+      integer:: pgopen, pgbeg, ier, nmid, mmid, it, mmax, nmax
+      integer:: n_theta_max, n_u_max, n_psi_max, idiag, jdiag
       
-      integer ndisti1, ndisti2, ndisti3, number_points, k, nnodez
-      integer nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
-      integer ibackground, nkx1, nkx2, nky1, nky2, n, m,
-     .   nkpltdim, mkpltdim, nkxplt, nkyplt, ipage, n1, n2, n3, n4
-      integer i_psi, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
-      integer i_psi_array(6), i_psi_index
-      integer nkpr
+      integer:: ndisti1, ndisti2, ndisti3, number_points, k, nnodez
+      integer:: nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
+      integer:: ibackground, nkx1, nkx2, nky1, nky2, n, m,
+     &   nkpltdim, mkpltdim, nkxplt, nkyplt, ipage, n1, n2, n3, n4
+      integer:: i_psi, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
+      integer:: i_psi_array(6), i_psi_index
+      integer:: nkpr
      
-      integer :: nuper, nupar, i_uperp, i_upara, nz
-      real uminpara, umaxpara, vc_cgs, vpara_cgs 
+      integer:: nuper, nupar, i_uperp, i_upara, nz
+      real:: uminpara, umaxpara, vc_cgs, vpara_cgs 
 
-      integer  ncolln10, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion,
-     1   ncolelec, norange
+      integer::  ncolln10, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion,
+     &   ncolelec, norange
 
-      integer nrhomax, nnoderho, nnoderho2, iflag, nnoderho_half,
-     .   nnoderho2_half, mnodetheta, nthetamax, ntable, mtable
+      integer:: nrhomax, nnoderho, nnoderho2, iflag, nnoderho_half,
+     &   nnoderho2_half, mnodetheta, nthetamax, ntable, mtable
      
 
       parameter (nlevmax = 101) 
@@ -195,23 +195,24 @@ c
       parameter (n_u_max = 150)
       parameter (n_psi_max = 150) 
       
-      real u(n_u_max), theta_u(n_theta_max)
-      real f_cql(n_theta_max, n_u_max, n_psi_max)
-      real f_cql_2d(n_u_max, n_theta_max)
-      real f_cql_1d_1(n_u_max), f_cql_1d_2(n_u_max)
-      real f_cql_1d_3(n_u_max), f_cql_1d_4(n_u_max) 
-      real f_cql_1d_5(n_u_max), f_cql_1d_6(n_u_max)
-      real f_cql_1d_7(n_u_max)  
+      real:: u(n_u_max), theta_u(n_theta_max)
+      real:: f_cql(n_theta_max, n_u_max, n_psi_max)
+      real:: f_cql_2d(n_u_max, n_theta_max)
+      real:: f_cql_1d_1(n_u_max), f_cql_1d_2(n_u_max)
+      real:: f_cql_1d_3(n_u_max), f_cql_1d_4(n_u_max) 
+      real:: f_cql_1d_5(n_u_max), f_cql_1d_6(n_u_max)
+      real:: f_cql_1d_7(n_u_max)  
       
       
-      integer n_theta_(n_psi_max)
-      real theta_(n_theta_max, n_psi_max)
+      integer:: n_theta_(n_psi_max)
+      real:: theta_(n_theta_max, n_psi_max)
       
-      integer n_theta, n_u, n_psi
-      integer i_theta, i_u
-      integer i_theta1, i_theta2, i_theta3, i_theta4, 
-     .                  i_theta5, i_theta6, i_theta7
-      real vc, r0
+      integer:: n_theta, n_u, n_psi
+      integer:: i_theta, i_u
+      integer:: i_theta1, i_theta2, i_theta3, i_theta4, 
+     &     i_theta5, i_theta6, i_theta7
+      integer, parameter :: r15 = selected_real_kind(15)
+      real:: vc, r0
       
       real, dimension(:),   allocatable :: UPERP, UPARA
       
@@ -228,127 +229,127 @@ c
       real, dimension(:), allocatable :: wperp2_cql
       real, dimension(:), allocatable :: wpar2_cql     
       
-      real*8, dimension(:,:,:), allocatable :: bqlavg_i1
-      real*8, dimension(:,:,:), allocatable :: cqlavg_i1
-      real*8, dimension(:,:,:), allocatable :: eqlavg_i1
-      real*8, dimension(:,:,:), allocatable :: fqlavg_i1
+      real, dimension(:,:,:), allocatable :: bqlavg_i1
+      real, dimension(:,:,:), allocatable :: cqlavg_i1
+      real, dimension(:,:,:), allocatable :: eqlavg_i1
+      real, dimension(:,:,:), allocatable :: fqlavg_i1
       
 
-      real capr_bpol_mid(nrhomax), capr_bpol_midavg(nrhomax)
-      real capr_bpol_mid2(nxmx, nymx), bmod_midavg(nrhomax)
-      real bmod_mid(nxmx, nymx), bratio(nxmx, nymx)
+      real:: capr_bpol_mid(nrhomax), capr_bpol_midavg(nrhomax)
+      real:: capr_bpol_mid2(nxmx, nymx), bmod_midavg(nrhomax)
+      real:: bmod_mid(nxmx, nymx), bratio(nxmx, nymx)
 
-      real xkxsav(nkpltdim), xkysav(mkpltdim), pscale
-      real wdoti1avg(nrhomax), wdoti2avg(nrhomax), wdoti3avg(nrhomax)
-      real wdoti4avg(nrhomax), wdoti5avg(nrhomax), wdoti6avg(nrhomax)
-      real zdummy(3)
+      real:: xkxsav(nkpltdim), xkysav(mkpltdim), pscale
+      real:: wdoti1avg(nrhomax), wdoti2avg(nrhomax), wdoti3avg(nrhomax)
+      real:: wdoti4avg(nrhomax), wdoti5avg(nrhomax), wdoti6avg(nrhomax)
+      real:: zdummy(3)
       
-      real xjprl_int(nrhomax)
+      real:: xjprl_int(nrhomax)
       
-      real redotje_int(nrhomax),
-     .     redotj1_int(nrhomax), redotj2_int(nrhomax),
-     .     redotj3_int(nrhomax), redotj4_int(nrhomax), 
-     .     redotj5_int(nrhomax), redotj6_int(nrhomax)
+      real:: redotje_int(nrhomax),
+     &     redotj1_int(nrhomax), redotj2_int(nrhomax),
+     &     redotj3_int(nrhomax), redotj4_int(nrhomax), 
+     &     redotj5_int(nrhomax), redotj6_int(nrhomax)
      
-      real wdote_int(nrhomax),
-     .     wdot1_int(nrhomax), wdot2_int(nrhomax), 
-     .     wdot3_int(nrhomax), wdot4_int(nrhomax),
-     .     wdot5_int(nrhomax), wdot6_int(nrhomax) 
+      real:: wdote_int(nrhomax),
+     &     wdot1_int(nrhomax), wdot2_int(nrhomax), 
+     &     wdot3_int(nrhomax), wdot4_int(nrhomax),
+     &     wdot5_int(nrhomax), wdot6_int(nrhomax) 
      
-      real wdoti1_dvol(nrhomax), wdoti2_dvol(nrhomax),
-     .     wdoti3_dvol(nrhomax), wdoti4_dvol(nrhomax), 
-     .     wdoti5_dvol(nrhomax), wdoti6_dvol(nrhomax),
-     .     wdote_dvol(nrhomax)
+      real:: wdoti1_dvol(nrhomax), wdoti2_dvol(nrhomax),
+     &     wdoti3_dvol(nrhomax), wdoti4_dvol(nrhomax), 
+     &     wdoti5_dvol(nrhomax), wdoti6_dvol(nrhomax),
+     &     wdote_dvol(nrhomax)
      
-      real redotj1_dvol(nrhomax), redotj2_dvol(nrhomax),
-     .     redotj3_dvol(nrhomax), redotj4_dvol(nrhomax),
-     .     redotj5_dvol(nrhomax), redotj6_dvol(nrhomax),
-     .     redotje_dvol(nrhomax)
+      real:: redotj1_dvol(nrhomax), redotj2_dvol(nrhomax),
+     &     redotj3_dvol(nrhomax), redotj4_dvol(nrhomax),
+     &     redotj5_dvol(nrhomax), redotj6_dvol(nrhomax),
+     &     redotje_dvol(nrhomax)
      
           
-      real wdoteavg_int(nrhomax), wdoti1avg_int(nrhomax),
-     .                            wdoti2avg_int(nrhomax),
-     .                            wdoti3avg_int(nrhomax),
-     .                            wdoti4avg_int(nrhomax),
-     .                            wdoti5avg_int(nrhomax),
-     .                            wdoti6avg_int(nrhomax) 
+      real:: wdoteavg_int(nrhomax), wdoti1avg_int(nrhomax),
+     &                            wdoti2avg_int(nrhomax),
+     &                            wdoti3avg_int(nrhomax),
+     &                            wdoti4avg_int(nrhomax),
+     &                            wdoti5avg_int(nrhomax),
+     &                            wdoti6avg_int(nrhomax) 
      
-      real wdote_ql_int(nrhomax), wdoti1_ql_int(nrhomax),
-     .                            wdoti2_ql_int(nrhomax),
-     .                            wdoti3_ql_int(nrhomax),
-     .                            wdoti4_ql_int(nrhomax),
-     .                            wdoti5_ql_int(nrhomax),
-     .                            wdoti6_ql_int(nrhomax)  
+      real:: wdote_ql_int(nrhomax), wdoti1_ql_int(nrhomax),
+     &                            wdoti2_ql_int(nrhomax),
+     &                            wdoti3_ql_int(nrhomax),
+     &                            wdoti4_ql_int(nrhomax),
+     &                            wdoti5_ql_int(nrhomax),
+     &                            wdoti6_ql_int(nrhomax)  
      
      
-      real redotjeavg_int(nrhomax), redotj1avg_int(nrhomax),
-     .                              redotj2avg_int(nrhomax),
-     .                              redotj3avg_int(nrhomax),
-     .                              redotj4avg_int(nrhomax),
-     .                              redotj5avg_int(nrhomax),
-     .                              redotj6avg_int(nrhomax) 
+      real:: redotjeavg_int(nrhomax), redotj1avg_int(nrhomax),
+     &                              redotj2avg_int(nrhomax),
+     &                              redotj3avg_int(nrhomax),
+     &                              redotj4avg_int(nrhomax),
+     &                              redotj5avg_int(nrhomax),
+     &                              redotj6avg_int(nrhomax) 
      
-      real rhon(nrhomax), thetam(nthetamax)      
+      real:: rhon(nrhomax), thetam(nthetamax)      
 
-      real xnavg(nrhomax), xn1avg(nrhomax), xkteavg(nrhomax),
-     .     xktiavg(nrhomax),
-     .     xkti1avg(nrhomax), xkti2avg(nrhomax), xkti3avg(nrhomax),
-     .     xn2avg(nrhomax), xn3avg(nrhomax), xk3avg(nrhomax),
-     .     xna_sloavg(nrhomax),
-     .     vyi1avg(nrhomax),  vyi2avg(nrhomax),
-     .     dvol(nrhomax), rhon_half(nrhomax), volume(nrhomax)
-      real rhon_save(nrhomax), rhon_half_save(nrhomax)
-      real redotj2avg_save(nrhomax), wdoti2avg_save(nrhomax)
+      real:: xnavg(nrhomax), xn1avg(nrhomax), xkteavg(nrhomax),
+     &     xktiavg(nrhomax),
+     &     xkti1avg(nrhomax), xkti2avg(nrhomax), xkti3avg(nrhomax),
+     &     xn2avg(nrhomax), xn3avg(nrhomax), xk3avg(nrhomax),
+     &     xna_sloavg(nrhomax),
+     &     vyi1avg(nrhomax),  vyi2avg(nrhomax),
+     &     dvol(nrhomax), rhon_half(nrhomax), volume(nrhomax)
+      real:: rhon_save(nrhomax), rhon_half_save(nrhomax)
+      real:: redotj2avg_save(nrhomax), wdoti2avg_save(nrhomax)
        
-      real xkti4avg(nrhomax),  xkti5avg(nrhomax), xkti6avg(nrhomax)
-      real wdote_ql(nrhomax), wdoti1_ql(nrhomax), wdoti2_ql(nrhomax),
-     .     wdoti3_ql(nrhomax), wdoti4_ql(nrhomax), wdoti5_ql(nrhomax),
-     .     wdoti6_ql(nrhomax), dldbavg(nrhomax), gradprlb2_avg(nrhomax)
-      real xn4avg(nrhomax), xn5avg(nrhomax), xn6avg(nrhomax)
-      real vyavg(nrhomax), dvydrho(nrhomax), wdoteavg(nrhomax)
-      real fz0i1avg(nrhomax), fz0i2avg(nrhomax), fz0i3avg(nrhomax),
-     .     fz0eavg(nrhomax), fz0avg(nrhomax)
+      real:: xkti4avg(nrhomax),  xkti5avg(nrhomax), xkti6avg(nrhomax)
+      real:: wdote_ql(nrhomax), wdoti1_ql(nrhomax), wdoti2_ql(nrhomax),
+     &     wdoti3_ql(nrhomax), wdoti4_ql(nrhomax), wdoti5_ql(nrhomax),
+     &     wdoti6_ql(nrhomax), dldbavg(nrhomax), gradprlb2_avg(nrhomax)
+      real:: xn4avg(nrhomax), xn5avg(nrhomax), xn6avg(nrhomax)
+      real:: vyavg(nrhomax), dvydrho(nrhomax), wdoteavg(nrhomax)
+      real:: fz0i1avg(nrhomax), fz0i2avg(nrhomax), fz0i3avg(nrhomax),
+     &     fz0eavg(nrhomax), fz0avg(nrhomax)
 
-      real fz0i4avg(nrhomax), fz0i5avg(nrhomax), fz0i6avg(nrhomax)
+      real:: fz0i4avg(nrhomax), fz0i5avg(nrhomax), fz0i6avg(nrhomax)
 
-      real gpsi_avg(nrhomax), kpsi_avg(nrhomax), xjhat(nrhomax),
-     .     muhat_avg(nrhomax), nu_star_avg(nrhomax), xkhat(nrhomax)
+      real:: gpsi_avg(nrhomax), kpsi_avg(nrhomax), xjhat(nrhomax),
+     &     muhat_avg(nrhomax), nu_star_avg(nrhomax), xkhat(nrhomax)
                       
-      real redotjeavg(nrhomax), redotj1avg(nrhomax),
-     .     redotj2avg(nrhomax), redotj3avg(nrhomax),
-     .     redotj4avg(nrhomax),
-     .     redotj5avg(nrhomax), redotj6avg(nrhomax),
-     .     redotjsavg(nrhomax),
-     .     redotjtavg(nrhomax), xjprlavg(nrhomax),
-     .     redotjiavg(nrhomax), ipsi_avg(nrhomax)
+      real:: redotjeavg(nrhomax), redotj1avg(nrhomax),
+     &     redotj2avg(nrhomax), redotj3avg(nrhomax),
+     &     redotj4avg(nrhomax),
+     &     redotj5avg(nrhomax), redotj6avg(nrhomax),
+     &     redotjsavg(nrhomax),
+     &     redotjtavg(nrhomax), xjprlavg(nrhomax),
+     &     redotjiavg(nrhomax), ipsi_avg(nrhomax)
 
-      real fz0_int(nrhomax)
+      real:: fz0_int(nrhomax)
       
-      real xnmid(nxmx), xktimid(nxmx),  xktemid(nxmx), qmid(nxmx)
-      real bpmid(nxmx), xiotamid(nxmx), xjymid(nxmx)
-      real xjxmid(nxmx), xjzmid(nxmx)
+      real:: xnmid(nxmx), xktimid(nxmx),  xktemid(nxmx), qmid(nxmx)
+      real:: bpmid(nxmx), xiotamid(nxmx), xjymid(nxmx)
+      real:: xjxmid(nxmx), xjzmid(nxmx)
       
-      real xjxmin, xjxmax
-      real xjymin, xjymax
-      real xjzmin, xjzmax
+      real:: xjxmin, xjxmax
+      real:: xjymin, xjymax
+      real:: xjzmin, xjzmax
       
-      real fmidre(nxmx), fmidim(nxmx), fmid1(nxmx),
-     .     fmid2(nxmx), fmid3(nxmx), fmid4(nxmx), fmid5(nxmx), 
-     .     fmids(nxmx), fmidt(nxmx), fmid6(nxmx) 
-      real x(nxmx), capr(nxmx), y(nymx), xkphi(nxmx) 
-      real mod_Eplus_mid(nxmx),  mod_Eminus_mid(nxmx),  
-     .   mod_Eb_mid(nxmx), mod_e_mid(nxmx)
+      real:: fmidre(nxmx), fmidim(nxmx), fmid1(nxmx),
+     &     fmid2(nxmx), fmid3(nxmx), fmid4(nxmx), fmid5(nxmx), 
+     &     fmids(nxmx), fmidt(nxmx), fmid6(nxmx) 
+      real:: x(nxmx), capr(nxmx), y(nymx), xkphi(nxmx) 
+      real:: mod_Eplus_mid(nxmx),  mod_Eminus_mid(nxmx),  
+     &   mod_Eb_mid(nxmx), mod_e_mid(nxmx)
           
 
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1   ncolion,ncolelec,ncollin,ncollab,ncolln2
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     &   ncolion,ncolelec,ncollin,ncollab,ncolln2
      
       common/boundcom/rhoplasm
       common/zoom/ xmaxz, xminz, ymaxz, yminz
 
-      real xmaxz, xminz, ymaxz, yminz
+      real:: xmaxz, xminz, ymaxz, yminz
 
 c      real exkmod(nkpltdim, mkpltdim),
 c     .     eykmod(nkpltdim, mkpltdim),
@@ -358,41 +359,41 @@ c     .     eyklog(nkpltdim, mkpltdim),
 c     .     ezklog(nkpltdim, mkpltdim)
      
       real, dimension(:,:), allocatable :: exkmod,
-     .     eykmod, ezkmod, exklog, eyklog, ezklog     
+     &     eykmod, ezkmod, exklog, eyklog, ezklog     
      
-      real fmodm(mkpltdim)
+      real:: fmodm(mkpltdim)
       complex z0_table1(ntable, mtable)
       complex z1_table1(ntable, mtable)
       complex z2_table1(ntable, mtable)   
-      real zetai_table(ntable) 
-      real dKdL_table(mtable)
+      real:: zetai_table(ntable) 
+      real:: dKdL_table(mtable)
 
 c      complex exk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-c     .        eyk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-c     .        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2) 
+c     &        eyk(nkdim1 : nkdim2, mkdim1 : mkdim2),
+c     &        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2) 
      
       complex, dimension(:,:), allocatable :: exk, eyk, ezk       
           
-      real fmin, fmax, fminre, fmaxre, fminim, fmaxim, fmin1, isq2,
-     .   fmax1, fmax2, fmax3, fmaxs, fmaxt, fmin2, fmin3, fmins,fmint
+      real:: fmin, fmax, fminre, fmaxre, fminim, fmaxim, fmin1, isq2,
+     &   fmax1, fmax2, fmax3, fmaxs, fmaxt, fmin2, fmin3, fmins,fmint
      
-      real exklogmin, exklogmax,
-     .     eyklogmin, eyklogmax,
-     .     ezklogmin, ezklogmax
+      real:: exklogmin, exklogmax,
+     &     eyklogmin, eyklogmax,
+     &     ezklogmin, ezklogmax
                        
       real, dimension(:,:), allocatable ::  xn, xkti, xkte, rho, theta,
-     .   psi, xjy, bmod, xjx, xiota, qsafety, ipsi, btau, bzeta,
-     .   freal, fimag, fmod, mod_Eplus, mod_Eminus, mod_Eb,
-     .   mod_Ealpha, mod_Ebeta, mod_E,
-     .   dldb_tot12, reex_dx, reey_dx, reez_dx, ximex_dx,
-     .   ximey_dx, ximez_dx, spx, spy, spz, reomg1a, reomg2a,
-     .   reomg3a, capr_bpol, pressi, redotj1, redotj2, redotj3,
-     .   redotje, redotjt, redotjs, wdoti1, wdoti2, wdoti3,
-     .   wdoti4, wdoti5, wdoti6, wdote, wdott, fz0e, fz0i1,
-     .   fz0i2, fz0i3, fz0, fz0i4, fz0i5, fz0i6, gpsi,  kpsi, 
-     .   omgexb, uzeta, utheta, fpsi0, ftheta0, muhat, nu_star,
-     .   redotj4, redotj5, redotj6, divq, capd, capd_plot, xkb, 
-     .   xkb_plot, reomglha, xjz
+     &   psi, xjy, bmod, xjx, xiota, qsafety, ipsi, btau, bzeta,
+     &   freal, fimag, fmod, mod_Eplus, mod_Eminus, mod_Eb,
+     &   mod_Ealpha, mod_Ebeta, mod_E,
+     &   dldb_tot12, reex_dx, reey_dx, reez_dx, ximex_dx,
+     &   ximey_dx, ximez_dx, spx, spy, spz, reomg1a, reomg2a,
+     &   reomg3a, capr_bpol, pressi, redotj1, redotj2, redotj3,
+     &   redotje, redotjt, redotjs, wdoti1, wdoti2, wdoti3,
+     &   wdoti4, wdoti5, wdoti6, wdote, wdott, fz0e, fz0i1,
+     &   fz0i2, fz0i3, fz0, fz0i4, fz0i5, fz0i6, gpsi,  kpsi, 
+     &   omgexb, uzeta, utheta, fpsi0, ftheta0, muhat, nu_star,
+     &   redotj4, redotj5, redotj6, divq, capd, capd_plot, xkb, 
+     &   xkb_plot, reomglha, xjz
      
 c      real, dimension(:,:), allocatable :: dxuxx, dxuxy, dxuxz,
 c     .   dxuyx, dxuyy, dxuyz, dxuzx, dxuzy, dxuzz,
@@ -408,52 +409,52 @@ c     .   dxxuyx, dxxuyy, dxxuyz, dxxuzx, dxxuzy, dxxuzz
       real, dimension(:,:), allocatable :: gradprlb             
            
       complex, dimension(:,:), allocatable :: xkperp_cold, acold,
-     .   bcold, ccold,
-     .   ex, ey, ez, bxwave, bywave, bzwave, xkperp_cold2,            
-     .   ealpha, ebeta, eb, eplus, eminus, eplus_flux_plot,
-     .   eminus_flux_plot, xkperp_flux_plot, ntilda_e
+     &   bcold, ccold,
+     &   ex, ey, ez, bxwave, bywave, bzwave, xkperp_cold2,            
+     &   ealpha, ebeta, eb, eplus, eminus, eplus_flux_plot,
+     &   eminus_flux_plot, xkperp_flux_plot, ntilda_e
      
       complex, dimension(:,:), allocatable :: xkperp2_slow, 
-     .        xkperp2_fast, P_a
+     &        xkperp2_fast, P_a
       real, dimension(:,:), allocatable :: xkprl_a 
      
       complex, dimension(:,:), allocatable :: xjpxe, xjpye, xjpze         
                            
             
       complex, dimension(:,:), allocatable :: eplus_flux,
-     .   eminus_flux,  xkperp_flux
+     &   eminus_flux,  xkperp_flux
       
-      real bmod_flux(nrhomax, nthetamax)      
-      real capr_flux(nrhomax, nthetamax), capz_flux(nrhomax, nthetamax) 
+      real:: bmod_flux(nrhomax, nthetamax)      
+      real:: capr_flux(nrhomax,nthetamax), capz_flux(nrhomax, nthetamax) 
       
       
-      real bmod_plot(nrhomax) 
+      real:: bmod_plot(nrhomax) 
            
 
-      real ff(101)
-      real q, omgrf, xk0, n0, clight, xmu0, eps0, rhoplasm
-      real period, pi, time, dt
-      complex expiwt
-      real temax, temin, timin, tmin, tmax, timax, caprmaxp,
-     1   caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
-      real bpmin, bpmax
-      integer nnodex, j, i, nnodey, numb, jmid, jcut, jmid_sav
-      complex zi
+      real:: ff(101)
+      real:: q, omgrf, xk0, n0, clight, xmu0, eps0, rhoplasm
+      real:: period, pi, time, dt
+      complex:: expiwt
+      real:: temax, temin, timin, tmin, tmax, timax, caprmaxp,
+     &   caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
+      real:: bpmin, bpmax
+      integer:: nnodex, j, i, nnodey, numb, jmid, jcut, jmid_sav
+      complex:: zi
 
       namelist/fieldin/ibackground, xminz, xmaxz, yminz, ymaxz, logmax,
-     .   ipage,
-     .   numb, ycut, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
+     &   ipage,
+     &   numb, ycut, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
      
 
       allocate (xkperp_cold(nxmx, nymx), acold(nxmx, nymx),
-     .   bcold(nxmx, nymx), ccold(nxmx, nymx),
-     .   ex(nxmx, nymx), ey(nxmx, nymx), ez(nxmx, nymx),
-     .   bxwave(nxmx, nymx), bywave(nxmx, nymx), bzwave(nxmx, nymx),            
-     .   ealpha(nxmx, nymx), ebeta(nxmx, nymx), eb(nxmx, nymx),
-     .   eplus(nxmx, nymx), eminus(nxmx, nymx), 
-     .   eplus_flux_plot(nxmx, nymx), xkperp_cold2(nxmx, nymx),
-     .   eminus_flux_plot(nxmx, nymx),
-     .   xkperp_flux_plot(nxmx, nymx), ntilda_e(nxmx, nymx)  )
+     &   bcold(nxmx, nymx), ccold(nxmx, nymx),
+     &   ex(nxmx, nymx), ey(nxmx, nymx), ez(nxmx, nymx),
+     &   bxwave(nxmx, nymx), bywave(nxmx, nymx), bzwave(nxmx, nymx),            
+     &   ealpha(nxmx, nymx), ebeta(nxmx, nymx), eb(nxmx, nymx),
+     &   eplus(nxmx, nymx), eminus(nxmx, nymx), 
+     &   eplus_flux_plot(nxmx, nymx), xkperp_cold2(nxmx, nymx),
+     &   eminus_flux_plot(nxmx, nymx),
+     &   xkperp_flux_plot(nxmx, nymx), ntilda_e(nxmx, nymx)  )
      
       allocate (xjpxe(nxmx, nymx), xjpye(nxmx, nymx), xjpze(nxmx, nymx))
 
@@ -466,53 +467,55 @@ c     .   dxxuyx, dxxuyy, dxxuyz, dxxuzx, dxxuzy, dxxuzz
       allocate (gradprlb(nxmx, nymx))         
      
       allocate ( exkmod(nkpltdim, mkpltdim),
-     .   eykmod(nkpltdim, mkpltdim),
-     .   ezkmod(nkpltdim, mkpltdim),
-     .   exklog(nkpltdim, mkpltdim),
-     .   eyklog(nkpltdim, mkpltdim),
-     .   ezklog(nkpltdim, mkpltdim)  )
+     &   eykmod(nkpltdim, mkpltdim),
+     &   ezkmod(nkpltdim, mkpltdim),
+     &   exklog(nkpltdim, mkpltdim),
+     &   eyklog(nkpltdim, mkpltdim),
+     &   ezklog(nkpltdim, mkpltdim)  )
      
       allocate ( eplus_flux(nrhomax, nthetamax),
-     .   eminus_flux(nrhomax, nthetamax),
-     .   xkperp_flux(nrhomax, nthetamax)  )
+     &   eminus_flux(nrhomax, nthetamax),
+     &   xkperp_flux(nrhomax, nthetamax)  )
      
       allocate ( exk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-     .        eyk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-     .        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2)  )
+     &        eyk(nkdim1 : nkdim2, mkdim1 : mkdim2),
+     &        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2)  )
      
      
       allocate ( xn(nxmx, nymx),
-     .   xkti(nxmx, nymx), xkte(nxmx, nymx),
-     .   rho(nxmx, nymx), theta(nxmx, nymx), psi(nxmx, nymx),
-     .   xjy(nxmx, nymx), bmod(nxmx, nymx),
-     .   xjx(nxmx, nymx), xjz(nxmx, nymx),
-     .   xiota(nxmx, nymx), qsafety(nxmx, nymx), ipsi(nxmx, nymx),
-     .   btau(nxmx, nymx), bzeta(nxmx, nymx),
-     .   freal(nxmx, nymx), fimag(nxmx, nymx), fmod(nxmx, nymx),
-     .   mod_Eplus(nxmx, nymx), mod_Eminus(nxmx, nymx),
-     .   mod_Eb(nxmx, nymx), mod_Ealpha(nxmx, nymx), 
-     .   mod_Ebeta(nxmx, nymx), mod_E(nxmx, nymx),
-     .   dldb_tot12(nxmx, nymx), reex_dx(nxmx, nymx),
-     .   reey_dx(nxmx, nymx), reez_dx(nxmx, nymx),
-     .   ximex_dx(nxmx, nymx), ximey_dx(nxmx, nymx),
-     .   ximez_dx(nxmx, nymx),
-     .   spx(nxmx, nymx), spy(nxmx, nymx), spz(nxmx, nymx),
-     .   reomg1a(nxmx, nymx), reomg2a(nxmx, nymx), reomg3a(nxmx, nymx),          
-     .   capr_bpol(nxmx, nymx), pressi(nxmx, nymx),
-     .   redotj1(nxmx, nymx), redotj2(nxmx, nymx), redotj3(nxmx, nymx),
-     .   redotje(nxmx, nymx), redotjt(nxmx, nymx), redotjs(nxmx, nymx),
-     .   wdoti1(nxmx, nymx), wdoti2(nxmx, nymx), wdoti3(nxmx, nymx),
-     .   wdoti4(nxmx, nymx), wdoti5(nxmx, nymx), wdoti6(nxmx, nymx),
-     .   wdote(nxmx, nymx), wdott(nxmx, nymx),
-     .   fz0e(nxmx, nymx), fz0i1(nxmx, nymx),
-     .   fz0i2(nxmx, nymx), fz0i3(nxmx, nymx), fz0(nxmx, nymx),
-     .   fz0i4(nxmx, nymx), fz0i5(nxmx, nymx), fz0i6(nxmx, nymx),
-     .   gpsi(nxmx, nymx),  kpsi(nxmx, nymx), 
-     .   omgexb(nxmx, nymx), uzeta(nxmx, nymx), utheta(nxmx, nymx),
-     .   fpsi0(nxmx, nymx), ftheta0(nxmx, nymx),
-     .   muhat(nxmx, nymx), nu_star(nxmx, nymx),
-     .   redotj4(nxmx, nymx), redotj5(nxmx, nymx), redotj6(nxmx, nymx),
-     .   divq(nxmx, nymx), reomglha(nxmx, nymx) )
+     &   xkti(nxmx, nymx), xkte(nxmx, nymx),
+     &   rho(nxmx, nymx), theta(nxmx, nymx), psi(nxmx, nymx),
+     &   xjy(nxmx, nymx), bmod(nxmx, nymx),
+     &   xjx(nxmx, nymx), xjz(nxmx, nymx),
+     &   xiota(nxmx, nymx), qsafety(nxmx, nymx), ipsi(nxmx, nymx),
+     &   btau(nxmx, nymx), bzeta(nxmx, nymx),
+     &   freal(nxmx, nymx), fimag(nxmx, nymx), fmod(nxmx, nymx),
+     &   mod_Eplus(nxmx, nymx), mod_Eminus(nxmx, nymx),
+     &   mod_Eb(nxmx, nymx), mod_Ealpha(nxmx, nymx), 
+     &   mod_Ebeta(nxmx, nymx), mod_E(nxmx, nymx),
+     &   dldb_tot12(nxmx, nymx), reex_dx(nxmx, nymx),
+     &     reey_dx(nxmx, nymx), reez_dx(nxmx, nymx) )
+      allocate(
+     &   ximex_dx(nxmx, nymx), ximey_dx(nxmx, nymx),
+     &   ximez_dx(nxmx, nymx),
+     &   spx(nxmx, nymx), spy(nxmx, nymx), spz(nxmx, nymx),
+     &   reomg1a(nxmx, nymx), reomg2a(nxmx, nymx), reomg3a(nxmx, nymx),          
+     &   capr_bpol(nxmx, nymx), pressi(nxmx, nymx),
+     &   redotj1(nxmx, nymx), redotj2(nxmx, nymx), redotj3(nxmx, nymx),
+     &   redotje(nxmx, nymx), redotjt(nxmx, nymx), redotjs(nxmx, nymx),
+     &   wdoti1(nxmx, nymx), wdoti2(nxmx, nymx), wdoti3(nxmx, nymx),
+     &   wdoti4(nxmx, nymx), wdoti5(nxmx, nymx), wdoti6(nxmx, nymx),
+     &   wdote(nxmx, nymx), wdott(nxmx, nymx),
+     &   fz0e(nxmx, nymx), fz0i1(nxmx, nymx),
+     &     fz0i2(nxmx, nymx), fz0i3(nxmx, nymx), fz0(nxmx, nymx))
+      allocate(
+     &   fz0i4(nxmx, nymx), fz0i5(nxmx, nymx), fz0i6(nxmx, nymx),
+     &   gpsi(nxmx, nymx),  kpsi(nxmx, nymx), 
+     &   omgexb(nxmx, nymx), uzeta(nxmx, nymx), utheta(nxmx, nymx),
+     &   fpsi0(nxmx, nymx), ftheta0(nxmx, nymx),
+     &   muhat(nxmx, nymx), nu_star(nxmx, nymx),
+     &   redotj4(nxmx, nymx), redotj5(nxmx, nymx), redotj6(nxmx, nymx),
+     &   divq(nxmx, nymx), reomglha(nxmx, nymx) )
          
       allocate(capd(nxmx, nkpltdim))
       allocate(capd_plot(nxmx, nkpltdim)) 
@@ -555,28 +558,28 @@ c--set default values of input data:
       open(unit=38,file='out38',status='old',form='formatted')     
       
       open(unit=140,file='Efield_2D.vtk',status='unknown',
-     .                                       form='formatted')
+     &                                       form='formatted')
       open(unit=245,file='Poynting_2D.vtk',status='unknown',
-     .                                       form='formatted') 
+     &                                       form='formatted') 
       open(unit=141,file='E_kicks_2D.vtk',status='unknown',
-     .                                       form='formatted')  
+     &                                       form='formatted')  
       open(unit=142,file='Bql_avg_2D.vtk',status='unknown',
-     .                                       form='formatted') 
+     &                                       form='formatted') 
       open(unit=242,file='Cql_avg_2D.vtk',status='unknown',
-     .                                       form='formatted')      
+     &                                       form='formatted')      
      
       open(unit=143,file='capd.vtk',status='unknown',
-     .                                       form='formatted')    
+     &                                       form='formatted')    
      
       open(unit=144,file='Eb_spectrum.vtk',status='unknown',
-     .                                       form='formatted')                        
+     &                                       form='formatted')                        
 
 c      open(unit=53,file='movie_ex',status='unknown',form='formatted')
 c      open(unit=58,file='movie_ey',status='unknown',form='formatted')
 c      open(unit=52,file='movie_ez',status='unknown',form='formatted')
 c      open(unit=59,file='movie_eb',status='unknown',form='formatted')
 c       open(unit=60,file='movie_ealpha',status='unknown',
-c     .   form='formatted')
+c     &   form='formatted')
 
       open(unit=51,file='rho',status='unknown',form='formatted')
 c      open(unit=61,file='acold',status='unknown',form='formatted')
@@ -697,11 +700,11 @@ c
             ezklog(n, m) = 0.0
 
             if(abs(exkmod(n,m)) .ne. 0.0)
-     .         exklog(n,m)=alog10(abs(exkmod(n,m)))
+     &         exklog(n,m)=alog10(abs(exkmod(n,m)))
             if(abs(eykmod(n,m)) .ne. 0.0)
-     .         eyklog(n,m)=alog10(abs(eykmod(n,m)))
+     &         eyklog(n,m)=alog10(abs(eykmod(n,m)))
             if(abs(ezkmod(n,m)) .ne. 0.0)
-     .         ezklog(n,m)=alog10(abs(ezkmod(n,m)))
+     &         ezklog(n,m)=alog10(abs(ezkmod(n,m)))
          end do
       end do
 
@@ -709,24 +712,24 @@ c
 
 
       call a2dmnmx_r4(exklog, nkpltdim, mkpltdim, nkxplt, nkyplt,
-     .    exklogmin, exklogmax)
+     &    exklogmin, exklogmax)
 
       call a2dmnmx_r4(eyklog, nkpltdim, mkpltdim, nkxplt, nkyplt,
-     .    eyklogmin, eyklogmax)
+     &    eyklogmin, eyklogmax)
 
       call a2dmnmx_r4(ezklog, nkpltdim, mkpltdim, nkxplt, nkyplt,
-     .    ezklogmin, ezklogmax)
+     &    ezklogmin, ezklogmax)
 
 
 c--   Normalize log's to a maximum value of logmax
       do n = 1, nkxplt
          do m = 1, nkyplt
             if(exklog(n,m) .ne. 0.0)
-     .         exklog(n,m) = exklog(n,m) + (logmax - exklogmax)
+     &         exklog(n,m) = exklog(n,m) + (logmax - exklogmax)
             if(eyklog(n,m) .ne. 0.0)
-     .         eyklog(n,m) = eyklog(n,m) + (logmax - eyklogmax)
+     &         eyklog(n,m) = eyklog(n,m) + (logmax - eyklogmax)
             if(ezklog(n,m) .ne. 0.0)
-     .         ezklog(n,m) = ezklog(n,m) + (logmax - ezklogmax)
+     &         ezklog(n,m) = ezklog(n,m) + (logmax - ezklogmax)
          end do
       end do
 
@@ -764,20 +767,20 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       read(38, 310) ((wdoti2(i, j), i = 1, nnodex), j = 1, nnodey)
       read(38, 310) ((wdott(i, j), i = 1, nnodex), j = 1, nnodey)
       
-      read (38, 310) ((divq(i, j), i = 1, nnodex), j = 1, nnodey)      	 
+      read (38, 310) ((divq(i, j), i = 1, nnodex), j = 1, nnodey)        
       read (38, 310) ((capd(i, n), i = 1, nnodex), n = 1, nkxplt)
       read (38, 310) ((xkb(i, n), i = 1, nnodex), n = 1, nkxplt)      
-      	 
+         
         
       do n = 1, nkxplt
-	 write(6, *) "n = ", n, "capd(64, n) = ", capd(64, n)
+         write(6, *) "n = ", n, "capd(64, n) = ", capd(64, n)
       end do
       
       read(38, 309) nnoderho
       read(38, 310) (rhon(n), n = 1, nnoderho)
       read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho)
       
-      read(38, 309) mnodetheta	   
+      read(38, 309) mnodetheta     
       read(38, 310) (thetam(m), m = 1, mnodetheta)
       
       read(38, 310) (dvol(n), n = 1, nnoderho)
@@ -854,7 +857,7 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       read(38, 310) (bmod_midavg(n), n = 1, nnoderho)
 
       read(38, 310) ((capr_bpol_mid2(i, j), i = 1,nnodex),
-     .                                                    j = 1,nnodey)
+     &                                                    j = 1,nnodey)
       read(38, 310) (capr_bpol_midavg(n), n = 1, nnoderho)
 
       read(38, 310) ((redotj4(i, j), i = 1, nnodex), j = 1, nnodey)
@@ -921,9 +924,9 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
 *     -----------------------
       do i = 1, nnodex
          do j = 1, nnodey
-	    bratio(i,j) = bmod_mid(i,j) / bmod(i,j)
-	    if (bratio(i,j) .gt. 1.0) bratio(i,j) = 1.0
-	 end do
+            bratio(i,j) = bmod_mid(i,j) / bmod(i,j)
+            if (bratio(i,j) .gt. 1.0) bratio(i,j) = 1.0
+         end do
       end do
       
 
@@ -931,12 +934,12 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       nnoderho_half = nnoderho - 1
 
       do n = 1, nnoderho_half
-	 rhon_half(n) = (rhon(n) + rhon(n+1)) / 2.
+         rhon_half(n) = (rhon(n) + rhon(n+1)) / 2.
       end do
       
 c      do n = 1, nnoderho
-c	 rhon_save(n) = rhon(n)
-c	 rhon_half_save(n) = rhon_half(n)
+c        rhon_save(n) = rhon(n)
+c        rhon_half_save(n) = rhon_half(n)
 c      end do
       
       rhon_save = rhon
@@ -951,8 +954,8 @@ c      end do
       write(57, 309) nnoderho
       do n = 1, nnoderho
          write(57,1312)n, rhon(n), redotjeavg(n), redotj1avg(n),
-     .              redotj2avg(n), redotj3avg(n), redotj4avg(n), 
-     .              redotj5avg(n), xjprlavg(n)
+     &              redotj2avg(n), redotj3avg(n), redotj4avg(n), 
+     &              redotj5avg(n), xjprlavg(n)
       end do
       
       
@@ -962,8 +965,8 @@ c      end do
       write(62, 309) nnoderho
       do n = 1, nnoderho
          write(62,1312)n, rhon(n), wdoteavg(n), wdoti1avg(n),
-     .              wdoti2avg(n), wdoti3avg(n), wdoti4avg(n),
-     .              wdoti5avg(n), wdoti6avg(n), xjprlavg(n)
+     &              wdoti2avg(n), wdoti3avg(n), wdoti4avg(n),
+     &              wdoti5avg(n), wdoti6avg(n), xjprlavg(n)
       end do
       
 *     ---------------------
@@ -972,7 +975,7 @@ c      end do
 c      write(67, 309) nnoderho_half
 c      do n = 1, nnoderho_half
 c         write (67, 1312) n, rhon_half(n), redotj2avg(n), 
-c     .      wdoti2avg(n)
+c     &      wdoti2avg(n)
 c      end do 
 
 c      jmid_sav = jmid
@@ -984,10 +987,10 @@ c      jmid = 135
          qmid(i) = qsafety(i, jmid)
          xiotamid(i) = 1.0 / qmid(i)
          bpmid(i) = btau(i, jmid)
-	 xjxmid(i) = xjx(i, jmid)
-	 xjymid(i) = xjy(i, jmid)
-	 xjzmid(i) = xjz(i, jmid)	 
-	 
+         xjxmid(i) = xjx(i, jmid)
+         xjymid(i) = xjy(i, jmid)
+         xjzmid(i) = xjz(i, jmid)        
+         
       end do
 c      jmid = jmid_sav
 
@@ -1057,72 +1060,72 @@ c
       
       title = 'Real z0_table1'      
       call ezconc(zetai_table, dKdL_table, real(z0_table1),
-     .   ff, nmax, mmax,
-     .   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)              
+     &   ff, nmax, mmax,
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)              
 
       title = 'Imag z0_table1'
       call ezconc(zetai_table, dKdL_table, aimag(z0_table1),
-     .    ff, nmax, mmax,
-     .   numb, ntable, mtable, nlevmax, title, titx, tity, iflag) 
+     &    ff, nmax, mmax,
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag) 
      
       title = 'Real z1_table1'      
       call ezconc(zetai_table, dKdL_table, real(z1_table1),
-     .   ff, nmax, mmax,
-     .   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)              
+     &   ff, nmax, mmax,
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)              
 
       title = 'Imag z1_table1'
       call ezconc(zetai_table, dKdL_table, aimag(z1_table1),
-     .    ff, nmax, mmax,
-     .   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)            
+     &    ff, nmax, mmax,
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)            
            
       title = 'Real z2_table1'      
       call ezconc(zetai_table, dKdL_table, real(z2_table1),
-     .   ff, nmax, mmax,
-     .   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)              
+     &   ff, nmax, mmax,
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)              
 
       title = 'Imag z2_table1'
       call ezconc(zetai_table, dKdL_table, aimag(z2_table1),
-     .    ff, nmax, mmax,
-     .   numb, ntable, mtable, nlevmax, title, titx, tity, iflag) 
+     &    ff, nmax, mmax,
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag) 
            
       titx = 'R (m)'
       tity = 'Z (m)'
       
       title = 'bmod_mid surfaces'
       call ezconc(capr, y, bmod_mid, ff, nnodex, nnodey, 50,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
       title = 'bratio surfaces'
       call ezconc(capr, y, bratio, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)     
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)     
      
       title = 'ipsi'
       call ezconc(capr, y, ipsi, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .    nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       title= 'I(psi) '
       titll= 'I(psi) m-T'
       titlr='       '
       call ezplot0(title, titll, titlr, rhon, ipsi_avg,
-     .    nnoderho, nrhomax) 
+     &    nnoderho, nrhomax) 
 
 
       title = 'capr_bpol_mid2 surfaces'
       call ezconc(capr, y, capr_bpol_mid2, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       title= 'Flux average bmod_mid'
@@ -1130,27 +1133,27 @@ c
       titlr='       '
 
       call ezplot0(title, titll, titlr, rhon_half, bmod_midavg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
      
       title= 'parallel gradient of B'
       titll= 'gradprlb_avg (T/m)'
       titlr='       '
      
       call ezplot0(title, titll, titlr, rhon_half, gradprlb2_avg,
-     .    nnoderho_half, nrhomax) 
+     &    nnoderho_half, nrhomax) 
 
 
       title= 'Flux average capr_bpol'
       titll= 'capr_bpol (mT)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, capr_bpol_midavg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
 
       call a1mnmx(capr, nxmx, nnodex, caprmin, caprmax)
       caprminp = caprmin * 1.01
       caprmaxp = caprmax * .99
       call a2mnmx(xnmid, nxmx, nnodex,
-     1   capr, caprminp, caprmaxp, xnmin, xnmax)
+     &   capr, caprminp, caprmaxp, xnmin, xnmax)
 
       xnmax = 2.0 * xnmax
 
@@ -1201,7 +1204,7 @@ c--plot midplane density vs capr on zoomed grid
 c
       
       call a2mnmx(xnmid, nxmx, nnodex,
-     .   capr, rmin_zoom, rmax_zoom, xnmin, xnmax)     
+     &   capr, rmin_zoom, rmax_zoom, xnmin, xnmax)     
       
       title= 'Edge density in midplane'
       titll= 'density (m-3)'
@@ -1209,12 +1212,12 @@ c
       titlb = 'R (m)'
       
 c      call ezzoom1(title, titll, titlr, titlb, capr, xnmid,
-c     .    fmid1, fmid2, fmid3, fmid4, fmid5,
-c     .    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
+c     &    fmid1, fmid2, fmid3, fmid4, fmid5,
+c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
      
       call ezzoom6(title, titll, titlr, titlb, capr, xnmid,
-     .    xktemid, xktimid, xjymid, fmid4, fmid5,
-     .    nnodex, nxmx, rmin_zoom, rmax_zoom)     
+     &    xktemid, xktimid, xjymid, fmid4, fmid5,
+     &    nnodex, nxmx, rmin_zoom, rmax_zoom)     
      
 *     -----------------------
 *     plot kphi = nphi / R(i)
@@ -1222,20 +1225,20 @@ c     .    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       title = 'k_phi = n_phi / R'
       titll = 'kphi (m-1)'       
       call ezplot1q(title, titll, titlr, titlb, capr, xkphi, 
-     .   nnodex, nxmx)          
+     &   nnodex, nxmx)          
    
 
       title= 'Flux surface average density'
       titll= 'density (m-3)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xnavg, 
-     .   nnoderho_half, nrhomax)
+     &   nnoderho_half, nrhomax)
       
       title= 'Differential volume element'
       titll= 'dVol (m3)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, dvol,
-     .                                          nnoderho_half, nrhomax)
+     &                                          nnoderho_half, nrhomax)
      
            
       title= 'Integrated volume'
@@ -1256,53 +1259,53 @@ c     .    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       titll= 'kTe (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xkteavg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
 
       title= 'Flux average ion temperature'
       titll= 'kTi (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xktiavg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
 
 
       title= 'Flux average beam density'
       titll= 'density (m-3)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xn3avg, 
-     .   nnoderho_half, nrhomax)
+     &   nnoderho_half, nrhomax)
 
 
       title= 'Flux average beam temperature'
       titll= 'kTi_fast (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xkti3avg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
 
 
       title= 'Flux average minority density'
       titll= 'density (m-3)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xn2avg, 
-     .   nnoderho_half, nrhomax)
+     &   nnoderho_half, nrhomax)
      
       title= 'Flux average majority density'
       titll= 'density (m-3)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xn1avg, 
-     .   nnoderho_half, nrhomax)     
+     &   nnoderho_half, nrhomax)     
 
       title= 'Flux average minority temperature'
       titll= 'kT2 (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xkti2avg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
 
       title = 'Contour plot of density'
       call ezconc(capr, y, xn, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title= 'Flux surface average redotj'
       titll= 'redotj (watts/m3)'
@@ -1310,8 +1313,8 @@ c     .    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon_half, 
-     .   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
-     .   redotj6avg, redotjeavg,  nnoderho_half, nrhomax)
+     &   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
+     &   redotj6avg, redotjeavg,  nnoderho_half, nrhomax)
      
       title= 'Flux surface average redotj'
       titll= 'redotj (watts/m3)'
@@ -1319,8 +1322,8 @@ c     .    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       titlb= 'rho'
 
       call ezplot70(title, titll, titlr, titlb, rhon_half, 
-     .   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
-     .   redotj6avg, redotjeavg,  nnoderho_half, nrhomax)     
+     &   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
+     &   redotj6avg, redotjeavg,  nnoderho_half, nrhomax)     
      
       title= 'Integrated redotj'
       titll= 'P (Watts)'
@@ -1328,9 +1331,9 @@ c     .    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon, 
-     .   redotj1avg_int, redotj2avg_int, redotj3avg_int, redotj4avg_int,
-     .   redotj5avg_int, redotj6avg_int, redotjeavg_int,
-     .   nnoderho, nrhomax)     
+     &   redotj1avg_int, redotj2avg_int, redotj3avg_int, redotj4avg_int,
+     &   redotj5avg_int, redotj6avg_int, redotjeavg_int,
+     &   nnoderho, nrhomax)     
 
       write(15, *)
       write(15, *) 'Flux surface driven current'
@@ -1339,43 +1342,43 @@ c     .    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       write(15, *)
       
 c      do n = 1, nnoderho_half       
-c	 write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
-c     	 write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
+c        write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
+c        write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
 c      end do
 
       title= 'Flux surface driven current'
       titll= 'xjprl (Amps/m2)'
       titlr= 'I (Amps)'
       titlb= 'rho'
-	 
+         
       call ezplot2(title, titll, titlr, titlb, rhon_half, xjprlavg,
-     .    xjprl_int, nnoderho_half, nrhomax)
+     &    xjprl_int, nnoderho_half, nrhomax)
      
       if(xjprl_int(nnoderho) .lt. 0.0) then 
       
       
          titll= '-xjprl (Amps/m2)'
          titlr= '-I (Amps)' 
-	               
+                       
          xjprlavg = - xjprlavg 
          xjprl_int = - xjprl_int
             
          call ezplot2(title, titll, titlr, titlb, rhon_half, xjprlavg,
-     .      xjprl_int, nnoderho_half, nrhomax)
+     &      xjprl_int, nnoderho_half, nrhomax)
      
          titll= 'xjprl (A/cm2/MW)'
-	 
-	 xjprlavg = 0.0
-	 if (prfin .ne. 0.0) 
-     .      xjprlavg = xjprlavg  / prfin * 1.0e+06 * 1.0e-04 
+         
+         xjprlavg = 0.0
+         if (prfin .ne. 0.0) 
+     &      xjprlavg = xjprlavg  / prfin * 1.0e+06 * 1.0e-04 
      
          call ezplot1(title, titll, titlr, rhon_half, xjprlavg,
-     .      nnoderho_half, nrhomax)
+     &      nnoderho_half, nrhomax)
      
          titll= 'I (kA)'
-	 xjprl_int  = xjprl_int / 1.0e+03     
+         xjprl_int  = xjprl_int / 1.0e+03     
          call ezplot1(title, titll, titlr, rhon_half, xjprl_int,
-     .      nnoderho_half, nrhomax)
+     &      nnoderho_half, nrhomax)
           
       end if
       
@@ -1383,23 +1386,23 @@ c      end do
       
          titll= 'xjprl (Amps/m2)'
          titlr= 'I (Amps)' 
-	               
+                       
          xjprlavg = xjprlavg 
          xjprl_int = xjprl_int
                  
          titll= 'xjprl (A/cm2/MW)'
-	 
-	 xjprlavg = 0.0
-	 if (prfin .ne. 0.0)
-     .      xjprlavg = xjprlavg  / prfin * 1.0e+06 * 1.0e-04
+         
+         xjprlavg = 0.0
+         if (prfin .ne. 0.0)
+     &      xjprlavg = xjprlavg  / prfin * 1.0e+06 * 1.0e-04
      
          call ezplot1(title, titll, titlr, rhon_half, xjprlavg,
-     .      nnoderho_half, nrhomax)
+     &      nnoderho_half, nrhomax)
      
          titll= 'I (kA)'
-	 xjprl_int  = xjprl_int / 1.0e+03     
+         xjprl_int  = xjprl_int / 1.0e+03     
          call ezplot1(title, titll, titlr, rhon_half, xjprl_int,
-     .      nnoderho_half, nrhomax)
+     &      nnoderho_half, nrhomax)
           
       end if      
 
@@ -1409,8 +1412,8 @@ c      end do
       titlb= 'rho'
                  
       call ezplot7(title, titll, titlr, titlb, rhon_half, 
-     .   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
-     .   wdoti6avg, wdoteavg, nnoderho_half, nrhomax)
+     &   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
+     &   wdoti6avg, wdoteavg, nnoderho_half, nrhomax)
      
       title= 'Flux surface average wdote'
       titll= 'wdote (W/cm3/MW)'
@@ -1420,10 +1423,10 @@ c      end do
       wdoteavg = 0.0
       
       if (prfin .ne. 0.0)
-     .   wdoteavg = wdoteavg / prfin * 1.0e+06 * 1.0e-06
+     &   wdoteavg = wdoteavg / prfin * 1.0e+06 * 1.0e-06
      
       call ezplot1_red(title, titll, titlr, rhon_half, wdoteavg,
-     .    nnoderho_half, nrhomax)      
+     &    nnoderho_half, nrhomax)      
      
       title= 'Integrated wdot'
       titll= 'P (Watts)'
@@ -1431,8 +1434,8 @@ c      end do
       titlb= 'rho'
      
       call ezplot7(title, titll, titlr, titlb, rhon, 
-     .   wdoti1avg_int, wdoti2avg_int, wdoti3avg_int, wdoti4avg_int, 
-     .   wdoti5avg_int, wdoti6avg_int, wdoteavg_int, nnoderho, nrhomax) 
+     &   wdoti1avg_int, wdoti2avg_int, wdoti3avg_int, wdoti4avg_int, 
+     &   wdoti5avg_int, wdoti6avg_int, wdoteavg_int, nnoderho, nrhomax) 
      
       title= 'Flux surface average wdoti1'
       titll= 'wdoti1 (watts/m3)'
@@ -1440,7 +1443,7 @@ c      end do
       titlb= 'rho'
      
       call ezplot1(title, titll, titlr, rhon_half, wdoti1avg,
-     .    nnoderho_half, nrhomax)      
+     &    nnoderho_half, nrhomax)      
      
      
       title= 'Flux surface average wdoti2'
@@ -1449,15 +1452,15 @@ c      end do
       titlb= 'rho'
      
       call ezplot1(title, titll, titlr, rhon_half, wdoti2avg,
-     .    nnoderho_half, nrhomax)         
+     &    nnoderho_half, nrhomax)         
          
       title= 'Flux average Toroidal force'
       titll= 'force (Nt/m3)'
       titlr='       '
       
       call ezplot7(title, titll, titlr, titlb, rhon_half, 
-     .    fz0i1avg, fz0i2avg, fz0i3avg, fz0i4avg, fz0i5avg, 
-     .    fz0i6avg, fz0eavg, nnoderho_half, nrhomax)
+     &    fz0i1avg, fz0i2avg, fz0i3avg, fz0i4avg, fz0i5avg, 
+     &    fz0i6avg, fz0eavg, nnoderho_half, nrhomax)
 
       title= 'Flux average toroidal force'
       titll= 'force (Nt/m3)'
@@ -1465,13 +1468,13 @@ c      end do
       titlb= 'rho'
 
       call ezplot2(title, titll, titlr, titlb, rhon_half, fz0avg,
-     .    fz0_int, nnoderho_half, nrhomax)
+     &    fz0_int, nnoderho_half, nrhomax)
 
       title= 'Flux surface average Vy'
       titll= 'Vy (m/s)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, vyavg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
 
 *     -------------------
 *     plot G(psi) in 2-D
@@ -1479,10 +1482,10 @@ c      end do
 
       title = 'Toroidal angular speed G(psi)'
       call ezconc(capr, y, gpsi, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 *     -----------------------
 *     plot G(psi) in midplane
@@ -1498,7 +1501,7 @@ c      end do
       titlb = 'R (m)'
      
       call ezplot1q(title, titll, titlr, titlb, capr, fmidre, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
        
      
 *     -------------------
@@ -1507,10 +1510,10 @@ c      end do
 
       title = 'Poloidal speed / B_pol = K(psi)'
       call ezconc(capr, y, kpsi, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 *     -----------------------
 *     plot K(psi) in midplane
@@ -1526,7 +1529,7 @@ c      end do
       titlb = 'R (m)'
      
       call ezplot1q(title, titll, titlr, titlb, capr, fmidre, 
-     .   nnodex, nxmx)     
+     &   nnodex, nxmx)     
 
 
 *     -----------------
@@ -1535,10 +1538,10 @@ c      end do
 
       title = 'Toroidal velocity (uzeta)'
       call ezconc(capr, y, uzeta, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 *     -----------------------
 *     plot uzeta in midplane
@@ -1554,7 +1557,7 @@ c      end do
       titlb = 'R (m)'
      
       call ezplot1q(title, titll, titlr, titlb, capr, fmidre, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
      
      
@@ -1565,10 +1568,10 @@ c      end do
 
       title = 'Poloidal velocity (utheta)'
       call ezconc(capr, y, utheta, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 *     -----------------------
 *     plot utheta in midplane
@@ -1583,7 +1586,7 @@ c      end do
       titlb = 'R (m)'
      
       call ezplot1q(title, titll, titlr, titlb, capr, fmidre, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
      
      
@@ -1599,10 +1602,10 @@ c      end do
 
       title = 'ExB shearing rate (omgexb)'
       call ezconc(capr, y, omgexb, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 *     -----------------------
 *     plot omgexb in midplane
@@ -1618,7 +1621,7 @@ c      end do
       titlb = 'R (m)'
      
       call ezplot1q(title, titll, titlr, titlb, capr, fmidre, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
      
 
@@ -1626,40 +1629,40 @@ c      end do
       titll= 'xjhat (kg m-2 s-1)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xjhat,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
      
      
       title= 'xkhat(rho)'
       titll= 'xkhat (kg m-2 s-1)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xkhat,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
      
       title= 'poloidal speed <K(rho)>'
       titll= 'K(rho) (m s-1 T-1)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, kpsi_avg,
-     .    nnoderho_half, nrhomax)     
+     &    nnoderho_half, nrhomax)     
      
 
       title= 'toroidal angular speed <G(rho)>'
       titll= 'G(rho) (s-1)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, gpsi_avg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
      
       title= 'normalized viscosity <mu_hat>'
       titll= 'mu_hat (kg/m**3/s-1)'
       titlr='       '
       call ezplot0(title, titll, titlr, rhon_half, muhat_avg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
           
      
       title= 'collisionality (nu_star)'
       titll= 'nu_star'
       titlr='       '
       call ezplot0(title, titll, titlr, rhon_half, nu_star_avg,
-     .    nnoderho_half, nrhomax) 
+     &    nnoderho_half, nrhomax) 
      
 
      
@@ -1670,10 +1673,10 @@ c      end do
 
       title = 'collisionality (nu_star)'
       call ezconc(capr, y, nu_star, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
     
 
 
@@ -1687,7 +1690,7 @@ c
          fmid2(i)  = redotj2(i,jmid)
          fmid3(i)  = redotj3(i,jmid)
          fmid4(i)  = redotj4(i,jmid)
-	 fmid5(i)  = redotj5(i,jmid)
+         fmid5(i)  = redotj5(i,jmid)
          fmidt(i)  = redotjt(i,jmid)
       end do
       
@@ -1697,8 +1700,8 @@ c
       titlb= 'R (m)'
       
       call ezplot7(title, titll, titlr, titlb, capr, 
-     .    fmid1, fmid2, fmid3, fmid4, fmid5, fmid6, fmidre,
-     .    nnodex, nxmx)
+     &    fmid1, fmid2, fmid3, fmid4, fmid5, fmid6, fmidre,
+     &    nnodex, nxmx)
           
 c
 c--plot wdot at jcut
@@ -1715,8 +1718,8 @@ c
          fmid1(i)  = wdoti1(i, jcut)
          fmid2(i)  = wdoti2(i, jcut)
          fmid3(i)  = wdoti3(i, jcut)
-	 fmid4(i)  = wdoti4(i, jcut)
-	 fmid5(i)  = wdoti5(i, jcut)
+         fmid4(i)  = wdoti4(i, jcut)
+         fmid5(i)  = wdoti5(i, jcut)
          fmidt(i)  = wdott(i, jcut)
       end do
       
@@ -1726,8 +1729,8 @@ c
       titlb= 'R (m)'
       
       call ezplot70(title, titll, titlr, titlb, capr, 
-     .    fmid1, fmid2, fmid3, fmid4, fmid5, fmid6, fmidre,  
-     .    nnodex, nxmx)
+     &    fmid1, fmid2, fmid3, fmid4, fmid5, fmid6, fmidre,  
+     &    nnodex, nxmx)
      
 
       do i = 1, nnodex
@@ -1740,7 +1743,7 @@ c
       titlb= 'R (m)'
      
       call ezplot1q(title, titll, titlr, titlb, capr, fmid1, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
 
 
@@ -1758,8 +1761,8 @@ c
          fmid1(i)  = fz0i1(i, jcut)
          fmid2(i)  = fz0i2(i, jcut)
          fmid3(i)  = fz0i3(i, jcut)
-	 fmid4(i)  = fz0i4(i, jcut)
-	 fmid5(i)  = fz0i5(i, jcut)
+         fmid4(i)  = fz0i4(i, jcut)
+         fmid5(i)  = fz0i5(i, jcut)
          fmidt(i)  = fz0(i, jcut)
       end do
       
@@ -1769,8 +1772,8 @@ c
       titlb= 'R (m)'
       
       call ezplot7(title, titll, titlr, titlb, capr, 
-     .    fmid1, fmid2, fmid3, fmid4, fmid5, fmid6, fmidre,
-     .    nnodex, nxmx)
+     &    fmid1, fmid2, fmid3, fmid4, fmid5, fmid6, fmidre,
+     &    nnodex, nxmx)
      
 
 
@@ -1795,7 +1798,7 @@ c
 c--plot q profile in midplane
 c
       call a2mnmx(qmid, nxmx, nnodex,
-     1   capr, caprminp, caprmaxp, qmin, qmax)
+     &   capr, caprminp, caprmaxp, qmin, qmax)
       qmin = 0.0
       qmax = 5.0
       
@@ -1833,16 +1836,16 @@ c
       do i = 1, nnodex
          do j = 1, nnodey
             fmod(i,j)   = rho(i,j)**2
-	    psi(i,j) = rho(i,j)**2
+            psi(i,j) = rho(i,j)**2
          end do
       end do
 
       title = 'Contour plot of psi'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
 *     --------------------
 *     plot psi in midplane
@@ -1858,7 +1861,7 @@ c
       titlb = 'R (m)'
      
       call ezplot1q(title, titll, titlr, titlb, capr, fmidre, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
 *     ---------------------
 *     plot Mod 1/B surfaces
@@ -1872,44 +1875,44 @@ c
 
       title = 'Mod 1/B surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       
      
 
       title = 'Contour plot of theta'
       call ezconc(capr, y, theta, ff, nnodex, nnodey, 28,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
 c--   Plot xkperp_cold:
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(xkperp_cold(i,j))
-            fimag(i,j) = imag(xkperp_cold(i,j))
+            fimag(i,j) = aimag(xkperp_cold(i,j))
          end do
       end do
 
 
       title = 'Re xkperp_cold'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, 1,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Im xkperp_cold'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, 1,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
 *     --------------------------------------
@@ -1917,7 +1920,7 @@ c--   Plot xkperp_cold:
 *     --------------------------------------
       do i = 1, nnodex
          fmidre(i) = real(xkperp_cold(i,jmid))
-         fmidim(i) = imag(xkperp_cold(i,jmid))
+         fmidim(i) = aimag(xkperp_cold(i,jmid))
       end do
       
       title = 'Midplane xkperp_cold'
@@ -1926,14 +1929,14 @@ c--   Plot xkperp_cold:
       titlb = 'R (m)'
       
       call ezplot2(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx) 
+     &   nnodex, nxmx) 
      
 *     --------------------------------------
 *     plot xkperp_cold2(i,j) in midplane
 *     --------------------------------------
       do i = 1, nnodex
          fmidre(i) = real(xkperp_cold2(i,jmid))
-         fmidim(i) = imag(xkperp_cold2(i,jmid))
+         fmidim(i) = aimag(xkperp_cold2(i,jmid))
       end do
       
       title = 'Midplane xkperp_cold2'
@@ -1942,40 +1945,40 @@ c--   Plot xkperp_cold:
       titlb = 'R (m)'
       
       call ezplot2(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)      
+     &   nnodex, nxmx)      
           
     
 c--   Plot xkperp_cold2 in 2D:
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(xkperp_cold2(i,j))
-            fimag(i,j) = imag(xkperp_cold2(i,j))
+            fimag(i,j) = aimag(xkperp_cold2(i,j))
          end do
       end do
 
 
       title = 'Re xkperp_cold2'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, 1,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
           
 
 c--   Plot Acold in 2D:
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(acold(i,j))
-            fimag(i,j) = imag(acold(i,j))
+            fimag(i,j) = aimag(acold(i,j))
          end do
       end do
 
       title = 'Re Acold (resonance)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, 1,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
   
      
      
@@ -1983,16 +1986,16 @@ c--   Plot Bcold in 2D:(slow wave cutoff)
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(bcold(i,j))
-            fimag(i,j) = imag(bcold(i,j))
+            fimag(i,j) = aimag(bcold(i,j))
          end do
       end do
 
       title = 'Re Bcold (slow wave cutoff)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity) 
+     &    nnodey, 1,
+     &   nxmx, nymx, nlevmax, title, titx, tity) 
           
  
      
@@ -2000,19 +2003,19 @@ c--   Plot Ccold in 2D:(fast wave cutoff)
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ccold(i,j))
-            fimag(i,j) = imag(ccold(i,j))
+            fimag(i,j) = aimag(ccold(i,j))
          end do
       end do
 
       title = 'Re Ccold (fast wave cutoff)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity)     
+     &    nnodey, 1,
+     &   nxmx, nymx, nlevmax, title, titx, tity)     
 
 c      call ezconz(capr, y, freal, ff, nnodex, nnodey, 1,
-c     1   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
 *     -----------------------
@@ -2027,10 +2030,10 @@ c     1   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Majority resonant surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, 15,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .  nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &  nxmx, nymx, nlevmax, title, titx, tity)
      
      
       do i = 1, nnodex
@@ -2041,10 +2044,10 @@ c     1   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Minority resonant surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, 15,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)   
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)   
      
      
       do i = 1, nnodex
@@ -2055,10 +2058,10 @@ c     1   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Species 3 resonant surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, 15,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)     
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)     
           
       do i = 1, nnodex
          do j = 1, nnodey
@@ -2068,50 +2071,50 @@ c     1   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Lower hybrid resonant surface'
       call ezconc1(capr, y, fmod, ff, nnodex, nnodey, 1,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)   
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)   
 
 
       title = 'Contour plot of Janty'
       call ezconc(capr, y, xjy, ff, nnodex, nnodey, 2,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Contour plot of Jantx'
       call ezconc(capr, y, xjx, ff, nnodex, nnodey, 2,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &    nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       title = 'Contour plot of Jantz'
       call ezconc(capr, y, xjz, ff, nnodex, nnodey, 2,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .    nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)     
+     &    nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)     
 
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ealpha(i,j))
-            fimag(i,j) = imag(ealpha(i,j))
+            fimag(i,j) = aimag(ealpha(i,j))
          end do
       end do
 
 
       title = 'Real E alpha'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 c      call ezconz(capr, y, freal, ff, nnodex, nnodey, numb,
-c     .   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       
 !     --------------------------------------
@@ -2153,7 +2156,7 @@ c     .   nxmx, nymx, nlevmax, title, titx, tity)
       
       write (140, 3411) ((freal(i,j), i = 1, nnodex),  j = 1, nnodey) 
       
- 3410 format(1p4e10.2)  
+ 3410 format(1p,4e10.2)  
  3411 format(6f17.4) 
  
 
@@ -2175,53 +2178,53 @@ c     .   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Imag E alpha'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ebeta(i,j))
-            fimag(i,j) = imag(ebeta(i,j))
+            fimag(i,j) = aimag(ebeta(i,j))
          end do
       end do
       title = 'Real Ebeta'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       title = 'Imag Ebeta'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
              
 
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(eb(i,j))
-            fimag(i,j) = imag(eb(i,j))
+            fimag(i,j) = aimag(eb(i,j))
          end do
       end do
       title = 'Real Eb'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
       call pseudo(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       write(140, 3966)
@@ -2237,10 +2240,10 @@ c     .   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Imag Eb'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
 c
 c--plot plasma current (electrons)
@@ -2249,43 +2252,43 @@ c
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(xjpxe(i,j))
-            fimag(i,j) = imag(xjpxe(i,j))
+            fimag(i,j) = aimag(xjpxe(i,j))
          end do
       end do
       title = 'Real Je_alpha'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(xjpye(i,j))
-            fimag(i,j) = imag(xjpye(i,j))
+            fimag(i,j) = aimag(xjpye(i,j))
          end do
       end do
       title = 'Real Je_beta'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(xjpze(i,j))
-            fimag(i,j) = imag(xjpze(i,j))
+            fimag(i,j) = aimag(xjpze(i,j))
          end do
       end do
       title = 'Real Je_b'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)          
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)          
      
 c
 c--plot E alpha in midplane
@@ -2295,23 +2298,23 @@ c      jmid = jdiag
       
       do i = 1, nnodex
          fmidre(i) = real(ealpha(i,jmid))
-         fmidim(i) = imag(ealpha(i,jmid))
+         fmidim(i) = aimag(ealpha(i,jmid))
       end do
       
       title = 'Ealpha'
       titll = 'Re Ealpha (V/m)'
       titlr = 'Im Ealpha (V/m)'
       titlb = 'R (m)'
-	    
+            
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
 
 c
 c--plot Ebeta in midplane
 c
       do i = 1, nnodex
          fmidre(i) = real(ebeta(i,jmid))
-         fmidim(i) = imag(ebeta(i,jmid))
+         fmidim(i) = aimag(ebeta(i,jmid))
       end do
       
       title = 'Ebeta'
@@ -2320,7 +2323,7 @@ c
       titlb = 'R (m)'
       
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
 
 
 *     ----------------------
@@ -2339,7 +2342,7 @@ c
 
       do i = 1, nnodex
          fmidre(i) = real(eplus(i,jmid))
-         fmidim(i) = imag(eplus(i,jmid))
+         fmidim(i) = aimag(eplus(i,jmid))
          mod_Eplus_mid(i) = mod_Eplus(i,jmid)
       end do
       
@@ -2349,7 +2352,7 @@ c
       titlb = 'R (m)'
       
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
 
 
 
@@ -2368,7 +2371,7 @@ c
 
       do i = 1, nnodex
          fmidre(i) = real(eminus(i,jmid))
-         fmidim(i) = imag(eminus(i,jmid))
+         fmidim(i) = aimag(eminus(i,jmid))
          mod_Eminus_mid(i) = mod_Eminus(i,jmid)
       end do
       
@@ -2378,7 +2381,7 @@ c
       titlb = 'R (m)'
       
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
 
 
 *     ----------------------
@@ -2399,7 +2402,7 @@ c            end if
 
       do i = 1, nnodex
          fmidre(i) = real(eb(i,jmid))
-         fmidim(i) = imag(eb(i,jmid))
+         fmidim(i) = aimag(eb(i,jmid))
          mod_Eb_mid(i) = mod_Eb(i,jmid)
       end do
       
@@ -2409,7 +2412,7 @@ c            end if
       titlb = 'R (m)'
       
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
      
 *     -----------------------
@@ -2476,10 +2479,10 @@ c
 
       title = '1/2 Re JedotE'
       call ezconc(capr, y, redotje, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
 
@@ -2491,21 +2494,21 @@ c
 
       title = '1/2 Re J1dotE'
       call ezconc(capr, y, redotj1, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
      
       title = '1/2 Re J2dotE'
 
       call ezconc(capr, y, redotj2, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       if (iflag .eq. 0) call boundary  (capr, y, rho, ff,
-     .   nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodex, nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
 c
 c**********************************************************
@@ -2515,10 +2518,10 @@ c
 
       title = '1/2 Re J3dotE'
       call ezconc(capr, y, redotj3, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
 c
@@ -2529,24 +2532,24 @@ c
 
       title = '1/2 Re J4dotE'
       call ezconc(capr, y, redotj4, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = '1/2 Re J5dotE'
       call ezconc(capr, y, redotj5, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = '1/2 Re J6dotE'
       call ezconc(capr, y, redotj6, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 c
 c***********************************************************
@@ -2557,10 +2560,10 @@ c
 
       title = '1/2 Re JsdotE'
       call ezconc(capr, y, redotjs, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 c
 c***********************************************************
@@ -2577,17 +2580,17 @@ c
 
       title = '1/2 Re JdotE'
       call ezconc(capr, y, redotjt, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'div Q'
       call ezconc(capr, y, divq, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       if (dfquotient .eq. 0.0) then
          numb = 20
@@ -2601,7 +2604,7 @@ c
       title='Contour plot of D(x, kx)'
       
       call ezconc2(capr, xkxsav, capd, ff, nnodex, nkxplt, numb,
-     1   nxmx, nkpltdim, nlevmax, title, titx, tity, iflag, dfquotient) 
+     &   nxmx, nkpltdim, nlevmax, title, titx, tity, iflag, dfquotient) 
      
 
 c      CALL PGENV(0., 1.0, 0., 1.0, 1, -2)
@@ -2610,14 +2613,14 @@ c      CALL FREDDY(capd, nnodex, nkxplt, 1.0, 25.0)
       title='Contour plot of xkb(x, kx)'
       
       call ezconc2(capr, xkxsav, xkb, ff, nnodex, nkxplt, numb,
-     1   nxmx, nkpltdim, nlevmax, title, titx, tity, iflag, dfquotient) 
+     &   nxmx, nkpltdim, nlevmax, title, titx, tity, iflag, dfquotient) 
      
      
 !        ---------------------------------------------
 !        Write capd.vtk file "structured points"
 !        ---------------------------------------------
          capd_plot = capd * 1.0e-15
-         xkb_plot = xkb 	 
+         xkb_plot = xkb          
          number_points = nnodex * nkxplt
          dx = capr(2) - capr(1)
          dy = xkxsav(2) - xkxsav(1)
@@ -2630,19 +2633,19 @@ c      CALL FREDDY(capd, nnodex, nkxplt, 1.0, 25.0)
          write(143, 2842) capr(1), xkxsav(1), 0 
          write(143, 2843) dx, dy, 1            
          write(143, 2844) number_points 
-	                 
+                         
          write(143, 4862)
  4862    format('SCALARS capd float 1')              
          write(143, 2849)                   
          write(143, 3411) ((capd_plot(i,j), i = 1, nnodex),  
-     .                                         j = 1, nkxplt)
+     &                                         j = 1, nkxplt)
      
           
          write(143, 4873)
  4873    format('SCALARS xkb float 1')              
          write(143, 2849)                   
          write(143, 3411) ((xkb_plot(i,j), i = 1, nnodex),  
-     .                                         j = 1, nkxplt)     
+     &                                         j = 1, nkxplt)     
      
       numb = 20    
 
@@ -2652,10 +2655,10 @@ c      CALL FREDDY(capd, nnodex, nkxplt, 1.0, 25.0)
 
       title = 'wdote'
       call ezconc(capr, y,wdote, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
      
@@ -2680,18 +2683,18 @@ c        white background
 
       title = 'wdoti1'
       call ezconc(capr, y,wdoti1, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       title = 'wdoti2'
       call ezconc(capr, y,wdoti2, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
                
       write(140, 3849)
  3849 format('SCALARS wdoti2 float 1')        
@@ -2729,41 +2732,41 @@ c        white background
 
       title = 'wdoti3'
       call ezconc(capr, y,wdoti3, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)     
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)     
      
       title = 'wdoti4'
       call ezconc(capr, y,wdoti4, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
           
       title = 'wdoti5'
       call ezconc(capr, y,wdoti5, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
 
       title = 'wdot_tot'
       call ezconc(capr, y,wdott, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
           
 
 
       title = 'Toroidal force'
       call ezconc(capr, y, fz0, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
      
@@ -2778,12 +2781,12 @@ c        white background
       tity = 'ky (m-1)'
       title = 'Mod E alpha(kx, ky)'
       call ezconc(xkxsav, xkysav, exkmod, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
 
       title='3-D plot of Mod E alpha(kx,ky)'
       titz='Mod E alpha(kx,ky)'
       call ezcon3d(xkxsav, xkysav, exkmod, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
      
      
       nmid = nkxplt / 2     
@@ -2798,7 +2801,7 @@ c
       titlr= ''
       
       call ezlog1(title, titll, titlr, tity, xkysav, fmodm,
-     .    nkyplt, mkpltdim, exkmin, exkmax)
+     &    nkyplt, mkpltdim, exkmin, exkmax)
      
      
      
@@ -2819,7 +2822,7 @@ c
       titlr= ''
       
       call ezlog1(title, titll, titlr, titx, xkxsav, fmodm,
-     .    nkxplt, nkpltdim, exkmin, exkmax) 
+     &    nkxplt, nkpltdim, exkmin, exkmax) 
      
      
      
@@ -2830,23 +2833,23 @@ c--   plot log of E alpha
       tity = 'ky (m-1)'
       title = 'log E alpha(kx, ky)'
       call ezconc(xkxsav, xkysav, exklog, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
 
       title='3-D plot of log E alpha(kx,ky)'
       titz='log E alpha(kx,ky)'
       call ezcon3d(xkxsav, xkysav, exklog, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
 
 
 
       title = 'Mod E beta(kx, ky)'
       call ezconc(xkxsav, xkysav, eykmod, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
 
       title='3-D plot of Mod E beta(kx,ky)'
       titz='Mod E beta(kx,ky)'
       call ezcon3d(xkxsav, xkysav, eykmod, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
      
      
       do m = 1, nkyplt
@@ -2860,7 +2863,7 @@ c
       titlr= ''
       
       call ezlog1(title, titll, titlr, tity, xkysav, fmodm,
-     .    nkyplt, mkpltdim, exkmin, exkmax)
+     &    nkyplt, mkpltdim, exkmin, exkmax)
      
      
      
@@ -2877,7 +2880,7 @@ c
       titlr= ''
       
       call ezlog1(title, titll, titlr, titx, xkxsav, fmodm,
-     .    nkxplt, nkpltdim, exkmin, exkmax)       
+     &    nkxplt, nkpltdim, exkmin, exkmax)       
      
      
 
@@ -2885,18 +2888,18 @@ c--   plot log of E beta
 
       title = 'log E beta(kx, ky)'
       call ezconc(xkxsav, xkysav, eyklog, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
 
       title='3-D plot of log E beta(kx,ky)'
       titz='log E beta(kx,ky)'
       call ezcon3d(xkxsav, xkysav, eyklog, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
 
 
 
       title = 'Mod E b(kx, ky)'
       call ezconc(xkxsav, xkysav, ezkmod, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
      
      
 !        ---------------------------------------------
@@ -2914,29 +2917,29 @@ c--   plot log of E beta
          write(144, 2842) xkxsav(1), xkysav(1), 0 
          write(144, 2843) dx, dy, 1            
          write(144, 2844) number_points 
-	                 
+                         
          write(144, 4864)
  4864    format('SCALARS Eb_spectrum float 1')              
          write(144, 2849)                   
          write(144, 3411) ((ezkmod(i,j), i = 1, nkxplt),  
-     .                                         j = 1, nkyplt) 
+     &                                         j = 1, nkyplt) 
      
          write(144, 4865)
  4865    format('SCALARS Ex_spectrum float 1')              
          write(144, 2849)                   
          write(144, 3411) ((exkmod(i,j), i = 1, nkxplt),  
-     .                                         j = 1, nkyplt)
+     &                                         j = 1, nkyplt)
                 
          write(144, 4866)
  4866    format('SCALARS Ey_spectrum float 1')              
          write(144, 2849)                   
          write(144, 3411) ((eykmod(i,j), i = 1, nkxplt),  
-     .                                         j = 1, nkyplt)      
+     &                                         j = 1, nkyplt)      
 
       title='3-D plot of Mod E b(kx,ky)'
       titz='Mod E b(kx,ky)'
       call ezcon3d(xkxsav, xkysav, ezkmod, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
      
      
       do m = 1, nkyplt
@@ -2950,7 +2953,7 @@ c
       titlr= ''
       
       call ezlog1(title, titll, titlr, tity, xkysav, fmodm,
-     .    nkyplt, mkpltdim, exkmin, exkmax)
+     &    nkyplt, mkpltdim, exkmin, exkmax)
      
      
      
@@ -2967,19 +2970,19 @@ c
       titlr= ''
       
       call ezlog1(title, titll, titlr, titx, xkxsav, fmodm,
-     .    nkxplt, nkpltdim, exkmin, exkmax)       
+     &    nkxplt, nkpltdim, exkmin, exkmax)       
 
 
 c--   plot log of Eb
 
       title = 'log E b(kx, ky)'
       call ezconc(xkxsav, xkysav, ezklog, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
 
       title='3-D plot of log E b(kx,ky)'
       titz='Mod E b(kx,ky)'
       call ezcon3d(xkxsav, xkysav, ezklog, ff, nkxplt, nkyplt, numb,
-     1   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
+     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, titz)
 
 
 
@@ -2990,41 +2993,41 @@ c--   plot log of Eb
       do i = 1, nnodex
          do j = 1, nnodey
             fmod(i,j) = conjg(ealpha(i,j)) * ealpha(i,j)
-	    mod_Ealpha(i,j) = sqrt(fmod(i,j))	    
+            mod_Ealpha(i,j) = sqrt(fmod(i,j))       
          end do
       end do
 
       title = 'Mod E alpha'
       call ezconc(capr, y, mod_Ealpha, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       title='3-D plot of Mod E alpha'
       titz='Mod E alpha'
       call ezcon3d(capr, y, mod_Ealpha, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
 
       do i = 1, nnodex
          do j = 1, nnodey
             fmod(i,j) = conjg(ebeta(i,j)) * ebeta(i,j)
-	    mod_Ebeta(i,j) = sqrt(fmod(i,j))	    
+            mod_Ebeta(i,j) = sqrt(fmod(i,j))        
          end do
       end do
 
       title = 'Mod E beta'
       call ezconc(capr, y, mod_Ebeta, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title='3-D plot of Mod E beta'
       titz='Mod Ebeta'
       call ezcon3d(capr, y, mod_Ebeta, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
      
 *     ------------
 *     plot mod(Eb)
@@ -3034,21 +3037,21 @@ c--   plot log of Eb
       do i = 1, nnodex
          do j = 1, nnodey
             fmod(i,j)   = conjg(eb(i,j)) * eb(i,j)
-	    mod_Eb(i,j) = sqrt(fmod(i,j))	    
+            mod_Eb(i,j) = sqrt(fmod(i,j))           
          end do
       end do
 
       title = ' Mod Eb'
       call ezconc(capr, y, mod_Eb, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title='3-D plot of Mod Eb'
       titz='Mod Eb'
       call ezcon3d(capr, y, mod_Eb, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
      
       write(140, 3956)
  3956 format('SCALARS mod_eb float 1')        
@@ -3061,8 +3064,8 @@ c--   plot log of Eb
       do i = 1, nnodex
          do j = 1, nnodey
             mod_E(i,j)   = sqrt(conjg(ealpha(i,j)) * ealpha(i,j)
-     .                        + conjg(ebeta(i,j)) * ebeta(i,j)
-     .                        + conjg(eb(i,j)) * eb(i,j) )    	    
+     &                        + conjg(ebeta(i,j)) * ebeta(i,j)
+     &                        + conjg(eb(i,j)) * eb(i,j) )          
          end do
       end do
       
@@ -3094,16 +3097,16 @@ c            end if
 
       title = ' Mod(E_plus)'
       call ezconc(capr, y, mod_Eplus, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       title='3-D plot of Mod Eplus'
       titz='Mod Eplus'
       call ezcon3d(capr, y, mod_Eplus, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
      
      
       write(140, 3954)
@@ -3129,16 +3132,16 @@ c            end if
 
       title = ' Mod(E_minus)'
       call ezconc(capr, y, mod_Eminus, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       title='3-D plot of Mod Eminus'
       titz='Mod Eminus'
       call ezcon3d(capr, y, mod_Eminus, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
      
      
       write(140, 3955)
@@ -3162,16 +3165,16 @@ c            end if
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j)   = real(eplus(i,j))
-	    fimag(i,j)   = imag(eplus(i,j))
+            fimag(i,j)   = aimag(eplus(i,j))
          end do
       end do
 
       title = 'real(E_plus)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       write(140, 3950)
  3950 format('SCALARS re_eplus float 1')        
@@ -3192,16 +3195,16 @@ c            end if
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j)   = real(eminus(i,j))
-	    fimag(i,j)   = imag(eminus(i,j))
+            fimag(i,j)   = aimag(eminus(i,j))
          end do
       end do
 
       title = 'Real(E_minus)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       write(140, 3952)
  3952 format('SCALARS re_eminus float 1')        
@@ -3227,42 +3230,42 @@ c            end if
 
       title = 'B toroidal'
       call ezconc(capr, y, bzeta, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 c      title='3-D plot of B toroidal'
 c      titz='Btor'
 c      call ezcon3d(capr, y, bzeta, ff, nnodex, nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
 
 c      do i = 1, nnodex
 c         write(6, 2163)i, capr(i), x(i), btau(i, 16),
-c     1      bzeta(i,16)
+c     &      bzeta(i,16)
 c      end do
- 2163 format(i5, 1p11e12.3)
+ 2163 format(i5, 1p,11e12.3)
 
 
 
       title = 'B poloidal'
       call ezconc(capr, y, btau, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title='3-D plot of B poloidal'
       titz='Bpol'
       call ezcon3d(capr, y, btau, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
 
      
 
 c      title='3-D plot of safety factor'
 c      titz='q'
 c      call ezcon3d(capr, y, qsafety, ff, nnodex, nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
 
 
 
@@ -3270,24 +3273,24 @@ c     1   nxmx, nymx, nlevmax, title, titx, tity, titz)
 
 c      title = 'Spx'
 c      call ezconc(capr, y, spx, ff, nnodex, nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
 c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     .   nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nnodey, numb,
+c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 c      title = 'Spy'
 c      call ezconc(capr, y, spy, ff, nnodex, nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
 c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     .   nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nnodey, numb,
+c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 c      title = 'Spz'
 c      call ezconc(capr, y, spz, ff, nnodex, nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
 c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     .   nnodey, numb,
-c     1   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nnodey, numb,
+c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
 *     --------------
@@ -3310,7 +3313,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       
       read(38, 310) (dvol(n), n = 1, nnoderho2)
       read(38, 310) (volume(n), n = 1, nnoderho2)
-	    
+            
       read(38, 310) (redotjeavg(n), n = 1, nnoderho2)
       read(38, 310) (redotj1avg(n), n = 1, nnoderho2)
       read(38, 310) (redotj2avg(n), n = 1, nnoderho2)
@@ -3347,7 +3350,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       read(38, 310) (wdot3_int(n), n = 1, nnoderho2)
       read(38, 310) (wdot4_int(n), n = 1, nnoderho2)
       read(38, 310) (wdot5_int(n), n = 1, nnoderho2)
-      read(38, 310) (wdot6_int(n), n = 1, nnoderho2)	 
+      read(38, 310) (wdot6_int(n), n = 1, nnoderho2)     
       
       read(38, 310) (redotje_dvol(n), n = 1, nnoderho2)
       read(38, 310) (redotj1_dvol(n), n = 1, nnoderho2)
@@ -3394,46 +3397,46 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       read(38, 310) ((ftheta0(i, j), i = 1, nnodex), j = 1, nnodey)
       read(38, 310) ((pressi(i,j), i = 1, nnodex), j = 1, nnodey)
       read(38, 310) ((dldb_tot12(i, j), i = 1, nnodex), 
-     .                                  j = 1, nnodey)
+     &                                  j = 1, nnodey)
             
       read (38, 309) ndisti1, ndisti2, ndisti3
       
       read (38, 310) ((eplus_flux_plot(i, j), i = 1, nnodex), 
-     .                                         j = 1, nnodey)
+     &                                         j = 1, nnodey)
      
       read (38, 310) ((eminus_flux_plot(i, j), i = 1, nnodex), 
-     .                                         j = 1, nnodey)
+     &                                         j = 1, nnodey)
      
       read (38, 310) ((xkperp_flux_plot(i, j), i = 1, nnodex), 
-     .                                         j = 1, nnodey)
+     &                                         j = 1, nnodey)
      
       read (38, 310) ((eplus_flux(n, m), n = 1, nnoderho), 
-     .                                   m = 1, mnodetheta)
+     &                                   m = 1, mnodetheta)
       read (38, 310) ((eminus_flux(n, m), n = 1, nnoderho), 
-     .                                    m = 1, mnodetheta)
+     &                                    m = 1, mnodetheta)
      
       read (38, 310) ((xkperp_flux(n, m), n = 1, nnoderho), 
-     .                                    m = 1, mnodetheta)
+     &                                    m = 1, mnodetheta)
      
      
       read (38, 310) ((capr_flux(n,m),   n = 1, nnoderho), 
-     .                                   m = 1, mnodetheta)
+     &                                   m = 1, mnodetheta)
       read (38, 310) ((capz_flux(n,m),   n = 1, nnoderho), 
-     .                                   m = 1, mnodetheta)
+     &                                   m = 1, mnodetheta)
      
       read (38, 310) ((bmod_flux(n,m),   n = 1, nnoderho), 
-     .                                   m = 1, mnodetheta)
+     &                                   m = 1, mnodetheta)
      
       read (38, 310) ((dxxuyy(i,j), i = 1, nnodex), j = 1, nnodey)
       read (38, 310) ((dyyuzz(i,j), i = 1, nnodex), j = 1, nnodey) 
       read (38, 310) ((gradprlb(i,j), i = 1, nnodex), j = 1, nnodey) 
       
       read(38, 310) ((xkperp2_slow(i, j), i = 1, nnodex), 
-     .      j = 1, nnodey)	 
+     &      j = 1, nnodey)       
       read(38, 310) ((xkperp2_fast(i, j), i = 1, nnodex), 
-     .      j = 1, nnodey)
+     &      j = 1, nnodey)
       read(38, 310) ((xkprl_a(i,j), i = 1, nnodex), j = 1, nnodey)
-      read(38, 310) ((P_a(i, j), i = 1, nnodex), j = 1, nnodey)	                     
+      read(38, 310) ((P_a(i, j), i = 1, nnodex), j = 1, nnodey)                      
               
       
       write(66,310) ((bxwave(i, j), i = 1, nnodex), j = 1, nnodey)
@@ -3451,7 +3454,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       titlr='       '
      
       call ezplot1_0(title, titll, titlr, rhon_half_save, dldbavg,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
        
      
 
@@ -3461,8 +3464,8 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       titlb= 'rho'
      
       call ezplot70(title, titll, titlr, titlb, rhon_half_save,
-     .    wdoti1_ql, wdoti2_ql, wdoti3_ql, wdoti4_ql, wdoti5_ql,
-     .    wdoti6_ql, wdote_ql, nnoderho_half, nrhomax)
+     &    wdoti1_ql, wdoti2_ql, wdoti3_ql, wdoti4_ql, wdoti5_ql,
+     &    wdoti6_ql, wdote_ql, nnoderho_half, nrhomax)
      
 *     ----------------------
 *     write mchoi2 (67) file
@@ -3470,7 +3473,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       write(67, 309) nnoderho_half
       do n = 1, nnoderho_half
          write (67, 1312) n, rhon_half_save(n), redotj2avg_save(n), 
-     .      wdoti2avg_save(n), wdoti2_ql(n)
+     &      wdoti2avg_save(n), wdoti2_ql(n)
       end do       
      
      
@@ -3480,9 +3483,9 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       titlb= 'rho'
      
       call ezplot7(title, titll, titlr, titlb, rhon_half_save, 
-     .   wdoti1_ql_int, wdoti2_ql_int, wdoti3_ql_int, wdoti4_ql_int, 
-     .   wdoti5_ql_int, wdoti6_ql_int, wdote_ql_int, nnoderho_half, 
-     .   nrhomax)
+     &   wdoti1_ql_int, wdoti2_ql_int, wdoti3_ql_int, wdoti4_ql_int, 
+     &   wdoti5_ql_int, wdoti6_ql_int, wdote_ql_int, nnoderho_half, 
+     &   nrhomax)
      
       title= 'Quasilinear wdoti1'
       titll= 'wdoti1 (watts/m3)'
@@ -3490,7 +3493,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       titlb= 'rho'
      
       call ezplot10(title, titll, titlr, rhon_half_save, wdoti1_ql,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
      
       title= 'Quasilinear wdoti2'
       titll= 'wdoti2 (watts/m3)'
@@ -3498,7 +3501,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       titlb= 'rho'
      
       call ezplot10(title, titll, titlr, rhon_half_save, wdoti2_ql,
-     .    nnoderho_half, nrhomax)
+     &    nnoderho_half, nrhomax)
      
      
       title= 'Quasilinear wdoti3'
@@ -3507,7 +3510,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       titlb= 'rho'
      
       call ezplot10(title, titll, titlr, rhon_half_save, wdoti3_ql,
-     .    nnoderho_half, nrhomax) 
+     &    nnoderho_half, nrhomax) 
      
      
      
@@ -3518,7 +3521,7 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
       nnoderho2_half = nnoderho2 - 1
 
       do n = 1, nnoderho2_half
-	 rhon_half(n) = (rhon(n) + rhon(n+1)) / 2.0
+         rhon_half(n) = (rhon(n) + rhon(n+1)) / 2.0
 c         write(6, 1312)n, rhon(n), rhon_half(n)
       end do
 
@@ -3529,13 +3532,13 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
      
       call ezplot7(title, titll, titlr, titlb, rhon_half, 
-     .    redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
-     .    redotj6avg, redotjeavg, nnoderho2_half, nrhomax) 
+     &    redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
+     &    redotj6avg, redotjeavg, nnoderho2_half, nrhomax) 
      
       nnoderho2_half = nnoderho2 - 1
 
       do n = 1, nnoderho2_half
-	 rhon_half(n) = (rhon(n) + rhon(n+1)) / 2.0
+         rhon_half(n) = (rhon(n) + rhon(n+1)) / 2.0
 c         write(6, 1312)n, rhon(n), rhon_half(n)
       end do
            
@@ -3545,8 +3548,8 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
 
       call ezplot70(title, titll, titlr, titlb, rhon_half, 
-     .   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
-     .   redotj6avg, redotjeavg,  nnoderho2_half, nrhomax)        
+     &   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
+     &   redotj6avg, redotjeavg,  nnoderho2_half, nrhomax)        
            
       title= 'Integrated Real(EdotJ)'
       titll= 'P(watts)'
@@ -3554,8 +3557,8 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon, 
-     .    redotj1_int, redotj2_int, redotj3_int, redotj4_int, 
-     .    redotj5_int, redotj6_int, redotje_int, nnoderho2, nrhomax)     
+     &    redotj1_int, redotj2_int, redotj3_int, redotj4_int, 
+     &    redotj5_int, redotj6_int, redotje_int, nnoderho2, nrhomax)     
         
 
       title= 'Real(EdotJ) * dvol'
@@ -3564,8 +3567,8 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon, 
-     .    redotj1_dvol, redotj2_dvol, redotj3_dvol, redotj4_dvol, 
-     .    redotj5_dvol, redotj6_dvol, redotje_dvol, nnoderho2, nrhomax)
+     &    redotj1_dvol, redotj2_dvol, redotj3_dvol, redotj4_dvol, 
+     &    redotj5_dvol, redotj6_dvol, redotje_dvol, nnoderho2, nrhomax)
                
       title= 'Flux surface average wdot'
       titll= 'wdot (watts/m3)'
@@ -3573,14 +3576,14 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon_half, 
-     .   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
-     .   wdoti6avg, wdoteavg, nnoderho2_half, nrhomax)
+     &   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
+     &   wdoti6avg, wdoteavg, nnoderho2_half, nrhomax)
      
       write(72, 309) nnoderho
       do n = 1, nnoderho
          write(72,1312)n, rhon_half(n), wdoteavg(n), wdoti1avg(n),
-     .              wdoti2avg(n), wdoti3avg(n), wdoti4avg(n),
-     .              wdoti5avg(n), wdoti6avg(n)
+     &              wdoti2avg(n), wdoti3avg(n), wdoti4avg(n),
+     &              wdoti5avg(n), wdoti6avg(n)
       end do
      
      
@@ -3590,8 +3593,8 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon, 
-     .    wdot1_int, wdot2_int, wdot3_int, wdot4_int, wdot5_int,
-     .    wdot6_int, wdote_int, nnoderho2, nrhomax)
+     &    wdot1_int, wdot2_int, wdot3_int, wdot4_int, wdot5_int,
+     &    wdot6_int, wdote_int, nnoderho2, nrhomax)
 
       title= 'Wdot * dvol'
       titll= 'P (watts)'
@@ -3599,8 +3602,8 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon, 
-     .    wdoti1_dvol, wdoti2_dvol, wdoti3_dvol, wdoti4_dvol, 
-     .    wdoti5_dvol, wdoti6_dvol, wdote_dvol, nnoderho2, nrhomax)  
+     &    wdoti1_dvol, wdoti2_dvol, wdoti3_dvol, wdoti4_dvol, 
+     &    wdoti5_dvol, wdoti6_dvol, wdote_dvol, nnoderho2, nrhomax)  
                        
       title= 'Flux surface average redotj'
       titll= 'redotj (watts/m3)'
@@ -3608,7 +3611,7 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       titlb= 'rho'
 
       call ezplot2p(title, titll, titlr, titlb, rhon_half, redotjeavg, 
-     .   redotjiavg, nnoderho2_half, nrhomax)
+     &   redotjiavg, nnoderho2_half, nrhomax)
 
       write(15, *)
       write(15, *) 'Flux surface driven current'
@@ -3623,8 +3626,8 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       write(6, *)
       
       do n = 1, nnoderho2_half      
-	 write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
-     	 write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
+         write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
+         write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
       end do
       
       write(15, *)
@@ -3640,8 +3643,8 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       write(6, *)
       
 c      do i = 1, nnodex      
-c	 write (15, 1312) i, capr(i), mod_E_mid(i)
-c     	 write (6, 1312) i, capr(i), mod_E_mid(i)
+c        write (15, 1312) i, capr(i), mod_E_mid(i)
+c        write (6, 1312) i, capr(i), mod_E_mid(i)
 c      end do
      
       title= 'Flux surface driven current'
@@ -3650,32 +3653,32 @@ c      end do
       titlb= 'rho'
 
       call ezplot2(title, titll, titlr, titlb, rhon_half, xjprlavg,
-     .    xjprl_int, nnoderho2_half, nrhomax)
+     &    xjprl_int, nnoderho2_half, nrhomax)
      
      
       if(xjprl_int(nnoderho2) .lt. 0.0) then 
       
          titll= '-xjprl (Amps/m2)'
          titlr= '-I (Amps)' 
-	               
+                       
          xjprlavg = - xjprlavg 
          xjprl_int = - xjprl_int
             
          call ezplot2(title, titll, titlr, titlb, rhon_half, xjprlavg,
-     .      xjprl_int, nnoderho2_half, nrhomax)
+     &      xjprl_int, nnoderho2_half, nrhomax)
      
          titll= 'xjprl (MA/m2/MW)'
-	 
-	 xjprlavg = 0.0	 
-	 if(prfin .ne. 0.0) xjprlavg = xjprlavg  / prfin	 
+         
+         xjprlavg = 0.0  
+         if(prfin .ne. 0.0) xjprlavg = xjprlavg  / prfin         
      
          call ezplot1(title, titll, titlr, rhon_half, xjprlavg,
-     .      nnoderho2_half, nrhomax)
+     &      nnoderho2_half, nrhomax)
      
          titll= 'I (kA)'
-	 xjprl_int  = xjprl_int / 1.0e+03     
+         xjprl_int  = xjprl_int / 1.0e+03     
          call ezplot1(title, titll, titlr, rhon_half, xjprl_int,
-     .      nnoderho2_half, nrhomax)
+     &      nnoderho2_half, nrhomax)
           
       end if
       
@@ -3683,22 +3686,22 @@ c      end do
       
          titll= 'xjprl (Amps/m2)'
          titlr= 'I (Amps)' 
-	               
+                       
          xjprlavg = xjprlavg 
          xjprl_int = xjprl_int
                  
          titll= 'xjprl (MAmps/m2/MW)'
-	 
-	 xjprlavg = 0.0
-	 if (prfin .ne. 0.0) xjprlavg = xjprlavg  / prfin	 
+         
+         xjprlavg = 0.0
+         if (prfin .ne. 0.0) xjprlavg = xjprlavg  / prfin        
      
          call ezplot1(title, titll, titlr, rhon_half, xjprlavg,
-     .      nnoderho2_half, nrhomax)
+     &      nnoderho2_half, nrhomax)
      
          titll= 'I (kA)'
-	 xjprl_int  = xjprl_int / 1.0e+03     
+         xjprl_int  = xjprl_int / 1.0e+03     
          call ezplot1(title, titll, titlr, rhon_half, xjprl_int,
-     .      nnoderho2_half, nrhomax)
+     &      nnoderho2_half, nrhomax)
           
       end if      
       
@@ -3708,20 +3711,20 @@ c      end do
       titll= 'dvol (m3)'
       titlr= '       '
       call ezplot1(title, titll, titlr, rhon_half, dvol, 
-     .     nnoderho2_half, nrhomax)
+     &     nnoderho2_half, nrhomax)
      
       title= 'Integrated volume'
       titll= 'volume (m3)'
       titlr= '       '
       call ezplot1(title, titll, titlr, rhon, volume, 
-     .     nnoderho2, nrhomax)
+     &     nnoderho2, nrhomax)
      
 *     --------------------------------------
 *     Reset rhon back to it's original value
 *     --------------------------------------        
       do n = 1, nnoderho
-	 rhon(n) = rhon_save(n) 
-	 rhon_half(n) = rhon_half_save(n) 
+         rhon(n) = rhon_save(n) 
+         rhon_half(n) = rhon_half_save(n) 
       end do
 
 *     ----------------------------------------------------------------
@@ -3732,12 +3735,12 @@ c      end do
       if (ndisti2 .eq. 1 .or. ndisti1 .eq. 1) then
       
          if (ndisti1 .eq. 1) 
-     .      open(unit=42,file='out_cql3d.coef1', status='unknown',
-     .                                             form='formatted')      
+     &      open(unit=42,file='out_cql3d.coef1', status='unknown',
+     &                                             form='formatted')      
 
          if (ndisti2 .eq. 1) 
-     .      open(unit=42,file='out_cql3d.coef2', status='unknown',
-     .                                             form='formatted')
+     &      open(unit=42,file='out_cql3d.coef2', status='unknown',
+     &                                             form='formatted')
 
          read (42, 309) nuper
          read (42, 309) nupar
@@ -3745,25 +3748,25 @@ c      end do
       
          allocate( UPERP(nuper) )
          allocate( UPARA(nupar) )
-	 allocate( f_cql_cart(nuper, nupar, nnoderho) )
-	 
-	 allocate( wperp1_cql(nnoderho) )
-	 allocate( wpar1_cql(nnoderho) )
-	 
-	 allocate( wperp2_cql(nnoderho) )
-	 allocate( wpar2_cql(nnoderho) )
+         allocate( f_cql_cart(nuper, nupar, nnoderho) )
+         
+         allocate( wperp1_cql(nnoderho) )
+         allocate( wpar1_cql(nnoderho) )
+         
+         allocate( wperp2_cql(nnoderho) )
+         allocate( wpar2_cql(nnoderho) )
       
          allocate( bqlavg_i1(nuper, nupar, nnoderho) )
          allocate( cqlavg_i1(nuper, nupar, nnoderho) )
          allocate( eqlavg_i1(nuper, nupar, nnoderho) )
          allocate( fqlavg_i1(nuper, nupar, nnoderho) )
       
-         allocate( bqlavg_i1_2d(nupar, nuper) )	
-         allocate( cqlavg_i1_2d(nupar, nuper) )		 
-	  
+         allocate( bqlavg_i1_2d(nupar, nuper) ) 
+         allocate( cqlavg_i1_2d(nupar, nuper) )          
+          
          allocate( E_kick_2d (nupar, nnoderho) )
-	 allocate( f_cql_cart_2d (nupar, nuper) )
-	               
+         allocate( f_cql_cart_2d (nupar, nuper) )
+                       
 
          read (42, 3310) vc_cgs
          read (42, 3310) UminPara, UmaxPara
@@ -3787,157 +3790,157 @@ c      end do
          read (42, 3310) xmi
  
          close (42)
-	 
+         
 !        --------------------------------------------
-!	 read data for plotting f(u_perp, u_parallel)
+!        read data for plotting f(u_perp, u_parallel)
 !        --------------------------------------------
 
          if (ndisti1 .eq. 1) then
          open(unit=237,file='out237',status='old',form='formatted')
-	 
-	 read  (237, 309) n_u
-	 read  (237, 309) n_psi
-	 read  (237, 310) vc
+         
+         read  (237, 309) n_u
+         read  (237, 309) n_psi
+         read  (237, 310) vc
 
          read  (237, 310) (u(i_u), i_u = 1, n_u)
-	 read  (237, 309) (n_theta_(i_psi), i_psi = 1, n_psi)
+         read  (237, 309) (n_theta_(i_psi), i_psi = 1, n_psi)
          read  (237, 310) ((theta(i_theta, i_psi), 
-     .          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
+     &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
      
          read  (237, 310) (((f_cql(i_theta, i_u, i_psi), 
-     .     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u), 
-     .     i_psi = 1, n_psi)
+     &     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u), 
+     &     i_psi = 1, n_psi)
      
 
-	 read (237, 309) nuper
-	 read (237, 309) nupar
-	 read (237, 309) nnoderho
-	
+         read (237, 309) nuper
+         read (237, 309) nupar
+         read (237, 309) nnoderho
+        
          read (237, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (237, 310)  (upara(i_upara), i_upara = 1, nupar)
-	 
+         
          read (237, 310) (((f_cql_cart(i_uperp, i_upara, i_psi),
-     .     i_uperp = 1, nuper), i_upara = 1, nupar),
-     .     i_psi = 1, nnoderho)
+     &     i_uperp = 1, nuper), i_upara = 1, nupar),
+     &     i_psi = 1, nnoderho)
      
          read (237, 310) (wperp1_cql(i_psi), i_psi = 1, nnoderho)
          read (237, 310) (wpar1_cql(i_psi),  i_psi = 1, nnoderho)     
      
          close (237)
-	 end if   
+         end if   
  
  
  
          if (ndisti2 .eq. 1) then
          open(unit=238,file='out238',status='old',form='formatted')
-	 
-	 read  (238, 309) n_u
-	 read  (238, 309) n_psi
-	 read  (238, 310) vc
+         
+         read  (238, 309) n_u
+         read  (238, 309) n_psi
+         read  (238, 310) vc
 
          read  (238, 310) (u(i_u), i_u = 1, n_u)
-	 read  (238, 309) (n_theta_(i_psi), i_psi = 1, n_psi)
+         read  (238, 309) (n_theta_(i_psi), i_psi = 1, n_psi)
          read  (238, 310) ((theta(i_theta, i_psi), 
-     .          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
+     &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
      
          read  (238, 310) (((f_cql(i_theta, i_u, i_psi), 
-     .     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u), 
-     .     i_psi = 1, n_psi)
+     &     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u), 
+     &     i_psi = 1, n_psi)
      
 
-	 read (238, 309) nuper
-	 read (238, 309) nupar
-	 read (238, 309) nnoderho
-	
+         read (238, 309) nuper
+         read (238, 309) nupar
+         read (238, 309) nnoderho
+        
          read (238, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (238, 310)  (upara(i_upara), i_upara = 1, nupar)
-	 
+         
          read (238, 310) (((f_cql_cart(i_uperp, i_upara, i_psi),
-     .     i_uperp = 1, nuper), i_upara = 1, nupar),
-     .     i_psi = 1, nnoderho)
+     &     i_uperp = 1, nuper), i_upara = 1, nupar),
+     &     i_psi = 1, nnoderho)
      
          read (238, 310) (wperp2_cql(i_psi), i_psi = 1, nnoderho)
          read (238, 310) (wpar2_cql(i_psi),  i_psi = 1, nnoderho)     
      
          close (238)
-	 end if      
+         end if      
            
- 4319    format(i10, 1p1e16.8)
+ 4319    format(i10, 1p,1e16.8)
 
          title= 'Wperp1 and Wpar1 (keV)'
          titll= 'W (keV)'
          titlr='       '
-	 titlb = 'rho'
-	              	    
+         titlb = 'rho'
+                            
          call ezplot2q(title, titll, titlr, titlb, rhon_half, 
-     .      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax) 
+     &      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax) 
           
      
          title= 'Wperp2 and Wpar2 (keV)'
          titll= 'W (keV)'
          titlr='       '
-	 titlb = 'rho'
-	              	    
+         titlb = 'rho'
+                            
          call ezplot2q(title, titll, titlr, titlb, rhon_half, 
-     .      wperp2_cql, wpar2_cql, nnoderho_half, nrhomax) 
+     &      wperp2_cql, wpar2_cql, nnoderho_half, nrhomax) 
      
             
 !       ---------------------------------
-!	1D plots of f(u, theta = const)
+!       &D plots of f(u, theta = const)
 !       ---------------------------------
-	titll = 'log f(u)'
-	titlr = '    '
-	titx = 'u'
-	
-	do i_psi_index = 1, 6
-	
-	   if(i_psi_index .eq. 1)title = 'log f_psi1(u, theta = const)'
-	   if(i_psi_index .eq. 2)title = 'log f_psi2(u, theta = const)'
-	   if(i_psi_index .eq. 3)title = 'log f_psi3(u, theta = const)'
-	   if(i_psi_index .eq. 4)title = 'log f_psi4(u, theta = const)'
-	   if(i_psi_index .eq. 5)title = 'log f_psi5(u, theta = const)'
-	   if(i_psi_index .eq. 6)title = 'log f_psi6(u, theta = const)'
-	   
+        titll = 'log f(u)'
+        titlr = '    '
+        titx = 'u'
+        
+        do i_psi_index = 1, 6
+        
+           if(i_psi_index .eq. 1)title = 'log f_psi1(u, theta = const)'
+           if(i_psi_index .eq. 2)title = 'log f_psi2(u, theta = const)'
+           if(i_psi_index .eq. 3)title = 'log f_psi3(u, theta = const)'
+           if(i_psi_index .eq. 4)title = 'log f_psi4(u, theta = const)'
+           if(i_psi_index .eq. 5)title = 'log f_psi5(u, theta = const)'
+           if(i_psi_index .eq. 6)title = 'log f_psi6(u, theta = const)'
+           
            i_psi = i_psi_array(i_psi_index)
 
-	   i_theta1 = 1
-	   i_theta2 = int(1./6. * n_theta_(i_psi))
-	   i_theta3 = int(2./6. * n_theta_(i_psi))
-	   i_theta4 = int(3./6. * n_theta_(i_psi))
-	   i_theta5 = int(4./6. * n_theta_(i_psi))
-	   i_theta6 = int(5./6. * n_theta_(i_psi)) 
-	   i_theta7 = n_theta_(i_psi) 
+           i_theta1 = 1
+           i_theta2 = int(1./6. * n_theta_(i_psi))
+           i_theta3 = int(2./6. * n_theta_(i_psi))
+           i_theta4 = int(3./6. * n_theta_(i_psi))
+           i_theta5 = int(4./6. * n_theta_(i_psi))
+           i_theta6 = int(5./6. * n_theta_(i_psi)) 
+           i_theta7 = n_theta_(i_psi) 
 
            do i_u = 1, n_u
               f_cql_1d_1(i_u) = -40.0
-	      f_cql_1d_2(i_u) = -40.0
-	      f_cql_1d_3(i_u) = -40.0
-	      f_cql_1d_4(i_u) = -40.0
-	      f_cql_1d_5(i_u) = -40.0
-	      f_cql_1d_6(i_u) = -40.0
-	      f_cql_1d_7(i_u) = -40.0
-	   
+              f_cql_1d_2(i_u) = -40.0
+              f_cql_1d_3(i_u) = -40.0
+              f_cql_1d_4(i_u) = -40.0
+              f_cql_1d_5(i_u) = -40.0
+              f_cql_1d_6(i_u) = -40.0
+              f_cql_1d_7(i_u) = -40.0
+           
               if (f_cql(i_theta1, i_u, i_psi) .gt. 0.0)  
-     .        f_cql_1d_1(i_u) = alog10(f_cql(i_theta1, i_u, i_psi))
-	      if (f_cql(i_theta2, i_u, i_psi) .gt. 0.0) 
-     .         f_cql_1d_2(i_u) = alog10(f_cql(i_theta2, i_u, i_psi))
-	      if (f_cql(i_theta3, i_u, i_psi) .gt. 0.0) 
-     .         f_cql_1d_3(i_u) = alog10(f_cql(i_theta3, i_u, i_psi))
-	      if (f_cql(i_theta4, i_u, i_psi) .gt. 0.0) 
-     .         f_cql_1d_4(i_u) = alog10(f_cql(i_theta4, i_u, i_psi))
-	      if (f_cql(i_theta5, i_u, i_psi) .gt. 0.0) 
-     .         f_cql_1d_5(i_u) = alog10(f_cql(i_theta5, i_u, i_psi))
-	      if (f_cql(i_theta6, i_u, i_psi) .gt. 0.0) 
-     .         f_cql_1d_6(i_u) = alog10(f_cql(i_theta6, i_u, i_psi))
-	      if (f_cql(i_theta7, i_u, i_psi) .gt. 0.0) 
-     .         f_cql_1d_7(i_u) = alog10(f_cql(i_theta7, i_u, i_psi))	   
-           end do	
-		
-	
-	   call ezlog1_f(title, titll, titlr, titx, u, f_cql_1d_1,
-     .        f_cql_1d_2, f_cql_1d_3, f_cql_1d_4, f_cql_1d_5, 
-     .        f_cql_1d_6, f_cql_1d_7,
-     .        n_u, n_u_max)
+     &        f_cql_1d_1(i_u) = alog10(f_cql(i_theta1, i_u, i_psi))
+              if (f_cql(i_theta2, i_u, i_psi) .gt. 0.0) 
+     &         f_cql_1d_2(i_u) = alog10(f_cql(i_theta2, i_u, i_psi))
+              if (f_cql(i_theta3, i_u, i_psi) .gt. 0.0) 
+     &         f_cql_1d_3(i_u) = alog10(f_cql(i_theta3, i_u, i_psi))
+              if (f_cql(i_theta4, i_u, i_psi) .gt. 0.0) 
+     &         f_cql_1d_4(i_u) = alog10(f_cql(i_theta4, i_u, i_psi))
+              if (f_cql(i_theta5, i_u, i_psi) .gt. 0.0) 
+     &         f_cql_1d_5(i_u) = alog10(f_cql(i_theta5, i_u, i_psi))
+              if (f_cql(i_theta6, i_u, i_psi) .gt. 0.0) 
+     &         f_cql_1d_6(i_u) = alog10(f_cql(i_theta6, i_u, i_psi))
+              if (f_cql(i_theta7, i_u, i_psi) .gt. 0.0) 
+     &         f_cql_1d_7(i_u) = alog10(f_cql(i_theta7, i_u, i_psi))       
+           end do       
+                
+        
+           call ezlog1_f(title, titll, titlr, titx, u, f_cql_1d_1,
+     &        f_cql_1d_2, f_cql_1d_3, f_cql_1d_4, f_cql_1d_5, 
+     &        f_cql_1d_6, f_cql_1d_7,
+     &        n_u, n_u_max)
      
         end do
 
@@ -3964,81 +3967,81 @@ c      end do
          write(15, *)"i_psi4 = ", i_psi4, "   rho4 = ", rhon(i_psi4)
          write(15, *)"i_psi5 = ", i_psi5, "   rho5 = ", rhon(i_psi5)
          write(15, *)"i_psi6 = ", i_psi6, "   rho6 = ", rhon(i_psi6)     
-	    
+            
          numb = 20
-	 	 
-	 i_psi = i_psi1      
+                 
+         i_psi = i_psi1      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                f_cql_cart_2d(i_upara, i_uperp) =
-     .                     f_cql_cart(i_uperp, i_upara, i_psi) 
+     &                     f_cql_cart(i_uperp, i_upara, i_psi) 
             end do
          end do
-	 
+         
          title = 'f_cql_psi1(u_perp, u_parallel)'        
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
-	 i_psi = i_psi2      
+         i_psi = i_psi2      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                f_cql_cart_2d(i_upara, i_uperp) =
-     .                     f_cql_cart(i_uperp, i_upara, i_psi) 
+     &                     f_cql_cart(i_uperp, i_upara, i_psi) 
             end do
          end do
-	 
+         
          title = 'f_cql_psi2(u_perp, u_parallel)'        
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
      
- 	 i_psi = i_psi3      
+         i_psi = i_psi3      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                f_cql_cart_2d(i_upara, i_uperp) =
-     .                     f_cql_cart(i_uperp, i_upara, i_psi) 
+     &                     f_cql_cart(i_uperp, i_upara, i_psi) 
             end do
          end do
-	 
+         
          title = 'f_cql_psi3(u_perp, u_parallel)'        
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
      
- 	 i_psi = i_psi4      
+         i_psi = i_psi4      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                f_cql_cart_2d(i_upara, i_uperp) =
-     .                     f_cql_cart(i_uperp, i_upara, i_psi) 
+     &                     f_cql_cart(i_uperp, i_upara, i_psi) 
             end do
          end do
-	 
+         
          title = 'f_cql_psi4(u_perp, u_parallel)'        
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
                 
-  	 i_psi = i_psi5      
+         i_psi = i_psi5      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                f_cql_cart_2d(i_upara, i_uperp) =
-     .                     f_cql_cart(i_uperp, i_upara, i_psi) 
+     &                     f_cql_cart(i_uperp, i_upara, i_psi) 
             end do
          end do
-	 
+         
          title = 'f_cql_psi5(u_perp, u_parallel)'        
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
      
                 
- 	 i_psi = i_psi6      
+         i_psi = i_psi6      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                f_cql_cart_2d(i_upara, i_uperp) =
-     .                     f_cql_cart(i_uperp, i_upara, i_psi) 
+     &                     f_cql_cart(i_uperp, i_upara, i_psi) 
             end do
          end do
-	 
+         
          title = 'f_cql_psi6(u_perp, u_parallel)'        
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag) 
      
             
       
@@ -4050,13 +4053,13 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlavg_i1_2d(i_upara, i_uperp) =
-     .                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 
+         
          title = 'bqlavg_psi1(u_perp, u_parallel)'        
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
            
 !        ---------------------------------------------
@@ -4074,12 +4077,12 @@ c      end do
          write(142, 2842) upara(1), uperp(1), 0 
          write(142, 2843) dx, dy, 1            
          write(142, 2844) number_points 
-	                 
+                         
          write(142, 4851)
  4851    format('SCALARS bqlavg_psi1 float 1')              
          write(142, 2849)                   
          write(142, 3411) ((bqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)
+     &                                         j = 1, nuper)
                        
      
      
@@ -4087,19 +4090,19 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlavg_i1_2d(i_upara, i_uperp) =
-     .                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 	 		 
+                                 
          title = 'bqlavg_psi2(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(142, 4852)
  4852    format('SCALARS bqlavg_psi2 float 1')              
          write(142, 2849)                   
          write(142, 3411) ((bqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)     
+     &                                         j = 1, nuper)     
      
 
 
@@ -4110,41 +4113,41 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlavg_i1_2d(i_upara, i_uperp) =
-     .                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 		 
+                         
          title = 'bqlavg_psi3(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(142, 4853)
  4853    format('SCALARS bqlavg_psi3 float 1')              
          write(142, 2849)                   
          write(142, 3411) ((bqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)   
+     &                                         j = 1, nuper)   
      
      
   
                               
-			      
+                              
          i_psi = i_psi4
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlavg_i1_2d(i_upara, i_uperp) =
-     .                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 		 
+                         
          title = 'bqlavg_psi4(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(142, 4854)
  4854    format('SCALARS bqlavg_psi4 float 1')              
          write(142, 2849)                   
          write(142, 3411) ((bqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)   
+     &                                         j = 1, nuper)   
      
      
 
@@ -4155,19 +4158,19 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlavg_i1_2d(i_upara, i_uperp) =
-     .                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 		 
+                         
          title = 'bqlavg_psi5(u_perp, u_parallel)'   
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(142, 4855)
  4855    format('SCALARS bqlavg_psi5 float 1')              
          write(142, 2849)                   
          write(142, 3411) ((bqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)   
+     &                                         j = 1, nuper)   
      
 
  
@@ -4176,19 +4179,19 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlavg_i1_2d(i_upara, i_uperp) =
-     .                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 	 	 	 
+                                 
          title = 'bqlavg_psi6(u_perp, u_parallel)'    
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(142, 4856)
  4856    format('SCALARS bqlavg_psi6 float 1')              
          write(142, 2849)                   
          write(142, 3411) ((bqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper) 
+     &                                         j = 1, nuper) 
      
      
      
@@ -4226,13 +4229,13 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlavg_i1_2d(i_upara, i_uperp) =
-     .                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 
+         
          title = 'cqlavg_psi1(u_perp, u_parallel)'        
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
            
 !        ---------------------------------------------
@@ -4250,12 +4253,12 @@ c      end do
          write(242, 2842) upara(1), uperp(1), 0 
          write(242, 2843) dx, dy, 1            
          write(242, 2844) number_points 
-	                 
+                         
          write(242, 4951)
  4951    format('SCALARS cqlavg_psi1 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((cqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)
+     &                                         j = 1, nuper)
                        
      
      
@@ -4263,19 +4266,19 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlavg_i1_2d(i_upara, i_uperp) =
-     .                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 	 		 
+                                 
          title = 'cqlavg_psi2(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(242, 4952)
  4952    format('SCALARS cqlavg_psi2 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((cqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)     
+     &                                         j = 1, nuper)     
      
 
 
@@ -4286,41 +4289,41 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlavg_i1_2d(i_upara, i_uperp) =
-     .                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 		 
+                         
          title = 'cqlavg_psi3(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(242, 4953)
  4953    format('SCALARS cqlavg_psi3 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((cqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)   
+     &                                         j = 1, nuper)   
      
      
   
                               
-			      
+                              
          i_psi = i_psi4
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlavg_i1_2d(i_upara, i_uperp) =
-     .                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 		 
+                         
          title = 'cqlavg_psi4(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(242, 4954)
  4954    format('SCALARS cqlavg_psi4 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((cqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)   
+     &                                         j = 1, nuper)   
      
      
 
@@ -4331,19 +4334,19 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlavg_i1_2d(i_upara, i_uperp) =
-     .                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 		 
+                         
          title = 'cqlavg_psi5(u_perp, u_parallel)'   
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(242, 4955)
  4955    format('SCALARS cqlavg_psi5 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((cqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)   
+     &                                         j = 1, nuper)   
      
 
  
@@ -4352,19 +4355,19 @@ c      end do
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlavg_i1_2d(i_upara, i_uperp) =
-     .                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlavg_i1(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 	 	 	 
+                                 
          title = 'cqlavg_psi6(u_perp, u_parallel)'    
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
          write(242, 4956)
  4956    format('SCALARS cqlavg_psi6 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((cqlavg_i1_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)        
+     &                                         j = 1, nuper)        
      
 
 
@@ -4407,36 +4410,36 @@ c      end do
          i_psi = i_psi1
          do  i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
-	    vpara_mks = vpara_cgs * 1.0e-02
+            vpara_mks = vpara_cgs * 1.0e-02
             do i_uperp = 1, nuper
-	       vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
-	       E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
+               vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
+               E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                bqlavg_i1_2d(i_upara, i_uperp) = (xmi / q) *
-     .            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
-     .            * 1.0e-04 
+     &            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
+     &            * 1.0e-04 
             end do
          end do
       
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper,numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
      
      
          i_psi = i_psi2
          do  i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
-	    vpara_mks = vpara_cgs * 1.0e-02
+            vpara_mks = vpara_cgs * 1.0e-02
             do i_uperp = 1, nuper
-	       vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
-	       E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
+               vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
+               E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                bqlavg_i1_2d(i_upara, i_uperp) = (xmi / q) *
-     .            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
-     .            * 1.0e-04 
+     &            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
+     &            * 1.0e-04 
             end do
          end do
-	 
+         
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper,numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
           
      
@@ -4444,18 +4447,18 @@ c      end do
          i_psi = i_psi3
          do  i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
-	    vpara_mks = vpara_cgs * 1.0e-02
+            vpara_mks = vpara_cgs * 1.0e-02
             do i_uperp = 1, nuper
-	       vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
-	       E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
+               vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
+               E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                bqlavg_i1_2d(i_upara, i_uperp) = (xmi / q) *
-     .            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
-     .            * 1.0e-04 
+     &            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
+     &            * 1.0e-04 
             end do
          end do
       
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper,numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
      
      
@@ -4463,36 +4466,36 @@ c      end do
          i_psi = i_psi4
          do  i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
-	    vpara_mks = vpara_cgs * 1.0e-02
+            vpara_mks = vpara_cgs * 1.0e-02
             do i_uperp = 1, nuper
-	       vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
-	       E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
+               vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
+               E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                bqlavg_i1_2d(i_upara, i_uperp) = (xmi / q) *
-     .            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
-     .            * 1.0e-04 
+     &            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
+     &            * 1.0e-04 
             end do
          end do
       
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper,numb,
-     .      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
      
      
          i_psi = i_psi5
          do  i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
-	    vpara_mks = vpara_cgs * 1.0e-02
+            vpara_mks = vpara_cgs * 1.0e-02
             do i_uperp = 1, nuper
-	       vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
-	       E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
+               vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
+               E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                bqlavg_i1_2d(i_upara, i_uperp) = (xmi / q) *
-     .            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
-     .            * 1.0e-04 
+     &            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
+     &            * 1.0e-04 
             end do
          end do
       
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, 
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
      
      
@@ -4500,18 +4503,18 @@ c      end do
          i_psi = i_psi6
          do  i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
-	    vpara_mks = vpara_cgs * 1.0e-02
+            vpara_mks = vpara_cgs * 1.0e-02
             do i_uperp = 1, nuper
-	       vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
-	       E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
+               vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
+               E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                bqlavg_i1_2d(i_upara, i_uperp) = (xmi / q) *
-     .            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
-     .            * 1.0e-04 
+     &            sqrt(2.* bqlavg_i1(i_uperp, i_upara, i_psi)/vpara_cgs)
+     &            * 1.0e-04 
             end do
          end do
       
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, 
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
      
      
@@ -4552,20 +4555,20 @@ c      end do
             
          do i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
-	    vpara_mks = vpara_cgs * 1.0e-02
+            vpara_mks = vpara_cgs * 1.0e-02
             do i_psi = 1, nnoderho
-	       vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
-	       E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
+               vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
+               E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                E_kick_2d(i_upara, i_psi) = (xmi / q) *
-     .            sqrt(2. * bqlavg_i1(i_uperp, i_upara, i_psi)
-     .            / vpara_cgs) * 1.0e-04 
+     &            sqrt(2. * bqlavg_i1(i_uperp, i_upara, i_psi)
+     &            / vpara_cgs) * 1.0e-04 
             end do
          end do
       
          call ezconcx(upara, rhon, E_kick_2d, ff, nupar, nnoderho, numb,
-     .      NUPAR, nnoderho, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, nnoderho, nlevmax, title, titx, tity, iflag)
          call ezcon3dv(upara, rhon, E_kick_2d, ff, nupar, nnoderho, 
-     .      numb, NUPAR, nnoderho, nlevmax, title, titx, tity, titz)
+     &      numb, NUPAR, nnoderho, nlevmax, title, titx, tity, titz)
      
      
 !        ---------------------------------------------
@@ -4584,12 +4587,12 @@ c      end do
          write(141, 2842) upara(1), rhon(1), 0 
          write(141, 2843) dx, dy, 1            
          write(141, 2844) number_points 
-	            
+                    
          write(141, 3848)
  3848    format('SCALARS E_kick_2d float 1')              
          write(141, 2849)                   
          write(141, 3411) ((E_kick_2d(i,j), i = 1, nupar),  
-     .                                      j = 1, nnoderho) 
+     &                                      j = 1, nnoderho) 
           
               
       end if
@@ -4597,7 +4600,7 @@ c      end do
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(bxwave(i,j))
-            fimag(i,j) = imag(bxwave(i,j))
+            fimag(i,j) = aimag(bxwave(i,j))
          end do
       end do
       
@@ -4606,43 +4609,43 @@ c      end do
       
       title = 'Real Bx_wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(bzwave(i,j))
-            fimag(i,j) = imag(bzwave(i,j))
+            fimag(i,j) = aimag(bzwave(i,j))
          end do
       end do
 
 
       title = 'Real Bz_wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = dxxuyy(i,j)
-	    if(rho(i,j) .gt. 1.0) freal(i,j) = 0.0
+            if(rho(i,j) .gt. 1.0) freal(i,j) = 0.0
          end do
       end do
 
 
       title = 'dxxuyy'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       
      
@@ -4651,34 +4654,34 @@ c      end do
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = dyyuzz(i,j)
-	    if(rho(i,j) .gt. 1.0) freal(i,j) = 0.0
+            if(rho(i,j) .gt. 1.0) freal(i,j) = 0.0
          end do
       end do
 
 
       title = 'dyyuzz'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)   
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)   
      
  
  
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = gradprlb(i,j)
-	    if(rho(i,j) .gt. 1.0) freal(i,j) = 0.0
+            if(rho(i,j) .gt. 1.0) freal(i,j) = 0.0
          end do
       end do
 
 
       title = 'gradprlb'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity) 
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity) 
      
                     
      
@@ -4686,17 +4689,17 @@ c      end do
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ntilda_e(i,j))
-            fimag(i,j) = imag(ntilda_e(i,j))
+            fimag(i,j) = aimag(ntilda_e(i,j))
          end do
       end do
 
 
       title = 'Real ntilda_e'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity) 
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity) 
      
      
 c
@@ -4704,16 +4707,16 @@ c--plot ntilda_e in midplane
 c
       do i = 1, nnodex
          fmidre(i) = real(ntilda_e(i, nnodey / 3 - 1))
-         fmidim(i) = imag(ntilda_e(i, nnodey / 3 - 1))
+         fmidim(i) = aimag(ntilda_e(i, nnodey / 3 - 1))
       end do
       
       title = 'ntilda_e'
       titll = 'Re ntilda_e (m-3)'
       titlr = 'Im ntilda_e (m-3)'
       titlb = 'R (m)'
-	    
+            
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)     
+     &   nnodex, nxmx)     
      
      
      
@@ -4722,16 +4725,16 @@ c--plot Bx_wave in midplane
 c
       do i = 1, nnodex
          fmidre(i) = real(bxwave(i,jmid))
-         fmidim(i) = imag(bxwave(i,jmid))
+         fmidim(i) = aimag(bxwave(i,jmid))
       end do
       
       title = 'Bx_wave'
       titll = 'Re Bx_wave (T)'
       titlr = 'Im Bx_wave (T)'
       titlb = 'R (m)'
-	    
+            
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx) 
+     &   nnodex, nxmx) 
      
      
 c
@@ -4739,16 +4742,16 @@ c--plot Bz_wave in midplane
 c
       do i = 1, nnodex
          fmidre(i) = real(bzwave(i,jmid))
-         fmidim(i) = imag(bzwave(i,jmid))
+         fmidim(i) = aimag(bzwave(i,jmid))
       end do
       
       title = 'Bz_wave'
       titll = 'Re Bz_wave (T)'
       titlr = 'Im Bz_wave (T)'
       titlb = 'R (m)'
-	    
+            
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)          
+     &   nnodex, nxmx)          
          
      
 *     -------------------
@@ -4757,49 +4760,49 @@ c
 
       title = 'Radial force (fpsi0)'
       call ezconc(capr, y, fpsi0, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       title = 'Poloidal force (ftheta0)'
       call ezconc(capr, y, ftheta0, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)     
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)     
      
       title = 'pressure surfaces'
       call ezconc(capr, y, pressi, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
       numb = 20
      
       title = 'dl/B surfaces'
       call ezconc(capr, y, dldb_tot12, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
      
      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(eplus_flux_plot(i,j))
-            fimag(i,j) = imag(eplus_flux_plot(i,j))
+            fimag(i,j) = aimag(eplus_flux_plot(i,j))
          end do
       end do
 
 
       title = 'E_plus_flux_plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
      
@@ -4807,17 +4810,17 @@ c
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(eminus_flux_plot(i,j))
-            fimag(i,j) = imag(eminus_flux_plot(i,j))
+            fimag(i,j) = aimag(eminus_flux_plot(i,j))
          end do
       end do
 
 
       title = 'E_minus_flux_plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     1   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
      
      
@@ -4826,17 +4829,17 @@ c
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(xkperp_flux_plot(i,j))
-            fimag(i,j) = imag(xkperp_flux_plot(i,j))
+            fimag(i,j) = aimag(xkperp_flux_plot(i,j))
          end do
       end do
 
 
       title = 'xkperp_flux_plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .   nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity)
 
                   
      
@@ -4845,7 +4848,7 @@ c
 *     --------------------------------
       do i = 1, nnodex
          fmidre(i) = real(eplus_flux_plot(i,jmid))
-         fmidim(i) = imag(eplus_flux_plot(i,jmid))
+         fmidim(i) = aimag(eplus_flux_plot(i,jmid))
       end do
       
       title = 'eplus_flux_plot'
@@ -4854,7 +4857,7 @@ c
       titlb = 'R (m)'
       
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
      
 *     --------------------------------
@@ -4862,7 +4865,7 @@ c
 *     --------------------------------
       do i = 1, nnodex
          fmidre(i) = real(eminus_flux_plot(i,jmid))
-         fmidim(i) = imag(eminus_flux_plot(i,jmid))
+         fmidim(i) = aimag(eminus_flux_plot(i,jmid))
       end do
       
       title = 'eminus_flux_plot'
@@ -4871,7 +4874,7 @@ c
       titlb = 'R (m)'
       
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx) 
+     &   nnodex, nxmx) 
      
      
      
@@ -4880,7 +4883,7 @@ c
 *     --------------------------------------
       do i = 1, nnodex
          fmidre(i) = real(xkperp_flux_plot(i,jmid))
-         fmidim(i) = imag(xkperp_flux_plot(i,jmid))
+         fmidim(i) = aimag(xkperp_flux_plot(i,jmid))
       end do
       
       title = 'xkperp_flux_plot'
@@ -4889,7 +4892,7 @@ c
       titlb = 'R (m)'
       
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx) 
+     &   nnodex, nxmx) 
      
         
 
@@ -4902,7 +4905,7 @@ c         bmod_plot(n) = bmod_flux(n, 1) / bmod_flux(1, 1)
       titll= 'bmod_flux (T)'
       titlr='       '
       call ezplot0(title, titll, titlr, rhon, bmod_plot,
-     .    nnoderho, nrhomax) 
+     &    nnoderho, nrhomax) 
       
       
 
@@ -4914,13 +4917,13 @@ c         bmod_plot(n) = bmod_flux(n, 1) / bmod_flux(1, 1)
       write(65, 309) nnoderho, mnodetheta
       do n = 1, nnoderho
          do m = 1, mnodetheta
-	    write (65, 1313) n, m, rhon(n), thetam(m),
-     .         capr_flux(n, m), capz_flux(n, m), eplus_flux(n,m), 
-     .                                          eminus_flux(n,m),
-     .                                          xkperp_flux(n,m)
+            write (65, 1313) n, m, rhon(n), thetam(m),
+     &         capr_flux(n, m), capz_flux(n, m), eplus_flux(n,m), 
+     &                                          eminus_flux(n,m),
+     &                                          xkperp_flux(n,m)
      
-	    freal(n,m) = real(eplus_flux(n,m))
-            fimag(n,m) = imag(eplus_flux(n,m)) 
+            freal(n,m) = real(eplus_flux(n,m))
+            fimag(n,m) = aimag(eplus_flux(n,m)) 
          end do
       end do
       
@@ -4930,7 +4933,7 @@ c         bmod_plot(n) = bmod_flux(n, 1) / bmod_flux(1, 1)
 c      write(67, 309) nnoderho_half
 c      do n = 1, nnoderho_half
 c         write (67, 1312) n, rhon_half_save(n), redotj2avg(n), 
-c     .      wdoti2avg(n), wdoti2_ql(n)
+c     &      wdoti2avg(n), wdoti2_ql(n)
 c      end do 
           
       
@@ -4938,7 +4941,7 @@ c      end do
       titx   = 'rho'
       tity = 'theta'
       call ezconc(rhon, thetam, freal, ff, nnoderho, mnodetheta, numb,
-     .   nrhomax, nthetamax, nlevmax, title, titx, tity, iflag)
+     &   nrhomax, nthetamax, nlevmax, title, titx, tity, iflag)
      
      
 *     ---------------------
@@ -4948,7 +4951,7 @@ c      end do
       write(69, 309) nnodex, nnodey
       do i = 1, nnodex
          do j = 1, nnodey
-	    write (69, 1313) i, j, capr(i), y(j), wdoti2(i,j)
+            write (69, 1313) i, j, capr(i), y(j), wdoti2(i,j)
          end do
       end do     
      
@@ -4956,8 +4959,8 @@ c      end do
      
       do n = 1, nnoderho
          do m = 1, mnodetheta
-	    freal(n,m) = real(eminus_flux(n,m))
-            fimag(n,m) = imag(eminus_flux(n,m)) 
+            freal(n,m) = real(eminus_flux(n,m))
+            fimag(n,m) = aimag(eminus_flux(n,m)) 
          end do
       end do
       
@@ -4965,7 +4968,7 @@ c      end do
       titx   = 'rho'
       tity = 'theta'
       call ezconc(rhon, thetam, freal, ff, nnoderho, mnodetheta, numb,
-     .   nrhomax, nthetamax, nlevmax, title, titx, tity, iflag)
+     &   nrhomax, nthetamax, nlevmax, title, titx, tity, iflag)
          
      
      
@@ -4983,7 +4986,7 @@ c      end do
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ntilda_e(i,j)) / 1.0e+19
-            fimag(i,j) = imag(ntilda_e(i,j)) / 1.0e+19
+            fimag(i,j) = aimag(ntilda_e(i,j)) / 1.0e+19
          end do
       end do       
       
@@ -5017,25 +5020,25 @@ c      end do
  3964 format('SCALARS Re_kperp2_fast float 1')        
       write(140, 2849)        
       write (140, 3411) ((real(xkperp2_fast(i,j)), i = 1, nnodex), 
-     .   j = 1, nnodey) 
+     &   j = 1, nnodey) 
      
       write(140, 3984)
  3984 format('SCALARS Im_kperp2_fast float 1')        
       write(140, 2849)        
       write (140, 3411) ((aimag(xkperp2_fast(i,j)), i = 1, nnodex), 
-     .   j = 1, nnodey)     
+     &   j = 1, nnodey)     
      
       write(140, 3965)
  3965 format('SCALARS Re_kperp2_slow float 1')        
       write(140, 2849)        
       write (140, 3411) ((real(xkperp2_slow(i,j)), i = 1, nnodex), 
-     .   j = 1, nnodey)      
+     &   j = 1, nnodey)      
      
       write(140, 3985)
  3985 format('SCALARS Im_kperp2_slow float 1')        
       write(140, 2849)        
       write (140, 3411) ((aimag(xkperp2_slow(i,j)), i = 1, nnodex), 
-     .   j = 1, nnodey)      
+     &   j = 1, nnodey)      
      
       write(140, 3968)
  3968 format('SCALARS xkprl_a float 1')        
@@ -5071,7 +5074,7 @@ c      end do
 ! 2850 format('VECTORS Sp_vector float 1')
 !      write(140, 2849)      
 !      write(140, 3412) ((spx(i,j), spy(i,j), spz(i,j), 
-!     .                                    i = 1, nnodex), j = 1, nnodey)     
+!     &                                    i = 1, nnodex), j = 1, nnodey)     
 
  3412 format(3f17.4)            
      
@@ -5111,7 +5114,7 @@ c      end do
  2870 format('VECTORS Sp_vector float 1')
       write(245, 2849)      
       write(245, 3412) ((spx(i,j), spy(i,j), spz(i,j), 
-     .                                    i = 1, nnodex), j = 1, nnodey)     
+     &                                    i = 1, nnodex), j = 1, nnodey)     
       
       close (245)      
                                                
@@ -5119,7 +5122,7 @@ c      end do
  5000 continue
       
 c Close the graphics device.
-		  
+                  
       call pgclos
       
 c Open new graphics device
@@ -5161,19 +5164,19 @@ c         write(*,*) "expiwt = ", expiwt
          end do
       
          title = 'Real Eb(t)'
-	 
-c        black and white movie:	 
+         
+c        black and white movie:  
          call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     .      nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &      nxmx, nymx, nlevmax, title, titx, tity, iflag)
 
 
 c        color movie:     
 c         call pseudo(capr, y, freal, ff, nnodex, nnodey, numb,
-c     .      nxmx, nymx, nlevmax, title, titx, tity, iflag)    
+c     &      nxmx, nymx, nlevmax, title, titx, tity, iflag)    
      
          if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     .      nnodey, numb,
-     .      nxmx, nymx, nlevmax, title, titx, tity)
+     &      nnodey, numb,
+     &      nxmx, nymx, nlevmax, title, titx, tity)
      
       end do
       
@@ -5189,7 +5192,7 @@ c     .      nxmx, nymx, nlevmax, title, titx, tity, iflag)
       close (242)
       close (143)
       close (144)      
-	    
+            
       close (51)
 c      close (61)
       close (66)
@@ -5210,23 +5213,23 @@ c      close (61)
          deallocate( fqlavg_i1 )
       
          deallocate( bqlavg_i1_2d )
-	 deallocate( cqlavg_i1_2d )	 
-	 
+         deallocate( cqlavg_i1_2d )      
+         
          deallocate( E_kick_2d  )
-	 deallocate( f_cql_cart)
-	 deallocate( f_cql_cart_2d)
-	 
-	 deallocate (wperp1_cql)
-	 deallocate (Wpar1_cql)
-	 
-	 deallocate (wperp2_cql)
-	 deallocate (Wpar2_cql)
+         deallocate( f_cql_cart)
+         deallocate( f_cql_cart_2d)
+         
+         deallocate (wperp1_cql)
+         deallocate (Wpar1_cql)
+         
+         deallocate (wperp2_cql)
+         deallocate (Wpar2_cql)
       end if
       
       deallocate (xkperp_cold, acold, xkperp_cold2, bcold, ccold,
-     .   ex, ey, ez, bxwave, bywave, bzwave,            
-     .   ealpha, ebeta, eb, eplus, eminus, eplus_flux_plot,
-     .   eminus_flux_plot, xkperp_flux_plot, ntilda_e ) 
+     &   ex, ey, ez, bxwave, bywave, bzwave,            
+     &   ealpha, ebeta, eb, eplus, eminus, eplus_flux_plot,
+     &   eminus_flux_plot, xkperp_flux_plot, ntilda_e ) 
      
       deallocate (xkperp2_slow, xkperp2_fast)
       deallocate (xkprl_a, P_a)     
@@ -5234,33 +5237,33 @@ c      close (61)
       deallocate (xjpxe, xjpye, xjpze)
      
       deallocate ( exkmod,
-     .     eykmod, ezkmod, exklog, eyklog, ezklog )
+     &     eykmod, ezkmod, exklog, eyklog, ezklog )
      
       deallocate ( eplus_flux, eminus_flux, xkperp_flux)
      
       deallocate ( exk, eyk, ezk )  
      
       deallocate (xn, xkti, xkte, rho, theta, xjz,
-     .   psi, xjy, bmod, xjx, xiota, qsafety, ipsi, btau, bzeta,
-     .   freal, fimag, fmod, mod_Eplus, mod_Eminus, mod_Eb,
-     .   mod_Ealpha, mod_Ebeta, Mod_E,
-     .   dldb_tot12, reex_dx, reey_dx, reez_dx, ximex_dx,
-     .   ximey_dx, ximez_dx, spx, spy, spz, reomg1a, reomg2a, 
-     .   reomg3a, capr_bpol, pressi, redotj1, redotj2, redotj3,
-     .   redotje, redotjt, redotjs, wdoti1, wdoti2, wdoti3,
-     .   wdoti4, wdoti5, wdoti6, wdote, wdott, fz0e, fz0i1,
-     .   fz0i2, fz0i3, fz0, fz0i4, fz0i5, fz0i6, gpsi,  kpsi, 
-     .   omgexb, uzeta, utheta, fpsi0, ftheta0, muhat, nu_star,
-     .   redotj4, redotj5, redotj6, divq, reomglha ) 
+     &   psi, xjy, bmod, xjx, xiota, qsafety, ipsi, btau, bzeta,
+     &   freal, fimag, fmod, mod_Eplus, mod_Eminus, mod_Eb,
+     &   mod_Ealpha, mod_Ebeta, Mod_E,
+     &   dldb_tot12, reex_dx, reey_dx, reez_dx, ximex_dx,
+     &   ximey_dx, ximez_dx, spx, spy, spz, reomg1a, reomg2a, 
+     &   reomg3a, capr_bpol, pressi, redotj1, redotj2, redotj3,
+     &   redotje, redotjt, redotjs, wdoti1, wdoti2, wdoti3,
+     &   wdoti4, wdoti5, wdoti6, wdote, wdott, fz0e, fz0i1,
+     &   fz0i2, fz0i3, fz0, fz0i4, fz0i5, fz0i6, gpsi,  kpsi, 
+     &   omgexb, uzeta, utheta, fpsi0, ftheta0, muhat, nu_star,
+     &   redotj4, redotj5, redotj6, divq, reomglha ) 
      
 c      deallocate (dxuxx, dxuxy, dxuxz,
-c     .   dxuyx, dxuyy, dxuyz, dxuzx, dxuzy, dxuzz,
-c     .   dyuxx, dyuxy, dyuxz, dyuyx, dyuyy, dyuyz,
-c     .   dyuzx, dyuzy, dyuzz, dyyuxx, dyyuxy, dyyuxz,
-c     .   dyyuyx, dyyuyy, dyyuyz, dyyuzx, dyyuzy, dyyuzz,
-c     .   dxyuxx, dxyuxy, dxyuxz, dxyuyx, dxyuyy, dxyuyz,
-c     .   dxyuzx, dxyuzy, dxyuzz, dxxuxx, dxxuxy, dxxuxz,
-c     .   dxxuyx, dxxuyy, dxxuyz, dxxuzx, dxxuzy, dxxuzz)
+c     &   dxuyx, dxuyy, dxuyz, dxuzx, dxuzy, dxuzz,
+c     &   dyuxx, dyuxy, dyuxz, dyuyx, dyuyy, dyuyz,
+c     &   dyuzx, dyuzy, dyuzz, dyyuxx, dyyuxy, dyyuxz,
+c     &   dyyuyx, dyyuyy, dyyuyz, dyyuzx, dyyuzy, dyyuzz,
+c     &   dxyuxx, dxyuxy, dxyuxz, dxyuyx, dxyuyy, dxyuyz,
+c     &   dxyuzx, dxyuzy, dxyuzz, dxxuxx, dxxuxy, dxxuxz,
+c     &   dxxuyx, dxxuyy, dxxuyz, dxxuzx, dxxuzy, dxxuzz)
 
       deallocate (dxxuyy, dyyuzz)
      
@@ -5271,14 +5274,14 @@ c     .   dxxuyx, dxxuyy, dxxuyz, dxxuzx, dxxuzy, dxxuzz)
       deallocate (xkb)           
       deallocate (xkb_plot)           
 
-  310 format(1p6e12.4)
+  310 format(1p,6e12.4)
   309 format(10i10)
-  311 format(1p10e12.4)
- 3310 format(1p6e18.10)
- 1312 format(i10,1p9e12.4)
- 1313 format(2i10,1p10e12.4)
- 9310 format(1p7e12.4)
-   10 format(i10,1p4e10.3,i10,1pe10.3)
+  311 format(1p,10e12.4)
+ 3310 format(1p,6e18.10)
+ 1312 format(i10,1p,9e12.4)
+ 1313 format(2i10,1p,10e12.4)
+ 9310 format(1p,7e12.4)
+   10 format(i10,1p,4e10.3,i10,1p,e10.3)
    
       return
       end
@@ -5295,18 +5298,18 @@ c----------------------------------------------------------------------------!
 
       implicit none
 
-      integer nx, i, nxmax
-      real f(nxmax), fmin, fmax
+      integer:: nx, i, nxmax
+      real:: f(nxmax), fmin, fmax
 
       fmax=f(1)
       fmin=fmax
          do 23002 i=1, nx
-            fmax=amax1(fmax, f(i))
-            fmin=amin1(fmin, f(i))
+            fmax=max(fmax, f(i))
+            fmin=min(fmin, f(i))
 23002    continue
 
       return
- 2201 format(2i5,1p8e12.4)
+ 2201 format(2i5,1p,8e12.4)
       end
 
 c
@@ -5321,16 +5324,16 @@ c----------------------------------------------------------------------------!
 
       implicit none
 
-      integer nx, i, nxmax
-      real f(nxmax), fmin, fmax, x1, x2
-      real x(nxmax)
+      integer:: nx, i, nxmax
+      real:: f(nxmax), fmin, fmax, x1, x2
+      real:: x(nxmax)
 
       fmax=0.0
       fmin=fmax
       do i = 1, nx
          if(x(i).gt.x1.and.x(i).lt.x2)then
-            fmax=amax1(fmax, f(i))
-            fmin=amin1(fmin, f(i))
+            fmax=max(fmax, f(i))
+            fmin=min(fmin, f(i))
          endif
       end do
 
@@ -5351,54 +5354,55 @@ c----------------------------------------------------------------------------!
 
       implicit none
 
-      integer nx, ny, i, j, nxmax, nymax
-      real f(nxmax, nymax), fmin, fmax
+      integer:: nx, ny, i, j, nxmax, nymax
+      real:: f(nxmax, nymax), fmin, fmax
 
       fmax=f(2, 1)
       fmin=fmax
       
-      do 23000 j=1, ny
+      do j=1, ny
 c         do 23002 i=1, nx
-         do 23002 i=2, nx-1
-            fmax=amax1(fmax, f(i, j))
-            fmin=amin1(fmin, f(i, j))
-23002    continue
-23000 continue
-
+         do i=2, nx-1
+            fmax=max(fmax, f(i, j))
+            fmin=min(fmin, f(i, j))
+         end do
+      end do
+      
       return
- 2201 format(2i5,1p8e12.4)
+ 2201 format(2i5,1p,8e12.4)
       end
 
 c
 c********************************************************************
 c
       subroutine ezconc(r, theta, f, flevel, nr, nth, nlevel,
-     1   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &     nndm1, norange
+      
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, iflag
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, iflag
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
      
-      real tr(6), dx, dy
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       nwhite = 0
       nblack = 1
@@ -5421,20 +5425,27 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
-      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
+!      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
+      fmin = MINVAL(f) !(2:nrmax-1,:))
+      fmax = MAXVAL(f) !(2:nrmax-1,:))
+      write(*,*) 'minval f',f(1,1),fmin,fmax
       
 c      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
 c      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
-       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
+      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
-c	  write(6, *)"fmin = ", fmin
+c         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -5460,17 +5471,17 @@ c        flevel(i) = fmin + (i - 0.5) * df / 1000.
          flevel(2)=2.0
          flevel(3)=3.0
          flevel(4)=4.0
-	 flevel(5)=5.0
+         flevel(5)=5.0
          flevel(6)=6.0
          flevel(7)=7.0
          flevel(8)=8.0
-	 flevel(9)=9.0
+         flevel(9)=9.0
          flevel(10)=10.0
          flevel(11)=11.0
          flevel(12)=12.0
          flevel(13)=13.0
-	 flevel(14)=14.0
-         flevel(15)=15.0	 	 
+         flevel(14)=14.0
+         flevel(15)=15.0                 
       endif      
 
 c Split contours into two parts, f > 0, and f < 0.
@@ -5513,14 +5524,14 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
 
-	 call pgsci(nyellow)
+         call pgsci(nyellow)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
      &       nlevlt, tr)
       endif
 
       if(nlevgt .gt. 0) then
       
-	 call pgsci(nblue)
+         call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)
       endif
@@ -5528,8 +5539,8 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       call pgsci(nblack)
       call pglab(titx, tity, title)
       
-  310 format(1p6e12.4)
-  312 format(i10, 1p6e12.4)
+  310 format(1p,6e12.4)
+  312 format(i10, 1p,6e12.4)
 
       
       return
@@ -5539,32 +5550,33 @@ c*********************************************************************
 c
 
       subroutine ezconc1(r, theta, f, flevel, nr, nth, nlevel,
-     1   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1, norange
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, iflag
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, iflag
      
-      real tr(6), dx, dy
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
+
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       nwhite = 0
       nblack = 1
@@ -5587,8 +5599,12 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -5600,7 +5616,7 @@ c      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
       iflag = 0
        if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
-c	  write(6, *)"fmin = ", fmin
+c         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -5626,17 +5642,17 @@ c        flevel(i) = fmin + (i - 0.5) * df / 1000.
          flevel(2)=2.0
          flevel(3)=3.0
          flevel(4)=4.0
-	 flevel(5)=5.0
+         flevel(5)=5.0
          flevel(6)=6.0
          flevel(7)=7.0
          flevel(8)=8.0
-	 flevel(9)=9.0
+         flevel(9)=9.0
          flevel(10)=10.0
          flevel(11)=11.0
          flevel(12)=12.0
          flevel(13)=13.0
-	 flevel(14)=14.0
-         flevel(15)=15.0	 	 
+         flevel(14)=14.0
+         flevel(15)=15.0                 
       endif      
 
 c Split contours into two parts, f > 0, and f < 0.
@@ -5679,14 +5695,14 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
 
-	 call pgsci(nyellow)
+         call pgsci(nyellow)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
      &       nlevlt, tr)
       endif
 
       if(nlevgt .gt. 0) then
       
-	 call pgsci(nblue)
+         call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)
       endif
@@ -5694,8 +5710,8 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       call pgsci(nblack)
       call pglab(titx, tity, title)
       
-  310 format(1p6e12.4)
-  312 format(i10, 1p6e12.4)
+  310 format(1p,6e12.4)
+  312 format(i10, 1p,6e12.4)
 
       
       return
@@ -5707,34 +5723,35 @@ c
 
 
       subroutine ezconc2(r, theta, f, flevel, nr, nth, nlevel,
-     1   nrmax, nthmax, nlevmax, title, titx, tity, iflag, dfquotient)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag, dfquotient)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1, norange
      
-      real dfquotient
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, iflag
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, iflag
+      real:: dfquotient
+
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
      
-      real tr(6), dx, dy
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       nwhite = 0
       nblack = 1
@@ -5757,8 +5774,12 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -5770,7 +5791,7 @@ c--set up contour levels
       iflag = 0
        if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
-c	  write(6, *)"fmin = ", fmin
+c         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -5802,12 +5823,12 @@ c         flevel(1) = fmin + df /  35000.
          flevel(2)=2.0
          flevel(3)=3.0
          flevel(4)=4.0
-	 flevel(5)=5.0
+         flevel(5)=5.0
          flevel(6)=6.0
          flevel(7)=7.0
          flevel(8)=8.0
-	 flevel(9)=9.0
-         flevel(10)=10.0	 
+         flevel(9)=9.0
+         flevel(10)=10.0         
       endif      
 
 c Split contours into two parts, f > 0, and f < 0.
@@ -5850,14 +5871,14 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
 
-	 call pgsci(nyellow)
+         call pgsci(nyellow)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
      &       nlevlt, tr)
       endif
 
       if(nlevgt .gt. 0) then
       
-	 call pgsci(nblue)
+         call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)
       endif
@@ -5865,8 +5886,8 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       call pgsci(nblack)
       call pglab(titx, tity, title)
       
-  310 format(1p6e12.4)
-  312 format(i10, 1p6e12.4)
+  310 format(1p,6e12.4)
+  312 format(i10, 1p,6e12.4)
 
       
       return
@@ -5875,41 +5896,47 @@ c
 c*********************************************************************
 c
       subroutine ezconz(r, theta, f, flevel, nr, nth, nlevel,
-     1   nrmax, nthmax, nlevmax, title, titx, tity)
+     &   nrmax, nthmax, nlevmax, title, titx, tity)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1   ncolelec, j
-      real xmaxz, xminz, ymaxz, yminz
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &     ncolelec, j
+      
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
+
+      real:: xmaxz, xminz, ymaxz, yminz
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1    nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1    ncolion,ncolelec,ncollin,ncollab,ncolln2
+     &    nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     &    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     &    ncolion,ncolelec,ncollin,ncollab,ncolln2
       common/zoom/ xmaxz, xminz, ymaxz, yminz
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -5921,9 +5948,9 @@ c      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
       do j = 1, nth
          do i = 2, nr - 1
             if (r(i) .gt. xminz .and. r(i) .le. xmaxz .and.
-     .         theta(j) .gt. yminz .and. theta(j) .le. ymaxz) then
-               fmax = amax1(fmax, f(i, j))
-               fmin = amin1(fmin, f(i, j))
+     &         theta(j) .gt. yminz .and. theta(j) .le. ymaxz) then
+               fmax = max(fmax, f(i, j))
+               fmin = min(fmin, f(i, j))
             end if
          end do
       end do
@@ -6021,39 +6048,44 @@ c
 c*********************************************************************
 c
       subroutine ezcon3d(r,theta,f,flevel,nr,nth,nlevel,
-     1   nrmax,nthmax,nlevmax,title,titx,tity,titz)
+     &   nrmax,nthmax,nlevmax,title,titx,tity,titz)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec
 
-      real r(nrmax), theta(nthmax)
-      real f(nrmax, nthmax)
-      real flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
-      character*32 titz
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, xmin, ymin, xmax
+
+      real:: r(nrmax), theta(nthmax)
+      real:: f(nrmax, nthmax)
+      real:: flevel(nlevmax)
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
 
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1    nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1    ncolion,ncolelec,ncollin,ncollab,ncolln2
+     &    nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     &    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     &    ncolion,ncolelec,ncollin,ncollab,ncolln2
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
@@ -6062,7 +6094,7 @@ c--set up contour levels
       df = abs(fmax - fmin) / float(nlevel)
 
 c      write(6, 100)fmin, fmax
-  100 format(1p8e12.4)
+  100 format(1p,8e12.4)
       
 
 c--Advance graphics frame and get ready to plot
@@ -6086,32 +6118,33 @@ c
 c********************************************************************
 c
       subroutine boundary(r, theta, f, flevel, nr, nth, nlevel,
-     1   nrmax, nthmax, nlevmax, title, titx, tity)
+     &   nrmax, nthmax, nlevmax, title, titx, tity)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1, norange
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax, rhoplasm
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, nlevelb
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, nlevelb
+
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax, rhoplasm
      
-      real tr(6), dx, dy
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       common/boundcom/rhoplasm
       
@@ -6138,8 +6171,12 @@ c
 
       nlevelb = 1
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -6207,39 +6244,45 @@ c
 c*********************************************************************
 c
       subroutine ezcon3dv(r,theta,f,flevel,nr,nth,nlevel,
-     1   nrmax,nthmax,nlevmax,title,titx,tity,titz)
+     &   nrmax,nthmax,nlevmax,title,titx,tity,titz)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &     ncolelec
+      
+      real:: fmin,ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, xmin, ymin, xmax
 
-      real r(nrmax), theta(nthmax)
-      real f(nrmax, nthmax)
-      real flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
-      character*32 titz
+
+      real:: r(nrmax), theta(nthmax)
+      real:: f(nrmax, nthmax)
+      real:: flevel(nlevmax)
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
 
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1    nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1    ncolion,ncolelec,ncollin,ncollab,ncolln2
+     &    nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     &    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     &    ncolion,ncolelec,ncollin,ncollab,ncolln2
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
@@ -6248,7 +6291,7 @@ c--set up contour levels
       df = abs(fmax - fmin) / float(nlevel)
 
 c      write(6, 100)fmin, fmax
-  100 format(1p8e12.4)
+  100 format(1p,8e12.4)
 
 
 c--Advance graphics frame and get ready to plot
@@ -6273,30 +6316,31 @@ c********************************************************************
 c
 
       subroutine ezplot3(title, titll, titlr, x1, y1, y2, y3, y4,
-     .    nr, nrmax)
+     &    nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax)
-      real y1max, y2max, y3max, y4max
-      real y1min, y2min, y3min, y4min
-      real ymin, ymax
+      integer:: nr,nrmax
+      
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax)
+      real:: y1max, y2max, y3max, y4max
+      real:: y1min, y2min, y3min, y4min
+      real:: ymin, ymax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
 
 
       ncolln3=ngreen
@@ -6307,7 +6351,7 @@ c
       call a1mnmx(y3, nrmax, nr, y3min, y3max)
       call a1mnmx(y4, nrmax, nr, y4min, y4max)
 
-      ymax = amax1(y1max, y2max, y3max, y4max)
+      ymax = max(y1max, y2max, y3max, y4max)
 c      ymax = 1.0e+06
 
       rhomax=x1(nr)
@@ -6361,7 +6405,7 @@ c     call plpoin(n12,x2,y4,4)
 
 c     call pllsty(1)
 c     call plmtex('r',5.0,0.5,0.5,titlr)
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 
@@ -6370,32 +6414,32 @@ c***************************************************************************
 c
 
       subroutine ezplot5p(title, titll, titlr, x1, y1,
-     .   y2, y3, y4, y5,
-     .   nr, nrmax)
+     &   y2, y3, y4, y5,
+     &   nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     .     y5(nrmax)
-      real y1max, y2max, y3max, y4max, y5max
-      real y1min, y2min, y3min, y4min, y5min
-      real ymin, ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
+     &     y5(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max
+      real:: y1min, y2min, y3min, y4min, y5min
+      real:: ymin, ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
 
 
       ncolln3=ngreen
@@ -6407,7 +6451,7 @@ c
       call a1mnmx(y4, nrmax, nr, y4min, y4max)
       call a1mnmx(y5, nrmax, nr, y5min, y5max)
 
-      ymax = amax1(y1max, y2max, y3max, y4max, y5max)
+      ymax = max(y1max, y2max, y3max, y4max, y5max)
 
       rhomax=x1(nr)
       rhomin=x1(1)
@@ -6463,7 +6507,7 @@ c     call plpoin(n12,x2,y4,4)
 
 c     call pllsty(1)
 c     call plmtex('r',5.0,0.5,0.5,titlr)
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 
@@ -6473,31 +6517,31 @@ c
      
 
       subroutine ezplot7(title, titll, titlr, titlb, x1, 
-     .   y1, y2, y3, y4, y5, y6, ye,
-     .   nr, nrmax)
+     &   y1, y2, y3, y4, y5, y6, ye,
+     &   nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     .     y5(nrmax), y6(nrmax), ye(nrmax)
-      real y1max, y2max, y3max, y4max, y5max, y6max, yemax
-      real y1min, y2min, y3min, y4min, y5min, y6min, yemin
-      real ymin, ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
+     &     y5(nrmax), y6(nrmax), ye(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max, y6max, yemax
+      real:: y1min, y2min, y3min, y4min, y5min, y6min, yemin
+      real:: ymin, ymax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
 
       nwhite = 0
       nblack = 1
@@ -6517,8 +6561,8 @@ c
       call a1mnmx(y6, nrmax, nr, y6min, y6max)
       call a1mnmx(ye, nrmax, nr, yemin, yemax)
 
-      ymax = amax1(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
-      ymin = amin1(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
+      ymax = max(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
+      ymin = min(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
 c      ymin=0.0
 
       rhomax=x1(nr)
@@ -6563,8 +6607,8 @@ c Plot the line graph.
       call pgline(nr, x1, y6)    
       
       call pgsci(nblack) 
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
 
       return
       end
@@ -6574,31 +6618,32 @@ c***************************************************************************
 c
 
       subroutine ezplot70(title, titll, titlr, titlb, x1, 
-     .   y1, y2, y3, y4, y5, y6, ye,
-     .   nr, nrmax)
+     &   y1, y2, y3, y4, y5, y6, ye,
+     &   nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     .     y5(nrmax), y6(nrmax), ye(nrmax)
-      real y1max, y2max, y3max, y4max, y5max, y6max, yemax
-      real y1min, y2min, y3min, y4min, y5min, y6min, yemin
-      real ymin, ymax
-
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      integer:: nr,nrmax
       
-      integer nr,nrmax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
+     &     y5(nrmax), y6(nrmax), ye(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max, y6max, yemax
+      real:: y1min, y2min, y3min, y4min, y5min, y6min, yemin
+      real:: ymin, ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
+      
+
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
 
       nwhite = 0
       nblack = 1
@@ -6618,8 +6663,8 @@ c
       call a1mnmx(y6, nrmax, nr, y6min, y6max)
       call a1mnmx(ye, nrmax, nr, yemin, yemax)
 
-      ymax = amax1(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
-      ymin = amin1(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
+      ymax = max(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
+      ymin = min(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
       ymin=0.0
 
       rhomax=x1(nr)
@@ -6664,8 +6709,8 @@ c Plot the line graph.
       call pgline(nr, x1, y6)    
       
       call pgsci(nblack) 
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
 
       return
       end
@@ -6674,27 +6719,28 @@ c
 c***************************************************************************
 c
       subroutine ezplot2(title, titll, titlr, titlb, 
-     .                                       x1, y1, y2, nr, nrmax)
+     &                                       x1, y1, y2, nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax),y1(nrmax), y2(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
-
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      integer:: nr, nrmax, n
       
-      integer nr, nrmax, n
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax),y1(nrmax), y2(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
+      
+
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
      
       nwhite = 0
       nblack = 1
@@ -6750,7 +6796,7 @@ c      write(6, 300) y2min, y2max
       CALL PGSCI(nblack)
       
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 c
@@ -6758,27 +6804,28 @@ c***************************************************************************
 c
 
       subroutine ezplot2p(title, titll, titlr, titlb, 
-     .                                       x1, y1, y2, nr, nrmax)
+     &                                       x1, y1, y2, nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax),y1(nrmax), y2(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
-
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      integer:: nr, nrmax, n
       
-      integer nr, nrmax, n
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax),y1(nrmax), y2(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
+      
+
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
      
       nwhite = 0
       nblack = 1
@@ -6793,8 +6840,8 @@ c
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
       call a1mnmx(y2, nrmax, nr, y2min, y2max)
       
-      ymax = amax1(y1max, y2max)
-      ymin = amin1(y1min, y2min)
+      ymax = max(y1max, y2max)
+      ymin = min(y1min, y2min)
 
       if(ymax .eq. 0.0 .and. ymin .eq. 0.0)return
 
@@ -6820,7 +6867,7 @@ c
 
       CALL PGSCI(nblack)      
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 c
@@ -6829,27 +6876,27 @@ c
 
 
       subroutine ezplot2q(title, titll, titlr, titlb, 
-     .                                       x1, y1, y2, nr, nrmax)
+     &                                       x1, y1, y2, nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax),y1(nrmax), y2(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr, nrmax, n
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax),y1(nrmax), y2(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr, nrmax, n
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
      
       nwhite = 0
       nblack = 1
@@ -6864,8 +6911,8 @@ c
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
       call a1mnmx(y2, nrmax, nr, y2min, y2max)
       
-      ymax = amax1(y1max, y2max)
-      ymin = amin1(y1min, y2min)
+      ymax = max(y1max, y2max)
+      ymin = min(y1min, y2min)
 
       if(ymax .eq. 0.0 .and. ymin .eq. 0.0)return
 
@@ -6891,7 +6938,7 @@ c
 
       CALL PGSCI(nblack)      
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 c
@@ -6899,30 +6946,30 @@ c***************************************************************************
 c
 
       subroutine ezplot4(title, titll, titlr, x1, y1, y2, y3, y4,
-     .   nr, nrmax)
+     &   nr, nrmax)
 
       implicit none
+      integer:: nr,nrmax
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax),y1(nrmax),y2(nrmax),y3(nrmax),y4(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real y4max, y4min
-      real ymin,ymax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax),y1(nrmax),y2(nrmax),y3(nrmax),y4(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: y4max, y4min
+      real:: ymin,ymax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
 
 
       ncolln3=ngreen
@@ -6933,8 +6980,8 @@ c
       call a1mnmx(y3,nrmax,nr,y3min,y3max)
       call a1mnmx(y4,nrmax,nr,y4min,y4max)
 
-      ymax = amax1(y1max,y2max,y3max,y4max)
-      ymin = amin1(y1min,y2min,y3min,y4min)
+      ymax = max(y1max,y2max,y3max,y4max)
+      ymin = min(y1min,y2min,y3min,y4min)
 
       rhomax=x1(nr)
       rhomin=x1(1)
@@ -6985,39 +7032,40 @@ c     call plpoin(n12,x2,y4,4)
 
 c     call pllsty(1)
 c     call plmtex('r',5.0,0.5,0.5,titlr)
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 c
 c***************************************************************************
 c
       subroutine ezplot5(title,titll,titlr,x1,
-     1   y1,y2,y3,y4,y5,y6,nr,nrmax)
+     &   y1,y2,y3,y4,y5,y6,nr,nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax),y1(nrmax),y2(nrmax),y3(nrmax)
-      real y4(nrmax),y5(nrmax),y6(nrmax)
-      real y1max,y2max,y3max,y4max,y5max,y6max
-      real y1min,y2min,y3min,y4min,y5min,y6min
-      real ymin,ymax
+      integer:: nr,nrmax
+      
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax),y1(nrmax),y2(nrmax),y3(nrmax)
+      real:: y4(nrmax),y5(nrmax),y6(nrmax)
+      real:: y1max,y2max,y3max,y4max,y5max,y6max
+      real:: y1min,y2min,y3min,y4min,y5min,y6min
+      real:: ymin,ymax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer ncolln4,ncolln5,ncolln6
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: ncolln4,ncolln5,ncolln6
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
 
 
       ncolln3=ngreen
@@ -7032,7 +7080,7 @@ c
       call a1mnmx(y4,nrmax,nr,y4min,y4max)
       call a1mnmx(y5,nrmax,nr,y5min,y5max)
       call a1mnmx(y6,nrmax,nr,y6min,y6max)
-      ymax = amax1(y1max,y2max,y3max,y4max,y5max,y6max)
+      ymax = max(y1max,y2max,y3max,y4max,y5max,y6max)
 
       rhomax=x1(nr)
       rhomin=x1(1)
@@ -7094,7 +7142,7 @@ c     call plpoin(n12,x2,y4,4)
 
 c     call pllsty(1)
 c     call plmtex('r',5.0,0.5,0.5,titlr)
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 
@@ -7104,26 +7152,27 @@ c
       subroutine ezplot1(title, titll, titlr, x1, y1, nr, nrmax)
 
       implicit none
+      
+      integer:: nr, nrmax, n
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr, nrmax, n
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
      
       ncolln3=ngreen
 
@@ -7171,8 +7220,8 @@ c Label the axes (note use of \u and \d for raising exponent).
 c Plot the line graph.
       
       call pgline(nr, x1, y1)
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       return
       end
@@ -7184,25 +7233,26 @@ c
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
      
       ncolln3=ngreen
 
@@ -7238,8 +7288,8 @@ c Plot the line graph.
       call pgsci(nred)       
       call pgline(nr, x1, y1)
       call pgsci(nblack)
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       return
       end
@@ -7251,25 +7301,25 @@ c
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
      
       ncolln3=ngreen
 
@@ -7305,8 +7355,8 @@ c Label the axes (note use of \u and \d for raising exponent).
 c Plot the line graph.
       
       call pgline(nr, x1, y1)
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       return
       end
@@ -7318,25 +7368,26 @@ c
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
      
       ncolln3=ngreen
 
@@ -7372,8 +7423,8 @@ c Label the axes (note use of \u and \d for raising exponent).
 c Plot the line graph.
       
       call pgline(nr, x1, y1)
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       return
       end
@@ -7386,27 +7437,27 @@ c
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
      
       ncolln3=ngreen
 
@@ -7439,8 +7490,8 @@ c Plot the line graph.
       call pgsci(nblue)        
       call pgline(nr, x1, y1)
       call pgsci(nblack)        
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       return
       end
@@ -7453,25 +7504,26 @@ c
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax),y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax),y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1 nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1 nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1 ncolion,ncolelec,ncollin,ncolln2,ncollab
+     & nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     & nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     & ncolion,ncolelec,ncollin,ncolln2,ncollab
 
 
       ncolln3=ngreen
@@ -7515,39 +7567,39 @@ c     call plwind(rhomin,rhomax,ymin,ymax)
 c     call plbox(' ',0.0,0,'cstv',0.0,0)
 
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 c
 c***************************************************************************
 c
       subroutine ezconcx(r, theta, f, flevel, nr, nth, nlevel0,
-     1   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1, norange
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax, fact
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, iflag, nlevel0
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax, fact
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, iflag, nlevel0
      
-      real tr(6), dx, dy
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       nwhite = 0
       nblack = 1
@@ -7570,8 +7622,12 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -7583,7 +7639,7 @@ c--set up contour levels
       iflag = 0
        if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
-c	  write(6, *)"fmin = ", fmin
+c         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -7629,7 +7685,7 @@ c            fact = fact * 1.2
 c            flevel(i) = flevel(i-1) / fact
 c         end do
 
-         nlevel = nlevel0 	 
+         nlevel = nlevel0        
          fact = 2.0
          i = 1
          flevel(i) = fmax
@@ -7637,8 +7693,8 @@ c         end do
          do i = 2, nlevel
             fact = fact * 1.2
             flevel(i) = flevel(i-1) / fact
-         end do	 
-	 
+         end do  
+         
       else
 
          nlevel = nlevel0
@@ -7692,14 +7748,14 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
 
-	 call pgsci(nyellow)
+         call pgsci(nyellow)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
      &       nlevlt, tr)
       endif
 
       if(nlevgt .gt. 0) then
       
-	 call pgsci(nblue)
+         call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)
       endif
@@ -7707,8 +7763,8 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       call pgsci(nblack)
       call pglab(titx, tity, title)
       
-  310 format(1p6e12.4)
-  312 format(i10, 1p6e12.4)
+  310 format(1p,6e12.4)
+  312 format(i10, 1p,6e12.4)
 
       
       return
@@ -7718,29 +7774,29 @@ c*********************************************************************
 c
                          
       subroutine ezlog1(title, titll, titlr, titlb, x1, y1,
-     .   nr, nrmax, ymin, ymax)
+     &   nr, nrmax, ymin, ymax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max, y2max, y3max, y4max, y5max, y6max
-      real y1min, y2min, y3min, y4min, y5min, y6min
-      real ymin, ymax, tmin, tmax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max, y6max
+      real:: y1min, y2min, y3min, y4min, y5min, y6min
+      real:: ymin, ymax, tmin, tmax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
 
       nwhite = 0
       nblack = 1
@@ -7777,8 +7833,8 @@ c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
             
       CALL PGSCI(nblack)  
       call pgsls(1) 
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
       return
       end
 
@@ -7787,32 +7843,32 @@ c***************************************************************************
 c 
                          
       subroutine ezlog1_f(title, titll, titlr, titlb, x1, y1,
-     .   y2, y3, y4, y5, y6, y7,
-     .   nr, nrmax)
+     &   y2, y3, y4, y5, y6, y7,
+     &   nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y2(nrmax), y3(nrmax), y4(nrmax)
-      real y5(nrmax), y6(nrmax), y7(nrmax)
-      real y1max, y2max, y3max, y4max, y5max, y6max
-      real y1min, y2min, y3min, y4min, y5min, y6min
-      real ymin, ymax, tmin, tmax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y2(nrmax), y3(nrmax), y4(nrmax)
+      real:: y5(nrmax), y6(nrmax), y7(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max, y6max
+      real:: y1min, y2min, y3min, y4min, y5min, y6min
+      real:: ymin, ymax, tmin, tmax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
 
       nwhite = 0
       nblack = 1
@@ -7856,8 +7912,8 @@ c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
                   
       CALL PGSCI(nblack)  
       call pgsls(1) 
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
       return
       end
 
@@ -7868,38 +7924,38 @@ c
 
 
       subroutine ezconpx(r, theta, f, flevel, nr, nth, nlevel0,
-     1   nrmax, nthmax, nlevmax, xg, yg, title, r0)
+     &   nrmax, nthmax, nlevmax, xg, yg, title, r0)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1   ncolelec, j, n, m, nth1, nlevel0
-      real xmaxz, xminz, ymaxz, r0, fact
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, xmin, ymin, xmax
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &   ncolelec, j, n, m, nth1, nlevel0
+      real:: xmaxz, xminz, ymaxz, r0, fact
 
-      real r(nrmax),theta(nthmax)
-      real f(nrmax,nthmax)
-      real xg(nrmax,nthmax)
-      real yg(nrmax,nthmax)
-      real flevel(nlevmax)
+      real:: r(nrmax),theta(nthmax)
+      real:: f(nrmax,nthmax)
+      real:: xg(nrmax,nthmax)
+      real:: yg(nrmax,nthmax)
+      real:: flevel(nlevmax)
 
-      character*8 xopt,yopt
-      character*32 title
+      character(8):: xopt,yopt
+      character(32):: title
 
 
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
-     1   ncolion,ncolelec,ncollin,ncollab,ncolln2
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
+     &   ncolion,ncolelec,ncollin,ncollab,ncolln2
 
 
 
@@ -8015,10 +8071,10 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       if(nlevlt .gt. 0) then
 c         call plwid(1)
 c         call pllsty(2)
-c         call plcol(ncolln2)
-         call pgsci(nyellow)
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth1, flevel(ilevlt),
-     &       nlevlt, xg, yg)
+c         call plcol(ncolln2)  #plplot routines
+c         call pgsci(nyellow)
+c         call plcon2(f, nrmax, nthmax, 1, nr, 1, nth1, flevel(ilevlt),
+c     &       nlevlt, xg, yg)
       endif
 
       if(nlevgt .gt. 0) then
@@ -8037,7 +8093,7 @@ c      call plcol(nblue)
 c      call pllab('u_parallel','u_perp', title)
 
 
-  310 format(1p6e12.4)
+  310 format(1p,6e12.4)
   311 format(10i10)
 
       return
@@ -8047,32 +8103,32 @@ c*********************************************************************
 c
 
       subroutine pseudo(r, theta, f, flevel, nr, nth, nlevel,
-     1   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1, norange
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, iflag
+      real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, iflag
      
-      real tr(6), dx, dy
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       nwhite = 0
       nblack = 1
@@ -8095,8 +8151,12 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r)
+      xmax = MAXVAL(r)
+      ymin = MINVAL(theta)
+      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -8108,7 +8168,7 @@ c      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
       iflag = 0
        if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
-c	  write(6, *)"fmin = ", fmin
+c         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -8125,8 +8185,8 @@ c--Advance graphics frame and get ready to plot
       call pgsci(nblack)
       call pglab(titx, tity, title)
       
-  310 format(1p6e12.4)
-  312 format(i10, 1p6e12.4)
+  310 format(1p,6e12.4)
+  312 format(i10, 1p,6e12.4)
 
       
       return
@@ -8137,31 +8197,31 @@ c
 
               
       subroutine ezzoom1(title, titll, titlr, titlb, x1, y1,
-     .   y2, y3, y4, y5, y6,
-     .   nr, nrmax, ymin, ymax, rhomin, rhomax)
+     &   y2, y3, y4, y5, y6,
+     &   nr, nrmax, ymin, ymax, rhomin, rhomax)
 
       implicit none
 
-      real xzmax, xzmin, xnmin, xnmax, rhomin, rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     .     y5(nrmax), y6(nrmax)
-      real y1max, y2max, y3max, y4max, y5max, y6max
-      real y1min, y2min, y3min, y4min, y5min, y6min
-      real ymin, ymax, tmin, tmax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax, xzmin, xnmin, xnmax, rhomin, rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
+     &     y5(nrmax), y6(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max, y6max
+      real:: y1min, y2min, y3min, y4min, y5min, y6min
+      real:: ymin, ymax, tmin, tmax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
 
       nwhite = 0
       nblack = 1
@@ -8206,8 +8266,8 @@ c      call PGMTXT ('r', 2.0, 0.5, 0.5, titlr)
       
       call pgsci(nblack)
       call pgsls(1) 
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
 
       return
       end
@@ -8218,31 +8278,31 @@ c
 
               
       subroutine ezzoom6(title, titll, titlr, titlb, x1, y1,
-     .   y2, y3, y4, y5, y6,
-     .   nr, nrmax, rhomin, rhomax)
+     &   y2, y3, y4, y5, y6,
+     &   nr, nrmax, rhomin, rhomax)
 
       implicit none
 
-      real xzmax, xzmin, xnmin, xnmax, rhomin, rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     .     y5(nrmax), y6(nrmax)
-      real y1max, y2max, y3max, y4max, y5max, y6max
-      real y1min, y2min, y3min, y4min, y5min, y6min
-      real ymin, ymax, tmin, tmax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax, xzmin, xnmin, xnmax, rhomin, rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
+     &     y5(nrmax), y6(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max, y6max
+      real:: y1min, y2min, y3min, y4min, y5min, y6min
+      real:: ymin, ymax, tmin, tmax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
 
       nwhite = 0
       nblack = 1
@@ -8261,8 +8321,8 @@ c
       call a1mnmx(y5, nrmax, nr, y5min, y5max)
       call a1mnmx(y6, nrmax, nr, y6min, y6max)
 
-      ymax = amax1(y1max, y2max, y3max, y4max, y5max, y6max)
-      ymin = amin1(y1min, y2min, y3min, y4min, y5min, y6min)
+      ymax = max(y1max, y2max, y3max, y4max, y5max, y6max)
+      ymin = min(y1min, y2min, y3min, y4min, y5min, y6min)
 c      ymin=0.0     
       
       ymax = ymax * 0.5      
@@ -8312,8 +8372,8 @@ c Plot the line graph.
       
       call pgsci(nblack)
       call pgsls(1)                   
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
 
       return
       end
@@ -8323,13 +8383,13 @@ c***************************************************************************
 c 
 C-----------------------------------------------------------------------
       SUBROUTINE FREDDY(ARRAY,KX,NY,SIZE,ANGLE)
-      INTEGER KX, NY
-      REAL ARRAY(KX,NY), SIZE, ANGLE
+      INTEGER:: KX, NY
+      REAL:: ARRAY(KX,NY), SIZE, ANGLE
 C
 C Draws isometric plot of array
 C
-      REAL FMAX,FMIN,DELTAX,DELTAY,DELTAV,SINE,PEAK,X,DX,HEIGHT
-      INTEGER I,J,KI,KJ,NX,MX,MY,STEP,LEFT,RIGHT,IT,MN,INCX
+      REAL:: FMAX,FMIN,DELTAX,DELTAY,DELTAV,SINE,PEAK,X,DX,HEIGHT
+      INTEGER:: I,J,KI,KJ,NX,MX,MY,STEP,LEFT,RIGHT,IT,MN,INCX
       LOGICAL VISBLE
       COMMON /FREDCM/ DELTAX,X,STEP,LEFT,RIGHT,IT,NX,VISBLE
 C
@@ -8341,8 +8401,8 @@ C     Check array size:
       FMIN = FMAX
       DO 20 J=1,NY
           DO 10 I=1,NX
-              FMIN = AMIN1(ARRAY(I,J),FMIN)
-              FMAX = AMAX1(ARRAY(I,J),FMAX)
+              FMIN = MIN(ARRAY(I,J),FMIN)
+              FMAX = MAX(ARRAY(I,J),FMAX)
    10     CONTINUE
    20 CONTINUE
       DELTAX = SIZE/(NX+NY)
@@ -8516,12 +8576,12 @@ C
       END
 C-----------------------------------------------------------------------
       SUBROUTINE FREDGO(ARRAY,MN)
-      INTEGER MN
-      REAL ARRAY(MN)
+      INTEGER:: MN
+      REAL:: ARRAY(MN)
 C
-      INTEGER STEP,LEFT,RIGHT,IT,NX
+      INTEGER:: STEP,LEFT,RIGHT,IT,NX
       LOGICAL VISBLE
-      REAL AL,AR,BL,EM,XX,X,Y,DELTAX
+      REAL:: AL,AR,BL,EM,XX,X,Y,DELTAX
       COMMON /FREDCM/ DELTAX,X,STEP,LEFT,RIGHT,IT,NX,VISBLE
 C
 C Test visibility
@@ -8535,7 +8595,7 @@ C
 C No: calculate point where this line vanishes
 C
    10 IF(LEFT.LE.NX .OR. MOD(LEFT-1,NX).EQ.0 .OR.
-     1     RIGHT.LE.NX .OR. MOD(RIGHT-1,NX).EQ.0) GOTO 100
+     &     RIGHT.LE.NX .OR. MOD(RIGHT-1,NX).EQ.0) GOTO 100
       AL = ABS(ARRAY(LEFT))
       AR = ABS(ARRAY(RIGHT))
       IF(ARRAY(LEFT).LT.0.0) GOTO 70

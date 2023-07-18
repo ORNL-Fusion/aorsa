@@ -3,56 +3,58 @@ c
 c***************************************************************************
 c
       subroutine flux_to_rz(nnodex, nnodey, profile_in, 
-     .   profile_out, rho, nrho, rho_ij)
+     &   profile_out, rho, nrho, rho_ij)
      
       implicit none
-      
-      real :: profile_in(nrho), profile_out(nnodex,nnodey)
-      real :: rho(nrho), rho_ij(nnodex,nnodey)
-      integer :: nnodex, nnodey, nrho, i, j, k
+
+      integer,intent(in) :: nnodex, nnodey, nrho
+      real,intent(in) :: profile_in(nrho)
+      real,intent(out) :: profile_out(nnodex,nnodey)      
+      real,intent(in) :: rho(nrho), rho_ij(nnodex,nnodey)
+      integer :: i, j, k
 
       do i = 1, nnodex
          do j = 1, nnodey
-	    do k = 1, nrho
+            do k = 1, nrho
 
-	       if(rho_ij(i,j) .le. rho(1)) then
-	       !  need one sided to the left
+               if(rho_ij(i,j) .le. rho(1)) then
+               !  need one sided to the left
 
-c		  call flush(6)
-		  profile_out(i,j) = profile_in(1) + 
-     .            (profile_in(2) - profile_in(1)) /
-     .            (rho(2) - rho(1)) * (rho_ij(i,j) - rho(1))
+c                 call flush(6)
+                  profile_out(i,j) = profile_in(1) + 
+     &            (profile_in(2) - profile_in(1)) /
+     &            (rho(2) - rho(1)) * (rho_ij(i,j) - rho(1))
        
-	       elseif(rho_ij(i,j) .ge.rho(nrho)) then
-	       ! need one sidded to the right.
-		   
-c	          profile_out(i,j) = profile_in(nrho) +
-c     .            (profile_in(nrho) - profile_in(nrho - 1)) /
-c     .            (rho(nrho) - rho(nrho-1)) * (rho_ij(i,j) - rho(nrho))
+               elseif(rho_ij(i,j) .ge.rho(nrho)) then
+               ! need one sidded to the right.
+                   
+c                 profile_out(i,j) = profile_in(nrho) +
+c     &            (profile_in(nrho) - profile_in(nrho - 1)) /
+c     &            (rho(nrho) - rho(nrho-1)) * (rho_ij(i,j) - rho(nrho))
 
                   profile_out(i,j) = profile_in(nrho)     
       
                elseif(rho_ij(i,j) - rho(k) .ge. 0.0 .and.
-     .             rho_ij(i,j) -rho(k+1) .lt. 0.0 ) then
-	          ! standard  caseprint*, 'last if'
-		  profile_out(i,j) = profile_in(k)  +
-     .            (profile_in(k+1) - profile_in(k))/
-     .            (rho(k+1) - rho(k)) * (rho_ij(i,j) - rho(k))
+     &             rho_ij(i,j) -rho(k+1) .lt. 0.0 ) then
+                  ! standard  caseprint*, 'last if'
+                  profile_out(i,j) = profile_in(k)  +
+     &            (profile_in(k+1) - profile_in(k))/
+     &            (rho(k+1) - rho(k)) * (rho_ij(i,j) - rho(k))
                endif
-	       
-	       if (profile_out(i,j) .lt. 0.0) profile_out(i,j) = 1.0e-10
-	 
-	    enddo
-	 end do
+               
+               if (profile_out(i,j) .lt. 0.0) profile_out(i,j) = 1.0e-10
+         
+            enddo
+         end do
       end do
-	 
+         
       end subroutine flux_to_rz
       
 c
 c***************************************************************************
 c
       subroutine fluxavg3(f, favg, rho, nxdim, nydim, nrhodim,
-     .   nnodex, nnodey, nnoderho, drho, dx, dy, capr, r0, vol)
+     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, r0, vol)
 
       implicit none
 
@@ -60,7 +62,7 @@ c
       integer n, i, j
 
       real f(nxdim, nydim), favg(nrhodim), rho(nxdim, nydim), r0,
-     .   drho, dx, dy, fvol(nrhodim), vol(nrhodim), capr(nxdim)
+     &   drho, dx, dy, fvol(nrhodim), vol(nrhodim), capr(nxdim)
 
 
       do n = 1, nnoderho
@@ -94,7 +96,7 @@ c
       if (favg(nnoderho) .eq. 0.0) favg(nnoderho) = favg(nnoderho - 1)
 
 
-  100 format (1i10, 1p8e12.4)
+  100 format (1i10, 1p,8e12.4)
   102 format (2i10)
       return
       end
@@ -104,7 +106,7 @@ c***************************************************************************
 c
 
       subroutine plasma_state(ndata, ndim, rhod, xneavg, tekev, tikev,
-     .     xn_beam, e_beam, zeffavg, nsmooth)
+     &     xn_beam, e_beam, zeffavg, nsmooth)
 
       implicit none
 
@@ -113,7 +115,7 @@ c
       real q
 
       real rhod(ndim), xneavg(ndim), tekev(ndim), tikev(ndim),
-     .     omega(ndim), zeffavg(ndim), xn_beam(ndim), e_beam(ndim)
+     &     omega(ndim), zeffavg(ndim), xn_beam(ndim), e_beam(ndim)
 
       q = 1.6e-19
 
@@ -122,17 +124,17 @@ c
 *     ---------------------
 
       open(unit=70, file='n_electron.txt', status='unknown',
-     .                                          form='formatted')
+     &                                          form='formatted')
       open(unit=71, file='T_electron.txt', status='unknown',
-     .                                          form='formatted')
+     &                                          form='formatted')
       open(unit=72, file='T_ion.txt', status='unknown',
-     .                                          form='formatted')
+     &                                          form='formatted')
       open(unit=73, file='n_beam.txt', status='unknown',
-     .                                          form='formatted')
+     &                                          form='formatted')
       open(unit=74, file='beam_energy.txt', status='unknown',
-     .                                          form='formatted')
+     &                                          form='formatted')
       open(unit=75, file='Z_eff.txt', status='unknown',
-     .                                          form='formatted')
+     &                                          form='formatted')
 
       read(70, 1312) ndata
       write(6, 1312) ndata
@@ -148,7 +150,7 @@ c
          xneavg(n) = xneavg(n) * 1.0e+19
          tekev(n)  = tekev(n)  * 1.0e+03 * q
          tikev(n)  = tikev(n)  * 1.0e+03 * q
-	 xn_beam(n)= xn_beam(n) * 1.0e+19
+         xn_beam(n)= xn_beam(n) * 1.0e+19
 c         e_beam(n) = e_beam(n) * 1.0e+03 * q * 2./3.
          e_beam(n) = e_beam(n) * 1.0e+03 * q 
 
@@ -160,7 +162,7 @@ c         xn_beam(n) = 0.0
 c         e_beam(n)  = 0.0
 
          write(6, 2313)rhod(n), xneavg(n), tekev(n), tikev(n),
-     .      xn_beam(n), e_beam(n), zeffavg(n)
+     &      xn_beam(n), e_beam(n), zeffavg(n)
      
       end do
       
@@ -181,9 +183,9 @@ c         e_beam(n)  = 0.0
       end do
       
 
- 1312 format(1i10, 1p8e12.4)
- 2313 format(1p8e12.4)
- 2314 format(1pe11.4, 1pe11.4)
+ 1312 format(1i10, 1p,8e12.4)
+ 2313 format(1p,8e12.4)
+ 2314 format(1p,e11.4, 1p,e11.4)
 
       return
       end
@@ -217,12 +219,12 @@ c     Apply smoothing operation
         y(ir) = 0.0
 
         kmin = max(1, ir-ismooth)  
-	kmax = min(nr, ir+ismooth)
-	
+        kmax = min(nr, ir+ismooth)
+        
         do k = kmin, kmax
           y(ir) = y(ir) + x(k)
         enddo
-	
+        
         y(ir) = y(ir) / real((1+kmax - kmin))
       enddo
 

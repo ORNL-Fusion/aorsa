@@ -8,134 +8,123 @@ c
       
       implicit none
       
-      integer i_psi, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
-      integer nphimx, nphmax, ntmax, ntmin, nchmax, jhalf, khalf, kshift
-      integer ftrap, iezrant, nr, k, nt1, nt2, jmid, 
-     .   nant, nphi3d, n, nstrap, nphi, nstrpol, nphi_fpm, nt_max
-      integer nphi3d_1quarter, nphi3d_half, nphi3d_3quarter 
+      integer:: i_psi, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
+      integer:: nchmax, jhalf, khalf, kshift
+      integer:: ftrap, iezrant, nr, k, nt1, nt2, jmid, 
+     &   nant, nphi3d, n, nstrap, nphi, nstrpol, nphi_fpm, nt_max
+      integer:: nphi3d_1quarter, nphi3d_half, nphi3d_3quarter 
       
-      integer nxmx, nymx, i, j
-      integer nnodex, nnodey, nphi1, nphi2, nphi1_dum, nphi2_dum
-      integer nxplot_dim, nyplot_dim
-      integer nxplot, nyplot, ir, nt, imax, jmax, kmax
+      integer:: i, j
+      integer:: nnodex, nnodey, nphi1, nphi2, nphi1_dum, nphi2_dum
+      integer:: nxplot, nyplot, ir, nt, imax, jmax, kmax
       
-      integer pgopen, pgbeg, ier, numb, iflag, nlevmax
-      integer number_points, nrhomax
-      integer nnoderho, lnwidth
+      integer:: pgopen, pgbeg, ier, numb, iflag
+      integer:: number_points
+      integer:: nnoderho
       
-c      integer nmodesmax, mmodesmax
-            
-      parameter (nlevmax = 101)
-      
+c      integer:: nmodesmax, mmodesmax
 c      parameter (nxmx   = 500)
-c      parameter (nymx   = 500)
-      parameter (lnwidth = 2)
-       
-      parameter (nxmx = nmodesmax)
-      parameter (nymx = mmodesmax)
+c      parameter (nymx   = 500)            
+      integer, parameter:: nlevmax = 101, lnwidth = 2, nxmx = nmodesmax
+      integer, parameter:: nymx = mmodesmax, nrhomax = nxmx * 2
+      integer, parameter:: nphimx = 200, nxplot_dim   = 1000
+      integer, parameter:: nyplot_dim   = 1000, nphmax = 2048
+      integer, parameter:: ntmax = nphmax / 2, ntmin = -ntmax
       
-      parameter (nrhomax = nxmx * 2)
-      parameter (nphimx = 200)
-      parameter (nxplot_dim   = 1000)
-      parameter (nyplot_dim   = 1000)
-      
-     
-      parameter (nphmax = 2048)
-      parameter (ntmax = nphmax / 2, ntmin = -ntmax)
-      
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
-      character*32 titx
-      character*32 tity
-      character*32 titz
-      character*32 tityl
-      character*32 tityr
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
+      character(32):: tityl
+      character(32):: tityr
       
       real, dimension(:),   allocatable :: UPERP, UPARA
       
-      real, dimension(:,:), allocatable :: bqlsum_i2_2d 
-      real, dimension(:,:), allocatable :: cqlsum_i2_2d     
-      real, dimension(:,:), allocatable :: eqlsum_i2_2d     
-      real, dimension(:,:), allocatable :: fqlsum_i2_2d          
+      real, dimension(:,:), allocatable :: bqlsum_i2_2d
+      real, dimension(:,:), allocatable :: cqlsum_i2_2d
+      real, dimension(:,:), allocatable :: eqlsum_i2_2d
+      real, dimension(:,:), allocatable :: fqlsum_i2_2d
+
+      integer, parameter :: r15 = selected_real_kind(15)      
+      real(kind=r15), dimension(:,:,:), allocatable :: bqlsum_i2
+      real(kind=r15), dimension(:,:,:), allocatable :: cqlsum_i2
+      real(kind=r15), dimension(:,:,:), allocatable :: eqlsum_i2
+      real(kind=r15), dimension(:,:,:), allocatable :: fqlsum_i2
       
-      real*8, dimension(:,:,:), allocatable :: bqlsum_i2
-      real*8, dimension(:,:,:), allocatable :: cqlsum_i2
-      real*8, dimension(:,:,:), allocatable :: eqlsum_i2
-      real*8, dimension(:,:,:), allocatable :: fqlsum_i2
+      integer:: i_uperp, i_upara, i_psi_eq
+      real:: vce_mks,vc1_mks,vc2_mks,vc3_mks, vc4_mks, vc5_mks, vc6_mks 
+      real:: vce_cgs,vc1_cgs,vc2_cgs,vc3_cgs, vc4_cgs, vc5_cgs, vc6_cgs
+      real:: UminPara, UmaxPara, xmi2
       
-      integer :: i_uperp, i_upara, i_psi_eq
-      real vce_mks, vc1_mks, vc2_mks, vc3_mks, vc4_mks, vc5_mks, vc6_mks 
-      real vce_cgs, vc1_cgs, vc2_cgs, vc3_cgs, vc4_cgs, vc5_cgs, vc6_cgs
-      real UminPara, UmaxPara, xmi2
-      
-      real fmod(nphimx)
+      real:: fmod(nphimx)
 
       
-      real xnurf, pi, omgrf, q, width, eps0, xmu0, clight, qe, absqe, 
-     .     xk0, phimin, phimax, dphi, dphi3d, rt, r0, zmin, zmax, xltcm
-      real xlt, phase, wd, xi0, phi0, separ0, rhoplasm, rant, rmax, rmin
-      real dphase0, phase0, phi(nphmax), capr_min, capr_max
-      real phi3d(nphimx), phi3d_shift(nphimx), zk3d(nphimx), dxplot
-      real zk(nphmax), amplt(20), dyplot, dx, dy, emax
-      real workr(nphmax), worki(nphmax), capr(nxmx), capz(nymx)
-      real rho(nxmx, nymx), drho, phase_deg
-      real ff(101), dummy, tmin, t1, second1, ptot, pcito2, pcrto2
-      real capr_giv, phi3d_giv, fout, dcapr, x_giv, ptotal, xjtot
+      real:: xnurf, pi, omgrf, q, width, eps0, xmu0, clight, qe, absqe, 
+     &     xk0, phimin, phimax, dphi, dphi3d, rt, r0, zmin, zmax, xltcm
+      real:: xlt,phase,wd,xi0, phi0, separ0, rhoplasm, rant, rmax, rmin
+      real:: dphase0, phase0, phi(nphmax), capr_min, capr_max
+      real:: phi3d(nphimx), phi3d_shift(nphimx), zk3d(nphimx), dxplot
+      real:: zk(nphmax), amplt(20), dyplot, dx, dy, emax
+      real:: workr(nphmax), worki(nphmax), capr(nxmx), capz(nymx)
+      real:: rho(nxmx, nymx), drho, phase_deg
+      real:: ff(101), dummy, tmin, t1, second1, ptot, pcito2, pcrto2
+      real:: capr_giv, phi3d_giv, fout, dcapr, x_giv, ptotal, xjtot
       
-      real pcte, pcti1, pcti2, pcti3, pcti4, pcti5, pcti6, pctt, pt
+      real:: pcte, pcti1, pcti2, pcti3, pcti4, pcti5, pcti6, pctt, pt
       
-      real  pcedotje, pcedotj1, pcedotj2, pcedotj3, pcedotj4,
-     .      pcedotj5, pcedotj6, pcedotjs, pcedotjt, pedotjt
+      real::  pcedotje, pcedotj1, pcedotj2, pcedotj3, pcedotj4,
+     &      pcedotj5, pcedotj6, pcedotjs, pcedotjt, pedotjt
     
       
-      complex work(nphmax), zi, csum, curent(nphmax),cn(ntmin : ntmax)
-      complex cur3d(nphimx), jfun, cursum(nphmax)
-      complex cexpkz      
+      complex:: work(nphmax), zi, csum, curent(nphmax),cn(ntmin : ntmax)
+      complex:: cur3d(nphimx), jfun, cursum(nphmax)
+      complex:: cexpkz      
       
-      real rhon(nrhomax)
+      real:: rhon(nrhomax)
             
-      real wdoti1_dvol(nrhomax), wdoti2_dvol(nrhomax),
-     .     wdoti3_dvol(nrhomax), wdoti4_dvol(nrhomax), 
-     .     wdoti5_dvol(nrhomax), wdoti6_dvol(nrhomax),
-     .     wdote_dvol(nrhomax)     
+      real:: wdoti1_dvol(nrhomax), wdoti2_dvol(nrhomax),
+     &     wdoti3_dvol(nrhomax), wdoti4_dvol(nrhomax), 
+     &     wdoti5_dvol(nrhomax), wdoti6_dvol(nrhomax),
+     &     wdote_dvol(nrhomax)     
      
-      real redotj1_dvol(nrhomax), redotj2_dvol(nrhomax),
-     .     redotj3_dvol(nrhomax), redotj4_dvol(nrhomax),
-     .     redotj5_dvol(nrhomax), redotj6_dvol(nrhomax),
-     .     redotje_dvol(nrhomax)
+      real:: redotj1_dvol(nrhomax), redotj2_dvol(nrhomax),
+     &     redotj3_dvol(nrhomax), redotj4_dvol(nrhomax),
+     &     redotj5_dvol(nrhomax), redotj6_dvol(nrhomax),
+     &     redotje_dvol(nrhomax)
           
-      real xjprlavg(nrhomax), xjprl_sum(nrhomax)
+      real:: xjprlavg(nrhomax), xjprl_sum(nrhomax)
           
-      real wdotesum(nrhomax),
-     .     wdot1sum(nrhomax), wdot2sum(nrhomax),
-     .     wdot3sum(nrhomax), wdot4sum(nrhomax),
-     .     wdot5sum(nrhomax), wdot6sum(nrhomax) 
+      real:: wdotesum(nrhomax),
+     &     wdot1sum(nrhomax), wdot2sum(nrhomax),
+     &     wdot3sum(nrhomax), wdot4sum(nrhomax),
+     &     wdot5sum(nrhomax), wdot6sum(nrhomax) 
      
-      real wdotesum_ql(nrhomax),
-     .     wdot1sum_ql(nrhomax), wdot2sum_ql(nrhomax),
-     .     wdot3sum_ql(nrhomax), wdot4sum_ql(nrhomax),
-     .     wdot5sum_ql(nrhomax), wdot6sum_ql(nrhomax)      
+      real:: wdotesum_ql(nrhomax),
+     &     wdot1sum_ql(nrhomax), wdot2sum_ql(nrhomax),
+     &     wdot3sum_ql(nrhomax), wdot4sum_ql(nrhomax),
+     &     wdot5sum_ql(nrhomax), wdot6sum_ql(nrhomax)      
           
-      real redotjesum(nrhomax),
-     .     redotj1sum(nrhomax), redotj2sum(nrhomax),
-     .     redotj3sum(nrhomax), redotj4sum(nrhomax),
-     .     redotj5sum(nrhomax), redotj6sum(nrhomax)
+      real:: redotjesum(nrhomax),
+     &     redotj1sum(nrhomax), redotj2sum(nrhomax),
+     &     redotj3sum(nrhomax), redotj4sum(nrhomax),
+     &     redotj5sum(nrhomax), redotj6sum(nrhomax)
      
-      real redotje_int(nrhomax),
-     .     redotji1_int(nrhomax), redotji2_int(nrhomax),
-     .     redotji3_int(nrhomax), redotji4_int(nrhomax), 
-     .     redotji5_int(nrhomax), redotji6_int(nrhomax)
+      real:: redotje_int(nrhomax),
+     &     redotji1_int(nrhomax), redotji2_int(nrhomax),
+     &     redotji3_int(nrhomax), redotji4_int(nrhomax), 
+     &     redotji5_int(nrhomax), redotji6_int(nrhomax)
      
-      real wdote_int(nrhomax),
-     .     wdoti1_int(nrhomax), wdoti2_int(nrhomax), 
-     .     wdoti3_int(nrhomax), wdoti4_int(nrhomax),
-     .     wdoti5_int(nrhomax), wdoti6_int(nrhomax)
+      real:: wdote_int(nrhomax),
+     &     wdoti1_int(nrhomax), wdoti2_int(nrhomax), 
+     &     wdoti3_int(nrhomax), wdoti4_int(nrhomax),
+     &     wdoti5_int(nrhomax), wdoti6_int(nrhomax)
      
-      real xjprl_int(nrhomax)
+      real:: xjprl_int(nrhomax)
      
-      real  dvol(nrhomax), darea(nrhomax)        
+      real::  dvol(nrhomax), darea(nrhomax)        
       
 
       real, dimension (:, :), allocatable :: freal
@@ -148,15 +137,15 @@ c      parameter (nymx   = 500)
       real, dimension (:, :), allocatable :: power_phi    
       real, dimension (:, :), allocatable :: capr_plot_phi 
       
-      real fmidre(nxmx), fmidim(nxmx)
+      real:: fmidre(nxmx), fmidim(nxmx)
       
-      real cnmod2(nphimx), xnphi(nphimx), pabs(nphimx), jdriven(nphimx)
-      real spa(nphimx)
-      real pabs_weight, pabs_sum, prfin, pscale, j_driven_weight
-      real jdriven_weight, jdriven_sum
+      real:: cnmod2(nphimx),xnphi(nphimx),pabs(nphimx), jdriven(nphimx)
+      real:: spa(nphimx)
+      real:: pabs_weight, pabs_sum, prfin, pscale, j_driven_weight
+      real:: jdriven_weight, jdriven_sum
       
-      real xplot(nxplot_dim), yplot(nyplot_dim)
-      real xplotm(nxplot_dim), yplotm(nyplot_dim)
+      real:: xplot(nxplot_dim), yplot(nyplot_dim)
+      real:: xplotm(nxplot_dim), yplotm(nyplot_dim)
       
       real, dimension (:, :), allocatable :: frealp
       real, dimension (:, :), allocatable :: fimagp
@@ -174,63 +163,63 @@ c      parameter (nymx   = 500)
             
       common/boundcom/rhoplasm      
       
-      integer nmodesx, nmodesy, nwdot, lmax, ibessel,
-     .    nuper, nupar, 
-     .    inu, iprint, iexact,
-     .    iroot, iequat, igeom, 
-     .    iqx, iqprof, iez, nprow, npcol, 
-     .    izfunc,
-     .    nstep, nabs, 
-     .    isigma, itemp, 
-     .    nfreqm,  nkzm, 
-     .    ibackground, iabsorb, nzfun, 
-     .    nboundary, nnode_local,
-     .    nnode_overlap, iprofile, isolve, 
-     .    ndiste, ndisti1, ndisti2, ndisti3,
-     .    ndisti4, ndisti5, ndisti6, nkperp, nzeta_wdot, n_bin, 
-     .    iql, i_antenna, n_prof_flux, i_write, idens
+      integer:: nmodesx, nmodesy, nwdot, lmax, ibessel,
+     &    nuper, nupar, 
+     &    inu, iprint, iexact,
+     &    iroot, iequat, igeom, 
+     &    iqx, iqprof, iez, nprow, npcol, 
+     &    izfunc,
+     &    nstep, nabs, 
+     &    isigma, itemp, 
+     &    nfreqm,  nkzm, 
+     &    ibackground, iabsorb, nzfun, 
+     &    nboundary, nnode_local,
+     &    nnode_overlap, iprofile, isolve, 
+     &    ndiste, ndisti1, ndisti2, ndisti3,
+     &    ndisti4, ndisti5, ndisti6, nkperp, nzeta_wdot, n_bin, 
+     &    iql, i_antenna, n_prof_flux, i_write, idens
      
-      CHARACTER*128 :: eqdsk
-      CHARACTER*128 :: netCDF_file1
-      CHARACTER*128 :: netCDF_file2      
+      CHARACTER(128) :: eqdsk
+      CHARACTER(128) :: netCDF_file1
+      CHARACTER(128) :: netCDF_file2      
       
-      real ti0, xnuead, xnu1ad, xnu2ad, te0, yant,
-     .    ti02, ti03, ti2lim, ti3lim,  
-     .    ti04, ti05, ti06, ti4lim, ti5lim, ti6lim,
-     .    delta0, xwall, xnwall,
-     .     epszet,
-     .    dthetant0, dpsiant0, psilim, psiant, psimol, psipne, psipte,
-     .    psipti1, psipti2, psipti3,
-     .    psipti4, psipti5, psipti6,
-     .    amu1, amu2, z1, z2, eta, 
-     .    b0, ytop, ybottom, freqcy, aplasm,
-     .    xnlim, xn2lim, xn3lim, xnslolim,
-     .    xn4lim, xn5lim, xn6lim,
-     .    xn0, xn2, xn3, xnslo, flat, b1rat, b2rat, curdnx, curdny,
-     .    xn4, xn5, xn6,
-     .    curdnz,
-     .    xnuabs, xbnch, xleft, xright,
-     .    telim, tilim,
-     .    dfreq, dkz,
-     .    xnudip, adip, efold,
-     .    amu3, z3, eta3, xnu3ad,
-     .    amu4, z4, eta4, xnu4ad,
-     .    amu5, z5, eta5, xnu5ad,
-     .    amu6, z6, eta6, xnu6ad,
-     .    xdelta, wdelta, xdelt2, wdelt2, zeffcd,
-     .    rzoom1, rzoom2, yzoom1, yzoom2,  q0,
-     .    alim, grad, qavg0, ymax,
-     .    alphan,  alphan2, alphan3, alphan_slo,
-     .    alphan4, alphan5, alphan6,
-     .    alphate,  alphati, alphati2, alphati3,
-     .    alphati4, alphati5, alphati6,
-     .    ekappa, rwleft, rwright, xnuomg,
-     .    eta_slo, amu_slo, z_slo, eslowev, 
-     .    betan, betan2, betan3, betan_slo, betate, betati, betati2,
-     .    betan4, betan5, betan6, betati4, betati5, betati6,
-     .    betati3, taue, theta_ant,
-     .    antlen,
-     .    antlc, upshift, xkperp_cutoff, damping
+      real:: ti0, xnuead, xnu1ad, xnu2ad, te0, yant,
+     &    ti02, ti03, ti2lim, ti3lim,  
+     &    ti04, ti05, ti06, ti4lim, ti5lim, ti6lim,
+     &    delta0, xwall, xnwall,
+     &     epszet,
+     &    dthetant0, dpsiant0, psilim, psiant, psimol, psipne, psipte,
+     &    psipti1, psipti2, psipti3,
+     &    psipti4, psipti5, psipti6,
+     &    amu1, amu2, z1, z2, eta, 
+     &     b0, ytop, ybottom, freqcy, aplasm
+      real:: xnlim, xn2lim, xn3lim, xnslolim,
+     &    xn4lim, xn5lim, xn6lim,
+     &    xn0, xn2, xn3, xnslo, flat, b1rat, b2rat, curdnx, curdny,
+     &    xn4, xn5, xn6,
+     &    curdnz,
+     &    xnuabs, xbnch, xleft, xright,
+     &    telim, tilim,
+     &    dfreq, dkz,
+     &    xnudip, adip, efold,
+     &     amu3, z3, eta3, xnu3ad
+      real:: amu4, z4, eta4, xnu4ad,
+     &    amu5, z5, eta5, xnu5ad,
+     &    amu6, z6, eta6, xnu6ad,
+     &    xdelta, wdelta, xdelt2, wdelt2, zeffcd,
+     &    rzoom1, rzoom2, yzoom1, yzoom2,  q0,
+     &    alim, grad, qavg0, ymax,
+     &    alphan,  alphan2, alphan3, alphan_slo,
+     &    alphan4, alphan5, alphan6,
+     &    alphate,  alphati, alphati2, alphati3,
+     &    alphati4, alphati5, alphati6,
+     &     ekappa, rwleft, rwright, xnuomg
+      real:: eta_slo, amu_slo, z_slo, eslowev, 
+     &    betan, betan2, betan3, betan_slo, betate, betati, betati2,
+     &    betan4, betan5, betan6, betati4, betati5, betati6,
+     &    betati3, taue, theta_ant,
+     &    antlen,
+     &    antlc, upshift, xkperp_cutoff, damping
      
       allocate( ealpha_sum_mod(nxmx, nymx, nphimx)  )
       allocate( ebeta_sum_mod(nxmx, nymx, nphimx)  )
@@ -264,9 +253,9 @@ c      rewind(63)
       
      
       open(unit=242,file='Bql_sum_2D.vtk',status='unknown',
-     .                                                 form='formatted') 
+     &                                                 form='formatted') 
       open(unit=342,file='Cql_sum_2D.vtk',status='unknown',
-     .                                                 form='formatted')      
+     &                                                 form='formatted')      
       open(unit=362,file='murakami3d',status='unknown',form='formatted') 
       
 *     ---------------------------------------
@@ -281,8 +270,8 @@ c      read (36, 310) (capz(j),  j = 1, nnodey)
 c      read (36, 310) (phi3d(k), k = 1, nphi3d)
       
 c      read (36, 310) (((ealpha_sum(i, j, k), i = 1, nnodex), 
-c     .                                       j = 1, nnodey), 
-c     .                                       k = 1, nphi3d)
+c     &                                       j = 1, nnodey), 
+c     &                                       k = 1, nphi3d)
 
       read (36, 309) nphi1, nphi2, nt_max, nnoderho
       read (36, 310) prfin
@@ -359,29 +348,29 @@ c      read (36, 310) (spa(nt),   nt = 1, nt_max)
       read (36, 310) rhoplasm, rt
             
       read (36, 310) (((ealpha_sum(i, j, k), i = 1, nnodex), 
-     .                                       j = 1, nnodey), 
-     .                                       k = 1, nphi3d)
+     &                                       j = 1, nnodey), 
+     &                                       k = 1, nphi3d)
      
       read (36, 310) (((ealpha_sum_mod(i, j, k), i = 1, nnodex), 
-     .                                           j = 1, nnodey), 
-     .                                           k = 1, nphi3d)     
+     &                                           j = 1, nnodey), 
+     &                                           k = 1, nphi3d)     
       
       read (36, 310) (((ebeta_sum(i, j, k), i = 1, nnodex), 
-     .                                      j = 1, nnodey), 
-     .                                      k = 1, nphi3d) 
+     &                                      j = 1, nnodey), 
+     &                                      k = 1, nphi3d) 
      
       read (36, 310) (((ebeta_sum_mod(i, j, k), i = 1, nnodex), 
-     .                                          j = 1, nnodey), 
-     .                                          k = 1, nphi3d) 
+     &                                          j = 1, nnodey), 
+     &                                          k = 1, nphi3d) 
      
       read (36, 310) (((eb_sum(i, j, k), i = 1, nnodex), 
-     .                                      j = 1, nnodey), 
-     .                                      k = 1, nphi3d) 
+     &                                      j = 1, nnodey), 
+     &                                      k = 1, nphi3d) 
      
 
       read (36, 310) (((redotj(i, j, k), i = 1, nnodex), 
-     .                                   j = 1, nnodey), 
-     .                                   k = 1, nphi3d) 
+     &                                   j = 1, nnodey), 
+     &                                   k = 1, nphi3d) 
      
       read (36, 309) nxplot, nyplot
       read (36, 310) capr_max, capr_min
@@ -393,8 +382,8 @@ c      read (36, 310) (spa(nt),   nt = 1, nt_max)
       read (36, 310) ((powerp(i, j), i = 1, nxplot), j = 1, nyplot) 
       
       read (36, 310) (((ntilda(i, j, k), i = 1, nnodex), 
-     .                                   j = 1, nnodey), 
-     .                                   k = 1, nphi3d)
+     &                                   j = 1, nnodey), 
+     &                                   k = 1, nphi3d)
      
       write(6,*) "finished reading out36"
       
@@ -405,45 +394,45 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
 *     Open and read the SWIM output file:
 *     ----------------------------------
          open(unit=99, file='out_swim', status='unknown',
-     .                                              form='formatted')                  
+     &                                              form='formatted')                  
          read(99, 309) nnoderho
          read(99, 310) (rhon(n), n = 1, nnoderho)
-	 
-	 read(99, 310) (dvol(n), n = 1, nnoderho - 1)
-	 
-	 read(99, 310) (redotje_int(n), n = 1, nnoderho)
+         
+         read(99, 310) (dvol(n), n = 1, nnoderho - 1)
+         
+         read(99, 310) (redotje_int(n), n = 1, nnoderho)
          read(99, 310) (redotji1_int(n), n = 1, nnoderho) 
-	 read(99, 310) (redotji2_int(n), n = 1, nnoderho) 
+         read(99, 310) (redotji2_int(n), n = 1, nnoderho) 
          read(99, 310) (redotji3_int(n), n = 1, nnoderho)  
          read(99, 310) (redotji4_int(n), n = 1, nnoderho)  
          read(99, 310) (redotji5_int(n), n = 1, nnoderho)
          read(99, 310) (redotji6_int(n), n = 1, nnoderho)
-	 
-	 
-	 read(99, 310) (wdote_int(n), n = 1, nnoderho)
+         
+         
+         read(99, 310) (wdote_int(n), n = 1, nnoderho)
          read(99, 310) (wdoti1_int(n), n = 1, nnoderho)
          read(99, 310) (wdoti2_int(n), n = 1, nnoderho)
          read(99, 310) (wdoti3_int(n), n = 1, nnoderho)
          read(99, 310) (wdoti4_int(n), n = 1, nnoderho)
-	 read(99, 310) (wdoti5_int(n), n = 1, nnoderho)
-	 read(99, 310) (wdoti6_int(n), n = 1, nnoderho)
-	 
-	 read(99, 310) (redotje_dvol(n), n = 1, nnoderho)
+         read(99, 310) (wdoti5_int(n), n = 1, nnoderho)
+         read(99, 310) (wdoti6_int(n), n = 1, nnoderho)
+         
+         read(99, 310) (redotje_dvol(n), n = 1, nnoderho)
          read(99, 310) (redotj1_dvol(n), n = 1, nnoderho)
          read(99, 310) (redotj2_dvol(n), n = 1, nnoderho)
          read(99, 310) (redotj3_dvol(n), n = 1, nnoderho)
          read(99, 310) (redotj4_dvol(n), n = 1, nnoderho)
          read(99, 310) (redotj5_dvol(n), n = 1, nnoderho)
          read(99, 310) (redotj6_dvol(n), n = 1, nnoderho)
-	 
-	 
+         
+         
          read(99, 310) (wdote_dvol(n), n = 1, nnoderho)
          read(99, 310) (wdoti1_dvol(n), n = 1, nnoderho)
          read(99, 310) (wdoti2_dvol(n), n = 1, nnoderho)
          read(99, 310) (wdoti3_dvol(n), n = 1, nnoderho)
          read(99, 310) (wdoti4_dvol(n), n = 1, nnoderho)
-	 read(99, 310) (wdoti5_dvol(n), n = 1, nnoderho)
-	 read(99, 310) (wdoti6_dvol(n), n = 1, nnoderho)   
+         read(99, 310) (wdoti5_dvol(n), n = 1, nnoderho)
+         read(99, 310) (wdoti6_dvol(n), n = 1, nnoderho)   
       close (99)       
       
                               
@@ -459,18 +448,18 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       i_psi4 = 30
       i_psi5 = 40
       i_psi6 = 50
-	 
-	       
+         
+               
 *     ----------------------------------------------------------------
 *     read quasilinear diffusion coefficients from file out_cql3d.coef2
-*     ----------------------------------------------------------------	
+*     ----------------------------------------------------------------  
 
 
       if(ndisti2  .eq. 1) then
 
          open(unit=42, file='out_cql3d.coef2',  
-     .                               status='unknown', form='formatted')
-      	 
+     &                               status='unknown', form='formatted')
+         
          read (42, 309) nuper
          read (42, 309) nupar
          read (42, 309) nnoderho
@@ -485,9 +474,9 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       
          allocate( bqlsum_i2_2d(nupar, nuper) )
          allocate( cqlsum_i2_2d(nupar, nuper) )
-	 allocate( eqlsum_i2_2d(nupar, nuper) )
+         allocate( eqlsum_i2_2d(nupar, nuper) )
          allocate( fqlsum_i2_2d(nupar, nuper) )      
-              	       
+                       
 
          read (42, 3310) vc2_cgs
          read (42, 3310) UminPara, UmaxPara
@@ -497,27 +486,27 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
          read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
       
          read (42, 3310) (((bqlsum_i2(i_uperp, i_upara, n),
-     .        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+     &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
          read (42, 3310) (((cqlsum_i2(i_uperp, i_upara, n),
-     .        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+     &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
          read (42, 3310) (((eqlsum_i2(i_uperp, i_upara, n),
-     .        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+     &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
          read (42, 3310) (((fqlsum_i2(i_uperp, i_upara, n),
-     .        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+     &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
      
-         read (42, 3310) xmi2	         
+         read (42, 3310) xmi2            
 
          close (42)
-	 
+         
       end if 
 
       write(362, 309) nnoderho
       do n = 1, nnoderho
          write(362,1312)n, rhon(n), wdotesum(n), wdot1sum(n),
-     .              wdot2sum(n), wdot3sum(n), xjprl_sum(n)
+     &              wdot2sum(n), wdot3sum(n), xjprl_sum(n)
       end do      
       
 
@@ -549,13 +538,13 @@ c      if (pgopen('aorsa2d.cps/cps') .lt. 1) stop
       tityr = 'pabs'
               
       call ezplot2_sum(title, tityl, tityr, titx, xnphi, cnmod2, 
-     .    pabs, nt_max, nphimx)
+     &    pabs, nt_max, nphimx)
           
 
       tityr = ' '
      
       call ezplot1_sum(title, tityl, tityl, tityr, xnphi, cnmod2, 
-     .    nt, nphimx)
+     &    nt, nphimx)
      
      
      
@@ -568,14 +557,14 @@ c      i = nnodex / 2
 c      j = nnodey / 2 
 c      khalf = nphi3d / 2   
       
-c      do k = 1, nphi3d	 
-c	 if (k .lt. khalf) kshift = k + khalf
-c	 if (k .ge. khalf) kshift = k - khalf + 1	    
-c         fmod(k) = real(ealpha_sum_mod(i, j, kshift))	    
+c      do k = 1, nphi3d  
+c        if (k .lt. khalf) kshift = k + khalf
+c        if (k .ge. khalf) kshift = k - khalf + 1           
+c         fmod(k) = real(ealpha_sum_mod(i, j, kshift))      
 c      end do      
      
 c      call ezplot1_sum(title, titx, tityl, tityr, phi3d_shift, fmod, 
-c     .    nphi3d, nphimx)
+c     &    nphi3d, nphimx)
      
           
      
@@ -588,7 +577,7 @@ c     .    nphi3d, nphimx)
       
               
       call ezplot2_sum(title, tityl, tityr, titx, xnphi, cnmod2, 
-     .    jdriven, nt_max, nphimx)
+     &    jdriven, nt_max, nphimx)
      
 
       if(ndisti2  .eq. 1) then     
@@ -614,7 +603,7 @@ c     .    nphi3d, nphimx)
          write(16, *)"i_psi4 = ", i_psi4
          write(16, *)"i_psi5 = ", i_psi5
          write(16, *)"i_psi6 = ", i_psi6      
-	    
+            
          numb = 15      
       
       
@@ -623,13 +612,13 @@ c     .    nphi3d, nphimx)
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlsum_i2_2d(i_upara, i_uperp) =
-     .                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 
+         
          title = 'bqlsum_psi1(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, bqlsum_i2_2d, ff, nupar, nuper, 
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
      
 !        ---------------------------------------------
@@ -638,7 +627,7 @@ c     .    nphi3d, nphimx)
          number_points = nupar * nuper
          dx = upara(2) - upara(1)
          dy = uperp(2) - uperp(1)
-	 
+         
          write(242, 2840) 
  2840    format('# vtk DataFile Version 2.0')
  
@@ -656,14 +645,14 @@ c     .    nphi3d, nphimx)
           
          write(242, 2842) upara(1), uperp(1), 0 
  2842    format('ORIGIN', 2f9.3, 1i8)
- 	 
+         
          write(242, 2843) dx, dy, 1 
  2843    format('SPACING', 2f9.3, 1i8) 
             
          write(242, 2844) number_points 
  2844    format('POINT_DATA', i10) 
    
-	                 
+                         
          write(242, 4851)
  4851    format('SCALARS bqlsum_psi1 float 1') 
               
@@ -671,9 +660,9 @@ c     .    nphi3d, nphimx)
  2849    format('LOOKUP_TABLE default')
                       
          write(242, 3411) ((bqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)
+     &                                         j = 1, nuper)
                     
- 3410    format(1p4e10.2)  
+ 3410    format(1p,4e10.2)  
  3411    format(6f16.4)   
  
  
@@ -681,76 +670,76 @@ c     .    nphi3d, nphimx)
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlsum_i2_2d(i_upara, i_uperp) =
-     .                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 
+         
          title = 'bqlsum_psi2(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, bqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(242, 4852)
  4852    format('SCALARS bqlsum_psi2 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((bqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)  
+     &                                         j = 1, nuper)  
      
      
          i_psi = i_psi3      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlsum_i2_2d(i_upara, i_uperp) =
-     .                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 
+         
          title = 'bqlsum_psi3(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, bqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(242, 4853)
  4853    format('SCALARS bqlsum_psi3 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((bqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)  
+     &                                         j = 1, nuper)  
      
      
          i_psi = i_psi4     
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlsum_i2_2d(i_upara, i_uperp) =
-     .                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 
+         
          title = 'bqlsum_psi4(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, bqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(242, 4854)
  4854    format('SCALARS bqlsum_psi4 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((bqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper) 
+     &                                         j = 1, nuper) 
      
      
          i_psi = i_psi5     
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlsum_i2_2d(i_upara, i_uperp) =
-     .                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 
+         
          title = 'bqlsum_psi5(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, bqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(242, 4855)
  4855    format('SCALARS bqlsum_psi5 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((bqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper) 
+     &                                         j = 1, nuper) 
      
      
      
@@ -758,19 +747,19 @@ c     .    nphi3d, nphimx)
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlsum_i2_2d(i_upara, i_uperp) =
-     .                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
+     &                     bqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+36
             end do
          end do
-	 
+         
          title = 'bqlsum_psi6(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, bqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(242, 4856)
  4856    format('SCALARS bqlsum_psi6 float 1')              
          write(242, 2849)                   
          write(242, 3411) ((bqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper) 
+     &                                         j = 1, nuper) 
      
       end if                             
      
@@ -780,7 +769,7 @@ c     .    nphi3d, nphimx)
 !        --------------------------------------
 !        2D plots of cqlsum(u_perp, u_parallel)
 !        --------------------------------------  
-	    
+            
          numb = 15            
       
       
@@ -788,14 +777,14 @@ c     .    nphi3d, nphimx)
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlsum_i2_2d(i_upara, i_uperp) =
-     .                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
 c               write(6,*)i_upara, i_uperp, cqlsum_i2_2d(i_upara,i_uperp)
             end do
          end do
-	 
+         
          title = 'cqlsum_psi1(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, cqlsum_i2_2d, ff, nupar, nuper, 
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
      
      
 !        ---------------------------------------------
@@ -804,7 +793,7 @@ c               write(6,*)i_upara, i_uperp, cqlsum_i2_2d(i_upara,i_uperp)
          number_points = nupar * nuper
          dx = upara(2) - upara(1)
          dy = uperp(2) - uperp(1)
-	 
+         
          write(342, 2840)  
          write(342, 4850)            
          write(342, 2846)
@@ -814,19 +803,19 @@ c               write(6,*)i_upara, i_uperp, cqlsum_i2_2d(i_upara,i_uperp)
          write(342, 2841) nupar,  nuper, 1 
           
          write(342, 2842) upara(1), uperp(1), 0 
- 	 
+         
          write(342, 2843) dx, dy, 1 
             
          write(342, 2844) number_points 
    
-	                 
+                         
          write(342, 5851)
  5851    format('SCALARS cqlsum_psi1 float 1') 
               
          write(342, 2849)
                       
          write(342, 3411) ((cqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)
+     &                                         j = 1, nuper)
                     
 
  
@@ -835,76 +824,76 @@ c               write(6,*)i_upara, i_uperp, cqlsum_i2_2d(i_upara,i_uperp)
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlsum_i2_2d(i_upara, i_uperp) =
-     .                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 
+         
          title = 'cqlsum_psi2(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, cqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(342, 5852)
  5852    format('SCALARS cqlsum_psi2 float 1')              
          write(342, 2849)                   
          write(342, 3411) ((cqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)  
+     &                                         j = 1, nuper)  
      
      
          i_psi = i_psi3      
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlsum_i2_2d(i_upara, i_uperp) =
-     .                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 
+         
          title = 'cqlsum_psi3(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, cqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(342, 5853)
  5853    format('SCALARS cqlsum_psi3 float 1')              
          write(342, 2849)                   
          write(342, 3411) ((cqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper)  
+     &                                         j = 1, nuper)  
      
      
          i_psi = i_psi4     
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlsum_i2_2d(i_upara, i_uperp) =
-     .                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 
+         
          title = 'cqlsum_psi4(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, cqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(342, 5854)
  5854    format('SCALARS cqlsum_psi4 float 1')              
          write(342, 2849)                   
          write(342, 3411) ((cqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper) 
+     &                                         j = 1, nuper) 
      
      
          i_psi = i_psi5     
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlsum_i2_2d(i_upara, i_uperp) =
-     .                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 
+         
          title = 'cqlsum_psi5(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, cqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(342, 5855)
  5855    format('SCALARS cqlsum_psi5 float 1')              
          write(342, 2849)                   
          write(342, 3411) ((cqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper) 
+     &                                         j = 1, nuper) 
      
      
      
@@ -912,19 +901,19 @@ c               write(6,*)i_upara, i_uperp, cqlsum_i2_2d(i_upara,i_uperp)
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                cqlsum_i2_2d(i_upara, i_uperp) =
-     .                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
+     &                     cqlsum_i2(i_uperp, i_upara, i_psi) / 1.0e+26
             end do
          end do
-	 
+         
          title = 'cqlsum_psi6(u_perp, u_parallel)'        
          call ezconc_sum(upara, uperp, cqlsum_i2_2d, ff, nupar, nuper,
-     .      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
+     &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)      
      
          write(342, 5856)
  5856    format('SCALARS cqlsum_psi6 float 1')              
          write(342, 2849)                   
          write(342, 3411) ((cqlsum_i2_2d(i,j), i = 1, nupar),  
-     .                                         j = 1, nuper) 
+     &                                         j = 1, nuper) 
      
       end if                             
           
@@ -936,18 +925,18 @@ c               write(6,*)i_upara, i_uperp, cqlsum_i2_2d(i_upara,i_uperp)
       titlb= 'rho'
 
       call ezplot6(title, titll, titlr, titlb, rhon, redotj2sum,
-     .    redotjesum, redotj1sum, redotj3sum, redotj4sum, redotj5sum,
-     .    nnoderho, nrhomax) 
+     &    redotjesum, redotj1sum, redotj3sum, redotj4sum, redotj5sum,
+     &    nnoderho, nrhomax) 
      
       title= 'Flux surface average redotj1'
      
       call ezplot1_sum(title, titlb, titll, titlr, rhon, redotj1sum,
-     .      nnoderho, nrhomax) 
+     &      nnoderho, nrhomax) 
      
       title= 'Flux surface average redotj2'
      
       call ezplot1_sum(title, titlb, titll, titlr, rhon, redotj2sum,
-     .      nnoderho, nrhomax)      
+     &      nnoderho, nrhomax)      
                       
 
       title= 'Integrated redotj'
@@ -956,8 +945,8 @@ c               write(6,*)i_upara, i_uperp, cqlsum_i2_2d(i_upara,i_uperp)
       titlb= 'rho'
      
       call ezplot6(title, titll, titlr, titlb, rhon, redotji2_int,
-     .    redotje_int, redotji1_int, redotji3_int, redotji4_int, 
-     .    redotji5_int, nnoderho, nrhomax)
+     &    redotje_int, redotji1_int, redotji3_int, redotji4_int, 
+     &    redotji5_int, nnoderho, nrhomax)
           
 c      write(16, *)
 c      write(16, *) 'Flux surface driven current'
@@ -966,8 +955,8 @@ c      write(16, *) '        n      rho       J (A/m2)     I (A)'
 c      write(16, *)
       
 c      do n = 1, nnoderho       
-c	 write (16, 1312) n, rhon(n), xjprl_sum(n), xjprl_int(n)
-c     	 write (6, 1312) n, rhon(n), xjprl_sum(n), xjprl_int(n)
+c        write (16, 1312) n, rhon(n), xjprl_sum(n), xjprl_int(n)
+c        write (6, 1312) n, rhon(n), xjprl_sum(n), xjprl_int(n)
 c      end do 
          
                                                     
@@ -977,29 +966,29 @@ c      end do
       titlb= 'rho'
 
       call ezplot2_sum(title, titll, titlr, titlb, rhon, xjprl_sum,
-     .    xjprl_int, nnoderho, nrhomax)
+     &    xjprl_int, nnoderho, nrhomax)
                          
       if(xjprl_int(nnoderho) .lt. 0.0) then 
       
          titll= '-xjprl (Amps/m2)'
          titlr= '-I (Amps)' 
-	    
+            
          xjprl_sum = - xjprl_sum
          xjprl_int = - xjprl_int
       
          call ezplot2_sum(title, titll, titlr, titlb, rhon, xjprl_sum,
-     .      xjprl_int, nnoderho, nrhomax) 
+     &      xjprl_int, nnoderho, nrhomax) 
      
          titll= 'xjprl (MA/m2/MW)'
-	 xjprl_sum = xjprl_sum  / prfin	 
+         xjprl_sum = xjprl_sum  / prfin  
      
          call ezplot1_sum(title, titlb, titll, titlr, rhon, xjprl_sum,
-     .      nnoderho, nrhomax)
+     &      nnoderho, nrhomax)
      
          titll= 'I (kA)'
-	 xjprl_int  = xjprl_int / 1.0e+03     
+         xjprl_int  = xjprl_int / 1.0e+03     
          call ezplot1_sum(title, titlb, titll, titlr, rhon, xjprl_int,
-     .      nnoderho, nrhomax)           
+     &      nnoderho, nrhomax)           
                                        
       end if
             
@@ -1007,20 +996,20 @@ c      end do
       
          titll= 'xjprl (Amps/m2)'
          titlr= 'I (Amps)' 
-	    
+            
          xjprl_sum = xjprl_sum
          xjprl_int = xjprl_int
            
          titll= 'xjprl (MA/m2/MW)'
-	 xjprl_sum = xjprl_sum  / prfin	 
+         xjprl_sum = xjprl_sum  / prfin  
      
          call ezplot1_sum(title, titlb, titll, titlr, rhon, xjprl_sum,
-     .      nnoderho, nrhomax)
+     &      nnoderho, nrhomax)
      
          titll= 'I (kA)'
-	 xjprl_int  = xjprl_int / 1.0e+03     
+         xjprl_int  = xjprl_int / 1.0e+03     
          call ezplot1_sum(title, titlb, titll, titlr, rhon, xjprl_int,
-     .      nnoderho, nrhomax)           
+     &      nnoderho, nrhomax)           
                                        
       end if      
     
@@ -1030,8 +1019,8 @@ c      end do
       titlb= 'rho'
      
       call ezplot6(title, titll, titlr, titlb, rhon, wdot2sum,
-     .    wdotesum, wdot1sum, wdot3sum, wdot4sum, wdot5sum,
-     .    nnoderho, nrhomax)
+     &    wdotesum, wdot1sum, wdot3sum, wdot4sum, wdot5sum,
+     &    nnoderho, nrhomax)
      
      
       title= 'Integrated wdot'
@@ -1040,8 +1029,8 @@ c      end do
       titlb= 'rho'
      
       call ezplot6(title, titll, titlr, titlb, rhon, wdoti2_int,
-     .    wdote_int, wdoti1_int, wdoti3_int, wdoti4_int, wdoti5_int,
-     .    nnoderho, nrhomax)
+     &    wdote_int, wdoti1_int, wdoti3_int, wdoti4_int, wdoti5_int,
+     &    nnoderho, nrhomax)
      
      
       title= 'Quasilinear wdot'
@@ -1050,27 +1039,27 @@ c      end do
       titlb= 'rho'
      
       call ezplot6(title, titll, titlr, titlb, rhon, wdot2sum_ql,
-     .    wdotesum_ql, wdot1sum_ql, wdot3sum_ql, wdot4sum_ql, 
-     .    wdot5sum_ql, nnoderho, nrhomax) 
+     &    wdotesum_ql, wdot1sum_ql, wdot3sum_ql, wdot4sum_ql, 
+     &    wdot5sum_ql, nnoderho, nrhomax) 
      
       title= 'Quasilinear wdot1'
      
       call ezplot1_0_sum(title, titlb, titll, titlr, rhon, wdot1sum_ql,
-     .      nnoderho, nrhomax)
+     &      nnoderho, nrhomax)
      
       title= 'Quasilinear wdot2'
      
       call ezplot1_0_sum(title, titlb, titll, titlr, rhon, wdot2sum_ql,
-     .      nnoderho, nrhomax)         
+     &      nnoderho, nrhomax)         
      
      
       title= 'Volume element, dvol'
       titll= 'dvol (m3)'
       titlr='       '
       titlb= 'rho'
-	    
+            
       call ezplot1_sum(title, titlb, titll, titlr, rhon, dvol, 
-     .    nnoderho, nrhomax)
+     &    nnoderho, nrhomax)
      
      
       numb = 19
@@ -1085,44 +1074,44 @@ c      end do
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ealpha_sum(i, j, 1))
-            fimag(i,j) = imag(ealpha_sum(i, j, 1))
-	    power(i,j) = real(redotj(i, j, 1)) 
+            fimag(i,j) = aimag(ealpha_sum(i, j, 1))
+            power(i,j) = real(redotj(i, j, 1)) 
          end do
       end do 
 
       title = 'Real E alpha'
       
       call ezconc_sum(capr, capz, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)     
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)     
      
      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(eb_sum(i, j, 1))
-            fimag(i,j) = imag(eb_sum(i, j, 1))
+            fimag(i,j) = aimag(eb_sum(i, j, 1))
          end do
       end do 
 
       title = 'Real Eb'
       
       call ezconc_sum(capr, capz, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag) 
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag) 
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
      
       title = 'Imag Eb'
       
       call ezconc_sum(capr, capz, fimag, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)          
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)          
      
       write(6, *) "iflag = ", iflag
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
      
      
 *     -------------------------------------------------------------------
@@ -1132,19 +1121,19 @@ c      end do
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ntilda(i, j, 1))
-            fimag(i,j) = imag(ntilda(i, j, 1))
+            fimag(i,j) = aimag(ntilda(i, j, 1))
          end do
       end do 
 
       title = 'Real ntilda'
       
       call ezconc_sum(capr, capz, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       write(6, *) "iflag = ", iflag
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
           
                       
 *     ------------------------
@@ -1156,16 +1145,16 @@ c      end do
 
       do i = 1, nnodex
          fmidre(i) = real(ealpha_sum(i, j, k))
-         fmidim(i) = imag(ealpha_sum(i, j, k))
+         fmidim(i) = aimag(ealpha_sum(i, j, k))
       end do
       
       title = 'Ealpha'
       titll = 'Re Ealpha (V/m)'
       titlr = 'Im Ealpha (V/m)'
       titlb = 'R (m)'
-	    
+            
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)      
+     &   nnodex, nxmx)      
 
 
                
@@ -1185,9 +1174,9 @@ c      end do
       titll = 'Mod ealpha (V/m)'
       titlr = ' '
       titlb = 'R (m)'
-	    
+            
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)
+     &   nnodex, nxmx)
      
         
       do i = 1, nnodex
@@ -1199,16 +1188,16 @@ c      end do
       titll = 'Mod ebeta (V/m)'
       titlr = ' '
       titlb = 'R (m)'
-	    
+            
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim, 
-     .   nnodex, nxmx)     
+     &   nnodex, nxmx)     
      
      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ealpha_sum(i, j, 1))
-            fimag(i,j) = imag(ealpha_sum(i, j, 1))
-	    power(i,j) = real(redotj(i, j, 1)) 
+            fimag(i,j) = aimag(ealpha_sum(i, j, 1))
+            power(i,j) = real(redotj(i, j, 1)) 
          end do
       end do      
           
@@ -1216,10 +1205,10 @@ c      end do
       title = 'Imag E alpha'
      
        call ezconc_sum(capr, capz, fimag, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
      
      
 *     ------------------------------------
@@ -1229,10 +1218,10 @@ c      end do
       title = 'Real E dot J'
       
       call ezconc_sum(capr, capz, power, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
      
      
       nphi3d_1quarter = nphi3d / 4 * 1
@@ -1247,18 +1236,18 @@ c      end do
       do i = 1, nnodex          
          do j = 1, nnodey
             freal(i,j) = real(ealpha_sum(i, j, nphi3d_1quarter))
-            fimag(i,j) = imag(ealpha_sum(i, j, nphi3d_1quarter))
-	    power(i,j) = real(redotj(i, j, nphi3d_1quarter)) 
+            fimag(i,j) = aimag(ealpha_sum(i, j, nphi3d_1quarter))
+            power(i,j) = real(redotj(i, j, nphi3d_1quarter)) 
          end do
       end do 
 
       title = 'Real E alpha (1/4)'
       
       call ezconc_sum(capr, capz, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
      
      
 *     --------------------------------------------------------
@@ -1268,18 +1257,18 @@ c      end do
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(ealpha_sum(i, j, nphi3d_half))
-            fimag(i,j) = imag(ealpha_sum(i, j, nphi3d_half))
-	    power(i,j) = real(redotj(i, j, nphi3d_half)) 
+            fimag(i,j) = aimag(ealpha_sum(i, j, nphi3d_half))
+            power(i,j) = real(redotj(i, j, nphi3d_half)) 
          end do
       end do 
 
       title = 'Real E alpha (1/2)'
       
       call ezconc_sum(capr, capz, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)
      
 *     -----------------------------------------------------------
 *     plot electric field in poloidal cross-section (three quarter)
@@ -1288,18 +1277,18 @@ c      end do
       do i = 1, nnodex          
          do j = 1, nnodey
             freal(i,j) = real(ealpha_sum(i, j, nphi3d_3quarter))
-            fimag(i,j) = imag(ealpha_sum(i, j, nphi3d_3quarter))
-	    power(i,j) = real(redotj(i, j, nphi3d_3quarter)) 
+            fimag(i,j) = aimag(ealpha_sum(i, j, nphi3d_3quarter))
+            power(i,j) = real(redotj(i, j, nphi3d_3quarter)) 
          end do
       end do 
 
       title = 'Real E alpha (3/4)'
       
       call ezconc_sum(capr, capz, freal, ff, nnodex, nnodey, numb,
-     .   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
      
       if (iflag .eq. 0) call boundary (capr, capz, rho, ff, nnodex,
-     .   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)  
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity)  
      
      
 *     --------------------------------------------------------------
@@ -1319,21 +1308,21 @@ c      end do
              
       do i = 1, nnodex
          do k = 1, nphi3d
-	 
-	    if (k .lt. khalf) kshift = k + khalf
-	    if (k .ge. khalf) kshift = k - khalf + 1
-	    
+         
+            if (k .lt. khalf) kshift = k + khalf
+            if (k .ge. khalf) kshift = k - khalf + 1
+            
 c           freal(i, k) = real(ealpha_sum(i, jhalf, kshift))
-c           fimag(i, k) = imag(ealpha_sum(i, jhalf, kshift))
-c	    power(i, k) = real(redotj(i, jhalf, kshift))	    
-c	    capr_plot(i, k) = capr(i)
-	    
+c           fimag(i, k) = aimag(ealpha_sum(i, jhalf, kshift))
+c           power(i, k) = real(redotj(i, jhalf, kshift))            
+c           capr_plot(i, k) = capr(i)
+            
             freal_phi(i, k) = real(ealpha_sum(i, jhalf, kshift))
-            fimag_phi(i, k) = imag(ealpha_sum(i, jhalf, kshift))
-	    power_phi(i, k) = real(redotj(i, jhalf, kshift))	    
-	    capr_plot_phi(i, k) = capr(i)
-	    
-	    
+            fimag_phi(i, k) = aimag(ealpha_sum(i, jhalf, kshift))
+            power_phi(i, k) = real(redotj(i, jhalf, kshift))        
+            capr_plot_phi(i, k) = capr(i)
+            
+            
          end do
       end do
       
@@ -1342,15 +1331,15 @@ c	    capr_plot(i, k) = capr(i)
       
       title = 'Real E alpha'
       call ezconc_sum(capr, phi3d_shift, freal_phi, ff, nnodex, nphi3d,
-     .           numb, nxmx, nphimx, nlevmax, title, titx, tity, iflag)
+     &           numb, nxmx, nphimx, nlevmax, title, titx, tity, iflag)
      
       title = 'Imag E alpha'
       call ezconc_sum(capr, phi3d_shift, fimag_phi, ff, nnodex, nphi3d,
-     .           numb, nxmx, nphimx, nlevmax, title, titx, tity, iflag) 
+     &           numb, nxmx, nphimx, nlevmax, title, titx, tity, iflag) 
      
       title = 'Real E dot J'
       call ezconc_sum(capr, phi3d_shift, power_phi, ff, nnodex, nphi3d,
-     .           numb, nxmx, nphimx, nlevmax, title, titx, tity, iflag) 
+     &           numb, nxmx, nphimx, nlevmax, title, titx, tity, iflag) 
      
 *     --------------------
 *     plot cut in R vs phi
@@ -1364,14 +1353,14 @@ c	    capr_plot(i, k) = capr(i)
       j = nnodey / 2 
       khalf = nphi3d / 2   
       
-      do k = 1, nphi3d	 
-	 if (k .lt. khalf) kshift = k + khalf
-	 if (k .ge. khalf) kshift = k - khalf + 1	    
-         fmod(k) = real(ealpha_sum_mod(i, j, kshift))	    
+      do k = 1, nphi3d   
+         if (k .lt. khalf) kshift = k + khalf
+         if (k .ge. khalf) kshift = k - khalf + 1           
+         fmod(k) = real(ealpha_sum_mod(i, j, kshift))       
       end do      
      
       call ezplot1_sum(title, titx, tityl, tityr, phi3d_shift, fmod, 
-     .    nphi3d, nphimx)
+     &    nphi3d, nphimx)
      
           
      
@@ -1388,34 +1377,34 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       
       title = 'Real E alpha'           
       call ezconc_sum(xplotm, yplotm, frealp, ff, nxplot, nyplot, numb,
-     .   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag) 
+     &   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag) 
      
      
               
       if (iflag .eq. 0) call boundary_tor(xplotm, yplotm, capr_plotp, 
-     .   ff, nxplot, nyplot, numb,
-     .   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag,
-     .   capr_min, capr_max)
+     &   ff, nxplot, nyplot, numb,
+     &   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag,
+     &   capr_min, capr_max)
                
      
       title = 'Imag E alpha'           
       call ezconc_sum(xplotm, yplotm, fimagp, ff, nxplot, nyplot, numb,
-     .   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag) 
+     &   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag) 
               
       if (iflag .eq. 0) call boundary_tor(xplotm, yplotm, capr_plotp, 
-     .   ff, nxplot, nyplot, numb,
-     .   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag,
-     .   capr_min, capr_max)
+     &   ff, nxplot, nyplot, numb,
+     &   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag,
+     &   capr_min, capr_max)
      
      
       title = 'Real EdotJ'           
       call ezconc_sum(xplotm, yplotm, powerp, ff, nxplot, nyplot, numb,
-     .   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag) 
+     &   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag) 
               
       if (iflag .eq. 0) call boundary_tor(xplotm, yplotm, capr_plotp, 
-     .   ff, nxplot, nyplot, numb,
-     .   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag,
-     .   capr_min, capr_max)
+     &   ff, nxplot, nyplot, numb,
+     &   nxplot_dim, nyplot_dim, nlevmax, title, titx, tity, iflag,
+     &   capr_min, capr_max)
      
      
      
@@ -1427,9 +1416,9 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       titll= 'dvol (m3)'
       titlr='       '
       titlb= 'rho'
-	    
+            
       call ezplot1_sum(title, titlb, titll, titlr, rhon, dvol, 
-     .    nnoderho, nrhomax)
+     &    nnoderho, nrhomax)
      
     
       title= 'Integrated redotj'
@@ -1438,8 +1427,8 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       titlb= 'rho'
      
       call ezplot6(title, titll, titlr, titlb, rhon, redotji2_int,
-     .    redotje_int, redotji1_int, redotji3_int, redotji4_int, 
-     .    redotji5_int, nnoderho, nrhomax) 
+     &    redotje_int, redotji1_int, redotji3_int, redotji4_int, 
+     &    redotji5_int, nnoderho, nrhomax) 
      
       title= 'Integrated wdot'
       titll= 'P (watts)'
@@ -1447,8 +1436,8 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       titlb= 'rho'
      
       call ezplot6(title, titll, titlr, titlb, rhon, wdoti2_int,
-     .    wdote_int, wdoti1_int, wdoti3_int, wdoti4_int, wdoti5_int,
-     .    nnoderho, nrhomax)
+     &    wdote_int, wdoti1_int, wdoti3_int, wdoti4_int, wdoti5_int,
+     &    nnoderho, nrhomax)
      
      
       title= 'Real(EdotJ) * dvol'
@@ -1457,8 +1446,8 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       titlb= 'rho'
 
       call ezplot6(title, titll, titlr, titlb, rhon, redotj1_dvol, 
-     .   redotj2_dvol, redotj3_dvol, redotj4_dvol, 
-     .    redotj5_dvol, redotje_dvol, nnoderho, nrhomax)  
+     &   redotj2_dvol, redotj3_dvol, redotj4_dvol, 
+     &    redotj5_dvol, redotje_dvol, nnoderho, nrhomax)  
      
      
       title= 'Wdot * dvol'
@@ -1467,15 +1456,15 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
       titlb= 'rho'
 
       call ezplot6(title, titll, titlr, titlb, rhon, 
-     .    wdoti1_dvol, wdoti2_dvol, wdoti3_dvol, wdoti4_dvol, 
-     .    wdoti5_dvol, wdote_dvol, nnoderho, nrhomax)              
+     &    wdoti1_dvol, wdoti2_dvol, wdoti3_dvol, wdoti4_dvol, 
+     &    wdoti5_dvol, wdote_dvol, nnoderho, nrhomax)              
       
              
  6000 continue                  
 
 *     -------------------------
 *     Close the graphics device
-*     -------------------------		  
+*     -------------------------           
       call pgclos 
       
       if(ndisti2  .eq. 1) then      
@@ -1488,9 +1477,9 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
          deallocate( fqlsum_i2 )
       
          deallocate( bqlsum_i2_2d ) 
-	 deallocate( cqlsum_i2_2d )  
+         deallocate( cqlsum_i2_2d )  
          deallocate( eqlsum_i2_2d )  
-	 deallocate( fqlsum_i2_2d )       
+         deallocate( fqlsum_i2_2d )       
       end if
             
       close (242)
@@ -1524,19 +1513,19 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
               
 
   309 format(10i10) 
- 3310 format(1p6e18.10)     
+ 3310 format(1p,6e18.10)     
 11001 format(1e16.8,2e15.8)
- 1312 format(i10,1p8e12.4)
-99998 format(1h ,f12.4, 1p9e12.4)
+ 1312 format(i10,1p,8e12.4)
+99998 format(" ",f12.4, 1p,9e12.4)
 99997 format(i10)
 88887 format(2i10)
-  899 format(1h ,5x,12h      cpu = ,1pe12.4,4h min/
-     1       1h ,5x,12h       io = ,1pe12.4,4h min/
-     1       1h ,5x,12h      sys = ,1pe12.4,4h min/
-     1       1h ,5x,12h      mem = ,1pe12.4,4h min/
-     1       1h ,5x,12h    total = ,1pe12.4,4h min)
+  899 format(" ",5x,"      cpu = ",1p,e12.4," min"/
+     &       " ",5x,"       io = ",1p,e12.4," min"/
+     &       " ",5x,"      sys = ",1p,e12.4," min"/
+     &       " ",5x,"      mem = ",1p,e12.4," min"/
+     &       " ",5x,"    total = ",1p,e12.4," min")
  2000 format(1i10,1e10.3,1i10,1e10.3)
- 2001 format(1i10,1p9e12.4)
+ 2001 format(1i10,1p,9e12.4)
  2517 format(1i10,1e10.3,1i10,1e10.3)
  2211 format(8i10)
  2220 format(3i10,3e10.3,2i10)
@@ -1544,168 +1533,168 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
  2240 format(1i10,7e10.3)
  2260 format(1i10,1e10.3,1i10,1e10.3)
  2280 format(2i10,5e10.3,1i10)
- 1009 format(3x,21h   power absorbed  = ,1pe12.4,9h watts   )
+ 1009 format(3x,"   power absorbed  = ",1p,e12.4," watts   ")
   300 format(i10/i10,4e10.3,i10)
-  310 format(1p6e12.4)
-  311 format(1p10e12.4)
-  122 format(1i10,1p9e12.4)
-  123 format(2i10,1p9e12.4)  
+  310 format(1p,6e12.4)
+  311 format(1p,10e12.4)
+  122 format(1i10,1p,9e12.4)
+  123 format(2i10,1p,9e12.4)  
  1051 format(6i10)
- 1013 format(3x,15h         lt  = ,1pe12.4,9h m       )
- 1014 format(3x,15h         wd  = ,1pe12.4,9h m       )
- 1015 format(3x,15h       dphi  = ,1pe12.4,9h radians )
- 3015 format(3x,15h       phi0  = ,1pe12.4,9h radians )
- 3016 format(3x,15h        xi0  = ,1pe12.4,9h Amps    )
+ 1013 format(3x,"         lt  = ",1p,e12.4," m       ")
+ 1014 format(3x,"         wd  = ",1p,e12.4," m       ")
+ 1015 format(3x,"       dphi  = ",1p,e12.4," radians ")
+ 3015 format(3x,"       phi0  = ",1p,e12.4," radians ")
+ 3016 format(3x,"        xi0  = ",1p,e12.4," Amps    ")
 c     skip a line
-  163 format(1h0)
- 1163 format(1h ,5x,6h  k   ,2x,6h phi  ,6x,6hre cur,4x,8h im cur ,
-     1       4x,8h re jsum,4x,8h im jsum,
-     1       4x,8h re csum,4x,8h im csum,
-     1       4x,8h        ,4x,8h        )
- 1164 format(1h ,5x,6hnphi  ,2x,6h  k// ,6x,6h pabs ,5x,8h weight ,
-     1       5x,8h re pc  ,4x,8h im pc  ,
-     1       4x,8h pabs wt,4x,8h gammacd,
-     1       4x,8h  damp1 ,4x,8h        )
- 1165 format(1h ,5x,6h  k   ,2x,6h phi  ,6x,6hre cur,4x,8h im cur ,
-     1       4x,8hre jthsm,4x,8him jthsm,
-     1       4x,8h re epsi,4x,8h im epsi,
-     1       4x,8h        ,4x,8h        )
-  162 format(1h1)
- 2011 format(3x,33htotal fast wave current driven = ,1pe12.4,8h Amps   )
- 2016 format(3x,22htotal ohmic current = ,1pe12.4,9h Amps    )
- 2017 format(3x,27htotal boot strap current = ,1pe12.4,9h Amps    )
- 7014 format(3x,26hcurrent driven per watt = ,1pe12.4,10h Amps/watt)
- 7015 format(3x,27hcurrent drive efficiency = ,1pe12.4,
-     1   15h Amps/watt/m**2)
- 7016 format(3x,31h average single pass damping = ,1pe12.4,
-     1   15h               )
- 2009 format(3x,30hpower absorbed by electrons = ,1pe12.4,9h watts   )
- 2012 format(3x,27hpower absorbed by alphas = ,1pe12.4,9h watts   )
- 2013 format(3x,29hpower absorbed by majority = ,1pe12.4,9h watts   )
- 2014 format(3x,29hpower absorbed by minority = ,1pe12.4,9h watts   )
- 2015 format(3x,29hpower absorbed by impurity = ,1pe12.4,9h watts   )
- 1008 format(3x,21h      phi antenna  = ,1pe12.4,9h pi      )
- 1010 format(3x,42h   real power transferred from antenna  = ,
-     1   1pe12.4,9h watts   /
-     1      ,3x,47h   imaginary power transferred from antenna  = ,
-     1   1pe12.4,9h watts   )
- 1011 format(3x,46hreal part of antenna impedance (resistance) = ,
-     1   1pe12.4,9h ohms    /
-     1      ,3x,50himaginary part of antenna impedance (reactance) = ,
-     1   1pe12.4,9h ohms    )
- 1016 format(3x,33htotal power coupled at antenna = ,
-     1   1pe12.4,9h watts   )
+  163 format("0")
+ 1163 format(" ",5x,"  k   ",2x," phi  ",6x,"re cur",4x," im cur ",
+     &       4x," re jsum",4x," im jsum",
+     &       4x," re csum",4x," im csum",
+     &       4x,"        ",4x,"        ")
+ 1164 format(" ",5x,"nphi  ",2x,"  k"// ,6x," pabs ",5x," weight ",
+     &       5x," re pc  ",4x," im pc  ",
+     &       4x," pabs wt",4x," gammacd",
+     &       4x,"  damp1 ",4x,"        ")
+ 1165 format(" ",5x,"  k   ",2x," phi  ",6x,"re cur",4x," im cur ",
+     &       4x,"re jthsm",4x,"im jthsm",
+     &       4x," re epsi",4x," im epsi",
+     &       4x,"        ",4x,"        ")
+  162 format("1")
+ 2011 format(3x,"total fast wave current driven = ",1p,e12.4,"  Amps ")
+ 2016 format(3x,"total ohmic current = ",1p,e12.4," Amps    ")
+ 2017 format(3x,"total boot strap current = ",1p,e12.4," Amps    ")
+ 7014 format(3x,"current driven per watt = ",1p,e12.4," Amps/watt")
+ 7015 format(3x,"current drive efficiency = ",1p,e12.4,
+     &   " Amps/watt/m**2")
+ 7016 format(3x," average single pass damping = ",1p,e12.4,
+     &   "               ")
+ 2009 format(3x,"power absorbed by electrons = ",1p,e12.4," watts   ")
+ 2012 format(3x,"power absorbed by alphas = ",1p,e12.4," watts   ")
+ 2013 format(3x,"power absorbed by majority = ",1p,e12.4," watts   ")
+ 2014 format(3x,"power absorbed by minority = ",1p,e12.4," watts   ")
+ 2015 format(3x,"power absorbed by impurity = ",1p,e12.4," watts   ")
+ 1008 format(3x,"      phi antenna  = ",1p,e12.4," pi      ")
+ 1010 format(3x,"   real power transferred from antenna  = ",
+     &   1p,e12.4," watts   "/
+     &      ,3x,"   imaginary power transferred from antenna  = ",
+     &   1p,e12.4," watts   ")
+ 1011 format(3x,"real part of antenna impedance (resistance) = ",
+     &   1p,e12.4," ohms    "/
+     &      ,3x,"imaginary part of antenna impedance (reactance) = ",
+     &   1p,e12.4," ohms    ")
+ 1016 format(3x,"total power coupled at antenna = ",
+     &   1p,e12.4," watts   ")
  1002 format(2i10,7e10.3)
  2165 format(3i10,5e10.3)
  1101 format(2i10,5e10.3,1i10)
  1001 format(8e10.3)
  1000 format(1i10,7e10.3)
-11009 format(3x,21h        frequency  = ,1pe12.4,7h hertz )
-81822 format(3x,21h            xwall  = ,1pe12.4,7h m     )
-81823 format(3x,21h           xnwall  = ,1pe12.4,7h m-3   )
-81824 format(3x,21h             amu1  = ,1pe12.4,7h amu   )
-81825 format(3x,21h             amu2  = ,1pe12.4,7h amu   )
-81826 format(3x,21h             amu3  = ,1pe12.4,7h amu   )
-98824 format(3x,21h             amu4  = ,1pe12.4,7h amu   )
-98825 format(3x,21h             amu5  = ,1pe12.4,7h amu   )
-98826 format(3x,21h             amu6  = ,1pe12.4,7h amu   )
-98827 format(3x,21h             amu7  = ,1pe12.4,7h amu   )
-81827 format(3x,21h               z1  = ,1pe12.4,9h q proton)
-81828 format(3x,21h               z2  = ,1pe12.4,9h q proton)
-81829 format(3x,21h               z3  = ,1pe12.4,9h q proton)
-98834 format(3x,21h               z4  = ,1pe12.4,9h q proton)
-98835 format(3x,21h               z5  = ,1pe12.4,9h q proton)
-98836 format(3x,21h               z6  = ,1pe12.4,9h q proton)
-98837 format(3x,21h               z7  = ,1pe12.4,9h q proton)
-81830 format(3x,21h              eta  = ,1pe12.4,7h       )
-81831 format(3x,21h             eta3  = ,1pe12.4,7h       )
-91834 format(3x,21h             eta4  = ,1pe12.4,7h       )
-91835 format(3x,21h             eta5  = ,1pe12.4,7h       )
-91836 format(3x,21h             eta6  = ,1pe12.4,7h       )
-91837 format(3x,21h             eta7  = ,1pe12.4,7h       )
-81832 format(3x,21h            xnlim  = ,1pe12.4,7h m-3   )
-81833 format(3x,21h            qavg0  = ,1pe12.4,7h       )
-81834 format(3x,21h           scrape  = ,1pe12.4,7h m     )
-81835 format(3x,21h           alphac  = ,1pe12.4,7h       )
-81836 format(3x,21h           alphan  = ,1pe12.4,7h       )
-81837 format(3x,21h           alphat  = ,1pe12.4,7h       )
-81838 format(3x,21h           zeffcd  = ,1pe12.4,9h q proton)
-81839 format(3x,21h            dpsi0  = ,1pe12.4,7h       )
-81840 format(3x,21h            telim  = ,1pe12.4,7h eV    )
-81841 format(3x,21h            tilim  = ,1pe12.4,7h eV    )
-91841 format(3x,21h           ti2lim  = ,1pe12.4,7h eV    )
-91842 format(3x,21h           ti3lim  = ,1pe12.4,7h eV    )
-91844 format(3x,21h           ti4lim  = ,1pe12.4,7h eV    )
-91845 format(3x,21h           ti5lim  = ,1pe12.4,7h eV    )
-91846 format(3x,21h           ti6lim  = ,1pe12.4,7h eV    )
-91847 format(3x,21h           ti7lim  = ,1pe12.4,7h eV    )
-81842 format(3x,21h           deltap  = ,1pe12.4,7h       )
-81843 format(3x,21h                p  = ,1pe12.4,7h       )
-81845 format(3x,21h            q07qa  = ,1pe12.4,7h       )
- 1012 format(3x,21h             omgrf = ,1pe12.4,7h hertz )
- 1714 format(3x,21h               xk0 = ,1pe12.4,7h m-1   )
- 1021 format(3x,21h                nz = ,1pe12.4,7h       )
- 1921 format(3x,21h           w phase = ,1pe12.4,7h       )
- 1812 format(3x,21h                rt = ,1pe12.4,7h m     )
- 1835 format(3x,21h            ekappa = ,1pe12.4,7h       )
- 1822 format(3x,21h            aplasm = ,1pe12.4,7h m     )
- 1823 format(3x,21h              xant = ,1pe12.4,7h m     )
- 1809 format(3x,21h                b0 = ,1pe12.4,7h T     )
-81844 format(3x,21h              xne0 = ,1pe12.4,7h m-3   )
- 1813 format(3x,21h              xn10 = ,1pe12.4,7h m-3   )
- 1814 format(3x,21h              xn20 = ,1pe12.4,7h m-3   )
- 1834 format(3x,21h              xn30 = ,1pe12.4,7h m-3   )
- 9834 format(3x,21h              xn40 = ,1pe12.4,7h m-3   )
- 9835 format(3x,21h              xn50 = ,1pe12.4,7h m-3   )
- 9836 format(3x,21h              xn60 = ,1pe12.4,7h m-3   )
- 9837 format(3x,21h              xn70 = ,1pe12.4,7h m-3   )
- 8834 format(3x,21h              xn40 = ,1pe12.4,7h m-3   )
- 8835 format(3x,21h              xn50 = ,1pe12.5,7h m-3   )
- 1815 format(3x,21h               te0 = ,1pe12.4,7h eV    )
- 1821 format(3x,21h               ti0 = ,1pe12.4,7h eV    )
- 1922 format(3x,21h              ti02 = ,1pe12.4,7h eV    )
- 1923 format(3x,21h              ti03 = ,1pe12.4,7h eV    )
- 1924 format(3x,21h              ti04 = ,1pe12.4,7h eV    )
- 1925 format(3x,21h              ti05 = ,1pe12.4,7h eV    )
- 1926 format(3x,21h              ti06 = ,1pe12.4,7h eV    )
- 1927 format(3x,21h              ti07 = ,1pe12.4,7h eV    )
- 1017 format(3x,21h        xnu1/omgrf = ,1pe12.4,7h       )
- 1018 format(3x,21h        xnu2/omgrf = ,1pe12.4,7h       )
- 1019 format(3x,21h        xnu3/omgrf = ,1pe12.4,7h       )
- 1054 format(3x,21h           flandau = ,1pe12.4,7h       )
- 1022 format(3x,21h                nl = ,i12,7h       )
-71022 format(3x,21h                nr = ,i12,7h       )
-71023 format(3x,21h            ntheta = ,i12,7h       )
-71024 format(3x,21h             mdiag = ,i12,7h       )
-71034 format(3x,21h            mpdiag = ,i12,7h       )
-73031 format(3x,21h             jharm = ,i12,7h       )
-73032 format(3x,21h              lmax = ,i12,7h       )
-73033 format(3x,21h               iez = ,i12,7h       )
-73034 format(3x,21h             isort = ,i12,7h       )
-71025 format(3x,21h             ndiag = ,i12,7h       )
-71026 format(3x,21h             ikprl = ,i12,7h       )
-71027 format(3x,21h             igeom = ,i12,7h       )
-71028 format(3x,21h             nphi1 = ,i12,7h       )
-71029 format(3x,21h             nphi2 = ,i12,7h       )
-71030 format(3x,21h             ncoll = ,i12,7h       )
-91031 format(3x,21h            ncoll7 = ,i12,7h       )
-71031 format(3x,21h             imode = ,i12,7h       )
-31012 format(3x,34h    power absorbed by electrons = ,
-     1   1pe12.4,9h  %      )
-31013 format(3x,34h    power absorbed by majority  = ,
-     1   1pe12.4,9h  %      )
-31014 format(3x,34h    power absorbed by minority  = ,
-     1   1pe12.4,9h  %      )
-31015 format(3x,34h    power absorbed by species 3 = ,
-     1   1pe12.4,9h  %      )
-31016 format(3x,34h    power absorbed by species 4 = ,
-     1   1pe12.4,9h  %      )
-31017 format(3x,34h    power absorbed by species 5 = ,
-     1   1pe12.4,9h  %      )
-31018 format(3x,34h    power absorbed by species 6 = ,
-     1   1pe12.4,9h  %      )
-31019 format(3x,34h    power absorbed by species 7 = ,
-     1   1pe12.4,9h  %      )
+11009 format(3x,"        frequency  = ",1p,e12.4," hertz ")
+81822 format(3x,"            xwall  = ",1p,e12.4," m     ")
+81823 format(3x,"           xnwall  = ",1p,e12.4," m-3   ")
+81824 format(3x,"             amu1  = ",1p,e12.4," amu   ")
+81825 format(3x,"             amu2  = ",1p,e12.4," amu   ")
+81826 format(3x,"             amu3  = ",1p,e12.4," amu   ")
+98824 format(3x,"             amu4  = ",1p,e12.4," amu   ")
+98825 format(3x,"             amu5  = ",1p,e12.4," amu   ")
+98826 format(3x,"             amu6  = ",1p,e12.4," amu   ")
+98827 format(3x,"             amu7  = ",1p,e12.4," amu   ")
+81827 format(3x,"               z1  = ",1p,e12.4," q proton")
+81828 format(3x,"               z2  = ",1p,e12.4," q proton")
+81829 format(3x,"               z3  = ",1p,e12.4," q proton")
+98834 format(3x,"               z4  = ",1p,e12.4," q proton")
+98835 format(3x,"               z5  = ",1p,e12.4," q proton")
+98836 format(3x,"               z6  = ",1p,e12.4," q proton")
+98837 format(3x,"               z7  = ",1p,e12.4," q proton")
+81830 format(3x,"              eta  = ",1p,e12.4,"       ")
+81831 format(3x,"             eta3  = ",1p,e12.4,"       ")
+91834 format(3x,"             eta4  = ",1p,e12.4,"       ")
+91835 format(3x,"             eta5  = ",1p,e12.4,"       ")
+91836 format(3x,"             eta6  = ",1p,e12.4,"       ")
+91837 format(3x,"             eta7  = ",1p,e12.4,"       ")
+81832 format(3x,"            xnlim  = ",1p,e12.4," m-3   ")
+81833 format(3x,"            qavg0  = ",1p,e12.4,"       ")
+81834 format(3x,"           scrape  = ",1p,e12.4," m     ")
+81835 format(3x,"           alphac  = ",1p,e12.4,"       ")
+81836 format(3x,"           alphan  = ",1p,e12.4,"       ")
+81837 format(3x,"           alphat  = ",1p,e12.4,"       ")
+81838 format(3x,"           zeffcd  = ",1p,e12.4," q proton")
+81839 format(3x,"            dpsi0  = ",1p,e12.4,"       ")
+81840 format(3x,"            telim  = ",1p,e12.4," eV    ")
+81841 format(3x,"            tilim  = ",1p,e12.4," eV    ")
+91841 format(3x,"           ti2lim  = ",1p,e12.4," eV    ")
+91842 format(3x,"           ti3lim  = ",1p,e12.4," eV    ")
+91844 format(3x,"           ti4lim  = ",1p,e12.4," eV    ")
+91845 format(3x,"           ti5lim  = ",1p,e12.4," eV    ")
+91846 format(3x,"           ti6lim  = ",1p,e12.4," eV    ")
+91847 format(3x,"           ti7lim  = ",1p,e12.4," eV    ")
+81842 format(3x,"           deltap  = ",1p,e12.4,"       ")
+81843 format(3x,"                p  = ",1p,e12.4,"       ")
+81845 format(3x,"            q07qa  = ",1p,e12.4,"       ")
+ 1012 format(3x,"             omgrf = ",1p,e12.4," hertz ")
+ 1714 format(3x,"               xk0 = ",1p,e12.4," m-1   ")
+ 1021 format(3x,"                nz = ",1p,e12.4,"       ")
+ 1921 format(3x,"           w phase = ",1p,e12.4,"       ")
+ 1812 format(3x,"                rt = ",1p,e12.4," m     ")
+ 1835 format(3x,"            ekappa = ",1p,e12.4,"       ")
+ 1822 format(3x,"            aplasm = ",1p,e12.4," m     ")
+ 1823 format(3x,"              xant = ",1p,e12.4," m     ")
+ 1809 format(3x,"                b0 = ",1p,e12.4," T     ")
+81844 format(3x,"              xne0 = ",1p,e12.4," m-3   ")
+ 1813 format(3x,"              xn10 = ",1p,e12.4," m-3   ")
+ 1814 format(3x,"              xn20 = ",1p,e12.4," m-3   ")
+ 1834 format(3x,"              xn30 = ",1p,e12.4," m-3   ")
+ 9834 format(3x,"              xn40 = ",1p,e12.4," m-3   ")
+ 9835 format(3x,"              xn50 = ",1p,e12.4," m-3   ")
+ 9836 format(3x,"              xn60 = ",1p,e12.4," m-3   ")
+ 9837 format(3x,"              xn70 = ",1p,e12.4," m-3   ")
+ 8834 format(3x,"              xn40 = ",1p,e12.4," m-3   ")
+ 8835 format(3x,"              xn50 = ",1p,e12.5," m-3   ")
+ 1815 format(3x,"               te0 = ",1p,e12.4," eV    ")
+ 1821 format(3x,"               ti0 = ",1p,e12.4," eV    ")
+ 1922 format(3x,"              ti02 = ",1p,e12.4," eV    ")
+ 1923 format(3x,"              ti03 = ",1p,e12.4," eV    ")
+ 1924 format(3x,"              ti04 = ",1p,e12.4," eV    ")
+ 1925 format(3x,"              ti05 = ",1p,e12.4," eV    ")
+ 1926 format(3x,"              ti06 = ",1p,e12.4," eV    ")
+ 1927 format(3x,"              ti07 = ",1p,e12.4," eV    ")
+ 1017 format(3x,"        xnu1/omgrf = ",1p,e12.4,"       ")
+ 1018 format(3x,"        xnu2/omgrf = ",1p,e12.4,"       ")
+ 1019 format(3x,"        xnu3/omgrf = ",1p,e12.4,"       ")
+ 1054 format(3x,"           flandau = ",1p,e12.4,"       ")
+ 1022 format(3x,"                nl = ",i12,"       ")
+71022 format(3x,"                nr = ",i12,"       ")
+71023 format(3x,"            ntheta = ",i12,"       ")
+71024 format(3x,"             mdiag = ",i12,"       ")
+71034 format(3x,"            mpdiag = ",i12,"       ")
+73031 format(3x,"             jharm = ",i12,"       ")
+73032 format(3x,"              lmax = ",i12,"       ")
+73033 format(3x,"               iez = ",i12,"       ")
+73034 format(3x,"             isort = ",i12,"       ")
+71025 format(3x,"             ndiag = ",i12,"       ")
+71026 format(3x,"             ikprl = ",i12,"       ")
+71027 format(3x,"             igeom = ",i12,"       ")
+71028 format(3x,"             nphi1 = ",i12,"       ")
+71029 format(3x,"             nphi2 = ",i12,"       ")
+71030 format(3x,"             ncoll = ",i12,"       ")
+91031 format(3x,"            ncoll7 = ",i12,"       ")
+71031 format(3x,"             imode = ",i12,"       ")
+31012 format(3x,"    power absorbed by electrons = ",
+     &   1p,e12.4,"  %      ")
+31013 format(3x,"    power absorbed by majority  = ",
+     &   1p,e12.4,"  %      ")
+31014 format(3x,"    power absorbed by minority  = ",
+     &   1p,e12.4,"  %      ")
+31015 format(3x,"    power absorbed by species 3 = ",
+     &   1p,e12.4,"  %      ")
+31016 format(3x,"    power absorbed by species 4 = ",
+     &   1p,e12.4,"  %      ")
+31017 format(3x,"    power absorbed by species 5 = ",
+     &   1p,e12.4,"  %      ")
+31018 format(3x,"    power absorbed by species 6 = ",
+     &   1p,e12.4,"  %      ")
+31019 format(3x,"    power absorbed by species 7 = ",
+     &   1p,e12.4,"  %      ")
      
  5000 continue
  
@@ -1716,36 +1705,36 @@ c
 c*********************************************************************
 c
       subroutine boundary_tor(r, theta, f, flevel, nr, nth, nlevel,
-     .   nrmax, nthmax, nlevmax, title, titx, tity, iflag, 
-     .   capr_min, capr_max)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag, 
+     &   capr_min, capr_max)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1, norange
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax 
+      real:: fmin,ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax 
      
       realcapr_min, capr_max
       
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, iflag, nlevelb
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, iflag, nlevelb
      
-      real tr(6), dx, dy
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       nwhite = 0
       nblack = 1
@@ -1781,7 +1770,7 @@ c      write(16,*)"fmax = ", fmax, "   fmin = ", fmin
       iflag = 0
        if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
-c	  write(6, *)"fmin = ", fmin
+c         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -1844,14 +1833,14 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
 
-c	 call pgsci(nyellow)
+c        call pgsci(nyellow)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
      &       nlevlt, tr)
       endif
 
       if(nlevgt .gt. 0) then
       
-c	 call pgsci(nblue)
+c        call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)
       endif
@@ -1859,8 +1848,8 @@ c	 call pgsci(nblue)
       call pgsci(nblack)
 C      call pglab(titx, tity, title)
       
-  310 format(1p6e12.4)
-  312 format(i10, 1p6e12.4)
+  310 format(1p,6e12.4)
+  312 format(i10, 1p,6e12.4)
 
       
       return
@@ -1872,31 +1861,31 @@ c
      
 
       subroutine ezplot6(title, titll, titlr, titlb, x1, y1,
-     .   y2, y3, y4, y5, y6,
-     .   nr, nrmax)
+     &   y2, y3, y4, y5, y6,
+     &   nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     .     y5(nrmax), y6(nrmax)
-      real y1max, y2max, y3max, y4max, y5max, y6max
-      real y1min, y2min, y3min, y4min, y5min, y6min
-      real ymin, ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
+     &     y5(nrmax), y6(nrmax)
+      real:: y1max, y2max, y3max, y4max, y5max, y6max
+      real:: y1min, y2min, y3min, y4min, y5min, y6min
+      real:: ymin, ymax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
 
       nwhite = 0
       nblack = 1
@@ -1958,8 +1947,8 @@ c Plot the line graph.
       call pgline(nr, x1, y6)
       
       call pgsci(nblack) 
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
 
       return
       end
@@ -1969,28 +1958,28 @@ c***************************************************************************
 c
 
       subroutine ezplot1_sum(title, titx, titll, titlr, x1, y1, nr, 
-     .    nrmax)
+     &    nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titx
-      character*32 titll
-      character*32 titlr
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
+
+      character(32):: title
+      character(32):: titx
+      character(32):: titll
+      character(32):: titlr
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack, nred, nyellow, ngreen, naqua, npink,
-     1   nwheat, ngrey, nbrown, nblue, nblueviolet, ncyan1,
-     1   nturquoise, nmagenta, nsalmon, nwhite, norange, ncolln3
+      integer:: nblack, nred, nyellow, ngreen, naqua, npink,
+     &   nwheat, ngrey, nbrown, nblue, nblueviolet, ncyan1,
+     &   nturquoise, nmagenta, nsalmon, nwhite, norange, ncolln3
      
      
       nwhite = 0
@@ -2043,8 +2032,8 @@ c Plot the line graph.
       call pgline(nr, x1, y1)
       
       CALL PGSCI(nblack)
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       return
       end
@@ -2055,28 +2044,28 @@ c
 
 
       subroutine ezplot1_0_sum(title, titx, titll, titlr, x1, y1, 
-     .   nr, nrmax)
+     &   nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax)
-      real y1max,y2max,y3max,y1min,y2min,y3min
-      real ymin,ymax
+      integer:: nr,nrmax
 
-      character*32 title
-      character*32 titx
-      character*32 titll
-      character*32 titlr
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax)
+      real:: y1max,y2max,y3max,y1min,y2min,y3min
+      real:: ymin,ymax
+
+      character(32):: title
+      character(32):: titx
+      character(32):: titll
+      character(32):: titlr
       
-      integer nr,nrmax
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
      
-      integer nblack, nred, nyellow, ngreen, naqua, npink,
-     1   nwheat, ngrey, nbrown, nblue, nblueviolet, ncyan1,
-     1   nturquoise, nmagenta, nsalmon, nwhite, norange, ncolln3
+      integer:: nblack, nred, nyellow, ngreen, naqua, npink,
+     &   nwheat, ngrey, nbrown, nblue, nblueviolet, ncyan1,
+     &   nturquoise, nmagenta, nsalmon, nwhite, norange, ncolln3
      
      
       nwhite = 0
@@ -2129,8 +2118,8 @@ c Plot the line graph.
       call pgline(nr, x1, y1)
       
       CALL PGSCI(nblack)
-	    
-  300 format (1p9e11.3)
+            
+  300 format (1p,9e11.3)
   
       return
       end
@@ -2140,27 +2129,27 @@ c***************************************************************************
 c
 
       subroutine ezplot2_sum(title, titll, titlr, titlb, 
-     .                                       x1, y1, y2, nr, nrmax)
+     &                                       x1, y1, y2, nr, nrmax)
 
       implicit none
 
-      real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real x1(nrmax), y1(nrmax), y2(nrmax)
-      real y1max, y2max, y3max, y1min, y2min, y3min
-      real ymin,ymax
+      integer:: nr, nrmax, n
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titlb
+      real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
+      real:: x1(nrmax), y1(nrmax), y2(nrmax)
+      real:: y1max, y2max, y3max, y1min, y2min, y3min
+      real:: ymin,ymax
+
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titlb
       
-      integer nr, nrmax, n
-
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan,
-     1    ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink,
-     1   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     1   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+     &    ncolelec, ncolln2, ncollin, ncolbrd
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
+     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
+     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
      
       nwhite = 0
       nblack = 1
@@ -2225,7 +2214,7 @@ c      write(*,*) "y2 = ", y2
       CALL PGSCI(nblack)
       
 
-  300 format (1p9e11.3)
+  300 format (1p,9e11.3)
       return
       end
 c
@@ -2233,32 +2222,32 @@ c***************************************************************************
 c
 
       subroutine ezconc_sum(r, theta, f, flevel, nr, nth, nlevel,
-     1   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
 
       implicit none
 
-      integer nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
-     1   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     1   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     1   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     1   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
-     1   nndm1, norange
+      integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
+     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
+     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
+     &   ncolln8, nmodes, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
+     &   ncolln3, ncolbrd, ncolln1, n0, i, nnode, ibackground, iant,
+     &   nndm1, norange
 
-      real fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
-     1   ypmin, theta, r, flevel, f, xmin, ymin, xmax
-      integer nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
-     1   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     1    ncolelec, iflag
+      real::fmin, ymax, df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
+     &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
+      integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
+     &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
+     &    ncolelec, iflag
      
-      real tr(6), dx, dy
+      real:: tr(6), dx, dy
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
-      character*8 xopt,yopt
-      character*32 title
-      character*32 titx
-      character*32 tity
+      character(8):: xopt,yopt
+      character(32):: title
+      character(32):: titx
+      character(32):: tity
 
       nwhite = 0
       nblack = 1
@@ -2299,7 +2288,7 @@ c      write(16,*)"fmax = ", fmax, "   fmin = ", fmin
       iflag = 0
        if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
-c	  write(6, *)"fmin = ", fmin
+c         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -2359,14 +2348,14 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
 
-	 call pgsci(nyellow)
+         call pgsci(nyellow)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
      &       nlevlt, tr)
       endif
 
       if(nlevgt .gt. 0) then
       
-	 call pgsci(nblue)
+         call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)
       endif
@@ -2374,8 +2363,8 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       call pgsci(nblack)
       call pglab(titx, tity, title)
       
-  310 format(1p6e12.4)
-  312 format(i10, 1p6e12.4)
+  310 format(1p,6e12.4)
+  312 format(i10, 1p,6e12.4)
       
       return
       end

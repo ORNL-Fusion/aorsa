@@ -1,6 +1,6 @@
       subroutine ceez (del1,del2,sigma,c1,c2,c3,n)
 c
-      real del1,del2,sigma,c1,c2,c3
+      real:: del1,del2,sigma,c1,c2,c3
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -122,8 +122,8 @@ c
       subroutine curv1 (n,x,y,slp1,slpn,islpsw,yp,temp,
      *                  sigma,ierr)
 c
-      integer n,islpsw,ierr
-      real x(n),y(n),slp1,slpn,yp(n),temp(n),sigma
+      integer:: n,islpsw,ierr
+      real:: x(n),y(n),slp1,slpn,yp(n),temp(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -272,8 +272,8 @@ c
       end
       function curv2 (t,n,x,y,yp,sigma)
 c
-      integer n
-      real t,x(n),y(n),yp(n),sigma
+      integer:: n
+      real:: t,x(n),y(n),yp(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -347,8 +347,8 @@ c
       end
       function curvd (t,n,x,y,yp,sigma)
 c
-      integer n
-      real t,x(n),y(n),yp(n),sigma
+      integer:: n
+      real:: t,x(n),y(n),yp(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -423,8 +423,8 @@ c
       end
       function curvi (xl,xu,n,x,y,yp,sigma)
 c
-      integer n
-      real xl,xu,x(n),y(n),yp(n),sigma
+      integer:: n
+      real:: xl,xu,x(n),y(n),yp(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -590,8 +590,8 @@ c
       end
       subroutine curvp1 (n,x,y,p,yp,temp,sigma,ierr)
 c
-      integer n,ierr
-      real x(n),y(n),p,yp(n),temp(1),sigma
+      integer:: n,ierr
+      real:: x(n),y(n),p,yp(n),temp(1),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -735,8 +735,8 @@ c
       end
       function curvp2 (t,n,x,y,p,yp,sigma)
 c
-      integer n
-      real t,x(n),y(n),p,yp(n),sigma
+      integer:: n
+      real:: t,x(n),y(n),p,yp(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -817,8 +817,8 @@ c
       end
       function curvpi (xl,xu,n,x,y,p,yp,sigma)
 c
-      integer n
-      real xl,xu,x(n),y(n),p,yp(n),sigma
+      integer:: n
+      real:: xl,xu,x(n),y(n),p,yp(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -867,8 +867,8 @@ c snhcsh.
 c
 c--------------------------------------------------------------
 c
-      integer uper
-      logical bdy
+      integer:: uper
+      logical:: bdy
 c
 c denormalize tension factor
 c
@@ -1094,8 +1094,8 @@ c
      *                   td,tsd1,hd,hsd1,hsd2,rd,rsd1,rsd2,
      *                   rnm1,rn,v,ierr)
 c
-      integer n,isw,ierr
-      real x(n),y(n),p,d(n),s,eps,ys(n),ysp(n),sigma,td(n),
+      integer:: n,isw,ierr
+      real:: x(n),y(n),p,d(n),s,eps,ys(n),ysp(n),sigma,td(n),
      *     tsd1(n),hd(n),hsd1(n),hsd2(n),rd(n),rsd1(n),
      *     rsd2(n),rnm1(n),rn(n),v(n)
 c
@@ -1549,8 +1549,8 @@ c
       subroutine curvps (n,x,y,p,d,isw,s,eps,ys,ysp,sigma,
      *                   temp,ierr)
 c
-      integer n,isw,ierr
-      real x(n),y(n),p,d(n),s,eps,ys(n),ysp(n),sigma,
+      integer:: n,isw,ierr
+      real:: x(n),y(n),p,d(n),s,eps,ys(n),ysp(n),sigma,
      *     temp(n,11)
 c
 c                                 coded by alan kaylor cline
@@ -1671,8 +1671,8 @@ c
       subroutine curvs (n,x,y,d,isw,s,eps,ys,ysp,sigma,temp,
      *                  ierr)
 c
-      integer n,isw,ierr
-      real x(n),y(n),d(n),s,eps,ys(n),ysp(n),sigma,temp(n,9)
+      integer:: n,isw,ierr
+      real:: x(n),y(n),d(n),s,eps,ys(n),ysp(n),sigma,temp(n,9)
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -1787,8 +1787,8 @@ c
      *                   tsd1,hd,hsd1,hsd2,rd,rsd1,rsd2,v,
      *                   ierr)
 c
-      integer n,isw,ierr
-      real x(n),y(n),d(n),s,eps,ys(n),ysp(n),sigma,td(n),
+      integer:: n,isw,ierr
+      real:: x(n),y(n),d(n),s,eps,ys(n),ysp(n),sigma,td(n),
      *     tsd1(n),hd(n),hsd1(n),hsd2(n),rd(n),rsd1(n),
      *     rsd2(n),v(n)
 c
@@ -2082,8 +2082,8 @@ c
       end
       function intrvl (t,x,n)
 c
-      integer n
-      real t,x(n)
+      integer:: n
+      real:: t,x(n)
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -2164,8 +2164,8 @@ c
       end
       function intrvp (t,x,n,p,tp)
 c
-      integer n
-      real t,x(n),p,tp
+      integer:: n
+      real:: t,x(n),p,tp
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -2256,8 +2256,8 @@ c
       subroutine kurv1 (n,x,y,slp1,slpn,islpsw,xp,yp,temp,s,
      *                  sigma,ierr)
 c
-      integer n,islpsw,ierr
-      real x(n),y(n),slp1,slpn,xp(n),yp(n),temp(n),s(n),
+      integer:: n,islpsw,ierr
+      real:: x(n),y(n),slp1,slpn,xp(n),yp(n),temp(n),s(n),
      *     sigma
 c
 c                                 coded by alan kaylor cline
@@ -2442,8 +2442,8 @@ c
       end
       subroutine kurv2 (t,xs,ys,n,x,y,xp,yp,s,sigma)
 c
-      integer n
-      real t,xs,ys,x(n),y(n),xp(n),yp(n),s(n),sigma
+      integer:: n
+      real:: t,xs,ys,x(n),y(n),xp(n),yp(n),s(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -2536,8 +2536,8 @@ c
       subroutine kurvd (t,xs,ys,xst,yst,xstt,ystt,n,x,y,xp,
      *                  yp,s,sigma)
 c
-      integer n
-      real t,xs,ys,xst,yst,xstt,ystt,x(n),y(n),xp(n),yp(n),
+      integer:: n
+      real:: t,xs,ys,xst,yst,xstt,ystt,x(n),y(n),xp(n),yp(n),
      *     s(n),sigma
 c
 c                                 coded by alan kaylor cline
@@ -2650,8 +2650,8 @@ c
       end
       subroutine kurvp1 (n,x,y,xp,yp,temp,s,sigma,ierr)
 c
-      integer n,ierr
-      real x(n),y(n),xp(n),yp(n),temp(1),s(n),sigma
+      integer:: n,ierr
+      real:: x(n),y(n),xp(n),yp(n),temp(1),s(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -2817,8 +2817,8 @@ c
       end
       subroutine kurvp2 (t,xs,ys,n,x,y,xp,yp,s,sigma)
 c
-      integer n
-      real t,xs,ys,x(n),y(n),xp(n),yp(n),s(n),sigma
+      integer:: n
+      real:: t,xs,ys,x(n),y(n),xp(n),yp(n),s(n),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -2917,8 +2917,8 @@ c
       subroutine kurvpd (t,xs,ys,xst,yst,xstt,ystt,n,x,y,xp,
      *                  yp,s,sigma)
 c
-      integer n
-      real t,xs,ys,xst,yst,xstt,ystt,x(n),y(n),xp(n),yp(n),
+      integer:: n
+      real:: t,xs,ys,xst,yst,xstt,ystt,x(n),y(n),xp(n),yp(n),
      *     s(n),sigma
 c
 c                                 coded by alan kaylor cline
@@ -3037,8 +3037,8 @@ c
       end
       subroutine snhcsh (sinhm,coshm,x,isw)
 c
-      integer isw
-      real sinhm,coshm,x
+      integer:: isw
+      real:: sinhm,coshm,x
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -3203,8 +3203,8 @@ c
      *                  zxym1,zxy1n,zxymn,islpsw,zp,temp,
      *                  sigma,ierr)
 c
-      integer m,n,iz,islpsw,ierr
-      real x(m),y(n),z(iz,n),zx1(n),zxm(n),zy1(m),zyn(m),
+      integer:: m,n,iz,islpsw,ierr
+      real:: x(m),y(n),z(iz,n),zx1(n),zxm(n),zy1(m),zyn(m),
      *     zxy11,zxym1,zxy1n,zxymn,zp(m,n,3),temp(*),sigma
 c
 c                                 coded by alan kaylor cline
@@ -3584,8 +3584,8 @@ c
       end
       function surf2 (xx,yy,m,n,x,y,z,iz,zp,sigma)
 c
-      integer m,n,iz
-      real xx,yy,x(m),y(n),z(iz,n),zp(m,n,3),sigma
+      integer:: m,n,iz
+      real:: xx,yy,x(m),y(n),z(iz,n),zp(m,n,3),sigma
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -3711,7 +3711,7 @@ c
       end
       subroutine terms (diag,sdiag,sigma,del)
 c
-      real diag,sdiag,sigma,del
+      real:: diag,sdiag,sigma,del
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987

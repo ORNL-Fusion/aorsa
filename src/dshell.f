@@ -1,7 +1,7 @@
       subroutine dshell(n,dx,iperm)
       integer n
-      real*8 dx(n)
-      real*8 dtemp,dxert
+      real dx(n)
+      real dtemp,dxert
       integer iperm(n)
 
       integer j,k,m,maxmn
