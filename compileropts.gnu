@@ -8,7 +8,7 @@ WARNING_FLAGS = -Wall -Wuninitialized -Wline-truncation  -Wcharacter-truncation 
 # -std=legacy
 MOD_DIR_FLAG = -J $(MOD_DIR)
 F90FLAGS += 
-WARNING_FLAGS += -ffpe-trap=invalid -fcheck=all
+WARNING_FLAGS += -fcheck=all #-ffpe-trap=invalid -fcheck=all
 
 ORBIT_F_WARNING_FLAGS += -ffpe-trap=invalid 
 

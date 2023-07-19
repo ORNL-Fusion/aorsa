@@ -1,0 +1,14 @@
+include compileropts.aocc
+
+FC = ftn
+#adjust path, on perlmutter :  /global/cfs/projectdirs/m77/pgplot-perlmutter
+LIBS = ../pgplot_aocc/libpgplot.a
+#/global/homes/g/greendl1/code/pgplot/build-gnu/libpgplot.a  
+NETCDF_INCLUDE_DIR = /opt/cray/pe/netcdf/4.9.0.1/aocc/3.0/include
+NETCDF_DIR = /opt/cray/pe/netcdf/4.9.0.1/aocc/3.0/lib
+LIBS += $(NETCDF_DIR)/libnetcdff.a -L $(NETCDF_DIR) -lnetcdf
+INCLUDE_DIRS +=  -I ${NETCDF_INCLUDE_DIR}
+FFLAGS += -O2 -g -std=f2003 
+F90FLAGS += -O2 -g -std=f2003 
+#FFLAGS += -I ${NETCDF_INCLUDE_DIR}
+#F90FLAGS += -I ${NETCDF_INCLUDE_DIR}
