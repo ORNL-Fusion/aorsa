@@ -1,0 +1,8 @@
+# gfortran options
+COMMON_OPTION  = -r8  -fdefault-real-8 
+WARNING_FLAGS = -Wall -Wuninitialized
+MOD_DIR_FLAG = -J $(MOD_DIR) -I $(MOD_DIR)
+F90FLAGS += 
+
+ORBIT_F_WARNING_FLAGS += -ffpe-trap=invalid 
+
