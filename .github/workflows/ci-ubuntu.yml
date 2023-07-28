@@ -18,7 +18,7 @@ jobs:
     - name: Add gfortran-9 as an alternative
       run: sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 9
     - name: Install AORSA dependencies
-      run: sudo apt-get install libblacs-openmpi1 libblacs-mpi-dev libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libblas-dev libx11-dev
+      run: sudo apt-get install libblacs-mpi-dev libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libblas-dev libx11-dev
     - name: Build
       run: make
     - name: Test
