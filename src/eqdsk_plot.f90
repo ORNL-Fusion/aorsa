@@ -162,10 +162,10 @@
 
 
 !      zi = cmplx(0.0, 1.0)
-      eps0 = 8.85e-12
-      xmu0 = 1.26e-06
-      clight = 1./sqrt(eps0 * xmu0)
-      xk0 = omgrf / clight
+!      eps0 = 8.85e-12
+!      xmu0 = 1.26e-06
+!      clight = 1./sqrt(eps0 * xmu0)
+!      xk0 = omgrf / clight
       q = 1.6e-19
 
 
@@ -487,10 +487,10 @@
 
 
 !      zi = cmplx(0.0, 1.0)
-      eps0 = 8.85e-12
-      xmu0 = 1.26e-06
-      clight = 1./sqrt(eps0 * xmu0)
-      xk0 = omgrf / clight
+!      eps0 = 8.85e-12
+!      xmu0 = 1.26e-06
+!      clight = 1./sqrt(eps0 * xmu0)
+!      xk0 = omgrf / clight
       q = 1.6e-19
 
 

@@ -5437,15 +5437,14 @@ c--set up contour levels
 !      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
       fmin = MINVAL(f) !(2:nrmax-1,:))
       fmax = MAXVAL(f) !(2:nrmax-1,:))
-      write(*,*) 'minval f',f(1,1),fmin,fmax
       
-c      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
-c      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
+!      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
+!      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
-c         write(6, *)"fmax = ", fmax
-c         write(6, *)"fmin = ", fmin
+!         write(6, *)"fmax = ", fmax
+!         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if

@@ -12,5 +12,5 @@
 #Perlmutter has 16 cores per compute node
 export PGPLOT_FONT=/global/homes/j/jwright/perlmutter-builds/pgplot/grfont.dat
 module list
-srun -n 4 ./xaorsa2d.aocc  > log_aorsa2d
+srun -n 4 ./xaorsa2d  > log_aorsa2d
 
