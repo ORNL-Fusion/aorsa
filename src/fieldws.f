@@ -5425,18 +5425,19 @@ c
       tr(6) = dy
 
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      !This doesn't work because work size is greater than used size
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
-!      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
-      fmin = MINVAL(f) !(2:nrmax-1,:))
-      fmax = MAXVAL(f) !(2:nrmax-1,:))
+      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
+!      fmin = MINVAL(f) !(2:nrmax-1,:))
+!      fmax = MAXVAL(f) !(2:nrmax-1,:))
       
 !      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
 !      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
@@ -5598,12 +5599,12 @@ c
       tr(6) = dy
 
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -5773,12 +5774,12 @@ c
       tr(6) = dy
 
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -5930,12 +5931,12 @@ c
       common/zoom/ xmaxz, xminz, ymaxz, yminz
 
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -6079,12 +6080,12 @@ c
      &    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
      &    ncolion,ncolelec,ncollin,ncollab,ncolln2
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
@@ -6170,12 +6171,12 @@ c
 
       nlevelb = 1
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -6276,12 +6277,12 @@ c
      &    nturquoise,nmagenta,nsalmon,nwhite,ncolbox,ncolbrd,
      &    ncolion,ncolelec,ncollin,ncollab,ncolln2
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
@@ -6355,7 +6356,8 @@ c      ymax = 1.0e+06
 
       rhomax=x1(nr)
       rhomin=x1(1)
-      ymax=ymax*1.1
+      ymax=(ymax+0.1)*1.1       !JCW July 2023. If nzeta_wdot[ei]=0, all yn are zero so add 0.1 in case
+      !ymax=ymax*1.1
 c      ymax = .1
       ymin=0.0
 
@@ -6454,7 +6456,8 @@ c
 
       rhomax=x1(nr)
       rhomin=x1(1)
-      ymax=ymax*1.1
+      ymax=(ymax+0.1)*1.1       !JCW July 2023. If nzeta_wdot[ei]=0, all yn are zero so add 0.1 in case
+      !ymax=ymax*1.1
       ymin=0.0
 
 
@@ -6566,7 +6569,7 @@ c      ymin=0.0
 
       rhomax=x1(nr)
       rhomin=x1(1)
-      ymax=ymax*1.1
+      ymax=(ymax+0.1)*1.1 !JCW July 2023. If nzeta_wdot[ei]=0, all yn are zero so add 0.1 in case
       
 c      ymax = 2.8e+06
       
@@ -6668,7 +6671,7 @@ c
 
       rhomax=x1(nr)
       rhomin=x1(1)
-      ymax=ymax*1.1
+      ymax=(ymax+0.1)*1.1 !JCW July 2023. If nzeta_wdot[ei]=0, all yn are zero so add 0.1 in case
       
 c      ymax = 2.8e+06
       
@@ -6783,7 +6786,7 @@ c      write(6, 300) y2min, y2max
       y2min = y2min * 1.1
       y2max = y2max * 1.1
 
-
+      if(y2max .eq. 0.0 .and. y2min .eq. 0.0)return
       CALL PGSWIN (rhomin, rhomax, y2min, y2max)
       CALL PGSCI(nblack)
       CALL PGBOX  (' ', 0.0, 0, 'CMST', 0.0, 0)
@@ -7083,7 +7086,7 @@ c
 
       rhomax=x1(nr)
       rhomin=x1(1)
-      ymax=ymax*1.1
+      ymax=(ymax+0.1)*1.1 !JCW July 2023. If nzeta_wdot[ei]=0, all yn are zero so add 0.1 in case
       ymin=0.0
 
 
@@ -7621,12 +7624,12 @@ c
       tr(6) = dy
 
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
 
@@ -8150,12 +8153,12 @@ c
       tr(6) = dy
 
 
-!      call a1mnmx(r, nrmax, nr, xmin, xmax)
-!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-      xmin = MINVAL(r)
-      xmax = MAXVAL(r)
-      ymin = MINVAL(theta)
-      ymax = MAXVAL(theta)
+      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+!      xmin = MINVAL(r)
+!      xmax = MAXVAL(r)
+!      ymin = MINVAL(theta)
+!      ymax = MAXVAL(theta)
 
 c--set up contour levels
 

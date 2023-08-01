@@ -4,7 +4,7 @@ c
       subroutine plot(ndisti2) 
       
       
-      use size_mod             
+      use size_mod, only: nmodesmax, mmodesmax
       
       implicit none
       
@@ -22,9 +22,6 @@ c
       integer:: number_points
       integer:: nnoderho
       
-c      integer:: nmodesmax, mmodesmax
-c      parameter (nxmx   = 500)
-c      parameter (nymx   = 500)            
       integer, parameter:: nlevmax = 101, lnwidth = 2, nxmx = nmodesmax
       integer, parameter:: nymx = mmodesmax, nrhomax = nxmx * 2
       integer, parameter:: nphimx = 200, nxplot_dim   = 1000
