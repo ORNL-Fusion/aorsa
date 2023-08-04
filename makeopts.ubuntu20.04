@@ -6,17 +6,18 @@ FC = mpif90.openmpi
 LIBS += -L/usr/lib/ -lpgplot 
 
 # netcdf
-NETCDF_DIR = /usr/lib/x86_64-linux-gnu/
+NETCDF_DIR = /usr/lib/x86_64-linux-gnu
 LIBS += $(NETCDF_DIR)/libnetcdff.a -L $(NETCDF_DIR) -lnetcdf 
 INCLUDE_DIRS += -I /usr/include
 
 # scalapack 
 LIBS +=	-L /usr/lib/x86_64-linux-gnu -lscalapack-openmpi \
-	/usr/lib/x86_64-linux-gnu/blas/libblas.a \
-	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
-	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
-	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a \
-	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
-	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
-	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a
+	/usr/lib/x86_64-linux-gnu/blas/libblas.a 
+#black included in scalapack-openmpi
+#	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
+#	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
+#	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a \
+#	/usr/lib/x86_64-linux-gnu/libblacs-openmpi.a \
+#	/usr/lib/x86_64-linux-gnu/libblacsF77init-openmpi.a \
+#	/usr/lib/x86_64-linux-gnu/libblacsCinit-openmpi.a
 
