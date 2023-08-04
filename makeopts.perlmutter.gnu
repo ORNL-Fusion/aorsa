@@ -12,4 +12,4 @@ NETCDF_DIR =/opt/cray/pe/netcdf/4.9.0.1/gnu/9.1/lib
 LIBS += $(NETCDF_DIR)/libnetcdff.a -L $(NETCDF_DIR) -lnetcdf
 INCLUDE_DIRS +=  -I ${NETCDF_INCLUDE_DIR}
 #presently only works without -O2 below
-F90FLAGS += -g -std=f2003 -fno-align-commons
+F90FLAGS += -O2 -std=f2003 -fno-align-commons

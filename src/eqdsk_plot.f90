@@ -13,48 +13,32 @@
       character(32):: titz
       character(32):: titlb
 
-      real logmax
-      integer nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
-      integer ibackground, nkx1, nkx2, nky1, nky2, n, m, &
-         nkpltdim, mkpltdim, nkxplt, nkyplt
+      real:: logmax
+      integer:: ibackground, nkx1, nkx2, nky1, nky2, n, m, &
+         nkxplt, nkyplt
 
-      integer  ncolln10, ncolln9, nwheat, ngrey, naqua, &
+      integer::  ncolln10, ncolln9, nwheat, ngrey, naqua, &
          npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen, &
          nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5, &
          ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2, &
          ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion, &
          ncolelec, norange
 
-      integer nrhomax, nnoderho, iflag, nxeqdmax, nyeqdmax, &
-          nnoderho_half, nnoderho2_half
+      integer:: nnoderho, iflag, nnoderho_half, nnoderho2_half
 
-      integer pgopen, pgbeg, ier
-!      integer nmodesmax, mmodesmax
+      integer:: pgopen, pgbeg, ier
 
-      integer :: iostatval
-      parameter (nlevmax = 101)
+      integer:: iostatval
 
-!      parameter (nmodesmax = 450)
-!      parameter (mmodesmax = 450)
+      integer, parameter::  nlevmax = 101, nxmx = nmodesmax, &
+           nymx = mmodesmax,      nrhomax = nxmx, &
+           nkdim1 = - nxmx / 2,   nkdim2 =   nxmx / 2, &
+           mkdim1 = - nxmx / 2,   mkdim2 =   nxmx / 2, &
+           nkpltdim = 2 * nkdim2, mkpltdim = 2 * mkdim2, &
+           nxeqdmax = 257,        nyeqdmax = 257
 
-      parameter (nxmx = nmodesmax)
-      parameter (nymx = mmodesmax)
-
-      parameter (nrhomax = nxmx)
-
-      parameter (nkdim1 = - nxmx / 2)
-      parameter (nkdim2 =   nxmx / 2)
-
-      parameter (mkdim1 = - nxmx / 2)
-      parameter (mkdim2 =   nxmx / 2)
-
-      parameter (nkpltdim = 2 * nkdim2)
-      parameter (mkpltdim = 2 * mkdim2)
-
-      parameter (nxeqdmax = 257, nyeqdmax = 257)
-
-      real capr_x(6000), capz_x(6000), dx, dy
-      integer n_phi, n_phi_max, number_points
+      real:: capr_x(6000), capz_x(6000), dx, dy
+      integer:: n_phi, n_phi_max, number_points
 
 
       real rhoeqdsk(nxeqdmax), psigrid(nxeqdmax), agrid(nxeqdmax), &
@@ -122,7 +106,7 @@
       real temax, temin, timin, tmin, tmax, timax, caprmaxp, &
          caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
       real bpmin, bpmax
-      integer nnodex, j, i, nnodey, numb, jmid, nxeqd
+      integer:: nnodex, j, i, nnodey, numb, jmid, nxeqd
 !      complex zi
 
       namelist/plotin/ibackground, xminz, xmaxz, ymaxz, logmax
@@ -316,49 +300,32 @@
       character(32):: titz
       character(32):: titlb
 
-      real logmax
-      integer nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
-      integer ibackground, nkx1, nkx2, nky1, nky2, n, m, &
-         nkpltdim, mkpltdim, nkxplt, nkyplt
+      real:: logmax
+      integer:: ibackground, nkx1, nkx2, nky1, nky2, n, m, &
+         nkxplt, nkyplt
 
-      integer iostatval
+      integer:: iostatval
 
-      integer  ncolln10, ncolln9, nwheat, ngrey, naqua, &
+      integer::  ncolln10, ncolln9, nwheat, ngrey, naqua, &
          npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen, &
          nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5, &
          ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2, &
          ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion, &
          ncolelec, norange
 
-      integer nrhomax, nnoderho, iflag, nxeqdmax, nyeqdmax, &
-          nnoderho_half, nnoderho2_half
+      integer:: nnoderho, iflag, nnoderho_half, nnoderho2_half
 
-      integer pgopen, pgbeg, ier
-!      integer nmodesmax, mmodesmax
+      integer:: pgopen, pgbeg, ier
 
-      parameter (nlevmax = 101)
+      integer, parameter::  nlevmax = 101, nxmx = nmodesmax, &
+           nymx = mmodesmax,      nrhomax = nxmx, &
+           nkdim1 = - nxmx / 2,   nkdim2 =   nxmx / 2, &
+           mkdim1 = - nxmx / 2,   mkdim2 =   nxmx / 2, &
+           nkpltdim = 2 * nkdim2, mkpltdim = 2 * mkdim2, &
+           nxeqdmax = 257,        nyeqdmax = 257
 
-!      parameter (nmodesmax = 450)
-!      parameter (mmodesmax = 450)
-
-      parameter (nxmx = nmodesmax)
-      parameter (nymx = mmodesmax)
-
-      parameter (nrhomax = nxmx)
-
-      parameter (nkdim1 = - nxmx / 2)
-      parameter (nkdim2 =   nxmx / 2)
-
-      parameter (mkdim1 = - nxmx / 2)
-      parameter (mkdim2 =   nxmx / 2)
-
-      parameter (nkpltdim = 2 * nkdim2)
-      parameter (mkpltdim = 2 * mkdim2)
-
-      parameter (nxeqdmax = 257, nyeqdmax = 257)
-
-      real capr_x(6000), capz_x(6000), dx, dy
-      integer n_phi, n_phi_max, number_points
+      real:: capr_x(6000), capz_x(6000), dx, dy
+      integer:: n_phi, n_phi_max, number_points
 
 
       real rhoeqdsk(nxeqdmax), psigrid(nxeqdmax), agrid(nxeqdmax), &
@@ -428,7 +395,7 @@
       real temax, temin, timin, tmin, tmax, timax, caprmaxp, &
          caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
       real bpmin, bpmax
-      integer nnodex, j, i, nnodey, numb, jmid, nxeqd
+      integer:: nnodex, j, i, nnodey, numb, jmid, nxeqd
 !      complex zi
 
       namelist/plotin/ibackground, xminz, xmaxz, ymaxz, logmax
@@ -642,7 +609,7 @@
       write (145, 3411) ((bx(i,j), i = 1, nnodex),  j = 1, nnodey)
 
  3410 format(1p4e10.2)
- 3411 format(6f17.4)
+ 3411 format(6e17.4)
 
 
 
@@ -794,7 +761,7 @@
 
       title = 'psi surfaces'
 !      write(15,*) 'psi test ',psi
-!      write(6,*) 'psi test ',psi      
+!      write(6,*) 'psi test ',psi
       call ezconc(capr, y, psi, ff, nnodex, nnodey, numb, &
          nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
@@ -1327,7 +1294,7 @@
 
       implicit none
 
-      integer nx, ny, i, j, nxmax, nymax
+      integer:: nx, ny, i, j, nxmax, nymax
       real f(nxmax, nymax), fmin, fmax
 
       fmax=f(2, 1)
@@ -1354,7 +1321,7 @@
 
       implicit none
 
-      integer nr,nrmax
+      integer:: nr,nrmax
       real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real x1(nrmax), y1(nrmax)
       real y1max,y2max,y3max,y1min,y2min,y3min
@@ -1364,9 +1331,9 @@
       character(32):: titll
       character(32):: titlr
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan, &
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan, &
           ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink, &
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink, &
          nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1, &
          nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink, &
