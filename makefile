@@ -114,6 +114,11 @@ ifeq ($(LMOD_SYSHOST),perlmutter)
     $(info System identified as Perlmutter AOCC)
     SYSTEM_IDENTIFIED = 1
   endif
+  ifeq ($(PE_ENV),INTEL)
+    include makeopts.perlmutter.intel
+    $(info System identified as Perlmutter INTEL)
+    SYSTEM_IDENTIFIED = 1
+  endif
 endif
 ifeq ($(NERSC_HOST),cori)
   ifeq ($(PE_ENV),GNU)
@@ -135,9 +140,9 @@ ifeq ($(UNAME_S),Darwin) # OSX
   #endif
 endif
 ifeq ($(LSB_IS),Ubuntu)
-  ifeq ($(LSB_RS),18.04)
-    include makeopts.ubuntu18.04
-    $(info System identified as Ubuntu18.04)
+  ifeq ($(LSB_RS),20.04)
+    include makeopts.ubuntu20.04
+    $(info System identified as Ubuntu20.04)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
