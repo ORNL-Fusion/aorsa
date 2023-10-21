@@ -16,7 +16,7 @@
       
       INTEGER :: j, k, n, n_expand, ncount, number_points
       integer i, i_psi, i_theta, i_u, iflag, nproc, myid
-      integer n_u_basis, n_theta_basis, ni, mi
+      integer n_u_basis, n_theta_basis, ni, mi,kspeci
       real enorm_factor
 
       integer, parameter :: n_u_dim = 300
@@ -246,8 +246,9 @@
 
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
-!     -------------------------------------------------
-      CALL netcdfr3d(netCDF_file)
+      !     -------------------------------------------------
+      kspeci = 1
+      CALL netcdfr3d_multigen(netCDF_file,kspeci)
 
       vc_mks = vc * 1.0e-02
       vc_mks_cql3d = vc_mks
@@ -1069,7 +1070,7 @@
       
       INTEGER :: j, k, n, n_expand, ncount, number_points
       integer i, i_psi, i_theta, i_u, iflag, nproc, myid
-      integer n_u_basis, n_theta_basis, ni, mi
+      integer n_u_basis, n_theta_basis, ni, mi, kspeci
       real enorm_factor
 
       integer, parameter :: n_u_dim = 300
@@ -1291,7 +1292,8 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
 !     -------------------------------------------------
-      CALL netcdfr3d(netCDF_file)
+      kspeci=2
+      CALL netcdfr3d_multigen(netCDF_file,kspeci)
 
       vc_mks = vc * 1.0e-02
       vc_mks_cql3d = vc_mks

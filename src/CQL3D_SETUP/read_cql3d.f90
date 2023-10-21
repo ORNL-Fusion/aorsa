@@ -426,6 +426,204 @@
        end subroutine netcdfr3d
 !c
 !c
+       subroutine netcdfr3d_multigen(netcdfnm,kspeci)
+       !SF addition, reads netcdf made by the newer version of
+       !CQL3D which uses multiple genreal species
+         
+       use netcdf
+       implicit none
+
+       INTEGER :: istat,kspeci
+       character(*)::netcdfnm
+       !these variables all remain the same
+       real:: vnorm
+       integer :: iy,jx,lrz,nt,nt_id
+       integer, allocatable :: iy_(:)
+       real, allocatable :: x(:)
+       real, allocatable :: y(:,:)
+       real, allocatable :: rya(:)
+       !adjusted dimensioning starts here
+       real, allocatable :: f(:,:,:,:)
+       real, allocatable, dimension(:,:,:) :: wperp   
+       real, allocatable, dimension(:,:,:) :: wpar   
+       !extra stuff from netcdf
+       character(nf90_max_name):: name
+       integer ncid,istatus
+       integer xdim,ydim,rdim,kgdim,kdim,vid
+       integer ngen,ntotal
+       integer ll,j,i
+       integer start(3),count(3),start_y(2),count_y(2)
+
+       data start/1,1,1/,start_y/1,1/
+
+       !open cql3d netcdf
+       write(*,*)'before ncopn netcdfnm=',netcdfnm
+       istatus=nf90_open(TRIM(netcdfnm),NF90_NOWRITE,ncid)
+       write(*,*)'after ncopn ncid=',ncid,'istatus',istatus
+
+       !read in dimension IDs and sizes
+       istatus = nf90_inq_dimid(ncid,'xdim',xdim)
+       write(*,*)'after inq_dimid xdim=',xdim,'istatus',istatus
+
+       istatus = nf90_inq_dimid(ncid,'ydim',ydim)
+       write(*,*)'after inq_dimid ydim=',ydim,'istatus',istatus
+
+       istatus = nf90_inq_dimid(ncid,'rdim',rdim)
+       write(*,*)'after inq_dimid rdim=',rdim,'istatus',istatus
+
+       istatus = nf90_inq_dimid(ncid,'gen_species_dim',kgdim)
+       write(*,*)'after inq_dimid kgdim=',kgdim,'istatus',istatus
+       
+       istatus = nf90_inq_dimid(ncid,'species_dim',kdim)
+       write(*,*)'after inq_dimid kdim=',kdim,'istatus',istatus
+       
+       istatus = nf90_inq_dimid(ncid,'tdim',nt_id)
+       write(*,*)'proc_cql3d_op: after nf90_inq_dimid nt_id = ',nt_id,'istatus = ',istatus
+
+       istatus = nf90_inquire_dimension(ncid, nt_id, len = nt)
+       write(*,*)'proc_cql3d_op: after inquire dimenstion, # of t steps = ',nt, ' istatus=',istatus
+
+       call ncdinq(ncid,ydim,name,iy,istatus)
+       call ncdinq(ncid,xdim,name,jx,istatus)
+       call ncdinq(ncid,rdim,name,lrz,istatus)
+       call ncdinq(ncid,kgdim,name,ngen,istatus)
+       call ncdinq(ncid,kdim,name,ntotal,istatus)
+       write(*,*)'iy,jx,lrz,ngen,ntotal',iy,jx,lrz,ngen,ntotal
+
+       !allocate space for cql3d arrays
+       ALLOCATE( iy_(lrz), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for iy_")')
+       END IF
+
+       ALLOCATE( y(iy, lrz), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for y")')
+       END IF
+
+       ALLOCATE( x(jx), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for x")')
+       END IF
+
+       ALLOCATE( rya(lrz), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for rya")')
+       END IF
+
+       ALLOCATE( f(iy, jx, lrz, ngen), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for f")')
+       END IF
+       
+       ALLOCATE( wperp(lrz, ngen, nt), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for wperp")')
+       END IF 
+       
+       ALLOCATE( wpar(lrz, ngen, nt), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for wpar")')
+       END IF               
+
+       count(1)=iy
+       count(2)=jx
+       count(3)=lrz
+
+       !characteristic velocity
+       istatus = nf90_inq_varid(ncid,'vnorm', vid)
+       istatus = nf90_get_var(ncid, vid, vnorm)
+       write(*,*)'after ncvgp vnorm=',vnorm
+
+       !pitch angle variables
+       istatus = nf90_inq_varid(ncid, 'iy_', vid)
+       istatus = nf90_get_var(ncid, vid, iy_)!, 1, lrz)
+       
+       count_y(1)=iy
+       count_y(2)=lrz
+       istatus = nf90_inq_varid(ncid, 'y', vid)
+       istatus = nf90_get_var(ncid, vid, y)
+
+       !normalized small radius
+       istatus = nf90_inq_varid(ncid, 'rya', vid)
+       istatus = nf90_get_var(ncid, vid, rya)
+
+       !distribution function
+       istatus = nf90_inq_varid(ncid, 'f', vid)
+       istatus = nf90_get_var(ncid, vid, f)
+
+       ! the energies wperp--wpar
+       write(*,*)'shape of wperp ', shape(wperp)  
+       istatus = nf90_inq_varid(ncid, 'wperp', vid)
+       istatus = nf90_get_var(ncid, vid, wperp)       
+       write(*,*)'proc_cql3d_op: after ncvgt, wperp = ', wperp(:,kspeci, nt)
+
+       write(*,*)'shape of wpar ', shape(wpar)    
+       istatus = nf90_inq_varid(ncid, 'wpar', vid)
+       istatus = nf90_get_var(ncid, vid, wpar)            
+       write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:,kspeci, nt)
+
+       istatus = nf90_close(ncid)
+       call check_err(istatus)
+       n_theta_max = iy
+       n_u = jx
+       n_psi = lrz
+       n_t = nt
+
+       IF ( ALLOCATED(n_theta_) ) DEALLOCATE (n_theta_, u, theta, rho_a, f_CQL, f_cql_2d, wperp_cql, wpar_cql)
+
+       ALLOCATE( n_theta_(n_psi), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for n_theta_")')
+       END IF
+
+       ALLOCATE( theta(n_theta_max, n_psi), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for theta")')
+       END IF
+
+       ALLOCATE( u(n_u), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for u")')
+       END IF
+
+       ALLOCATE( rho_a(n_psi), stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for rho_a")')
+       END IF
+
+       ALLOCATE( f_CQL(n_theta_max, n_u, n_psi), stat=istat )
+       ALLOCATE( f_cql_2d(n_u, n_theta_max),     stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for f_CQL")')
+       END IF
+       
+       ALLOCATE( wperp_cql(n_psi, n_t),    stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for wperp_CQL")')
+       END IF  
+       
+       ALLOCATE( wpar_cql(n_psi, n_t),    stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for wpar_CQL")')
+       END IF              
+       
+       vc = vnorm
+       n_theta_ = iy_
+       theta = y
+       u = x
+       rho_a = rya
+       
+       f_CQL = f(:,:,:,kspeci)       
+       wperp_cql = wperp(:,kspeci,:)
+       wpar_cql = wpar(:,kspeci,:)
+
+       DEALLOCATE (iy_, x, y, rya, f, wperp, wpar)
+
+       return
+       
+       end subroutine netcdfr3d_multigen
+       
        subroutine check_err(iret)
        use netcdf
        integer iret
