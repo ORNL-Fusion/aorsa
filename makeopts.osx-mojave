@@ -1,16 +1,16 @@
 include compileropts.gnu
 
-FC = /opt/homebrew/bin/mpif90 -cpp
+FC = mpif90 -cpp
 
-NETCDF_DIR := $(shell /opt/homebrew/bin/brew --prefix netcdf)
-NETCDFF_DIR := $(shell /opt/homebrew/bin/brew --prefix netcdf-fortran)
+NETCDF_DIR := $(shell brew --prefix netcdf)
+NETCDFF_DIR := $(shell brew --prefix netcdf-fortran)
 
 LIBS += -L ${NETCDFF_DIR}/lib -lnetcdff -L ${NETCDF_DIR}/lib -lnetcdf
 INCLUDE_DIRS += -I $(NETCDF_DIR)/include -I $(NETCDFF_DIR)/include
 
-SCALAPACK_DIR := $(shell /opt/homebrew/bin/brew --prefix scalapack)
-BLAS_DIR := $(shell /opt/homebrew/bin/brew --prefix openblas)
-PGPLOT_DIR := $(shell /opt/homebrew/bin/brew --prefix giza)
+SCALAPACK_DIR := $(shell brew --prefix scalapack)
+BLAS_DIR := $(shell brew --prefix openblas)
+PGPLOT_DIR := $(shell brew --prefix giza)
 
 LIBS += -L $(SCALAPACK_DIR)/lib -lscalapack \
 	-L $(BLAS_DIR)/lib -lopenblas
