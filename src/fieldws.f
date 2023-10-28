@@ -80,8 +80,12 @@
 
 c Open graphics device
 
-c      IER = PGBEG(0, 'aorsa2d.ps/cps', 2, 2)
+
+#ifdef GIZA      
+      IER = PGBEG(0, 'scale.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'scale.ps/vcps', 1, 1)
+#endif
 
       IF (IER.NE.1) STOP
 
@@ -1035,12 +1039,14 @@ c     ncolelec=nred
 
 c Open graphics device
 
-c      IER = PGBEG(0, 'aorsa2d.ps/cps', 2, 2)
+#ifdef GIZA
+      IER = PGBEG(0, 'aorsa2d.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'aorsa2d.ps/vcps', 1, 1)
+#endif
 
       IF (IER.NE.1) STOP
 
-c      if (pgopen('aorsa2d.cps/cps') .lt. 1) stop
 
 c
 c--plot plasma profiles
@@ -5125,15 +5131,17 @@ c Close the graphics device.
 
 c Open new graphics device
 
+
+#ifdef GIZA      
+      IER = PGBEG(0, 'movie.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'movie.ps/vcps', 1, 1)
-c      IER = PGBEG(0, 'movie.gif/VGIF', 1, 1)
-
-
+#endif
+      
       IF (IER.NE.1) STOP
 
       call PGSCH (1.5)
 
-c      if (pgopen('aorsa2d.cps/cps') .lt. 1) stop
 
       titx = 'R (m)'
       tity = 'Z (m)'

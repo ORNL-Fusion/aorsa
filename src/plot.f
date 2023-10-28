@@ -18,7 +18,7 @@ c
       integer:: nnodex, nnodey, nphi1, nphi2, nphi1_dum, nphi2_dum
       integer:: nxplot, nyplot, ir, nt, imax, jmax, kmax
 
-      integer:: pgopen, pgbeg, ier, numb, iflag
+      integer:: pgbeg, ier, numb, iflag
       integer:: number_points
       integer:: nnoderho
 
@@ -517,13 +517,13 @@ c      write (6, 310) (xplotm(i),  i = 1, nxplot)
 *     Open graphics device
 *     --------------------
 
-c      IER = PGBEG(0, 'aorsa2dSum.ps/cps', 2, 2)
+#ifdef GIZA
+      IER = PGBEG(0, 'aorsa2dSum.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'aorsa2dSum.ps/vcps', 1, 1)
-
-
+#endif
+      
       IF (IER.NE.1) STOP
-
-c      if (pgopen('aorsa2d.cps/cps') .lt. 1) stop
 
       call PGSCH (1.5)
       CALL PGSCI(1)

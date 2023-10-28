@@ -65,26 +65,6 @@
          fmax1, fmax2, fmax3, fmaxt, fmin2, fmin3, fmint
       real x(nxmx), capr(nxmx), y(nymx)
 
-!      real xkti(nxmx, nymx), xkte(nxmx, nymx), xn(nxmx, nymx)
-!      real rho(nxmx, nymx)
-!      real xjy(nxmx, nymx), bmod(nxmx, nymx)
-!      real bmod_mid(nxmx, nymx), capr_bpol_mid2(nxmx, nymx)
-!      real xjx(nxmx, nymx), psi(nxmx, nymx)
-!      real xiota(nxmx, nymx), qsafety(nxmx, nymx)
-!      real btau(nxmx, nymx), bzeta(nxmx, nymx)
-!      real dbxdx(nxmx, nymx), dbydx(nxmx, nymx), dbzdx(nxmx, nymx),
-!     .     dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
-!     .     dbdx(nxmx, nymx),  dbdy(nxmx, nymx)
-!      real gradprlb(nxmx, nymx)
-!      real dxxbxn(nxmx, nymx), dxxbyn(nxmx, nymx), dxxbzn(nxmx, nymx),
-!     .     dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
-!     .     dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
-!     .     dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx,nymx),
-!     .     bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
-!     .     dldb_tot12(nxmx, nymx)
-!      real freal(nxmx, nymx), fimag(nxmx, nymx), fmod(nxmx, nymx)
-!      real rho_tor2d(nxmx, nymx)
-
       real, dimension(:,:), allocatable :: xkti, xkte, xn, &
          rho, xjy, bmod, bmod_mid, capr_bpol_mid2, &
          xjx, psi, xiota, qsafety, btau, bzeta, &
@@ -93,8 +73,6 @@
          dxybxn, dxybyn, dxybzn, dyybxn, dyybyn, dyybzn, &
          dxxmodb, dxymodb, dyymodb, bx, by, bz, bz_dum, dldb_tot12, &
          freal, fimag, fmod, rho_tor2d
-
-
 
 
       real xnmid(nxmx), xktimid(nxmx),  xktemid(nxmx), qmid(nxmx)
@@ -107,7 +85,6 @@
          caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
       real bpmin, bpmax
       integer:: nnodex, j, i, nnodey, numb, jmid, nxeqd
-!      complex zi
 
       namelist/plotin/ibackground, xminz, xmaxz, ymaxz, logmax
 
@@ -145,7 +122,6 @@
       open(unit=116,file='trace',status='old',form='formatted')
 
 
-!      zi = cmplx(0.0, 1.0)
 !      eps0 = 8.85e-12
 !      xmu0 = 1.26e-06
 !      clight = 1./sqrt(eps0 * xmu0)
@@ -218,7 +194,12 @@
 
 ! Open graphics device
 
+#ifdef GIZA
+      IER = PGBEG(0, 'trace.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'trace.ps/vcps', 1, 1)
+#endif
+
       IF (IER.NE.1) STOP
 
       call PGSCH (1.5)
@@ -710,12 +691,15 @@
 
 ! Open graphics device
 
-!      IER = PGBEG(0, 'eqdsk_setup.ps/cps', 2, 2)
+#ifdef GIZA
+      IER = PGBEG(0, 'eqdsk_setup.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'eqdsk_setup.ps/vcps', 1, 1)
+#endif
 
       IF (IER.NE.1) STOP
 
-!      if (pgopen('eqdsk_setup.cps/cps') .lt. 1) stop
+
 
       call PGSCH (1.5)
 

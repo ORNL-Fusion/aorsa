@@ -1,11 +1,13 @@
 
-*-------------------------------------------------------------------------
+*----------------------------------------------------------------------
 *     AORSA2D: version 20 (04-28-2010)
 *     This version includes odd-order derivative in the conductivity
-*     Special eqdsk_setup for Alcator-C lower hybrid (eqdsk_special .ne. 0)
+*     Special eqdsk_setup for Alcator-C lower hybrid
+*        (eqdsk_special .ne. 0)
 *     Does not change the sign of psi for abnormal eqdsk's
-*     Uses simple but slower load and solve - good out to the outer box wall
-*-------------------------------------------------------------------------
+*     Uses simple but slower load and solve
+*        - good out to the outer box wall
+*----------------------------------------------------------------------
 
 
       program aorsa2dMain
