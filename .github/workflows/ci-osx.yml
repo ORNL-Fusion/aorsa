@@ -12,7 +12,7 @@ jobs:
     - name: Get xquartz pt 2
       run: brew install --cask xquartz
     - name: Install AORSA deps
-      run: brew install open-mpi scalapack giza netcdf-fortran
+      run: brew install gfortran open-mpi scalapack giza netcdf-fortran
     - name: Build
       run: make
     - name: Test
