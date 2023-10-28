@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Get xquartz pt 2
-      run: brew install --cask quartz
+      run: brew install --cask xquartz
     - name: Install AORSA deps
       run: brew install open-mpi scalapack giza netcdf-fortran
     - name: Build
