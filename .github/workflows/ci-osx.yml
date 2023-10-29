@@ -12,7 +12,7 @@ jobs:
     - name: Get xquartz pt 2
       run: brew install --cask xquartz
     - name: find gfortran
-      run:  ls -l `brew --prefix`/bin/gf*
+      run:  ln -s  `brew --prefix`/bin/gfortran-13 `brew --prefix`/bin/gfortran
     - name: Install AORSA deps
       run: brew install gfortran open-mpi scalapack giza netcdf-fortran
     - name: Build
