@@ -1,14 +1,14 @@
       SUBROUTINE PASSF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     &                WA1(:)     ,WA2(:)     ,WA3(:)     ,WA4(:)
 C     *** TR11=COS(2*PI/5), TI11=-SIN(2*PI/5)
 C     *** TR12=-COS(4*PI/5), TI12=-SIN(4*PI/5)  
       DATA TR11,TI11,TR12,TI12 /0.3090169943749474241D0,
-     +     -0.95105651629515357212D0,
-     1     -0.8090169943749474241D0, -0.58778525229247312917D0/
-      IF (IDO .NE. 2) GO TO 102
-      DO 101 K=1,L1
+     &     -0.95105651629515357212D0,
+     &     -0.8090169943749474241D0, -0.58778525229247312917D0/
+      IF (IDO == 2) THEN
+      DO K=1,L1
          TI5 = CC(2,2,K)-CC(2,5,K)
          TI2 = CC(2,2,K)+CC(2,5,K)
          TI4 = CC(2,3,K)-CC(2,4,K)
@@ -35,10 +35,11 @@ C     *** TR12=-COS(4*PI/5), TI12=-SIN(4*PI/5)
          CH(1,K,4) = CR3+CI4
          CH(2,K,4) = CI3-CR4
          CH(2,K,5) = CI2-CR5
-  101 CONTINUE
+      END DO
       RETURN
-  102 DO 104 K=1,L1
-         DO 103 I=2,IDO,2
+      ELSE
+      DO K=1,L1
+         DO I=2,IDO,2
             TI5 = CC(I,2,K)-CC(I,5,K)
             TI2 = CC(I,2,K)+CC(I,5,K)
             TI4 = CC(I,3,K)-CC(I,4,K)
@@ -73,7 +74,8 @@ C     *** TR12=-COS(4*PI/5), TI12=-SIN(4*PI/5)
             CH(I,K,4) = WA3(I-1)*DI4-WA3(I)*DR4
             CH(I-1,K,5) = WA4(I-1)*DR5+WA4(I)*DI5
             CH(I,K,5) = WA4(I-1)*DI5-WA4(I)*DR5
-  103    CONTINUE
-  104 CONTINUE
+         END DO
+      END DO
       RETURN
+      END IF
       END

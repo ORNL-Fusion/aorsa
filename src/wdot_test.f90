@@ -1,7 +1,8 @@
       module wdot_mod
       use qlsum_myra_mod
       use wdot_sum_mod
-      include 'mpif.h'
+      !      include 'mpif.h'
+      use mpi
       contains
 
 !
@@ -108,7 +109,7 @@
 !      real count(0 : 10000, 1), sum_count
 
       real vol(nrhodim), dldbavg(nrhodim)
-	
+        
 
 
       complex sigxx, sigxy, sigxz,    &
@@ -279,54 +280,54 @@
       
             i = i_table(ip)
             j = j_table(ip)
-	    
-	    xnuomg = xnuomga(i,j)
-	    
-	    dbxdx = dxuzx(i,j)
-	    dbxdy = dyuzx(i,j)
-		     
+            
+            xnuomg = xnuomga(i,j)
+            
+            dbxdx = dxuzx(i,j)
+            dbxdy = dyuzx(i,j)
+                     
             dbydx = dxuzy(i,j)
-	    dbydy = dyuzy(i,j)
-		     
+            dbydy = dyuzy(i,j)
+                     
             dbphidx = dxuzz(i,j)
-            dbphidy = dyuzz(i,j)	    
-	    
+            dbphidy = dyuzz(i,j)            
+            
             bhatgradbx =  bxn(i,j) * dbxdx     &
      &                  + byn(i,j) * dbxdy   
             bhatgradby =  bxn(i,j) * dbydx     &
      &                  + byn(i,j) * dbydy 
             bhatgradbz =  bxn(i,j) * (dbphidx      &
      &                  - bzn(i,j) / capr(i) * drdx(i))    &
-     &                  + byn(i,j) * dbphidy	    
+     &                  + byn(i,j) * dbphidy        
 
-	
+        
             xkphi = nphi / capr(i)
-	    if(xkphi .eq. 0.0)xkphi = 1.0e-05
-	
+            if(xkphi .eq. 0.0)xkphi = 1.0e-05
+        
             alpha = sqrt(2.0 * xkt(i, j) / xm)
             n = int(rho(i,j) / drho) + 1
-	
+        
             if (ndist .eq. 0) then 
-	       vc_mks =  3.0 * alpha    !--Maxwellian only--!
-	       vc_mks_cql = vc_mks
-	       UminPara_cql = -1.0 
-	       UmaxPara_cql = 1.0
-	    end if
-	    
+               vc_mks =  3.0 * alpha    !--Maxwellian only--!
+               vc_mks_cql = vc_mks
+               UminPara_cql = -1.0 
+               UmaxPara_cql = 1.0
+            end if
+            
             u0 = vc_mks / alpha
-	    	    
+                    
             Emax = 0.5 * xm * vc_mks**2
             Enorm = Emax / 1.6e-19
             ASPEC = xm / 1.67e-27
             BMAG = omgc(i,j) * (xm / q)
-	       
-	    bratio = bmod_mid(i,j) / bmod(i,j)
-	    if (bratio .gt. 1.0) bratio = 1.0
-	    
-	    duperp = (uperp(nuper) - uperp(1)) / (nuper - 1)
+               
+            bratio = bmod_mid(i,j) / bmod(i,j)
+            if (bratio .gt. 1.0) bratio = 1.0
+            
+            duperp = (uperp(nuper) - uperp(1)) / (nuper - 1)
             dupara = (upara(nupar) - upara(1)) / (nupar - 1)
-	    
-	    psic = 1.0 / bratio
+            
+            psic = 1.0 / bratio
 
 !           -----------------------------------------------------
 !           get CQL3D distribution function on the midplane:
@@ -334,13 +335,13 @@
 !           -----------------------------------------------------
 
             if(ndist .eq. 0)then   !--Maxwellian--!
-	
-	       call maxwell_dist(u0, NUPAR, NUPER,    &
+        
+               call maxwell_dist(u0, NUPAR, NUPER,    &
      &              UminPara, UmaxPara,    &
      &              UPERP, UPARA, DFDUPER, DFDUPAR, FPERP)
 
             else   !--non-Maxwellian--!
-	
+        
                call cql3d_dist(nupar, nuper, n_psi,    &
      &              n_psi_dim, rho_a, rho(i,j),    &
      &              UminPara,UmaxPara,    &
@@ -351,91 +352,91 @@
 !              map CQL3D distribution function off the midplane for Wdot
 !              ---------------------------------------------------------
                if(bratio .gt. 0.0)then
-	       
-	          dfduper = 0.0
-	          dfdupar = 0.0
-	       	       
+               
+                  dfduper = 0.0
+                  dfdupar = 0.0
+                       
                   do ni = 1, nuper
                      do mi = 1, nupar
 
                         argd =  uperp(ni)**2 * (1. - bratio)    &
-     &     			                         + upara(mi)**2
+     &                                                   + upara(mi)**2
                         if (argd .le. 0.0) argd = 1.0e-06
-						
-		        uperp0 = uperp(ni) * sqrt(bratio)
+                                                
+                        uperp0 = uperp(ni) * sqrt(bratio)
                         upara0  = sign(1.0, upara(mi)) * sqrt(argd)
-			
-		        dfduper(ni, mi) = 0.0
+                        
+                        dfduper(ni, mi) = 0.0
                         dfdupar(ni, mi) = 0.0
-				
-		        if(upara0 .ge. upara(1) .and.     &
-     &                                   upara0 .le. upara(nupar)) then			
-					
-     		           ni0 = int((uperp0 - uperp(1)) / duperp) + 1
-			   mi0 = int((upara0 - upara(1)) / dupara) + 1
-			   
-			   dfduper0_intplt = dfduper0(ni0, mi0)
-			   dfdupar0_intplt = dfdupar0(ni0, mi0)
-			
-		           if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
-			   
+                                
+                        if(upara0 .ge. upara(1) .and.     &
+     &                                   upara0 .le. upara(nupar)) then                 
+                                        
+                           ni0 = int((uperp0 - uperp(1)) / duperp) + 1
+                           mi0 = int((upara0 - upara(1)) / dupara) + 1
+                           
+                           dfduper0_intplt = dfduper0(ni0, mi0)
+                           dfdupar0_intplt = dfdupar0(ni0, mi0)
+                        
+                           if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
+                           
                            uperp0_grid = uperp(1) + (ni0 - 1) * duperp
-			   upara0_grid = upara(1) + (mi0 - 1) * dupara
-						
-			   zeta = (uperp0 - uperp0_grid) / duperp
-			   eta  = (upara0 - upara0_grid) / dupara
-			
+                           upara0_grid = upara(1) + (mi0 - 1) * dupara
+                                                
+                           zeta = (uperp0 - uperp0_grid) / duperp
+                           eta  = (upara0 - upara0_grid) / dupara
+                        
                            ai = dfduper0(ni0, mi0)
                            bi = dfduper0(ni0+1,mi0) - dfduper0(ni0,mi0)
                            ci = dfduper0(ni0,mi0+1) - dfduper0(ni0,mi0)
                            di = dfduper0(ni0+1,mi0+1)+ dfduper0(ni0,mi0)     &
      &                        - dfduper0(ni0+1,mi0)- dfduper0(ni0,mi0+1) 
-			   
-			   dfduper0_intplt = ai + bi * zeta     &
-     &                                     + ci * eta + di * zeta * eta 			
+                           
+                           dfduper0_intplt = ai + bi * zeta     &
+     &                                     + ci * eta + di * zeta * eta                         
 
                            ai = dfdupar0(ni0, mi0)
                            bi = dfdupar0(ni0+1,mi0) - dfdupar0(ni0,mi0)
                            ci = dfdupar0(ni0,mi0+1) - dfdupar0(ni0,mi0)
                            di = dfdupar0(ni0+1,mi0+1)+ dfdupar0(ni0,mi0)     &
      &                        - dfdupar0(ni0+1,mi0)- dfdupar0(ni0,mi0+1) 
-			   
-			   dfdupar0_intplt = ai + bi * zeta     &
+                           
+                           dfdupar0_intplt = ai + bi * zeta     &
      &                                     + ci * eta + di * zeta * eta 
      
-                           end if 			
-						   	
-			   		
-			   if (upara0 .ne. 0.0)then
-			
-			      dfdupar(ni, mi) = dfdupar0_intplt *     &
+                           end if                       
+                                                        
+                                        
+                           if (upara0 .ne. 0.0)then
+                        
+                              dfdupar(ni, mi) = dfdupar0_intplt *     &
      &                           upara(mi) / upara0
      
                               dfduper(ni, mi) = dfduper0_intplt *     &
      &                           sqrt(bratio) + dfdupar0_intplt *     &
      &                           uperp(ni) / upara0 * (1.0 - bratio)
      
-!     			      dfdth = upara(mi) * dfduper(ni, mi)    &
+!                             dfdth = upara(mi) * dfduper(ni, mi)    &
 !     &                             - uperp(ni) * dfdupar(ni, mi)
      
                            end if
-			   
-			end if
-			
-															
+                           
+                        end if
+                        
+                                                                                                                        
                      end do
                   end do
                end if
 
             end if
-	
+        
 !           ----------------------------------
 !           Loop over perpendicular velocities
 !           ----------------------------------
 
             do ni = 1, nuper
-	    
-	    if (ndist .eq. 0)    &
+            
+            if (ndist .eq. 0)    &
      &          call wdot_new_maxwellian_sum(i,j, ni, b_sum, c_sum,    & 
      &               e_sum, f_sum,    &
      &               wdot_sum(ni), sum_fx0(ni), sum_fy0(ni), W, ZSPEC,     &
@@ -456,7 +457,7 @@
      &               xnuomg)
      
      
-	    if (ndist .eq. 1)    &
+            if (ndist .eq. 1)    &
      &         call QLSUM_NON_MAXWELLIAN(ni, b_sum, c_sum, e_sum, f_sum,    &
      &               wdot_sum(ni), sum_fx0(ni), sum_fy0(ni), W, ZSPEC,     &
      &               ASPEC, BMAG, lmax, ENORM, UminPara, UmaxPara,    &
@@ -470,28 +471,28 @@
      &               lmaxdim, ndist, nzeta_wdot,    &
      &               gradprlb(i,j), bmod(i,j), omgc(i,j), alpha, xm,    &
      &               upshift, xk_cutoff, rt, nphi, rho(i,j))    
-	       	    	            	           	      
+                                                              
 
             end do   ! end of loop over uperp
 
-	       
+               
 
-	       
+               
 !           --------------------------------------------
 !           integrate wdot over perpendicular velocities
 !           --------------------------------------------
-	    wdoti = 0.0
-	    do ni = 1, nuper - 1
-	       wdoti = wdoti + 0.5 * duperp *     &
+            wdoti = 0.0
+            do ni = 1, nuper - 1
+               wdoti = wdoti + 0.5 * duperp *     &
      &            (wdot_sum(ni) + wdot_sum(ni + 1) )
-	    end do
-	    
-	    	    	                        	      
+            end do
+            
+                                                              
             wdot(i,j) = pi**1.5 * omgp2(i,j) * eps0 / omgrf     &
      &                                          * aimag(wdoti)
-	    
+            
               
-	
+        
 !     --------------------------------
 !     end loop over i,j spatial points
 !     --------------------------------
@@ -540,5 +541,5 @@
 !***************************************************************************
 !
 
-       end module wdot_mod
+     end module wdot_mod
 

@@ -5,7 +5,6 @@
 !       module to perform matrix multiply
 !       with circulant and toeplitz matrices
 !       ------------------------------------
-
         interface
 !       -------------------------------------------
 !       use FFTPACK routines available from
@@ -14,17 +13,20 @@
 
         subroutine zffti(n,wsave)
         integer n
-        complex*16 wsave(*)
+        integer, parameter :: r15 = selected_real_kind(15,307)
+        complex(r15):: wsave(*)
         end subroutine zffti
 
         subroutine zfftb(n,c,wsave)
         integer n
-        complex*16 c(*), wsave(*)
+        integer, parameter :: r15 = selected_real_kind(15,307)
+        complex(r15):: c(*), wsave(*)
         end subroutine zfftb
 
         subroutine zfftf(n,c,wsave)
         integer n
-        complex*16 c(*), wsave(*)
+        integer, parameter :: r15 = selected_real_kind(15,307)
+        complex(r15):: c(*), wsave(*)
         end subroutine zfftf
 
         subroutine dffti(n,wsave)
@@ -64,6 +66,7 @@
         end interface
 
         private
+        integer, parameter :: r15 = selected_real_kind(15)         
         public :: circulant, circulant_mult
         public :: toeplitz, toeplitz_mult
 
@@ -159,8 +162,8 @@
         double precision, dimension(n), intent(inout) :: y
 
         integer, parameter :: idebug = 0
-        complex*16, dimension(n) :: zx, zc, zy
-        complex*16, dimension(4*n+15) :: wsave
+        complex(r15), dimension(n) :: zx, zc, zy
+        complex(r15), dimension(4*n+15) :: wsave
         double precision :: t1,t2,  time1, time2, diff
 
         double precision, dimension(n) :: dx,dc,dy

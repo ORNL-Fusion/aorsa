@@ -4,8 +4,8 @@
 
     use swim_global_data_mod, only : &
             & rspec, ispec, &               ! int: kind specification for real and integer
+            & swim_error                    ! error routine
 !            & swim_string_length, &         ! length of strings for names, files, etc.
-	    & swim_error		    ! error routine
     
       implicit none
 
@@ -175,7 +175,7 @@
     REAL (KIND = rspec), ALLOCATABLE :: &
         S_rho_prf_grid(:), & ! rho values in RF power deposition grid, (1:nrho__prf)
         S_prf2D_src_s(:,:,:,:),   & ! 2D Power deposition from each source into each 
-                                  	         	! species, (1:nrho__prf, 1:nrf_src, 0:nspec)
+                                                        ! species, (1:nrho__prf, 1:nrf_src, 0:nspec)
         S_prf_src_s(:,:,:)  ! Power deposition profile from each source into each 
                               ! species, (1:nrho__prf, 1:nrf_src, 0:nspec)
     real(kind = rspec) ::   S_prf_total_s(nrho_max,0:n_spec_max)   ! Total rf power deposition profile into each species
@@ -194,7 +194,7 @@
         S_ql_operator          ! quasilinear operator for each non Maxwellian--file name 
                                 ! species, (1:nspec_nonMax)
     character(len = swim_string_length), dimension(n_spec_nm_max) :: &
-        S_distribution_fun	! distribution function for each non Maxwellian species
+        S_distribution_fun      ! distribution function for each non Maxwellian species
 
 
 

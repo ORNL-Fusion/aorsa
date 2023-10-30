@@ -103,6 +103,23 @@ LSB_RS := $(shell lsb_release -rs)
 HOSTNAME := $(shell hostname)
 
 SYSTEM_IDENTIFIED = 0
+ifeq ($(LMOD_SYSHOST),perlmutter)
+  ifeq ($(PE_ENV),GNU)
+    include makeopts.perlmutter.gnu
+    $(info System identified as Perlmutter GNU)
+    SYSTEM_IDENTIFIED = 1
+  endif
+  ifeq ($(PE_ENV),AOCC)
+    include makeopts.perlmutter.aocc
+    $(info System identified as Perlmutter AOCC)
+    SYSTEM_IDENTIFIED = 1
+  endif
+  ifeq ($(PE_ENV),INTEL)
+    include makeopts.perlmutter.intel
+    $(info System identified as Perlmutter INTEL)
+    SYSTEM_IDENTIFIED = 1
+  endif
+endif
 ifeq ($(NERSC_HOST),cori)
   ifeq ($(PE_ENV),GNU)
     include makeopts.cori.gnu
@@ -123,9 +140,9 @@ ifeq ($(UNAME_S),Darwin) # OSX
   #endif
 endif
 ifeq ($(LSB_IS),Ubuntu)
-  ifeq ($(LSB_RS),18.04)
-    include makeopts.ubuntu18.04
-    $(info System identified as Ubuntu18.04)
+  ifeq ($(LSB_RS),20.04)
+    include makeopts.ubuntu20.04
+    $(info System identified as Ubuntu20.04)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
@@ -137,20 +154,20 @@ ifeq ($(SYSTEM_IDENTIFIED),0)
 endif
 
 
-F90          = $(FC) -c $(COMMON_OPTION) $(INCLUDE_DIRS)
-F90_NOSAVE   = $(FC) -c $(COMMON_OPTION2) $(INCLUDE_DIRS)
-F90_r4       = $(FC) -c $(COMMON_OPTION3) $(INCLUDE_DIRS)
-F90_4        = $(FC) -c $(COMMON_OPTION4) $(INCLUDE_DIRS)
-F90_LOAD     = $(FC)    $(COMMON_OPTION) $(INCLUDE_DIRS)
+F90          = $(FC) -c $(COMMON_OPTION) #$(INCLUDE_DIRS)
+F90_NOSAVE   = $(FC) -c $(COMMON_OPTION2) # $(INCLUDE_DIRS)
+F90_r4       = $(FC) -c $(COMMON_OPTION3) #$(INCLUDE_DIRS)
+F90_4        = $(FC) -c $(COMMON_OPTION4) #$(INCLUDE_DIRS)
+F90_LOAD     = $(FC)    $(COMMON_OPTION) #$(INCLUDE_DIRS)
 
 INLINE=
 OPTIMIZATION =  
-F90FLAGS += $(INLINE) $(OPTIMIZATION) $(INCLUDE_DIRS) $(MOD_DIR_FLAG)
+F90FLAGS += $(INLINE) $(OPTIMIZATION) $(MOD_DIR_FLAG)
 
-COMPILE90          = $(F90)          $(F90FLAGS) 
-COMPILE90_NOSAVE   = $(F90_NOSAVE)   $(F90FLAGS)
-COMPILE_r4         = $(F90_r4)       $(F90FLAGS)
-COMPILE90_4        = $(F90_4)        $(F90FLAGS)  
+COMPILE90          = $(F90)          $(F90FLAGS) $(DEFS)
+COMPILE90_NOSAVE   = $(F90_NOSAVE)   $(F90FLAGS) $(DEFS)
+COMPILE_r4         = $(F90_r4)       $(F90FLAGS) $(DEFS)
+COMPILE90_4        = $(F90_4)        $(F90FLAGS) $(DEFS)
 
 LOADFLAGS = $(DFFTPACK)
 LOAD = $(F90_LOAD) $(OPTIMIZATION) 
@@ -183,41 +200,39 @@ ${OBJ_DIR}/orbit.o: ${SRC_DIR}/orbit.f
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/rf2x_setup2.o \
                              $(SRC_DIR)/rf2x_setup2.f $(INCLUDE_DIRS)
-			     
+
 $(OBJ_DIR)/profile_setup.o:  $(SRC_DIR)/profile_setup.f
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/profile_setup.o \
                              $(SRC_DIR)/profile_setup.f $(INCLUDE_DIRS)
-			     
+
 $(OBJ_DIR)/eqdsk_setup.o:    $(SRC_DIR)/eqdsk_setup.f
 	                     $(COMPILE90) -o $(OBJ_DIR)/eqdsk_setup.o \
                              $(SRC_DIR)/eqdsk_setup.f $(INCLUDE_DIRS)
-				
+
 $(OBJ_DIR)/orbit.o:          $(SRC_DIR)/orbit.f
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/orbit.o \
                              $(SRC_DIR)/orbit.f $(INCLUDE_DIRS)			     
-			     			     			     			     
+
 $(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f90
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/eqdsk_plot.o \
                              $(SRC_DIR)/eqdsk_plot.f90 $(INCLUDE_DIRS) $(WARNING_FLAGS)				     
-			     			     
+
 $(OBJ_DIR)/fieldws.o:        $(SRC_DIR)/fieldws.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/fieldws.o \
                              $(SRC_DIR)/fieldws.f $(INCLUDE_DIRS)
-			     
+
 $(OBJ_DIR)/scale.o:          $(SRC_DIR)/scale.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/scale.o \
                              $(SRC_DIR)/scale.f $(INCLUDE_DIRS)			     
-			     
-$(OBJ_DIR)/dql_write.o:      $(SRC_DIR)/dql_write.f
+
+$(OBJ_DIR)/dql_write.o:      $(SRC_DIR)/dql_write.f 
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/dql_write.o \
-                             $(SRC_DIR)/dql_write.f $(INCLUDE_DIRS)			     
-			     
+                             $(SRC_DIR)/dql_write.f $(INCLUDE_DIRS) ${WARNING_FLAGS}
+
 $(OBJ_DIR)/plot.o:           $(SRC_DIR)/plot.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/plot.o \
                              $(SRC_DIR)/plot.f $(INCLUDE_DIRS)				     
-			     			     
-			     
-			    		    		     		   			     			     				
+
 ### FFTPACK files:
 
 ${OBJ_DIR}/%.o: ${FFT_DIR}/%.f
@@ -248,8 +263,8 @@ $(OBJ_DIR)/vector_write_m.o:    $(CQL3D_SETUP_DIR)/vector_write_m.f90
 
 $(OBJ_DIR)/read_cql3d.o:        $(CQL3D_SETUP_DIR)/read_cql3d.f90
 	                        $(COMPILE90_4) -o $(OBJ_DIR)/read_cql3d.o \
-                                $(CQL3D_SETUP_DIR)/read_cql3d.f90 $(INCLUDE_DIRS)
-			
+                                $(CQL3D_SETUP_DIR)/read_cql3d.f90 $(INCLUDE_DIRS) ${WARNING_FLAGS}
+
 $(OBJ_DIR)/ceez.o:              $(CQL3D_SETUP_DIR)/ceez.f
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/ceez.o \
                                 $(CQL3D_SETUP_DIR)/ceez.f $(INCLUDE_DIRS)
@@ -257,11 +272,11 @@ $(OBJ_DIR)/ceez.o:              $(CQL3D_SETUP_DIR)/ceez.f
 $(OBJ_DIR)/cubic_B_splines_v.o: $(CQL3D_SETUP_DIR)/cubic_B_splines_v.f90
 	                        $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/cubic_B_splines_v.o \
                                 $(CQL3D_SETUP_DIR)/cubic_B_splines_v.f90 $(INCLUDE_DIRS)		
-			
+
 $(OBJ_DIR)/cql3d_setup.o:       $(CQL3D_SETUP_DIR)/cql3d_setup.f90
 	                        $(COMPILE90_4) -o $(OBJ_DIR)/cql3d_setup.o \
                                 $(CQL3D_SETUP_DIR)/cql3d_setup.f90 $(INCLUDE_DIRS)
-				
+
 .phony: make_directories
 make_directories: $(OBJ_DIR)/ $(MOD_DIR)/
 
@@ -270,7 +285,7 @@ $(MOD_DIR)/:
 
 $(OBJ_DIR)/:
 	mkdir -p $@
-		
+
 .phony: clean
 clean:
 	rm -r $(MOD_DIR)/*.mod $(OBJ_DIR)/*.o $(EXEC)

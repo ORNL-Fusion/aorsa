@@ -5,56 +5,40 @@
       implicit none
 
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titx
-      character*32 tity
-      character*32 titz
-      character*32 titlb
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
+      character(32):: titlb
 
-      real logmax
-      integer nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
-      integer ibackground, nkx1, nkx2, nky1, nky2, n, m, &
-         nkpltdim, mkpltdim, nkxplt, nkyplt
+      real:: logmax
+      integer:: ibackground, nkx1, nkx2, nky1, nky2, n, m, &
+         nkxplt, nkyplt
 
-      integer  ncolln10, ncolln9, nwheat, ngrey, naqua, &
+      integer::  ncolln10, ncolln9, nwheat, ngrey, naqua, &
          npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen, &
          nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5, &
          ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2, &
          ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion, &
          ncolelec, norange
 
-      integer nrhomax, nnoderho, iflag, nxeqdmax, nyeqdmax, &
-          nnoderho_half, nnoderho2_half
+      integer:: nnoderho, iflag, nnoderho_half, nnoderho2_half
 
-      integer pgopen, pgbeg, ier
-!      integer nmodesmax, mmodesmax
+      integer:: pgopen, pgbeg, ier
 
-      integer :: iostatval
-      parameter (nlevmax = 101)
+      integer:: iostatval
 
-!      parameter (nmodesmax = 450)
-!      parameter (mmodesmax = 450)
+      integer, parameter::  nlevmax = 101, nxmx = nmodesmax, &
+           nymx = mmodesmax,      nrhomax = nxmx, &
+           nkdim1 = - nxmx / 2,   nkdim2 =   nxmx / 2, &
+           mkdim1 = - nxmx / 2,   mkdim2 =   nxmx / 2, &
+           nkpltdim = 2 * nkdim2, mkpltdim = 2 * mkdim2, &
+           nxeqdmax = 257,        nyeqdmax = 257
 
-      parameter (nxmx = nmodesmax)
-      parameter (nymx = mmodesmax)
-
-      parameter (nrhomax = nxmx)
-
-      parameter (nkdim1 = - nxmx / 2)
-      parameter (nkdim2 =   nxmx / 2)
-
-      parameter (mkdim1 = - nxmx / 2)
-      parameter (mkdim2 =   nxmx / 2)
-
-      parameter (nkpltdim = 2 * nkdim2)
-      parameter (mkpltdim = 2 * mkdim2)
-
-      parameter (nxeqdmax = 257, nyeqdmax = 257)
-
-      real capr_x(6000), capz_x(6000), dx, dy
-      integer n_phi, n_phi_max, number_points
+      real:: capr_x(6000), capz_x(6000), dx, dy
+      integer:: n_phi, n_phi_max, number_points
 
 
       real rhoeqdsk(nxeqdmax), psigrid(nxeqdmax), agrid(nxeqdmax), &
@@ -81,26 +65,6 @@
          fmax1, fmax2, fmax3, fmaxt, fmin2, fmin3, fmint
       real x(nxmx), capr(nxmx), y(nymx)
 
-!      real xkti(nxmx, nymx), xkte(nxmx, nymx), xn(nxmx, nymx)
-!      real rho(nxmx, nymx)
-!      real xjy(nxmx, nymx), bmod(nxmx, nymx)
-!      real bmod_mid(nxmx, nymx), capr_bpol_mid2(nxmx, nymx)
-!      real xjx(nxmx, nymx), psi(nxmx, nymx)
-!      real xiota(nxmx, nymx), qsafety(nxmx, nymx)
-!      real btau(nxmx, nymx), bzeta(nxmx, nymx)
-!      real dbxdx(nxmx, nymx), dbydx(nxmx, nymx), dbzdx(nxmx, nymx),
-!     .     dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
-!     .     dbdx(nxmx, nymx),  dbdy(nxmx, nymx)
-!      real gradprlb(nxmx, nymx)
-!      real dxxbxn(nxmx, nymx), dxxbyn(nxmx, nymx), dxxbzn(nxmx, nymx),
-!     .     dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
-!     .     dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
-!     .     dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx,nymx),
-!     .     bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
-!     .     dldb_tot12(nxmx, nymx)
-!      real freal(nxmx, nymx), fimag(nxmx, nymx), fmod(nxmx, nymx)
-!      real rho_tor2d(nxmx, nymx)
-
       real, dimension(:,:), allocatable :: xkti, xkte, xn, &
          rho, xjy, bmod, bmod_mid, capr_bpol_mid2, &
          xjx, psi, xiota, qsafety, btau, bzeta, &
@@ -109,8 +73,6 @@
          dxybxn, dxybyn, dxybzn, dyybxn, dyybyn, dyybzn, &
          dxxmodb, dxymodb, dyymodb, bx, by, bz, bz_dum, dldb_tot12, &
          freal, fimag, fmod, rho_tor2d
-
-
 
 
       real xnmid(nxmx), xktimid(nxmx),  xktemid(nxmx), qmid(nxmx)
@@ -122,8 +84,7 @@
       real temax, temin, timin, tmin, tmax, timax, caprmaxp, &
          caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
       real bpmin, bpmax
-      integer nnodex, j, i, nnodey, numb, jmid, nxeqd
-!      complex zi
+      integer:: nnodex, j, i, nnodey, numb, jmid, nxeqd
 
       namelist/plotin/ibackground, xminz, xmaxz, ymaxz, logmax
 
@@ -161,11 +122,10 @@
       open(unit=116,file='trace',status='old',form='formatted')
 
 
-!      zi = cmplx(0.0, 1.0)
-      eps0 = 8.85e-12
-      xmu0 = 1.26e-06
-      clight = 1./sqrt(eps0 * xmu0)
-      xk0 = omgrf / clight
+!      eps0 = 8.85e-12
+!      xmu0 = 1.26e-06
+!      clight = 1./sqrt(eps0 * xmu0)
+!      xk0 = omgrf / clight
       q = 1.6e-19
 
 
@@ -234,7 +194,12 @@
 
 ! Open graphics device
 
+#ifdef GIZA
+      IER = PGBEG(0, 'trace.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'trace.ps/vcps', 1, 1)
+#endif
+
       IF (IER.NE.1) STOP
 
       call PGSCH (1.5)
@@ -308,57 +273,40 @@
       implicit none
 
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      character*32 titx
-      character*32 tity
-      character*32 titz
-      character*32 titlb
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
+      character(32):: titx
+      character(32):: tity
+      character(32):: titz
+      character(32):: titlb
 
-      real logmax
-      integer nxmx, nymx, nkdim1, nkdim2, mkdim1, mkdim2, nlevmax
-      integer ibackground, nkx1, nkx2, nky1, nky2, n, m, &
-         nkpltdim, mkpltdim, nkxplt, nkyplt
+      real:: logmax
+      integer:: ibackground, nkx1, nkx2, nky1, nky2, n, m, &
+         nkxplt, nkyplt
 
-      integer iostatval
+      integer:: iostatval
 
-      integer  ncolln10, ncolln9, nwheat, ngrey, naqua, &
+      integer::  ncolln10, ncolln9, nwheat, ngrey, naqua, &
          npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen, &
          nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5, &
          ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2, &
          ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion, &
          ncolelec, norange
 
-      integer nrhomax, nnoderho, iflag, nxeqdmax, nyeqdmax, &
-          nnoderho_half, nnoderho2_half
+      integer:: nnoderho, iflag, nnoderho_half, nnoderho2_half
 
-      integer pgopen, pgbeg, ier
-!      integer nmodesmax, mmodesmax
+      integer:: pgopen, pgbeg, ier
 
-      parameter (nlevmax = 101)
+      integer, parameter::  nlevmax = 101, nxmx = nmodesmax, &
+           nymx = mmodesmax,      nrhomax = nxmx, &
+           nkdim1 = - nxmx / 2,   nkdim2 =   nxmx / 2, &
+           mkdim1 = - nxmx / 2,   mkdim2 =   nxmx / 2, &
+           nkpltdim = 2 * nkdim2, mkpltdim = 2 * mkdim2, &
+           nxeqdmax = 257,        nyeqdmax = 257
 
-!      parameter (nmodesmax = 450)
-!      parameter (mmodesmax = 450)
-
-      parameter (nxmx = nmodesmax)
-      parameter (nymx = mmodesmax)
-
-      parameter (nrhomax = nxmx)
-
-      parameter (nkdim1 = - nxmx / 2)
-      parameter (nkdim2 =   nxmx / 2)
-
-      parameter (mkdim1 = - nxmx / 2)
-      parameter (mkdim2 =   nxmx / 2)
-
-      parameter (nkpltdim = 2 * nkdim2)
-      parameter (mkpltdim = 2 * mkdim2)
-
-      parameter (nxeqdmax = 257, nyeqdmax = 257)
-
-      real capr_x(6000), capz_x(6000), dx, dy
-      integer n_phi, n_phi_max, number_points
+      real:: capr_x(6000), capz_x(6000), dx, dy
+      integer:: n_phi, n_phi_max, number_points
 
 
       real rhoeqdsk(nxeqdmax), psigrid(nxeqdmax), agrid(nxeqdmax), &
@@ -428,7 +376,7 @@
       real temax, temin, timin, tmin, tmax, timax, caprmaxp, &
          caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
       real bpmin, bpmax
-      integer nnodex, j, i, nnodey, numb, jmid, nxeqd
+      integer:: nnodex, j, i, nnodey, numb, jmid, nxeqd
 !      complex zi
 
       namelist/plotin/ibackground, xminz, xmaxz, ymaxz, logmax
@@ -487,10 +435,10 @@
 
 
 !      zi = cmplx(0.0, 1.0)
-      eps0 = 8.85e-12
-      xmu0 = 1.26e-06
-      clight = 1./sqrt(eps0 * xmu0)
-      xk0 = omgrf / clight
+!      eps0 = 8.85e-12
+!      xmu0 = 1.26e-06
+!      clight = 1./sqrt(eps0 * xmu0)
+!      xk0 = omgrf / clight
       q = 1.6e-19
 
 
@@ -512,7 +460,7 @@
           write(*,*) 'Value of nxeqdmax is too small in eqdsk_plot.f90'
           write(*,*) 'nxeqdmax = ', nxeqdmax
           write(*,*) 'nxeq = ', nxeqd
-          call exit(1)
+          stop 1
       end if
 
       read(138, 310) (x(i), i = 1, nnodex)
@@ -642,7 +590,7 @@
       write (145, 3411) ((bx(i,j), i = 1, nnodex),  j = 1, nnodey)
 
  3410 format(1p4e10.2)
- 3411 format(6f17.4)
+ 3411 format(6e17.4)
 
 
 
@@ -743,12 +691,15 @@
 
 ! Open graphics device
 
-!      IER = PGBEG(0, 'eqdsk_setup.ps/cps', 2, 2)
+#ifdef GIZA
+      IER = PGBEG(0, 'eqdsk_setup.pdf', 1, 1)
+#else
       IER = PGBEG(0, 'eqdsk_setup.ps/vcps', 1, 1)
+#endif
 
       IF (IER.NE.1) STOP
 
-!      if (pgopen('eqdsk_setup.cps/cps') .lt. 1) stop
+
 
       call PGSCH (1.5)
 
@@ -793,6 +744,8 @@
 
 
       title = 'psi surfaces'
+!      write(15,*) 'psi test ',psi
+!      write(6,*) 'psi test ',psi
       call ezconc(capr, y, psi, ff, nnodex, nnodey, numb, &
          nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
@@ -1325,7 +1278,7 @@
 
       implicit none
 
-      integer nx, ny, i, j, nxmax, nymax
+      integer:: nx, ny, i, j, nxmax, nymax
       real f(nxmax, nymax), fmin, fmax
 
       fmax=f(2, 1)
@@ -1352,19 +1305,19 @@
 
       implicit none
 
+      integer:: nr,nrmax
       real xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real x1(nrmax), y1(nrmax)
       real y1max,y2max,y3max,y1min,y2min,y3min
       real ymin,ymax
 
-      character*32 title
-      character*32 titll
-      character*32 titlr
-      integer nr,nrmax
+      character(32):: title
+      character(32):: titll
+      character(32):: titlr
 
-      integer nplot1,ncollab, ncolion,ncolbox, ncyan, &
+      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan, &
           ncolelec, ncolln2, ncollin, ncolbrd
-      integer nblack,nred,nyellow, ngreen,naqua,npink, &
+      integer:: nblack,nred,nyellow, ngreen,naqua,npink, &
          nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1, &
          nturquoise,nmagenta,nsalmon,nwhite,ncolln3
       common/colcom/nblack,nred,nyellow,ngreen,naqua,npink, &

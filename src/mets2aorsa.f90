@@ -13,15 +13,15 @@
     subroutine getnonmaxsigma_aorsa_newi_1(w,zspec,aspec,dens,bmag, &
        & k1,xi1,jnxi1,k2,xi2,jnxi2,nbessj,enorm,uparmin,uparmax, &
        & nupar,nuper,uper,upar,dfduper,dfdupar,wspec,ifail, &
-	 & l_first, l_interp, kperp_max, nkperp, xkprl0)
+       & l_first, l_interp, kperp_max, nkperp, xkprl0)
 
 !   ---------------------------------------------------------
 !   lee's version: interpolates for l_interp = .true
 !           does full integrals for l_interp = .false.
 !   ---------------------------------------------------------
-	
-    implicit none
 
+!    use iso_fortran_env, r8=>real64
+    implicit none
 
     logical, optional :: l_interp
     logical, optional :: l_first
@@ -40,7 +40,7 @@
     real, dimension(3) :: k1,k2
     integer, intent(in) :: nupar,nuper,nbessj
     real, dimension(nuper) :: xi1,xi2
-    real, dimension(nuper, nbessj), intent(in) :: jnxi1,jnxi2
+    real, dimension(nuper, nbessj), intent(inout) :: jnxi1,jnxi2
     real, intent(in) :: enorm,uparmin,uparmax
     real, dimension(nuper), intent(in) :: uper
     real, dimension(nupar), intent(in):: upar
@@ -86,10 +86,10 @@
     logical, parameter :: use_ppart6 = .true.
     logical :: is_uniform 
     integer, parameter :: nfxmax = 9
-    real*8, dimension(nfxmax) ::  vint
-    real*8, dimension(nupar,nfxmax) :: fx
+    real, dimension(nfxmax) ::  vint
+    real, dimension(nupar,nfxmax) :: fx
     integer :: nfx
-    real*8 :: dx,dh,tol
+    real :: dx,dh,tol
     integer :: i
 
 !  check to make sure that the v_par mesh is uniform
@@ -126,8 +126,8 @@
        allocate(fpint_11(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
             &   fpint_33(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
             &   fpint_31(1:nupar, -2:nkperp_l+2),  &
-            &   pint_11(1:nupar, 0:nbessj-1),	&
-            &   pint_33(1:nupar, 0:nbessj-1),	&
+            &   pint_11(1:nupar, 0:nbessj-1),   &
+            &   pint_33(1:nupar, 0:nbessj-1),   &
             &   pint_31(1:nupar),               &
             &   dfdthp(1:nuper,1:nupar))
     else  !check for size
@@ -139,9 +139,9 @@
           allocate(fpint_11(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
          &   fpint_33(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
          &   fpint_31(1:nupar, -2:nkperp_l+2),  &
-         &   pint_11(1:nupar, 0:nbessj-1),	&
-         &   pint_33(1:nupar, 0:nbessj-1),	&
-         &   pint_31(1:nupar),			&
+         &   pint_11(1:nupar, 0:nbessj-1),      &
+         &   pint_33(1:nupar, 0:nbessj-1),      &
+         &   pint_31(1:nupar),                  &
          &   dfdthp(1:nuper,1:nupar))
        end if !what size
     end if  !not allocated
@@ -221,14 +221,14 @@
        do j = 1, nupar
           do k = 1 , nuper
              dfdthp(k,j) = upar(j) * dfduper(k,j) - uper(k) * dfdupar(k,j)
-	     
-	     
+             
+             
 !            --------------------------------------------
 !            Approximate 2nd term with no upshift, xkprl0
-!           ---------------------------------------------	     	     
+!           ---------------------------------------------                    
              dfdthp(k,j) = dfduper(k,j) - dfactper0 * dfdthp(k,j)
-	     
-	     
+             
+             
 !t  his isn't really dfdth now, but a combination that is used
           end do  ! vperp loop
        end do !vpar loop
@@ -382,7 +382,7 @@
 !-----------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
-!  the remaining code either uses the exact integrals, not l_interp, or interpolates in kperp.	
+!  the remaining code either uses the exact integrals, not l_interp, or interpolates in kperp.  
     du_3 = (upar(nupar)-upar(1))/real(nupar-1)/3.
     if(l_interp) then
        dk = kperp_max_l/nkperp_l
@@ -403,10 +403,10 @@
             & +  fpint_11(1:nupar,nk+2,0:nharm+1) * a5
 
           pint_33(1:nupar,0:nharm) =   &
-            &    fpint_33(1:nupar,nk-2,0:nharm) * a1	&
-            & +  fpint_33(1:nupar,nk-1,0:nharm) * a2	&
-            & +  fpint_33(1:nupar,nk  ,0:nharm) * a3     &
-            & +  fpint_33(1:nupar,nk+1,0:nharm) * a4	&
+            &    fpint_33(1:nupar,nk-2,0:nharm) * a1    &
+            & +  fpint_33(1:nupar,nk-1,0:nharm) * a2    &
+            & +  fpint_33(1:nupar,nk  ,0:nharm) * a3    &
+            & +  fpint_33(1:nupar,nk+1,0:nharm) * a4    &
             & +  fpint_33(1:nupar,nk+2,0:nharm) * a5
 
           pint_31(1:nupar) =   &
@@ -416,13 +416,13 @@
             & +  fpint_31(1:nupar, nk+1) * a4   &
             & +  fpint_31(1:nupar, nk+2) * a5
 
-       else	! second order
+       else     ! second order
           a2 = p*(p-1.)/2.
           a3 = (1.-p*p)
           a4 = p*(p+1.)/2.
           pint_11(1:nupar,0:iharm+1) =   &
-            & +  fpint_11(1:nupar,nk-1,0:nharm+1) * a2	&
-            & +  fpint_11(1:nupar,nk  ,0:nharm+1) * a3	&
+            & +  fpint_11(1:nupar,nk-1,0:nharm+1) * a2  &
+            & +  fpint_11(1:nupar,nk  ,0:nharm+1) * a3  &
             & +  fpint_11(1:nupar,nk+1,0:nharm+1) * a4
 
           pint_33(1:nupar,0:iharm+1) =   &
@@ -451,7 +451,7 @@
        sg_11(1:nupar) = pint_11(1:nupar,iharm + 1)
 
 ! do the 31, 32, 21, 22 compression
-	
+
        select case(iharm)
           case(0) !perp blocks are all j1*j1
              sg_22(1:nupar) =   sg_11(1:nupar)  ! no -2 for 0 but they are the same
@@ -475,11 +475,11 @@
 
        rrp=1. - nwcw - dfactper * uparmax
        rrm=1. - nwcw - dfactper * uparmin
-	
+        
        if (rrp*rrm.gt.0) then
 ! -- no resonance here -- !
 ! -- form the itegrands for the non-singular parallel integral
-	
+        
           do j=1,nupar
              rr = 1.- nwcw - dfactper * upar(j)
              irr = 1. / rr
@@ -515,20 +515,20 @@
           thtrp_33 = (temp_33(1)+temp_33(nupar)+2.*(o_thtrp_33 + 2.*e_thtrp_33))*du_3
 
 !-- anti-hermitian part of $\theta/(2\pi)$ --!
-	
+        
           sig_11 = sig_11 +  cmplx(thtrp_11,0.0)
           sig_21 = sig_21 +  cmplx(thtrp_21,0.0)
           sig_22 = sig_22 +  cmplx(thtrp_22,0.0)
           sig_31 = sig_31 +  cmplx(thtrp_31,0.0)
           sig_32 = sig_32 +  cmplx(thtrp_32,0.0)
           sig_33 = sig_33 +  cmplx(thtrp_33,0.0)
-	
+        
        else
 
 ! -- there is a resonance all right -- !
 ! -- 1. hermitian part -- !
           upar0 = (1. - nwcw) * dfactperi
-	
+        
           if (use_ppart6) then
              fx(1:nupar,1) = sg_11(1:nupar)
              fx(1:nupar,2) = sg_21(1:nupar)
@@ -580,10 +580,10 @@
 
           rrp = 1. - nwcw - dfactper * uparmax
           rrm = 1. - nwcw - dfactper * uparmin
-	
+        
           if (rrp*rrm.gt.0) then
 ! -- no resonance here -- !
-	
+        
              do j=1,nupar
                 rr = 1.- nwcw - dfactper * upar(j)
                 irr = 1. / rr
@@ -595,7 +595,7 @@
                 temp_33(j) = sg_33(j) * irr
              end do
 
-	!-- hermitian part of $\theta/(2\pi)$ --  use trap. integration!
+        !-- hermitian part of $\theta/(2\pi)$ --  use trap. integration!
 
              e_thtrm_11 = sum(temp_11(2:nupar-1:2))
              e_thtrm_21 = sum(temp_21(2:nupar-1:2))
@@ -603,7 +603,7 @@
              e_thtrm_22 = sum(temp_22(2:nupar-1:2))
              e_thtrm_32 = sum(temp_32(2:nupar-1:2))
              e_thtrm_33 = sum(temp_33(2:nupar-1:2))
-	
+        
              o_thtrm_11 = sum(temp_11(3:nupar-1:2))
              o_thtrm_21 = sum(temp_21(3:nupar-1:2))
              o_thtrm_31 = sum(temp_31(3:nupar-1:2))
@@ -632,7 +632,7 @@
 
 ! -- there is a resonance all right -- !
 ! -- 1. hermitian part -- !
-	
+        
              upar0 = dfactperi * (1. - nwcw)
 
 
@@ -700,19 +700,19 @@
          wspec(1,3) = sig_fact *sig_31
          wspec(2,3) = sig_fact *sig_32
 
-!	 if(l_first) then
-!	  print*, 'normalized errors for exact = ', (.not. l_interp), 'calculations'
-!	  print*, ' i  j   real    imaginary'
-!	  do mm = 1,3
-!	     do nn = 1,3
-!		  rerror = (real(wspec(mm,nn))- real(wref(mm,nn)))  &
-!		   &  /real(wref(mm,nn))
-!		   ierror = (imag(wspec(mm,nn))- imag(wref(mm,nn)))  &
-!		   &  /imag(wref(mm,nn))
-!		   print '(i3, i3, 2e15.3)' , mm, nn, rerror ,ierror
-!	     end do
-!	  end do
-!	 end if
+!        if(l_first) then
+!         print*, 'normalized errors for exact = ', (.not. l_interp), 'calculations'
+!         print*, ' i  j   real    imaginary'
+!         do mm = 1,3
+!            do nn = 1,3
+!                 rerror = (real(wspec(mm,nn))- real(wref(mm,nn)))  &
+!                  &  /real(wref(mm,nn))
+!                  ierror = (imag(wspec(mm,nn))- imag(wref(mm,nn)))  &
+!                  &  /imag(wref(mm,nn))
+!                  print '(i3, i3, 2e15.3)' , mm, nn, rerror ,ierror
+!            end do
+!         end do
+!        end if
 
          call wrotate_aorsa(beta1,beta2,wspec)
     return  !finished with orgiginal non iteration version
@@ -727,15 +727,15 @@
     subroutine getnonmaxsigma_aorsa_newi_2(w,zspec,aspec,dens,bmag, &
        & k1,xi1,jnxi1,k2,xi2,jnxi2,nbessj,enorm,uparmin,uparmax, &
        & nupar,nuper,uper,upar,dfduper,dfdupar,wspec,ifail, &
-	 & l_first, l_interp, kperp_max, nkperp, xkprl0)
+         & l_first, l_interp, kperp_max, nkperp, xkprl0)
 
 !   ---------------------------------------------------------
 !   lee's version: interpolates for l_interp = .true
 !           does full integrals for l_interp = .false.
 !   ---------------------------------------------------------
-	
+        
+!    use iso_fortran_env, r8=>real64
     implicit none
-
 
     logical, optional :: l_interp
     logical, optional :: l_first
@@ -754,7 +754,7 @@
     real, dimension(3) :: k1,k2
     integer, intent(in) :: nupar,nuper,nbessj
     real, dimension(nuper) :: xi1,xi2
-    real, dimension(nuper, nbessj), intent(in) :: jnxi1,jnxi2
+    real, dimension(nuper, nbessj), intent(inout) :: jnxi1,jnxi2
     real, intent(in) :: enorm,uparmin,uparmax
     real, dimension(nuper), intent(in) :: uper
     real, dimension(nupar), intent(in):: upar
@@ -800,10 +800,10 @@
     logical, parameter :: use_ppart6 = .true.
     logical :: is_uniform 
     integer, parameter :: nfxmax = 9
-    real*8, dimension(nfxmax) ::  vint
-    real*8, dimension(nupar,nfxmax) :: fx
+    real, dimension(nfxmax) ::  vint
+    real, dimension(nupar,nfxmax) :: fx
     integer :: nfx
-    real*8 :: dx,dh,tol
+    real :: dx,dh,tol
     integer :: i
 
 !  check to make sure that the v_par mesh is uniform
@@ -840,8 +840,8 @@
        allocate(fpint_11(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
             &   fpint_33(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
             &   fpint_31(1:nupar, -2:nkperp_l+2),  &
-            &   pint_11(1:nupar, 0:nbessj-1),	&
-            &   pint_33(1:nupar, 0:nbessj-1),	&
+            &   pint_11(1:nupar, 0:nbessj-1),   &
+            &   pint_33(1:nupar, 0:nbessj-1),   &
             &   pint_31(1:nupar),               &
             &   dfdthp(1:nuper,1:nupar))
     else  !check for size
@@ -853,9 +853,9 @@
           allocate(fpint_11(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
          &   fpint_33(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
          &   fpint_31(1:nupar, -2:nkperp_l+2),  &
-         &   pint_11(1:nupar, 0:nbessj-1),	&
-         &   pint_33(1:nupar, 0:nbessj-1),	&
-         &   pint_31(1:nupar),			&
+         &   pint_11(1:nupar, 0:nbessj-1),      &
+         &   pint_33(1:nupar, 0:nbessj-1),      &
+         &   pint_31(1:nupar),                  &
          &   dfdthp(1:nuper,1:nupar))
        end if !what size
     end if  !not allocated
@@ -935,14 +935,14 @@
        do j = 1, nupar
           do k = 1 , nuper
              dfdthp(k,j) = upar(j) * dfduper(k,j) - uper(k) * dfdupar(k,j)
-	     
-	     
+             
+             
 !            --------------------------------------------
 !            Approximate 2nd term with no upshift, xkprl0
-!           ---------------------------------------------	     	     
+!           ---------------------------------------------                    
              dfdthp(k,j) = dfduper(k,j) - dfactper0 * dfdthp(k,j)
-	     
-	     
+             
+             
 !t  his isn't really dfdth now, but a combination that is used
           end do  ! vperp loop
        end do !vpar loop
@@ -1096,7 +1096,7 @@
 !-----------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
-!  the remaining code either uses the exact integrals, not l_interp, or interpolates in kperp.	
+!  the remaining code either uses the exact integrals, not l_interp, or interpolates in kperp.  
     du_3 = (upar(nupar)-upar(1))/real(nupar-1)/3.
     if(l_interp) then
        dk = kperp_max_l/nkperp_l
@@ -1117,10 +1117,10 @@
             & +  fpint_11(1:nupar,nk+2,0:nharm+1) * a5
 
           pint_33(1:nupar,0:nharm) =   &
-            &    fpint_33(1:nupar,nk-2,0:nharm) * a1	&
-            & +  fpint_33(1:nupar,nk-1,0:nharm) * a2	&
+            &    fpint_33(1:nupar,nk-2,0:nharm) * a1    &
+            & +  fpint_33(1:nupar,nk-1,0:nharm) * a2    &
             & +  fpint_33(1:nupar,nk  ,0:nharm) * a3     &
-            & +  fpint_33(1:nupar,nk+1,0:nharm) * a4	&
+            & +  fpint_33(1:nupar,nk+1,0:nharm) * a4    &
             & +  fpint_33(1:nupar,nk+2,0:nharm) * a5
 
           pint_31(1:nupar) =   &
@@ -1130,13 +1130,13 @@
             & +  fpint_31(1:nupar, nk+1) * a4   &
             & +  fpint_31(1:nupar, nk+2) * a5
 
-       else	! second order
+       else     ! second order
           a2 = p*(p-1.)/2.
           a3 = (1.-p*p)
           a4 = p*(p+1.)/2.
           pint_11(1:nupar,0:iharm+1) =   &
-            & +  fpint_11(1:nupar,nk-1,0:nharm+1) * a2	&
-            & +  fpint_11(1:nupar,nk  ,0:nharm+1) * a3	&
+            & +  fpint_11(1:nupar,nk-1,0:nharm+1) * a2  &
+            & +  fpint_11(1:nupar,nk  ,0:nharm+1) * a3  &
             & +  fpint_11(1:nupar,nk+1,0:nharm+1) * a4
 
           pint_33(1:nupar,0:iharm+1) =   &
@@ -1165,7 +1165,7 @@
        sg_11(1:nupar) = pint_11(1:nupar,iharm + 1)
 
 ! do the 31, 32, 21, 22 compression
-	
+        
        select case(iharm)
           case(0) !perp blocks are all j1*j1
              sg_22(1:nupar) =   sg_11(1:nupar)  ! no -2 for 0 but they are the same
@@ -1189,11 +1189,11 @@
 
        rrp=1. - nwcw - dfactper * uparmax
        rrm=1. - nwcw - dfactper * uparmin
-	
+        
        if (rrp*rrm.gt.0) then
 ! -- no resonance here -- !
 ! -- form the itegrands for the non-singular parallel integral
-	
+        
           do j=1,nupar
              rr = 1.- nwcw - dfactper * upar(j)
              irr = 1. / rr
@@ -1229,20 +1229,20 @@
           thtrp_33 = (temp_33(1)+temp_33(nupar)+2.*(o_thtrp_33 + 2.*e_thtrp_33))*du_3
 
 !-- anti-hermitian part of $\theta/(2\pi)$ --!
-	
+        
           sig_11 = sig_11 +  cmplx(thtrp_11,0.0)
           sig_21 = sig_21 +  cmplx(thtrp_21,0.0)
           sig_22 = sig_22 +  cmplx(thtrp_22,0.0)
           sig_31 = sig_31 +  cmplx(thtrp_31,0.0)
           sig_32 = sig_32 +  cmplx(thtrp_32,0.0)
           sig_33 = sig_33 +  cmplx(thtrp_33,0.0)
-	
+        
        else
 
 ! -- there is a resonance all right -- !
 ! -- 1. hermitian part -- !
           upar0 = (1. - nwcw) * dfactperi
-	
+        
           if (use_ppart6) then
              fx(1:nupar,1) = sg_11(1:nupar)
              fx(1:nupar,2) = sg_21(1:nupar)
@@ -1294,10 +1294,10 @@
 
           rrp = 1. - nwcw - dfactper * uparmax
           rrm = 1. - nwcw - dfactper * uparmin
-	
+        
           if (rrp*rrm.gt.0) then
 ! -- no resonance here -- !
-	
+        
              do j=1,nupar
                 rr = 1.- nwcw - dfactper * upar(j)
                 irr = 1. / rr
@@ -1309,7 +1309,7 @@
                 temp_33(j) = sg_33(j) * irr
              end do
 
-	!-- hermitian part of $\theta/(2\pi)$ --  use trap. integration!
+        !-- hermitian part of $\theta/(2\pi)$ --  use trap. integration!
 
              e_thtrm_11 = sum(temp_11(2:nupar-1:2))
              e_thtrm_21 = sum(temp_21(2:nupar-1:2))
@@ -1317,7 +1317,7 @@
              e_thtrm_22 = sum(temp_22(2:nupar-1:2))
              e_thtrm_32 = sum(temp_32(2:nupar-1:2))
              e_thtrm_33 = sum(temp_33(2:nupar-1:2))
-	
+        
              o_thtrm_11 = sum(temp_11(3:nupar-1:2))
              o_thtrm_21 = sum(temp_21(3:nupar-1:2))
              o_thtrm_31 = sum(temp_31(3:nupar-1:2))
@@ -1346,7 +1346,7 @@
 
 ! -- there is a resonance all right -- !
 ! -- 1. hermitian part -- !
-	
+        
              upar0 = dfactperi * (1. - nwcw)
 
 
@@ -1414,19 +1414,19 @@
          wspec(1,3) = sig_fact *sig_31
          wspec(2,3) = sig_fact *sig_32
 
-!	 if(l_first) then
-!	  print*, 'normalized errors for exact = ', (.not. l_interp), 'calculations'
-!	  print*, ' i  j   real    imaginary'
-!	  do mm = 1,3
-!	     do nn = 1,3
-!		  rerror = (real(wspec(mm,nn))- real(wref(mm,nn)))  &
-!		   &  /real(wref(mm,nn))
-!		   ierror = (imag(wspec(mm,nn))- imag(wref(mm,nn)))  &
-!		   &  /imag(wref(mm,nn))
-!		   print '(i3, i3, 2e15.3)' , mm, nn, rerror ,ierror
-!	     end do
-!	  end do
-!	 end if
+!        if(l_first) then
+!         print*, 'normalized errors for exact = ', (.not. l_interp), 'calculations'
+!         print*, ' i  j   real    imaginary'
+!         do mm = 1,3
+!            do nn = 1,3
+!                 rerror = (real(wspec(mm,nn))- real(wref(mm,nn)))  &
+!                  &  /real(wref(mm,nn))
+!                  ierror = (imag(wspec(mm,nn))- imag(wref(mm,nn)))  &
+!                  &  /imag(wref(mm,nn))
+!                  print '(i3, i3, 2e15.3)' , mm, nn, rerror ,ierror
+!            end do
+!         end do
+!        end if
 
          call wrotate_aorsa(beta1,beta2,wspec)
     return  !finished with orgiginal non iteration version
@@ -1440,7 +1440,9 @@
     subroutine GETNONMAX_SIGMA_AORSA_NEW(W,ZSPEC,ASPEC,DENS,BMAG, &
        & K1,XI1,JNXI1,K2,XI2,JNXI2,NBESSJ,ENORM,UPARMIN,UPARMAX, &
        & NUPAR,NUPER,UPER,UPAR,DFDUPER,DFDUPAR,WSPEC,IFAIL)
+!    use iso_fortran_env, r8=>real64
     implicit none
+      
     real, intent(IN):: W,ZSPEC,ASPEC,DENS,BMAG
     real, dimension(3):: K1,K2
     integer, intent(IN):: NUPAR,NUPER,NBESSJ
@@ -1509,9 +1511,9 @@
 
     integer, parameter :: nfxmax = 9
     integer :: nfx 
-    real*8, dimension(nfxmax) ::  vint
-    real*8, dimension(nupar,nfxmax) :: fx
-    real*8 :: dh,dx,tol
+    real, dimension(nfxmax) ::  vint
+    real, dimension(nupar,nfxmax) :: fx
+    real :: dh,dx,tol
     integer :: i
 
     is_uniform = .true.
@@ -1565,7 +1567,7 @@
 
     do j = 1, nupar
        do k = 1 , nuper
-	  DFDTH(k,j) = upar(j) * DFDUPER(k,j) - uper(k) * DFDUPAR(k,j)
+          DFDTH(k,j) = upar(j) * DFDUPER(k,j) - uper(k) * DFDUPAR(k,j)
        end do
     end do
 
@@ -1664,9 +1666,9 @@
        SFACTM1=real(sign(1,IHARM-1))**ABS(IHARM-1)
 
        ! -- Build array with integrand -- !
-	
+        
        do J=1,NUPAR
-	
+        
           ssgg_11 = 0.0
           ssgg_31 = 0.0
           ssgg_33 = 0.0
@@ -1686,9 +1688,9 @@
           ssgg_33 = ssgg_33a
           ssgg_11 = ssgg_11a
           ssgg_31 = ssgg_31a
-	
+        
           ssgg_11 = ssgg_11 * 0.5
-	  ssgg_31 = ssgg_31 * ISQ2		
+          ssgg_31 = ssgg_31 * ISQ2              
 
 !         ---------------------------------------------------
 !         no need to form vectors for JN0XI1(:) or JNP1XI1(:)
@@ -1717,12 +1719,12 @@
           ssgg_31 = ssgg_31 + 0.5 * ISQ2 * UPAR(J) * JN0XI1_K  * LF0
 
 !         end of the kperp loop
-	
-	  du = (uper(nuper) - uper(1))/(nuper - 1)
-	  sgg_11(j,iharm) =  ssgg_11 * du
-	  sgg_21p(j) =  ssgg_33 * du  ! this is a piece of 21
-	  sgg_31(j,iharm) =	ssgg_31 * du
-	  SGG(j,3,3) =	UPAR(J)**2 * sgg_21p(j)
+        
+          du = (uper(nuper) - uper(1))/(nuper - 1)
+          sgg_11(j,iharm) =  ssgg_11 * du
+          sgg_21p(j) =  ssgg_33 * du  ! this is a piece of 21
+          sgg_31(j,iharm) =     ssgg_31 * du
+          SGG(j,3,3) =  UPAR(J)**2 * sgg_21p(j)
 
        end do
 !      -----------------------------------------------
@@ -1730,35 +1732,35 @@
 !      parallel, but reuse them for negative harmonics
 !      ----------------------------------------------
        if(iharm .eq. -1) cycle
-	
-          du_3 = (UPAR(NUPAR)-UPAR(1))/real(nupar-1)/3.	
-	  SGG(1:nupar,1,1) = sgg_11(1:nupar,iharm)
-	
+        
+          du_3 = (UPAR(NUPAR)-UPAR(1))/real(nupar-1)/3. 
+          SGG(1:nupar,1,1) = sgg_11(1:nupar,iharm)
+        
 !         do the 31--32, 21, 22 compression
-	
-	  select case(iharm)
-	  case(0)
+        
+          select case(iharm)
+          case(0)
              SGG(1:nupar,2,2) = sgg_11(1:nupar,iharm)  ! no -2 for 0 but they are the same
-	     SGG(1:nupar,2,1) = - SGG(1:nupar,2,2)     ! 12--21 are anti symmetric
-	  case default
-	     SGG(1:nupar,2,2) = sgg_11(1:nupar,iharm-2)!  look two back for 22
+             SGG(1:nupar,2,1) = - SGG(1:nupar,2,2)     ! 12--21 are anti symmetric
+          case default
+             SGG(1:nupar,2,2) = sgg_11(1:nupar,iharm-2)!  look two back for 22
              SGG(1:nupar,2,1) = -0.5*(SGG(1:nupar,1,1)+ SGG(1:nupar,2,2))&
-	       &+ vperp_norm2*iharm*iharm*(sgg_21p(1:nupar))  ! use bessel function identity for 21
-	  end select
+               &+ vperp_norm2*iharm*iharm*(sgg_21p(1:nupar))  ! use bessel function identity for 21
+          end select
 
-	  SGG(1:nupar,3,2) = sgg_31(1:nupar,iharm-1)
-	  SGG(1:nupar,3,1) = sgg_31(1:nupar,iharm)
-	
-!         ------------------------	 	
+          SGG(1:nupar,3,2) = sgg_31(1:nupar,iharm-1)
+          SGG(1:nupar,3,1) = sgg_31(1:nupar,iharm)
+        
+!         ------------------------              
 !         -- Resonance relation -- 
 !         ------------------------
           RRP=1. - NWCW - DFACTPER * UPARMAX
           RRM=1. - NWCW - DFACTPER * UPARMIN
-		
-          if (RRP*RRM.GT.0) then	  
-!            -----------------------	  
+                
+          if (RRP*RRM.GT.0) then          
+!            -----------------------      
 !            -- No resonance here -- 
-!            -----------------------	
+!            -----------------------    
 
              do J=1,NUPAR
                 RR = 1.- NWCW - DFACTPER * UPAR(J)
@@ -1773,12 +1775,12 @@
 
                do j=1,nupar
                   IRR = irr_j(j)
-	          SGG(J,M,N) = SGG(J,M,N) * IRR
-               end do	    
+                  SGG(J,M,N) = SGG(J,M,N) * IRR
+               end do       
              end do
-	
+        
              !-- Hermitian part of $\Theta/(2\pi)$ --!
-	
+        
              do mn=1,6
                 m = mlist(mn)
                 n = nlist(mn)
@@ -1789,7 +1791,7 @@
                 thetare(m,n) = (sgg(1,m,n) + sgg(nupar,m,n) +    &
                    2.0d0*(sum_odd + sum_even) + 2.0d0*sum_even ) * du_3
              end do
-	
+        
              do mn=1,6
                 m = mlist(mn)
                 n = nlist(mn)
@@ -1798,8 +1800,8 @@
                    SGG(J,M,N) = SGG(J,M,N) * rr_j(j)
                 enddo
              end do
-	
- 	     THETARE(1,2) = THETARE(2,1)
+        
+             THETARE(1,2) = THETARE(2,1)
              THETARE(1,3) = THETARE(3,1)
              THETARE(2,3) = THETARE(3,2)
 
@@ -1807,11 +1809,11 @@
              THETAIM(1:3,1:3)=0.
 
           else
-!            -------------------------------	  
+!            -------------------------------      
 !            There is a resonance all right 
 !            -------------------------------
              ! -- 1. Hermitian part -- !
-             UPAR0 = (1. - NWCW) * DFACTPERI	
+             UPAR0 = (1. - NWCW) * DFACTPERI    
 
              fx(1:nupar,1) = SGG(1:nupar,1,1)
              fx(1:nupar,2) = SGG(1:nupar,2,1)
@@ -1845,7 +1847,7 @@
              THETAIM(1,2) = THETAIM(2,1)
              THETAIM(1,3) = THETAIM(3,1)
              THETAIM(2,3) = THETAIM(3,2)
-	
+        
 
              do M=1,3
                 do N=1,3
@@ -1855,29 +1857,29 @@
              end do
 
           end if
-	  
+          
 
           do N=1,3
              do M=1,3
                 WSPEC(M,N) = WSPEC(M,N) + 2. * PI * WPFACT * BETAFACT * &
-!	           & cmplx(THETARE(M,N), THETAIM(M,N))
-		   & (THETARE(M,N) + zi * THETAIM(M,N))	
+!                  & cmplx(THETARE(M,N), THETAIM(M,N))
+                   & (THETARE(M,N) + zi * THETAIM(M,N)) 
              end do
           end do
 
-	  if(iharm .ne. 0) then  !  skip the negative for zero
+          if(iharm .ne. 0) then  !  skip the negative for zero
 
-	     nwcw = - nwcw
+             nwcw = - nwcw
 
-      	     ! -- Resonance relation -- !		
+             ! -- Resonance relation -- !               
              RRP = 1. - NWCW - DFACTPER * UPARMAX
              RRM = 1. - NWCW - DFACTPER * UPARMIN
-	
+        
              if (RRP*RRM.GT.0) then
-!            -----------------------	  
+!            -----------------------      
 !            -- No resonance here -- 
 !            -----------------------
-	
+        
              do J=1,NUPAR
                 RR = 1.- NWCW - DFACTPER * UPAR(J)
                 IRR = 1. / RR
@@ -1893,7 +1895,7 @@
                    SGG(J,M,N) = SGG(J,M,N) * IRR
                 enddo
              end do
-		
+                
 !            Hermitian part of $\Theta/(2\pi)$ --
 
              do mn=1,6
@@ -1917,28 +1919,28 @@
 
              end do
 
-	     temp = THETARE(3,2)
-	     THETARE(3,2) = -THETARE(3,1)
-	     THETARE(3,1) = -temp
-		
-	     temp = THETARE(1,1)
-	     THETARE(1,1) = THETARE(2,2)
-	     THETARE(2,2) = temp
+             temp = THETARE(3,2)
+             THETARE(3,2) = -THETARE(3,1)
+             THETARE(3,1) = -temp
+                
+             temp = THETARE(1,1)
+             THETARE(1,1) = THETARE(2,2)
+             THETARE(2,2) = temp
 
- 	     THETARE(1,2) = THETARE(2,1)
-      	     THETARE(1,3) = THETARE(3,1)
-      	     THETARE(2,3) = THETARE(3,2)
+             THETARE(1,2) = THETARE(2,1)
+             THETARE(1,3) = THETARE(3,1)
+             THETARE(2,3) = THETARE(3,2)
 
 !            Anti-hermitian part of $\Theta/(2\pi)$ 
-      	     THETAIM(1:3,1:3)=0.
+             THETAIM(1:3,1:3)=0.
 
           else
-!            -------------------------------	  
+!            -------------------------------      
 !            There is a resonance all right 
 !            -------------------------------
-      	     ! -- 1. Hermitian part -- !	
-	
-      	     UPAR0 = DFACTPERI * (1. - NWCW)
+             ! -- 1. Hermitian part -- !        
+        
+             UPAR0 = DFACTPERI * (1. - NWCW)
 
              fx(1:nupar,1) = SGG(1:nupar,1,1)
              fx(1:nupar,2) = SGG(1:nupar,2,1)
@@ -1958,51 +1960,51 @@
              thetare(3,3) = vint(6)
 
              temp = THETARE(3,2)
-	     THETARE(3,2) = -THETARE(3,1)
-	     THETARE(3,1) = -temp
-	     temp = THETARE(1,1)
-	     THETARE(1,1) = THETARE(2,2)
-	     THETARE(2,2) = temp
-		
-      	     THETARE(1,2) = THETARE(2,1)
-      	     THETARE(1,3) = THETARE(3,1)
-      	     THETARE(2,3) = THETARE(3,2)
+             THETARE(3,2) = -THETARE(3,1)
+             THETARE(3,1) = -temp
+             temp = THETARE(1,1)
+             THETARE(1,1) = THETARE(2,2)
+             THETARE(2,2) = temp
+                
+             THETARE(1,2) = THETARE(2,1)
+             THETARE(1,3) = THETARE(3,1)
+             THETARE(2,3) = THETARE(3,2)
 
-      	     ! -- 2. Anti-hermitian part -- !
-      	     call WINTERP1D_2(UPAR,NUPAR,SGG(1,1,1),UPAR0,THETAIM(1,1))
-      	     call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,1),UPAR0,THETAIM(2,1))
-      	     call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,1),UPAR0,THETAIM(3,1))
-      	     call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,2),UPAR0,THETAIM(2,2))
-      	     call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,2),UPAR0,THETAIM(3,2))
-      	     call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,3),UPAR0,THETAIM(3,3))
+             ! -- 2. Anti-hermitian part -- !
+             call WINTERP1D_2(UPAR,NUPAR,SGG(1,1,1),UPAR0,THETAIM(1,1))
+             call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,1),UPAR0,THETAIM(2,1))
+             call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,1),UPAR0,THETAIM(3,1))
+             call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,2),UPAR0,THETAIM(2,2))
+             call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,2),UPAR0,THETAIM(3,2))
+             call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,3),UPAR0,THETAIM(3,3))
 
-	     temp = THETAIM(3,2)
-	     THETAIM(3,2) = -THETAIM(3,1)
-	     THETAIM(3,1) = -temp
-	     temp = THETAIM(1,1)
-	     THETAIM(1,1) = THETAIM(2,2)
-	     THETAIM(2,2) = temp
-		
-      	     THETAIM(1,2) = THETAIM(2,1)
-      	     THETAIM(1,3) = THETAIM(3,1)
-      	     THETAIM(2,3) = THETAIM(3,2)
+             temp = THETAIM(3,2)
+             THETAIM(3,2) = -THETAIM(3,1)
+             THETAIM(3,1) = -temp
+             temp = THETAIM(1,1)
+             THETAIM(1,1) = THETAIM(2,2)
+             THETAIM(2,2) = temp
+                
+             THETAIM(1,2) = THETAIM(2,1)
+             THETAIM(1,3) = THETAIM(3,1)
+             THETAIM(2,3) = THETAIM(3,2)
 
              do M=1,3
                 do N=1,3
                    THETARE(M,N) = -THETARE(M,N) * DFACTPERI
                    THETAIM(M,N) = -PI * THETAIM(M,N) * abs(DFACTPERI)
                 end do
-      	     end do
-		
+             end do
+                
           end if  !resonance exists
-	
-	  do N=1,3
-      	     do M=1,3
+        
+          do N=1,3
+             do M=1,3
                 WSPEC(M,N) = WSPEC(M,N) + 2. * PI * WPFACT * BETAFACT * &
 !                  & cmplx(THETARE(M,N), THETAIM(M,N))
-                   & (THETARE(M,N) + zi * THETAIM(M,N))		
+                   & (THETARE(M,N) + zi * THETAIM(M,N))         
 
-      	     end do
+             end do
           end do
 
        end if ! skip zero if
@@ -2025,15 +2027,15 @@
     subroutine getnonmaxsigma_aorsa_newi(w,zspec,aspec,dens,bmag, &
        & k1,xi1,jnxi1,k2,xi2,jnxi2,nbessj,enorm,uparmin,uparmax, &
        & nupar,nuper,uper,upar,dfduper,dfdupar,wspec,ifail, &
-	 & l_first, l_interp, kperp_max, nkperp, xkprl0)
+         & l_first, l_interp, kperp_max, nkperp, xkprl0)
 
 !   ---------------------------------------------------------
 !   lee's version: interpolates for l_interp = .true
 !           does full integrals for l_interp = .false.
 !   ---------------------------------------------------------
-	
+        
+!    use iso_fortran_env, r8=>real64
     implicit none
-
 
     logical, optional :: l_interp
     logical, optional :: l_first
@@ -2052,7 +2054,7 @@
     real, dimension(3) :: k1,k2
     integer, intent(in) :: nupar,nuper,nbessj
     real, dimension(nuper) :: xi1,xi2
-    real, dimension(nuper, nbessj), intent(in) :: jnxi1,jnxi2
+    real, dimension(nuper, nbessj), intent(inout) :: jnxi1,jnxi2
     real, intent(in) :: enorm,uparmin,uparmax
     real, dimension(nuper), intent(in) :: uper
     real, dimension(nupar), intent(in):: upar
@@ -2098,10 +2100,10 @@
     logical, parameter :: use_ppart6 = .true.
     logical :: is_uniform 
     integer, parameter :: nfxmax = 9
-    real*8, dimension(nfxmax) ::  vint
-    real*8, dimension(nupar,nfxmax) :: fx
+    real, dimension(nfxmax) ::  vint
+    real, dimension(nupar,nfxmax) :: fx
     integer :: nfx
-    real*8 :: dx,dh,tol
+    real :: dx,dh,tol
     integer :: i
 
 !  check to make sure that the v_par mesh is uniform
@@ -2138,8 +2140,8 @@
        allocate(fpint_11(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
             &   fpint_33(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
             &   fpint_31(1:nupar, -2:nkperp_l+2),  &
-            &   pint_11(1:nupar, 0:nbessj-1),	&
-            &   pint_33(1:nupar, 0:nbessj-1),	&
+            &   pint_11(1:nupar, 0:nbessj-1),   &
+            &   pint_33(1:nupar, 0:nbessj-1),   &
             &   pint_31(1:nupar),               &
             &   dfdthp(1:nuper,1:nupar))
     else  !check for size
@@ -2151,9 +2153,9 @@
           allocate(fpint_11(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
          &   fpint_33(1:nupar, -2:nkperp_l+2, 0:nbessj-1),  &
          &   fpint_31(1:nupar, -2:nkperp_l+2),  &
-         &   pint_11(1:nupar, 0:nbessj-1),	&
-         &   pint_33(1:nupar, 0:nbessj-1),	&
-         &   pint_31(1:nupar),			&
+         &   pint_11(1:nupar, 0:nbessj-1),      &
+         &   pint_33(1:nupar, 0:nbessj-1),      &
+         &   pint_31(1:nupar),                  &
          &   dfdthp(1:nuper,1:nupar))
        end if !what size
     end if  !not allocated
@@ -2233,14 +2235,14 @@
        do j = 1, nupar
           do k = 1 , nuper
              dfdthp(k,j) = upar(j) * dfduper(k,j) - uper(k) * dfdupar(k,j)
-	     
-	     
+             
+             
 !            --------------------------------------------
 !            Approximate 2nd term with no upshift, xkprl0
-!           ---------------------------------------------	     	     
+!           ---------------------------------------------                    
              dfdthp(k,j) = dfduper(k,j) - dfactper0 * dfdthp(k,j)
-	     
-	     
+             
+             
 !t  his isn't really dfdth now, but a combination that is used
           end do  ! vperp loop
        end do !vpar loop
@@ -2394,7 +2396,7 @@
 !-----------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
-!  the remaining code either uses the exact integrals, not l_interp, or interpolates in kperp.	
+!  the remaining code either uses the exact integrals, not l_interp, or interpolates in kperp.  
     du_3 = (upar(nupar)-upar(1))/real(nupar-1)/3.
     if(l_interp) then
        dk = kperp_max_l/nkperp_l
@@ -2415,10 +2417,10 @@
             & +  fpint_11(1:nupar,nk+2,0:nharm+1) * a5
 
           pint_33(1:nupar,0:nharm) =   &
-            &    fpint_33(1:nupar,nk-2,0:nharm) * a1	&
-            & +  fpint_33(1:nupar,nk-1,0:nharm) * a2	&
+            &    fpint_33(1:nupar,nk-2,0:nharm) * a1    &
+            & +  fpint_33(1:nupar,nk-1,0:nharm) * a2    &
             & +  fpint_33(1:nupar,nk  ,0:nharm) * a3     &
-            & +  fpint_33(1:nupar,nk+1,0:nharm) * a4	&
+            & +  fpint_33(1:nupar,nk+1,0:nharm) * a4    &
             & +  fpint_33(1:nupar,nk+2,0:nharm) * a5
 
           pint_31(1:nupar) =   &
@@ -2428,13 +2430,13 @@
             & +  fpint_31(1:nupar, nk+1) * a4   &
             & +  fpint_31(1:nupar, nk+2) * a5
 
-       else	! second order
+       else     ! second order
           a2 = p*(p-1.)/2.
           a3 = (1.-p*p)
           a4 = p*(p+1.)/2.
           pint_11(1:nupar,0:iharm+1) =   &
-            & +  fpint_11(1:nupar,nk-1,0:nharm+1) * a2	&
-            & +  fpint_11(1:nupar,nk  ,0:nharm+1) * a3	&
+            & +  fpint_11(1:nupar,nk-1,0:nharm+1) * a2  &
+            & +  fpint_11(1:nupar,nk  ,0:nharm+1) * a3  &
             & +  fpint_11(1:nupar,nk+1,0:nharm+1) * a4
 
           pint_33(1:nupar,0:iharm+1) =   &
@@ -2463,7 +2465,7 @@
        sg_11(1:nupar) = pint_11(1:nupar,iharm + 1)
 
 ! do the 31, 32, 21, 22 compression
-	
+        
        select case(iharm)
           case(0) !perp blocks are all j1*j1
              sg_22(1:nupar) =   sg_11(1:nupar)  ! no -2 for 0 but they are the same
@@ -2487,11 +2489,11 @@
 
        rrp=1. - nwcw - dfactper * uparmax
        rrm=1. - nwcw - dfactper * uparmin
-	
+        
        if (rrp*rrm.gt.0) then
 ! -- no resonance here -- !
 ! -- form the itegrands for the non-singular parallel integral
-	
+        
           do j=1,nupar
              rr = 1.- nwcw - dfactper * upar(j)
              irr = 1. / rr
@@ -2527,20 +2529,20 @@
           thtrp_33 = (temp_33(1)+temp_33(nupar)+2.*(o_thtrp_33 + 2.*e_thtrp_33))*du_3
 
 !-- anti-hermitian part of $\theta/(2\pi)$ --!
-	
+        
           sig_11 = sig_11 +  cmplx(thtrp_11,0.0)
           sig_21 = sig_21 +  cmplx(thtrp_21,0.0)
           sig_22 = sig_22 +  cmplx(thtrp_22,0.0)
           sig_31 = sig_31 +  cmplx(thtrp_31,0.0)
           sig_32 = sig_32 +  cmplx(thtrp_32,0.0)
           sig_33 = sig_33 +  cmplx(thtrp_33,0.0)
-	
+        
        else
 
 ! -- there is a resonance all right -- !
 ! -- 1. hermitian part -- !
           upar0 = (1. - nwcw) * dfactperi
-	
+        
           if (use_ppart6) then
              fx(1:nupar,1) = sg_11(1:nupar)
              fx(1:nupar,2) = sg_21(1:nupar)
@@ -2592,10 +2594,10 @@
 
           rrp = 1. - nwcw - dfactper * uparmax
           rrm = 1. - nwcw - dfactper * uparmin
-	
+        
           if (rrp*rrm.gt.0) then
 ! -- no resonance here -- !
-	
+        
              do j=1,nupar
                 rr = 1.- nwcw - dfactper * upar(j)
                 irr = 1. / rr
@@ -2607,7 +2609,7 @@
                 temp_33(j) = sg_33(j) * irr
              end do
 
-	!-- hermitian part of $\theta/(2\pi)$ --  use trap. integration!
+        !-- hermitian part of $\theta/(2\pi)$ --  use trap. integration!
 
              e_thtrm_11 = sum(temp_11(2:nupar-1:2))
              e_thtrm_21 = sum(temp_21(2:nupar-1:2))
@@ -2615,7 +2617,7 @@
              e_thtrm_22 = sum(temp_22(2:nupar-1:2))
              e_thtrm_32 = sum(temp_32(2:nupar-1:2))
              e_thtrm_33 = sum(temp_33(2:nupar-1:2))
-	
+        
              o_thtrm_11 = sum(temp_11(3:nupar-1:2))
              o_thtrm_21 = sum(temp_21(3:nupar-1:2))
              o_thtrm_31 = sum(temp_31(3:nupar-1:2))
@@ -2644,7 +2646,7 @@
 
 ! -- there is a resonance all right -- !
 ! -- 1. hermitian part -- !
-	
+        
              upar0 = dfactperi * (1. - nwcw)
 
 
@@ -2712,19 +2714,19 @@
          wspec(1,3) = sig_fact *sig_31
          wspec(2,3) = sig_fact *sig_32
 
-!	 if(l_first) then
-!	  print*, 'normalized errors for exact = ', (.not. l_interp), 'calculations'
-!	  print*, ' i  j   real    imaginary'
-!	  do mm = 1,3
-!	     do nn = 1,3
-!		  rerror = (real(wspec(mm,nn))- real(wref(mm,nn)))  &
-!		   &  /real(wref(mm,nn))
-!		   ierror = (imag(wspec(mm,nn))- imag(wref(mm,nn)))  &
-!		   &  /imag(wref(mm,nn))
-!		   print '(i3, i3, 2e15.3)' , mm, nn, rerror ,ierror
-!	     end do
-!	  end do
-!	 end if
+!        if(l_first) then
+!         print*, 'normalized errors for exact = ', (.not. l_interp), 'calculations'
+!         print*, ' i  j   real    imaginary'
+!         do mm = 1,3
+!            do nn = 1,3
+!                 rerror = (real(wspec(mm,nn))- real(wref(mm,nn)))  &
+!                  &  /real(wref(mm,nn))
+!                  ierror = (imag(wspec(mm,nn))- imag(wref(mm,nn)))  &
+!                  &  /imag(wref(mm,nn))
+!                  print '(i3, i3, 2e15.3)' , mm, nn, rerror ,ierror
+!            end do
+!         end do
+!        end if
 
          call wrotate_aorsa(beta1,beta2,wspec)
     return  !finished with orgiginal non iteration version
@@ -2737,7 +2739,9 @@
   subroutine GETNONMAX_SIGMA_AORSA_NEW1(W,ZSPEC,ASPEC,DENS,BMAG, &
        & K1,XI1,JNXI1,K2,XI2,JNXI2,NBESSJ,ENORM,UPARMIN,UPARMAX, &
        & NUPAR,NUPER,UPER,UPAR,DFDUPER,DFDUPAR,WSPEC,IFAIL)
+!    use iso_fortran_env, r8=>real64
     implicit none
+    
     real, intent(IN):: W,ZSPEC,ASPEC,DENS,BMAG
     real, dimension(3):: K1,K2
     integer, intent(IN):: NUPAR,NUPER,NBESSJ
@@ -2755,7 +2759,7 @@
 
     real, parameter:: EOVERAMU=9.64853e7
     real, parameter:: EOVERMH = 9.58084e+07
-	
+        
     real, parameter:: WP2FACT=1.745915
     real, parameter:: MPC2=938271998.38
     real, parameter:: C=2.99792458e8
@@ -2808,23 +2812,23 @@
 !      -------------------------------------------------------
 
        do J = 1, NUPAR
-	  g_33j = 0.0
+          g_33j = 0.0
 
           do K = 2, NUPER - 1
              g_33j = g_33j + UPAR(J)*(UPER(K)*DFDUPAR(K,J)-UPAR(J)*DFDUPER(K,J))
           end do
 
 
-	  k = 1
+          k = 1
           g_33j = g_33j + 0.5 * UPAR(J)*(UPER(K)*DFDUPAR(K,J)-UPAR(J)*DFDUPER(K,J))
 
 
-	  k = nuper
+          k = nuper
           g_33j = g_33j + 0.5 * UPAR(J)*(UPER(K)*DFDUPAR(K,J)-UPAR(J)*DFDUPER(K,J))
 
-	
-	  du = (uper(nuper) - uper(1))/(nuper - 1)
-	  ga_33(j) = g_33j * du
+        
+          du = (uper(nuper) - uper(1))/(nuper - 1)
+          ga_33(j) = g_33j * du
 
        end do
        
@@ -2837,8 +2841,8 @@
 
        do k = 1 , nuper
           do j = 1, nupar
-	     DFDTH(k,j) = upar(j) * DFDUPER(k,j) - uper(k) * DFDUPAR(k,j)
-	  end do
+             DFDTH(k,j) = upar(j) * DFDUPER(k,j) - uper(k) * DFDUPAR(k,j)
+          end do
        end do
 
 
@@ -2866,55 +2870,55 @@
        ! -- Build array with integrand -- !
        
 
-	  
+          
        do J=1,NUPAR
-	  
-	  ssgg_11 = 0.0
-	  ssgg_31 = 0.0
-	  ssgg_33 = 0.0
+          
+          ssgg_11 = 0.0
+          ssgg_31 = 0.0
+          ssgg_33 = 0.0
 
-	  do K = 2, NUPER - 1
-	    
+          do K = 2, NUPER - 1
+            
              LF0 = DFDUPER(K,J) - DFACTPER * dfdth(k,j)
              ssgg_33 = ssgg_33 + JN0XI1(K)**2 *LF0
-		 
+                 
              LF0 = UPER(K) * JNP1XI1(K) * LF0
              ssgg_11 = ssgg_11 + UPER(K) * JNP1XI1(K)* LF0
              ssgg_31 = ssgg_31 + UPAR(J) * JN0XI1(K) * LF0
           end do
-	    
-	  ssgg_11 = ssgg_11 * 0.5
-	  ssgg_31 = ssgg_31 * ISQ2
-	    
-	    
-	  k = 1
+            
+          ssgg_11 = ssgg_11 * 0.5
+          ssgg_31 = ssgg_31 * ISQ2
+            
+            
+          k = 1
 
-	  LF0 = DFDUPER(K,J) - DFACTPER * dfdth(k,j)
-	  ssgg_33 = ssgg_33 + 0.5 * JN0XI1(K)**2 *LF0 
-	  
+          LF0 = DFDUPER(K,J) - DFACTPER * dfdth(k,j)
+          ssgg_33 = ssgg_33 + 0.5 * JN0XI1(K)**2 *LF0 
+          
           LF0 = UPER(K) * JNP1XI1(K) * LF0
           ssgg_11 = ssgg_11 + 0.25 *       UPER(K) * JNP1XI1(K)* LF0  
           ssgg_31 = ssgg_31 + 0.5 * ISQ2 * UPAR(J) * JN0XI1(K) * LF0
 
 
-	  k = nuper
-	  
-	  LF0 = DFDUPER(K,J) - DFACTPER * dfdth(k,j)
-	  ssgg_33 = ssgg_33 + 0.5 * LF0 * JN0XI1(K)**2
-	  
-	  LF0 = UPER(K) * JNP1XI1(K) * LF0
-	  ssgg_11 = ssgg_11 + 0.25 *       UPER(K) * JNP1XI1(K)* LF0
+          k = nuper
+          
+          LF0 = DFDUPER(K,J) - DFACTPER * dfdth(k,j)
+          ssgg_33 = ssgg_33 + 0.5 * LF0 * JN0XI1(K)**2
+          
+          LF0 = UPER(K) * JNP1XI1(K) * LF0
+          ssgg_11 = ssgg_11 + 0.25 *       UPER(K) * JNP1XI1(K)* LF0
           ssgg_31 = ssgg_31 + 0.5 * ISQ2 * UPAR(J) * JN0XI1(K) * LF0
 
        !  end of the kperp loop
        
        
-	
-	  du = (uper(nuper) - uper(1))/(nuper - 1)
-	  sgg_11(j,iharm) =  ssgg_11 * du
-	  sgg_21p(j) =  ssgg_33 * du  ! this is a piece of 21
-	  sgg_31(j,iharm) =	ssgg_31 * du
-	  SGG(j,3,3) =	UPAR(J)**2 * sgg_21p(j)
+        
+          du = (uper(nuper) - uper(1))/(nuper - 1)
+          sgg_11(j,iharm) =  ssgg_11 * du
+          sgg_21p(j) =  ssgg_33 * du  ! this is a piece of 21
+          sgg_31(j,iharm) =     ssgg_31 * du
+          SGG(j,3,3) =  UPAR(J)**2 * sgg_21p(j)
 
        end do
        
@@ -2923,36 +2927,36 @@
 !      parallel, but reuse them for negative harmonics
 
        if(iharm .eq. -1) cycle
-	 
-       du_3 = (UPAR(NUPAR)-UPAR(1))/real(nupar-1)/3.	
-	 SGG(1:nupar,1,1) = sgg_11(1:nupar,iharm)
-	 
-	 ! do the 31--32, 21, 22 compression
-	 
-	 select case(iharm)  
-	 case(0)
+         
+       du_3 = (UPAR(NUPAR)-UPAR(1))/real(nupar-1)/3.    
+         SGG(1:nupar,1,1) = sgg_11(1:nupar,iharm)
+         
+         ! do the 31--32, 21, 22 compression
+         
+         select case(iharm)  
+         case(0)
             SGG(1:nupar,2,2) = sgg_11(1:nupar,iharm)  ! no -2 for 0 but they are the same
-	    SGG(1:nupar,2,1) = - SGG(1:nupar,2,2)     ! 12--21 are anti symmetric
-	 case default
-	    SGG(1:nupar,2,2) = sgg_11(1:nupar,iharm-2)!  look two back for 22
+            SGG(1:nupar,2,1) = - SGG(1:nupar,2,2)     ! 12--21 are anti symmetric
+         case default
+            SGG(1:nupar,2,2) = sgg_11(1:nupar,iharm-2)!  look two back for 22
             SGG(1:nupar,2,1) = -0.5*(SGG(1:nupar,1,1)+ SGG(1:nupar,2,2))&
-	      &+ vperp_norm2*iharm*iharm*(sgg_21p(1:nupar))  ! use bessel function identity for 21
-	 end select
+              &+ vperp_norm2*iharm*iharm*(sgg_21p(1:nupar))  ! use bessel function identity for 21
+         end select
 
-	 SGG(1:nupar,3,2) = sgg_31(1:nupar,iharm-1)
-	 SGG(1:nupar,3,1) = sgg_31(1:nupar,iharm)
-	 
-	 	
+         SGG(1:nupar,3,2) = sgg_31(1:nupar,iharm-1)
+         SGG(1:nupar,3,1) = sgg_31(1:nupar,iharm)
+         
+                
        ! -- Resonance relation -- !
        
        RRP=1. - NWCW - DFACTPER * UPARMAX 
        RRM=1. - NWCW - DFACTPER * UPARMIN 
-	 
-	 
+         
+         
 
        if (RRP*RRM.GT.0) then
           ! -- No resonance here -- !
-	  
+          
           do J=1,NUPAR
              RR = 1.- NWCW - DFACTPER * UPAR(J)
              IRR = 1. / RR
@@ -2962,36 +2966,36 @@
                 end do
              end do
           end do
-	  
+          
 
           !-- Hermitian part of $\Theta/(2\pi)$ --!
-	    
-	  THETARE(1,1) = (sgg(1,1,1)+sgg(nupar,1,1)+2.*sum(sgg(2:nupar-1,1,1)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,1,1)))*du_3
-	  THETARE(2,1) = (SGG(1,2,1)+SGG(nupar,2,1)+2.*sum(SGG(2:nupar-1,2,1)) +&
-	       & 2.*sum(SGG(2:nupar-1:2,2,1)))*du_3
-	  THETARE(3,1) = (sgg(1,3,1)+sgg(nupar,3,1)+2.*sum(sgg(2:nupar-1,3,1)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,3,1)))*du_3
-	  THETARE(2,2) = (sgg(1,2,2)+sgg(nupar,2,2)+2.*sum(sgg(2:nupar-1,2,2)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,2,2)))*du_3
+            
+          THETARE(1,1) = (sgg(1,1,1)+sgg(nupar,1,1)+2.*sum(sgg(2:nupar-1,1,1)) +&
+               & 2.*sum(sgg(2:nupar-1:2,1,1)))*du_3
+          THETARE(2,1) = (SGG(1,2,1)+SGG(nupar,2,1)+2.*sum(SGG(2:nupar-1,2,1)) +&
+               & 2.*sum(SGG(2:nupar-1:2,2,1)))*du_3
+          THETARE(3,1) = (sgg(1,3,1)+sgg(nupar,3,1)+2.*sum(sgg(2:nupar-1,3,1)) +&
+               & 2.*sum(sgg(2:nupar-1:2,3,1)))*du_3
+          THETARE(2,2) = (sgg(1,2,2)+sgg(nupar,2,2)+2.*sum(sgg(2:nupar-1,2,2)) +&
+               & 2.*sum(sgg(2:nupar-1:2,2,2)))*du_3
           THETARE(3,2) = (sgg(1,3,2)+sgg(nupar,3,2)+2.*sum(sgg(2:nupar-1,3,2)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,3,2)))*du_3
-	  THETARE(3,3) = (sgg(1,3,3)+sgg(nupar,3,3)+2.*sum(sgg(2:nupar-1,3,3)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,3,3)))*du_3
-	
-	
-	  do J=1,NUPAR ! restore sgg
-	     RR = 1.- NWCW - DFACTPER * UPAR(J)
-	     
+               & 2.*sum(sgg(2:nupar-1:2,3,2)))*du_3
+          THETARE(3,3) = (sgg(1,3,3)+sgg(nupar,3,3)+2.*sum(sgg(2:nupar-1,3,3)) +&
+               & 2.*sum(sgg(2:nupar-1:2,3,3)))*du_3
+        
+        
+          do J=1,NUPAR ! restore sgg
+             RR = 1.- NWCW - DFACTPER * UPAR(J)
+             
              do M=1,3
                 do N=1,M
                    SGG(J,M,N) = SGG(J,M,N) * RR
                 end do
              end do
-	     
+             
           end do
-	    
- 	  THETARE(1,2) = THETARE(2,1)
+            
+          THETARE(1,2) = THETARE(2,1)
           THETARE(1,3) = THETARE(3,1)
           THETARE(2,3) = THETARE(3,2)
 
@@ -3003,7 +3007,7 @@
           ! -- There is a resonance all right -- !
           ! -- 1. Hermitian part -- !
           UPAR0 = (1. - NWCW) * DFACTPERI
-	  
+          
           call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,1,1),THETARE(1,1))
           call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,2,1),THETARE(2,1))
           call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,3,1),THETARE(3,1))
@@ -3026,7 +3030,7 @@
           THETAIM(1,2) = THETAIM(2,1)
           THETAIM(1,3) = THETAIM(3,1)
           THETAIM(2,3) = THETAIM(3,2)
-	  
+          
 
           do M=1,3
              do N=1,3
@@ -3043,20 +3047,20 @@
           end do
        end do
 
-	 if(iharm .ne. 0) then  !  skip the negative for zero
+         if(iharm .ne. 0) then  !  skip the negative for zero
 
-	    nwcw = - nwcw
+            nwcw = - nwcw
 
-      	  ! -- Resonance relation -- !
-	  
-	 
+          ! -- Resonance relation -- !
+          
+         
           RRP = 1. - NWCW - DFACTPER * UPARMAX 
           RRM = 1. - NWCW - DFACTPER * UPARMIN
-	    
+            
           if (RRP*RRM.GT.0) then
-      	 ! -- No resonance here -- !
-	 
-      	  do J=1,NUPAR
+         ! -- No resonance here -- !
+         
+          do J=1,NUPAR
 
              RR = 1. - NWCW - DFACTPER * UPAR(J)
              IRR = 1. / RR
@@ -3065,110 +3069,110 @@
                    SGG(J,M,N) = SGG(J,M,N) * IRR
                 end do
              end do
-      	  end do
-		
+          end do
+                
           !-- Hermitian part of $\Theta/(2\pi)$ --!
-	  THETARE(1,1) = (sgg(1,1,1)+sgg(nupar,1,1)+2.*sum(sgg(2:nupar-1,1,1)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,1,1)))*du_3
-	  THETARE(2,1) = (SGG(1,2,1)+SGG(nupar,2,1)+2.*sum(SGG(2:nupar-1,2,1)) +&
-	       & 2.*sum(SGG(2:nupar-1:2,2,1)))*du_3
-	  THETARE(3,1) = (sgg(1,3,1)+sgg(nupar,3,1)+2.*sum(sgg(2:nupar-1,3,1)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,3,1)))*du_3
-	  THETARE(2,2) = (sgg(1,2,2)+sgg(nupar,2,2)+2.*sum(sgg(2:nupar-1,2,2)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,2,2)))*du_3
+          THETARE(1,1) = (sgg(1,1,1)+sgg(nupar,1,1)+2.*sum(sgg(2:nupar-1,1,1)) +&
+               & 2.*sum(sgg(2:nupar-1:2,1,1)))*du_3
+          THETARE(2,1) = (SGG(1,2,1)+SGG(nupar,2,1)+2.*sum(SGG(2:nupar-1,2,1)) +&
+               & 2.*sum(SGG(2:nupar-1:2,2,1)))*du_3
+          THETARE(3,1) = (sgg(1,3,1)+sgg(nupar,3,1)+2.*sum(sgg(2:nupar-1,3,1)) +&
+               & 2.*sum(sgg(2:nupar-1:2,3,1)))*du_3
+          THETARE(2,2) = (sgg(1,2,2)+sgg(nupar,2,2)+2.*sum(sgg(2:nupar-1,2,2)) +&
+               & 2.*sum(sgg(2:nupar-1:2,2,2)))*du_3
           THETARE(3,2) = (sgg(1,3,2)+sgg(nupar,3,2)+2.*sum(sgg(2:nupar-1,3,2)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,3,2)))*du_3
-	  THETARE(3,3) = (sgg(1,3,3)+sgg(nupar,3,3)+2.*sum(sgg(2:nupar-1,3,3)) +&
-	       & 2.*sum(sgg(2:nupar-1:2,3,3)))*du_3
-	       
+               & 2.*sum(sgg(2:nupar-1:2,3,2)))*du_3
+          THETARE(3,3) = (sgg(1,3,3)+sgg(nupar,3,3)+2.*sum(sgg(2:nupar-1,3,3)) +&
+               & 2.*sum(sgg(2:nupar-1:2,3,3)))*du_3
+               
 
-		
+                
           do J=1,NUPAR  ! restore sgg
              RR=1.- NWCW - DFACTPER * UPAR(J)
-	     do M=1,3
+             do M=1,3
                 do N=1,M
                    SGG(J,M,N) = SGG(J,M,N) * RR
-            	end do
+                end do
              end do
-      	  end do
+          end do
 
-	  temp = THETARE(3,2)
-	  THETARE(3,2) = -THETARE(3,1)
-	  THETARE(3,1) = -temp
-		
-	  temp = THETARE(1,1)
-	  THETARE(1,1) = THETARE(2,2)
-	  THETARE(2,2) = temp
+          temp = THETARE(3,2)
+          THETARE(3,2) = -THETARE(3,1)
+          THETARE(3,1) = -temp
+                
+          temp = THETARE(1,1)
+          THETARE(1,1) = THETARE(2,2)
+          THETARE(2,2) = temp
 
- 	  THETARE(1,2) = THETARE(2,1)
-      	  THETARE(1,3) = THETARE(3,1)
-      	  THETARE(2,3) = THETARE(3,2)
+          THETARE(1,2) = THETARE(2,1)
+          THETARE(1,3) = THETARE(3,1)
+          THETARE(2,3) = THETARE(3,2)
 
-      	 !-- Anti-hermitian part of $\Theta/(2\pi)$ --!
-      	 THETAIM(1:3,1:3)=0.
+         !-- Anti-hermitian part of $\Theta/(2\pi)$ --!
+         THETAIM(1:3,1:3)=0.
 
           else
 
-      	 ! -- There is a resonance all right -- !
-      	 ! -- 1. Hermitian part -- !
-	 
-	 
-      	 UPAR0 = DFACTPERI * (1. - NWCW)
+         ! -- There is a resonance all right -- !
+         ! -- 1. Hermitian part -- !
+         
+         
+         UPAR0 = DFACTPERI * (1. - NWCW)
 
-      	 call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,1,1),THETARE(1,1))
-      	 call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,2,1),THETARE(2,1))
-      	 call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,3,1),THETARE(3,1))
-      	 call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,2,2),THETARE(2,2))
-      	 call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,3,2),THETARE(3,2))
-      	 call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,3,3),THETARE(3,3))
+         call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,1,1),THETARE(1,1))
+         call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,2,1),THETARE(2,1))
+         call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,3,1),THETARE(3,1))
+         call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,2,2),THETARE(2,2))
+         call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,3,2),THETARE(3,2))
+         call CAUCHY_PPART2(UPAR,NUPAR,UPAR0,SGG(1,3,3),THETARE(3,3))
 
-		 temp = THETARE(3,2)
-		 THETARE(3,2) = -THETARE(3,1)
-		 THETARE(3,1) = -temp
-		 temp = THETARE(1,1)
-		 THETARE(1,1) = THETARE(2,2)
-		 THETARE(2,2) = temp
-		
-      	 THETARE(1,2) = THETARE(2,1)
-      	 THETARE(1,3) = THETARE(3,1)
-      	 THETARE(2,3) = THETARE(3,2)
+                 temp = THETARE(3,2)
+                 THETARE(3,2) = -THETARE(3,1)
+                 THETARE(3,1) = -temp
+                 temp = THETARE(1,1)
+                 THETARE(1,1) = THETARE(2,2)
+                 THETARE(2,2) = temp
+                
+         THETARE(1,2) = THETARE(2,1)
+         THETARE(1,3) = THETARE(3,1)
+         THETARE(2,3) = THETARE(3,2)
 
-      	 ! -- 2. Anti-hermitian part -- !
-      	 call WINTERP1D_2(UPAR,NUPAR,SGG(1,1,1),UPAR0,THETAIM(1,1))
-      	 call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,1),UPAR0,THETAIM(2,1))
-      	 call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,1),UPAR0,THETAIM(3,1))
-      	 call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,2),UPAR0,THETAIM(2,2))
-      	 call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,2),UPAR0,THETAIM(3,2))
-      	 call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,3),UPAR0,THETAIM(3,3))
+         ! -- 2. Anti-hermitian part -- !
+         call WINTERP1D_2(UPAR,NUPAR,SGG(1,1,1),UPAR0,THETAIM(1,1))
+         call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,1),UPAR0,THETAIM(2,1))
+         call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,1),UPAR0,THETAIM(3,1))
+         call WINTERP1D_2(UPAR,NUPAR,SGG(1,2,2),UPAR0,THETAIM(2,2))
+         call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,2),UPAR0,THETAIM(3,2))
+         call WINTERP1D_2(UPAR,NUPAR,SGG(1,3,3),UPAR0,THETAIM(3,3))
 
-	 temp = THETAIM(3,2)
-	 THETAIM(3,2) = -THETAIM(3,1)
-	 THETAIM(3,1) = -temp
-	 temp = THETAIM(1,1)
-	 THETAIM(1,1) = THETAIM(2,2)
-	 THETAIM(2,2) = temp
-		
-      	 THETAIM(1,2) = THETAIM(2,1)
-      	 THETAIM(1,3) = THETAIM(3,1)
-      	 THETAIM(2,3) = THETAIM(3,2)
+         temp = THETAIM(3,2)
+         THETAIM(3,2) = -THETAIM(3,1)
+         THETAIM(3,1) = -temp
+         temp = THETAIM(1,1)
+         THETAIM(1,1) = THETAIM(2,2)
+         THETAIM(2,2) = temp
+                
+         THETAIM(1,2) = THETAIM(2,1)
+         THETAIM(1,3) = THETAIM(3,1)
+         THETAIM(2,3) = THETAIM(3,2)
 
          do M=1,3
             do N=1,3
                THETARE(M,N) = -THETARE(M,N) * DFACTPERI
                THETAIM(M,N) = -PI * THETAIM(M,N) * abs(DFACTPERI)
             end do
-      	 end do
-		
+         end do
+                
 
           end if  !resonance exists
-	   
-	    do N=1,3
-      	 do M=1,3
+           
+            do N=1,3
+         do M=1,3
                 WSPEC(M,N)=WSPEC(M,N)+2.*PI*WPFACT*BETAFACT*cmplx(THETARE(M,N),THETAIM(M,N))
-      	 end do
+         end do
           end do
 
-	 end if ! zero skip if
+         end if ! zero skip if
     end do !harmonic sum
 
     ! add in extra term in sig33 from the w to u conversion
@@ -3186,7 +3190,9 @@
   subroutine GETNONMAX_SIGMA_AORSA_NEW0(W,ZSPEC,ASPEC,DENS,BMAG, &
        & K1,XI1,JNXI1,K2,XI2,JNXI2,NBESSJ,ENORM,UPARMIN,UPARMAX, &
        & NUPAR,NUPER,UPER,UPAR,DFDUPER,DFDUPAR,WSPEC,IFAIL)
+!    use iso_fortran_env, r8=>real64
     implicit none
+    
     real, intent(IN):: W,ZSPEC,ASPEC,DENS,BMAG
     real, dimension(3):: K1,K2
     integer, intent(IN):: NUPAR,NUPER,NBESSJ
@@ -3340,7 +3346,7 @@
 
 
 
- 	    THETARE(1,2) = THETARE(2,1)
+            THETARE(1,2) = THETARE(2,1)
           THETARE(1,3) = THETARE(3,1)
           THETARE(2,3) = THETARE(3,2)
 
@@ -3415,9 +3421,8 @@
 !   ---------------------------------------
 !   Nathan's version: optimized for Cray X1
 !   ---------------------------------------
-
+!    use iso_fortran_env, r8=>real64
     implicit none
-
 
     real, intent(IN):: ZSPEC, ASPEC, ENORM,BMAG,KPER
     integer, intent(IN):: NUPER
@@ -3452,7 +3457,9 @@
   subroutine GETNONMAXSWMAT_AORSA_NEW(W,ZSPEC,ASPEC,DENS,BMAG, &
        & K1,XI1,JNXI1,K2,XI2,JNXI2,NBESSJ,ENORM,UPARMIN,UPARMAX, &
        & NUPAR,NUPER,UPER,UPAR,DFDUPER,DFDUPAR,WSPEC,IFAIL)
+!    use iso_fortran_env, r8=>real64
     implicit none
+    
     real, intent(IN):: W,ZSPEC,ASPEC,DENS,BMAG
     real, dimension(3):: K1,K2
     integer, intent(IN):: NUPAR,NUPER,NBESSJ
@@ -3489,9 +3496,9 @@
     logical :: is_uniform 
     integer, parameter :: nfxmax = 9
     integer :: nfx 
-    real*8, dimension(nfxmax) ::  vint
-    real*8, dimension(nupar,nfxmax) :: fx
-    real*8 :: dx, dh, tol
+    real, dimension(nfxmax) ::  vint
+    real, dimension(nupar,nfxmax) :: fx
+    real :: dx, dh, tol
     integer :: i
 
     IFAIL=0
@@ -3623,7 +3630,7 @@
            fx(1:nupar,9) = SGG(1:nupar,3,3)
 
            nfx = 9
-           call cauchy_ppart6(upar,nupar,upar0,nfx,fx,vint)
+           call cauchy_ppart6(upar,nupar,upar0,nfx,fx,vint,is_uniform)
 
            thetare(1,1) = vint(1)
            thetare(2,1) = vint(2)
@@ -3693,7 +3700,9 @@
   subroutine GETNONMAXSWMAT_AORSA(W,ZSPEC,ASPEC,DENS,BMAG, &
        & K1,XI1,JNXI1,K2,XI2,JNXI2,NBESSJ,ENORM,UPARMIN,UPARMAX, &
        & NUPAR,NUPER,UPER,UPAR,DFDUPER,DFDUPAR,WSPEC,IFAIL)
+!    use iso_fortran_env, r8=>real64
     implicit none
+    
     real, intent(IN):: W,ZSPEC,ASPEC,DENS,BMAG
     real, dimension(3):: K1,K2
     integer, intent(IN):: NUPAR,NUPER,NBESSJ
@@ -3710,7 +3719,7 @@
     
     real, parameter:: EOVERAMU=9.64853e7
     real, parameter:: EOVERMH = 9.58084e+07
-	
+        
     real, parameter:: WP2FACT=1.745915
     real, parameter:: MPC2=938271998.38
     real, parameter:: C=2.99792458e8
@@ -4015,6 +4024,7 @@
        & DFDUPER, DFDUPAR, & 
        & WSPEC, IFAIL)
        
+!    use iso_fortran_env, r8=>real64
     implicit none
     
     real, intent(IN):: W,ZSPEC,ASPEC,DENS,BMAG
@@ -4135,10 +4145,10 @@
            ! call EQTRAPZ1D(NUPER,UPER,SWW(1,1,3),G(1,3)) !
            ! call EQTRAPZ1D(NUPER,UPER,SWW(1,2,3),G(2,3)) !
              call EQTRAPZ1D(NUPER,UPER,SWW(1,3,3),G(3,3))
-	
-	     G(1,2) = - G(2,1)
-	     G(1,3) =   G(3,1)
-	     G(2,3) = - G(3,2)
+        
+             G(1,2) = - G(2,1)
+             G(1,3) =   G(3,1)
+             G(2,3) = - G(3,2)
 
              do N=1,3
                 do M=1,3
@@ -4158,10 +4168,10 @@
        !  call EQTRAPZ1D(NUPAR,UPAR,IRRG(1,1,3),THETARE(1,3)) !
        !  call EQTRAPZ1D(NUPAR,UPAR,IRRG(1,2,3),THETARE(2,3)) !
           call EQTRAPZ1D(NUPAR,UPAR,IRRG(1,3,3),THETARE(3,3))
-	
-	  THETARE(1,2) = - THETARE(2,1)
-	  THETARE(1,3) =   THETARE(3,1)
-	  THETARE(2,3) = - THETARE(3,2)
+        
+          THETARE(1,2) = - THETARE(2,1)
+          THETARE(1,3) =   THETARE(3,1)
+          THETARE(2,3) = - THETARE(3,2)
 
           !-- Anti-hermitian part of $\Theta/(2\pi)$ --!
           THETAIM(1:3,1:3)=0.
@@ -4236,10 +4246,10 @@
           !  call EQTRAPZ1D(NUPER,UPER,SWW(1,1,3),GG(J,1,3)) !
           !  call EQTRAPZ1D(NUPER,UPER,SWW(1,2,3),GG(J,2,3)) !
              call EQTRAPZ1D(NUPER,UPER,SWW(1,3,3),GG(J,3,3))
-	
-	     GG(J,1,2) = - GG(J,2,1)
-	     GG(J,1,3) =   GG(J,3,1)
-	     GG(J,2,3) = - GG(J,3,2)
+        
+             GG(J,1,2) = - GG(J,2,1)
+             GG(J,1,3) =   GG(J,3,1)
+             GG(J,2,3) = - GG(J,3,2)
 
           end do
 
@@ -4277,10 +4287,10 @@
        !  call EQTRAPZ1D(NUPAR,LUPARF,UDDGG(1,1,3),THETARE(1,3)) !
        !  call EQTRAPZ1D(NUPAR,LUPARF,UDDGG(1,2,3),THETARE(2,3)) !
           call EQTRAPZ1D(NUPAR,LUPARF,UDDGG(1,3,3),THETARE(3,3))
-	
-	  THETARE(1,2) = - THETARE(2,1)
-	  THETARE(1,3) =   THETARE(3,1)
-	  THETARE(2,3) = - THETARE(3,2)
+        
+          THETARE(1,2) = - THETARE(2,1)
+          THETARE(1,3) =   THETARE(3,1)
+          THETARE(2,3) = - THETARE(3,2)
 
           do N=1,3
              do M=1,3
@@ -4319,10 +4329,10 @@
        !  call EQTRAPZ1D(NUPER,UPER,SWW(1,1,3),G(1,3)) !
        !  call EQTRAPZ1D(NUPER,UPER,SWW(1,2,3),G(2,3)) !
           call EQTRAPZ1D(NUPER,UPER,SWW(1,3,3),G(3,3))
-	
-	  G(1,2) = - G(2,1)
-	  G(1,3) =   G(3,1)
-	  G(2,3) = - G(3,2)
+        
+          G(1,2) = - G(2,1)
+          G(1,3) =   G(3,1)
+          G(2,3) = - G(3,2)
 
           !-- Imaginary part of $\Theta/(2\pi)$ --!
           do N=1,3
@@ -4353,7 +4363,9 @@
 
 
   subroutine BESSJ(XI,JNXI,LXI,LNBESSJ,LNSBESSJ)
+!    use iso_fortran_env, r8=>real64
     implicit none
+    
     integer, intent(IN):: LXI,LNBESSJ,LNSBESSJ
     real, dimension(LXI), intent(IN):: XI
     real, dimension(LXI,LNBESSJ), intent(inout):: JNXI
@@ -4452,7 +4464,9 @@
 
 
   subroutine BESSJ0(XI,J0XI,LXI)
+!    use iso_fortran_env, r8=>real64
     implicit none
+    
     integer, intent(IN):: LXI
     real, dimension(LXI), intent(IN) :: XI
     real, dimension(LXI), intent(inout) :: J0XI
@@ -4490,7 +4504,9 @@
 
 
   subroutine BESSJ1(XI,J1XI,LXI)
+!    use iso_fortran_env, r8=>real64
     implicit none
+    
     integer, intent(IN):: LXI
     real, dimension(LXI), intent(IN):: XI
     real, dimension(LXI), intent(inout):: J1XI
@@ -4734,10 +4750,7 @@
     real:: CXP,CXM,FXP,FXM,LLOGF,XMAX,XMIN
     real:: CXF,DXF,DX
     real, dimension(NX):: LXF,INTGD,FXPP
-    integer:: IX,IXM1,IXP1
-
-    IXM1(IX)=MAX(IX-1,1)
-    IXP1(IX)=MIN(IX+1,NX)
+    integer:: IX
 
     XMAX=X(NX)
     XMIN=X(1)
@@ -4762,6 +4775,21 @@
     end do
 
     call EQSIMPSON1D(NX,LXF,INTGD,PINT)
+    return
+  contains
+    pure function IXM1(IX)
+      integer:: IXM1
+      integer,intent(IN):: IX
+      IXM1=MAX(IX-1,1)
+      return
+    end function ixm1
+    pure function IXP1(IX)
+      integer:: IXP1
+      integer,intent(IN):: IX
+      IXP1=MIN(IX-1,1)
+      return
+    end function ixp1
+    
 
   end subroutine CAUCHY_PPART
 

@@ -5,15 +5,19 @@ on: [push]
 jobs:
   build:
 
-    runs-on: macos-10.15
+    runs-on: macos-12
 
     steps:
     - uses: actions/checkout@v2
     - name: Get xquartz pt 2
-      run: brew cask install xquartz
+      run: brew install --cask xquartz
+    - name: find gfortran
+      run:  ln -s  `brew --prefix`/bin/gfortran-13 `brew --prefix`/bin/gfortran
     - name: Install AORSA deps
-      run: brew install open-mpi scalapack pgplot netcdf
+      run: brew install gfortran open-mpi scalapack giza netcdf-fortran
     - name: Build
       run: make
     - name: Test
       run: ctest
+
+      #giza license free pgplot

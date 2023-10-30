@@ -9104,8 +9104,8 @@ subroutine mrftb1 (m,im,n,in,c,ch,wa,fac)
       m2 = 1-im
       do 118 i=1,m
          m2 = m2+im
-	 ch(i,j) = half*c(m2,j)
-	 ch(i,j+1) = halfm*c(m2,j+1)
+         ch(i,j) = half*c(m2,j)
+         ch(i,j+1) = halfm*c(m2,j+1)
   118 continue
       go to 124
   120 continue
@@ -9113,8 +9113,8 @@ subroutine mrftb1 (m,im,n,in,c,ch,wa,fac)
       m2 = 1-im
       do 122 i=1,m
          m2 = m2+im
-	 c(m2,j) = half*c(m2,j)
-	 c(m2,j+1) = halfm*c(m2,j+1)
+         c(m2,j) = half*c(m2,j)
+         c(m2,j+1) = halfm*c(m2,j+1)
   122 continue
   124 l1 = 1
       iw = 1
@@ -9134,7 +9134,7 @@ subroutine mrftb1 (m,im,n,in,c,ch,wa,fac)
          go to 115
   103    if (ip /= 2) go to 106
          if (na /= 0) go to 104
-	 call mradb2 (m,ido,l1,c,im,in,ch,1,m,wa(iw))
+         call mradb2 (m,ido,l1,c,im,in,ch,1,m,wa(iw))
          go to 105
   104    call mradb2 (m,ido,l1,ch,1,m,c,im,in,wa(iw))
   105    na = 1-na
@@ -9142,7 +9142,7 @@ subroutine mrftb1 (m,im,n,in,c,ch,wa,fac)
   106    if (ip /= 3) go to 109
          ix2 = iw+ido
          if (na /= 0) go to 107
-	 call mradb3 (m,ido,l1,c,im,in,ch,1,m,wa(iw),wa(ix2))
+         call mradb3 (m,ido,l1,c,im,in,ch,1,m,wa(iw),wa(ix2))
          go to 108
   107    call mradb3 (m,ido,l1,ch,1,m,c,im,in,wa(iw),wa(ix2))
   108    na = 1-na
@@ -9158,7 +9158,7 @@ subroutine mrftb1 (m,im,n,in,c,ch,wa,fac)
   111    na = 1-na
          go to 115
   112    if (na /= 0) go to 113
-	 call mradbg (m,ido,ip,l1,idl1,c,c,c,im,in,ch,ch,1,m,wa(iw))
+         call mradbg (m,ido,ip,l1,idl1,c,c,c,im,in,ch,ch,1,m,wa(iw))
          go to 114
   113    call mradbg (m,ido,ip,l1,idl1,ch,ch,ch,1,m,c,c,im,in,wa(iw))
   114    if (ido == 1) na = 1-na
@@ -9253,20 +9253,20 @@ subroutine mrftf1 (m,im,n,in,c,ch,wa,fac)
          ix2 = iw+ido
          ix3 = ix2+ido
          if (na /= 0) go to 101
-	     call mradf4 (m,ido,l1,c,im,in,ch,1,m,wa(iw),wa(ix2),wa(ix3))
+             call mradf4 (m,ido,l1,c,im,in,ch,1,m,wa(iw),wa(ix2),wa(ix3))
          go to 110
   101    call mradf4 (m,ido,l1,ch,1,m,c,im,in,wa(iw),wa(ix2),wa(ix3))
          go to 110
   102    if (ip /= 2) go to 104
          if (na /= 0) go to 103
-	     call mradf2 (m,ido,l1,c,im,in,ch,1,m,wa(iw))
+             call mradf2 (m,ido,l1,c,im,in,ch,1,m,wa(iw))
          go to 110
   103    call mradf2 (m,ido,l1,ch,1,m,c,im,in,wa(iw))
          go to 110
   104    if (ip /= 3) go to 106
          ix2 = iw+ido
          if (na /= 0) go to 105
-	     call mradf3 (m,ido,l1,c,im,in,ch,1,m,wa(iw),wa(ix2))
+             call mradf3 (m,ido,l1,c,im,in,ch,1,m,wa(iw),wa(ix2))
          go to 110
   105    call mradf3 (m,ido,l1,ch,1,m,c,im,in,wa(iw),wa(ix2))
          go to 110
@@ -9307,8 +9307,8 @@ subroutine mrftf1 (m,im,n,in,c,ch,wa,fac)
         m2 = 1-im
         do i=1,m
           m2 = m2+im
-	      c(m2,j) = tsn*ch(i,j)
-	      c(m2,j+1) = tsnm*ch(i,j+1)
+              c(m2,j) = tsn*ch(i,j)
+              c(m2,j+1) = tsnm*ch(i,j+1)
         end do
       end do
 
@@ -9328,8 +9328,8 @@ subroutine mrftf1 (m,im,n,in,c,ch,wa,fac)
       m2 = 1-im
       do 122 i=1,m
          m2 = m2+im
-	 c(m2,j) = tsn*c(m2,j)
-	 c(m2,j+1) = tsnm*c(m2,j+1)
+         c(m2,j) = tsn*c(m2,j)
+         c(m2,j+1) = tsnm*c(m2,j+1)
   122 continue
       if(modn /= 0) return
       m2 = 1-im
@@ -9463,8 +9463,8 @@ subroutine mrfti1 (n,wa,fac)
               i = i+2
               fi = fi + 1.0D+00
               arg = fi*argld
-	          wa(i-1) = cos ( arg )
-	          wa(i) = sin ( arg )
+                  wa(i-1) = cos ( arg )
+                  wa(i) = sin ( arg )
             end do
             is = is+ido
          end do
@@ -12652,14 +12652,14 @@ subroutine rfftb1 ( n, in, c, ch, wa, fac )
       ch(1) = c(1,1)
       ch(n) = c(1,n)
       do j=2,nl,2
-	    ch(j) = half*c(1,j)
-	    ch(j+1) = halfm*c(1,j+1)
+            ch(j) = half*c(1,j)
+            ch(j+1) = halfm*c(1,j+1)
       end do
 
       go to 124
   120 do 122 j=2,nl,2
-	 c(1,j) = half*c(1,j)
-	 c(1,j+1) = halfm*c(1,j+1)
+         c(1,j) = half*c(1,j)
+         c(1,j+1) = halfm*c(1,j+1)
   122 continue
   124 l1 = 1
       iw = 1
@@ -12679,7 +12679,7 @@ subroutine rfftb1 ( n, in, c, ch, wa, fac )
          go to 115
   103    if (ip /= 2) go to 106
          if (na /= 0) go to 104
-	 call r1f2kb (ido,l1,c,in,ch,1,wa(iw))
+         call r1f2kb (ido,l1,c,in,ch,1,wa(iw))
          go to 105
   104    call r1f2kb (ido,l1,ch,1,c,in,wa(iw))
   105    na = 1-na
@@ -12687,7 +12687,7 @@ subroutine rfftb1 ( n, in, c, ch, wa, fac )
   106    if (ip /= 3) go to 109
          ix2 = iw+ido
          if (na /= 0) go to 107
-	 call r1f3kb (ido,l1,c,in,ch,1,wa(iw),wa(ix2))
+         call r1f3kb (ido,l1,c,in,ch,1,wa(iw),wa(ix2))
          go to 108
   107    call r1f3kb (ido,l1,ch,1,c,in,wa(iw),wa(ix2))
   108    na = 1-na
@@ -12703,7 +12703,7 @@ subroutine rfftb1 ( n, in, c, ch, wa, fac )
   111    na = 1-na
          go to 115
   112    if (na /= 0) go to 113
-	 call r1fgkb (ido,ip,l1,idl1,c,c,c,in,ch,ch,1,wa(iw))
+         call r1fgkb (ido,ip,l1,idl1,c,c,c,in,ch,ch,1,wa(iw))
          go to 114
   113    call r1fgkb (ido,ip,l1,idl1,ch,ch,ch,1,c,c,in,wa(iw))
   114    if (ido == 1) na = 1-na
@@ -12794,20 +12794,20 @@ subroutine rfftf1 ( n, in, c, ch, wa, fac )
          ix2 = iw+ido
          ix3 = ix2+ido
          if (na /= 0) go to 101
-	     call r1f4kf (ido,l1,c,in,ch,1,wa(iw),wa(ix2),wa(ix3))
+             call r1f4kf (ido,l1,c,in,ch,1,wa(iw),wa(ix2),wa(ix3))
          go to 110
   101    call r1f4kf (ido,l1,ch,1,c,in,wa(iw),wa(ix2),wa(ix3))
          go to 110
   102    if (ip /= 2) go to 104
          if (na /= 0) go to 103
-	 call r1f2kf (ido,l1,c,in,ch,1,wa(iw))
+         call r1f2kf (ido,l1,c,in,ch,1,wa(iw))
          go to 110
   103    call r1f2kf (ido,l1,ch,1,c,in,wa(iw))
          go to 110
   104    if (ip /= 3) go to 106
          ix2 = iw+ido
          if (na /= 0) go to 105
-	 call r1f3kf (ido,l1,c,in,ch,1,wa(iw),wa(ix2))
+         call r1f3kf (ido,l1,c,in,ch,1,wa(iw),wa(ix2))
          go to 110
   105    call r1f3kf (ido,l1,ch,1,c,in,wa(iw),wa(ix2))
          go to 110
@@ -12822,7 +12822,7 @@ subroutine rfftf1 ( n, in, c, ch, wa, fac )
          go to 110
   108    if (ido == 1) na = 1-na
          if (na /= 0) go to 109
-	 call r1fgkf (ido,ip,l1,idl1,c,c,c,in,ch,ch,1,wa(iw))
+         call r1fgkf (ido,ip,l1,idl1,c,c,c,in,ch,ch,1,wa(iw))
          na = 1
          go to 110
   109    call r1fgkf (ido,ip,l1,idl1,ch,ch,ch,1,c,c,in,wa(iw))
@@ -12839,16 +12839,16 @@ subroutine rfftf1 ( n, in, c, ch, wa, fac )
       if (na /= 0) go to 120
       c(1,1) = sn*ch(1)
       do 118 j=2,nl,2
-	 c(1,j) = tsn*ch(j)
-	 c(1,j+1) = tsnm*ch(j+1)
+         c(1,j) = tsn*ch(j)
+         c(1,j+1) = tsnm*ch(j+1)
   118 continue
       if(modn /= 0) return
       c(1,n) = sn*ch(n)
       return
   120 c(1,1) = sn*c(1,1)
       do 122 j=2,nl,2
-	 c(1,j) = tsn*c(1,j)
-	 c(1,j+1) = tsnm*c(1,j+1)
+         c(1,j) = tsn*c(1,j)
+         c(1,j+1) = tsnm*c(1,j+1)
   122 continue
       if(modn /= 0) return
       c(1,n) = sn*c(1,n)
@@ -12979,8 +12979,8 @@ subroutine rffti1 ( n, wa, fac )
                i = i+2
                fi = fi + 1.0D+00
                arg = fi*argld
-	       wa(i-1) = cos ( arg )
-	       wa(i) = sin ( arg )
+               wa(i-1) = cos ( arg )
+               wa(i) = sin ( arg )
   108       continue
             is = is+ido
   109    continue

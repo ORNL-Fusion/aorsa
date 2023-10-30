@@ -3,7 +3,6 @@ module z_erfc
 contains
 
 
-
 subroutine zfun_erfc(zIn, zOut)
 !  calls wofz_f90 and multiplies the result by i * sqrt(pi)
 
@@ -16,7 +15,9 @@ real(kind=DBL), parameter :: &
     zero=0.0d0,&
     four=4.0d0,&
     one=1.0d0
-real(kind = DBL), parameter :: sqrtpi = sqrt(four * atan(one))
+!cant use this unless f2003 or later
+!real(kind = DBL), parameter :: sqrtpi = sqrt(four * atan(one))
+real(kind=DBL), parameter :: sqrtpi = 1.77245385091d0
 
 call wofz_f90(zIn, zOut, flag)
 zOut = zOut * cmplx(zero, one) * sqrtpi
@@ -102,7 +103,7 @@ real(kind=DBL), parameter :: &
     one=1.0d0
 
 xi = real(zIn)
-yi = imag(zIn)
+yi = aimag(zIn)
 flag = .false.
 xabs = dabs(xi)
 yabs = dabs(yi)

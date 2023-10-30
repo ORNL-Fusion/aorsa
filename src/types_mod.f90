@@ -1,5 +1,6 @@
 module types
-use, intrinsic :: iso_fortran_env
+!jcwright: this is not used in aorsa, requires fortran 2003
+!use, intrinsic :: iso_fortran_env !conflicts with -r8
 implicit none
 !integer, parameter :: sp = REAL32
 !integer, parameter :: dp = REAL64

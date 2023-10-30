@@ -151,13 +151,13 @@ C
       IF (NCALC .GE. 0) GO TO 102
       IF (N .GE. 0) GO TO 101
       IER = 2
-      CALL ULIBER (IER,25H IN BESIC, N OUT OF RANGE,25)
+      CALL ULIBER (IER," IN BESIC, N OUT OF RANGE",25)
       GO TO 103
   101 IER = 1
-      CALL ULIBER (IER,25H IN BESIC, X OUT OF RANGE,25)
+      CALL ULIBER (IER," IN BESIC, X OUT OF RANGE",25)
       GO TO 103
   102 IER = 2+NCALC
-      CALL ULIBER (IER,40H IN BESIC, ACCURACY LOST FOR SOME ORDERS,40)
+      CALL ULIBER (IER," IN BESIC, ACCURACY LOST FOR SOME ORDERS",40)
   103 RETURN
       END
 
@@ -634,12 +634,13 @@ c                          the error message to be printed.
 c                        nmessg
 c                          the length of the message, in characters.
 c
-      dimension messg(1)
-      integer erunit,prunit
+      integer:: nmessg
+      character(*):: messg
+      integer,parameter:: erunit=6,prunit=6
 c
 c erunit should be set to the local unit number for error messages.
 c
-      data erunit/6/,prunit/6/
+c      data erunit/6/,prunit/6/
 c
 c      if (erunit .eq. 0) write(prunit,1000)
 c
@@ -655,9 +656,8 @@ c that can be stored in one integer word, and $n should be replaced by
 c the value of 1+(79/$ncpwd).
 c
        mm=1+(nmessg-1)/8
-       write(erunit,1000) ierr,(messg(i),i=1,mm)
-1000   format(' ****error #' ,i5,25h,error message follows.../
-     1       (18 a8 ))
+       write(erunit,1000) ierr,messg
+1000   format(' ****error #' ,i5,a)
 c
    10 if (ierr .ge. 32) stop
       return
@@ -704,7 +704,7 @@ c     Uses bessi0
 c     Returns the modified Bessel function In(x) for any real x and n.ge.2
       integer j, m
       real bi, bim, bip, tox, bessi0
-      if (n .lt. 2) pause 'bad argument n in bessi'
+      if (n .lt. 2) write(*,*) 'bad argument n in bessi'
       if (x .eq. 0.) then
          bessi = 0.
       else
@@ -812,7 +812,7 @@ c
       save ntop, a
       data ntop, a(1)/0, 1./
       if(n .lt. 0) then
-         pause 'negative factorial in factrl'
+         write(*,*) 'negative factorial in factrl'
       else if (n .le. ntop)then
          factrl = a(n+1)
       else if (n .le. 32) then

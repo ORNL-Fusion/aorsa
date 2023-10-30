@@ -12,12 +12,12 @@
 !  r                   -range of exponent from -r to r
 !
 ! For INTEGER variables:
-!	Use r=8 for single precision on 32 bit machine
+!       Use r=8 for single precision on 32 bit machine
 !-------------------------------------------------------------------------------
 
-	IMPLICIT NONE
+        IMPLICIT NONE
 
-	PRIVATE
+        PRIVATE
 
 ! Defaults
       INTEGER, PARAMETER :: default_real = kind(1.0)
@@ -26,8 +26,8 @@
 
 ! *8 kinds
 
-      REAL*8, PARAMETER :: xdbl_real = 1.
-      INTEGER*8, PARAMETER :: xdbl_int = 1
+!      REAL*8, PARAMETER :: 
+      INTEGER, PARAMETER :: xdbl_int = 1, xdbl_real = 1
       INTEGER, PARAMETER :: dbl_real = kind(xdbl_real)
       INTEGER, PARAMETER :: dbl_int = kind(xdbl_int)
       INTEGER, PARAMETER :: dbl_complex = kind(xdbl_real)

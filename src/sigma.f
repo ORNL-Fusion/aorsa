@@ -1,4 +1,3 @@
-
 c
 c***************************************************************************
 c
@@ -23,7 +22,7 @@ c
      .   nkperp, zi, eps0, v0i, omgrf, xk0, kperp_max,
      .   i_sav, j_sav, upshift, damping, xk_cutoff, rt, 
      .   nkx2, nky2)
-     	
+        
 *     ---------------------------------------------------------
 *     This routine uses the modified Z functions Z0, Z1, Z2
 *     with the appropriate sign changes for k_parallel < 0.0
@@ -117,7 +116,7 @@ c      use zfun_hilbert
       integer :: NSBESSJ,IFAIL
       COMPLEX WSPEC(3,3)
       complex :: factor
-	real :: UminPara,UmaxPara
+      real :: UminPara,UmaxPara
       real :: XI1(NUPER),JNXI1(NUPER, NBESSJ)
       real :: XI2(NUPER),JNXI2(NUPER, NBESSJ)
 
@@ -166,8 +165,8 @@ c      if (upshift .eq. 0)   xkprl = nphi / rt
       if (xkperp .eq. 0.0) xkperp = 1.0e-08
                         
       sgn_kprl = sign(1.0, xkprl)
-      akprl = abs(xkprl)		      
-		     
+      akprl = abs(xkprl)                      
+                     
 !     ----------------------------------------------
 !     Optional: Don't allow xkprl to be 0 (upshift = -2)
 !     ----------------------------------------------        
@@ -175,7 +174,7 @@ c      if (upshift .eq. 0)   xkprl = nphi / rt
          if (akprl .lt. akprl_min) then
             xkprl = akprl_min* sgn_kprl
          end if 
-      end if		           
+      end if                       
              
       
       
@@ -201,8 +200,8 @@ c        if (abs(reson) .lt. 0.02)then
             zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
             dzetal(l) = 0.0
          end if
-	 
-c	 zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+         
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
@@ -301,8 +300,8 @@ c      if(ndist .eq. 0)then
             al = 1.0 / (xkprl * alpha) * z0
             bl = 1.0 / (xkprl * alpha) * z1
             cl = 1.0 / (xkprl * alpha) * z2
-	    
-	    
+            
+            
             dkwxxl = -zieps0 * omgp2 * l**2 / xkperp * (exilp(labs)
      .         - exil(labs) * (1. + 1. / gamma) ) * al
      
@@ -332,7 +331,7 @@ c      if(ndist .eq. 0)then
      
             dkwzxl = -zieps0 * omgp2 * rhol * 
      .                l * (exilp(labs) - exil(labs)) * bl
-	    
+            
             dkwzyl = - eps0 * omgp2 * rhol * (
      .        ( -l**2 / gamma - 2. * gamma) * exil(labs)
      .        + 2. * gamma * exilp(labs)   ) * bl
@@ -348,13 +347,13 @@ c      if(ndist .eq. 0)then
             dkwyz = dkwyz + dkwyzl * dkperp_dkalp
             dkwzx = dkwzx + dkwzxl * dkperp_dkalp
             dkwzy = dkwzy + dkwzyl * dkperp_dkalp
-            dkwzz = dkwzz + dkwzzl * dkperp_dkalp	    
+            dkwzz = dkwzz + dkwzzl * dkperp_dkalp           
 
          end do
-	 
-	 
+         
+         
 
-	 
+         
 
 c      end if
       
@@ -366,7 +365,7 @@ c      end if
       if (ndist .eq. 1) then
       
          if (upshift .ne. 0) xkprl = xkprl_eff
-	 
+         
       
          Emax = 0.5 * xm * vc_mks**2
          Enorm = Emax / 1.6e-19
@@ -388,15 +387,15 @@ c      end if
          NSBESSJ = 2 * NBESSJ + 8
          DensSPEC = xn
          bratio = bmod0 / bmod
-	 if(bratio .gt. 1.0) bratio = 1.0
+         if(bratio .gt. 1.0) bratio = 1.0
 
-	 duperp = uperp(nuper) / (nuper - 1)
-	 dupara = 2.0 * upara(nupar) / (nupar - 1)
+         duperp = uperp(nuper) / (nuper - 1)
+         dupara = 2.0 * upara(nupar) / (nupar - 1)
 
          if(i .ne. i_sav .or. j .ne. j_sav)then
-	 
-	    dfduper0 = 0.0
-	    dfdupar0 = 0.0
+         
+            dfduper0 = 0.0
+            dfdupar0 = 0.0
 
 !           ------------------------------------------------
 !           get CQL3D distribution function on the midplane
@@ -413,119 +412,119 @@ c      end if
 !           ------------------------------------------------
 
             if(bratio .ge. 0.0)then
-	    
-	       dfduper = 0.0
-	       dfdupar = 0.0
-	    
+            
+               dfduper = 0.0
+               dfdupar = 0.0
+            
                do ni = 1, nuper
                   do mi = 1, nupar
 
                      argd = uperp(ni)**2 * (1. - bratio) 
      .                                               + upara(mi)**2
                      if (argd .le. 0.0) argd = 1.0e-06
-		     
-		     uperp0 = uperp(ni) * sqrt(bratio)
+                     
+                     uperp0 = uperp(ni) * sqrt(bratio)
                      upara0 = sign(1.0, upara(mi)) * sqrt(argd)
-		     
-		     dfduper(ni, mi) = 0.0
+                     
+                     dfduper(ni, mi) = 0.0
                      dfdupar(ni, mi) = 0.0
-		     
-		     if(upara0 .ge. upara(1) .and. 
+                     
+                     if(upara0 .ge. upara(1) .and. 
      .                                   upara0 .le. upara(nupar)) then
      
-     		        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
-			mi0 = int((upara0 - upara(1)) / dupara) + 1
-			
-			dfduper0_intplt = dfduper0(ni0, mi0)
-			dfdupar0_intplt = dfdupar0(ni0, mi0)
-			
-		        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
-			
+                        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
+                        mi0 = int((upara0 - upara(1)) / dupara) + 1
+                        
+                        dfduper0_intplt = dfduper0(ni0, mi0)
+                        dfdupar0_intplt = dfdupar0(ni0, mi0)
+                        
+                        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
+                        
                         uperp0_grid = uperp(1) + (ni0 - 1) * duperp
-			upara0_grid = upara(1) + (mi0 - 1) * dupara
-						
-			zeta = (uperp0 - uperp0_grid) / duperp
-			eta  = (upara0 - upara0_grid) / dupara
-			
+                        upara0_grid = upara(1) + (mi0 - 1) * dupara
+                                                
+                        zeta = (uperp0 - uperp0_grid) / duperp
+                        eta  = (upara0 - upara0_grid) / dupara
+                        
                         ai = dfduper0(ni0, mi0)
                         bi = dfduper0(ni0+1 ,mi0) - dfduper0(ni0, mi0)
                         ci = dfduper0(ni0, mi0+1) - dfduper0(ni0, mi0)
                         di = dfduper0(ni0+1, mi0+1)+ dfduper0(ni0, mi0) 
      .                     - dfduper0(ni0+1, mi0) - dfduper0(ni0, mi0+1) 
-			   
-			dfduper0_intplt = ai + bi * zeta 
-     .                                     + ci * eta + di * zeta * eta 			
+                           
+                        dfduper0_intplt = ai + bi * zeta 
+     .                                     + ci * eta + di * zeta * eta                         
 
                         ai = dfdupar0(ni0, mi0)
                         bi = dfdupar0(ni0+1 ,mi0) - dfdupar0(ni0, mi0)
                         ci = dfdupar0(ni0, mi0+1) - dfdupar0(ni0, mi0)
                         di = dfdupar0(ni0+1, mi0+1)+ dfdupar0(ni0, mi0) 
      .                     - dfdupar0(ni0+1, mi0) - dfdupar0(ni0, mi0+1) 
-			   
-			dfdupar0_intplt = ai + bi * zeta 
+                           
+                        dfdupar0_intplt = ai + bi * zeta 
      .                                     + ci * eta + di * zeta * eta
      
-                        end if 			
+                        end if                  
 
-			
-			if (upara0 .ne. 0.0)then
-					     
-			   dfdupar(ni, mi) = dfdupar0_intplt * 
+                        
+                        if (upara0 .ne. 0.0)then
+                                             
+                           dfdupar(ni, mi) = dfdupar0_intplt * 
      .                        upara(mi) / upara0
      
                            dfduper(ni, mi) = dfduper0_intplt * 
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-c     			   dfdth = upara(mi) * dfduper(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
 c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
-			
-		     end if
-		     
-		     
-		     go to 5000
+                        
+                     end if
+                     
+                     
+                     go to 5000
 !                    ----------------------------
 !                    optional analytic Maxwellian
 !                    ----------------------------
-		     pi = 3.141592654
-		     
-		     alpha = sqrt(2.0 * xkt / xm)
+                     pi = 3.141592654
+                     
+                     alpha = sqrt(2.0 * xkt / xm)
 !                     vc_mks = 3.5 * alpha
                      u0 = vc_mks / alpha
-		     
-	             fnorm = u0**3 / pi**1.5 
-			   
-		     u2 = uperp(ni)**2 + upara(mi)**2
-		     
+                     
+                     fnorm = u0**3 / pi**1.5 
+                           
+                     u2 = uperp(ni)**2 + upara(mi)**2
+                     
                      f_cql = exp(-u2 * u0**2) * fnorm
-	             dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
+                     dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
                      dfdupar(ni, mi) = -f_cql * 2. * upara(mi) * u0**2
- 5000                continue		     
+ 5000                continue                
 
 
                   end do
                end do
-	       
+               
             end if
-	    
+            
 
 !           --------------------------------------
 !           Initialize the interpolation in k_perp:
 !           --------------------------------------
             if (nkperp .ne. 0) then
- 	       l_first  = .true.
+               l_first  = .true.
                l_interp = .true.
-	
+        
                call GETNONMAXSIGMA_AORSA_NEWi(W,
      .                          ZSPEC,ASPEC,DensSPEC,BMAG,
      .                          K1,XI1,JNXI1,
      .                          K1,XI1,JNXI1,NBESSJ,
      .                          Enorm,UminPara,UmaxPara,
      .                          NUPAR,NUPER,UPERP,UPARA,
-     .			        DFDUPER,DFDUPAR,
+     .                          DFDUPER,DFDUPAR,
      .                          WSPEC,IFAIL,
      .                          l_first, l_interp, kperp_max, nkperp,
      .                          xkphi)
@@ -557,7 +556,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
      .                          K1, XI1, JNXI1, NBESSJ,
      .                          Enorm, UminPara, UmaxPara,
      .                          NUPAR, NUPER, UPERP, UPARA,
-     .			        DFDUPER, DFDUPAR,
+     .                          DFDUPER, DFDUPAR,
      .                          WSPEC, IFAIL)
 
          else
@@ -567,13 +566,13 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
 
             l_first = .false.
 
-	      call GETNONMAXSIGMA_AORSA_NEWi(W,
+              call GETNONMAXSIGMA_AORSA_NEWi(W,
      .                       ZSPEC,ASPEC,DensSPEC,BMAG,
      .                       K1, XI1, JNXI1,
      .                       K1, XI1, JNXI1, NBESSJ,
      .                       Enorm, UminPara, UmaxPara,
      .                       NUPAR, NUPER, UPERP, UPARA,
-     .			     DFDUPER, DFDUPAR,
+     .                       DFDUPER, DFDUPAR,
      .                       WSPEC, IFAIL,
      .                       l_first, l_interp, kperp_max, nkperp,
      .                       xkphi)
@@ -604,7 +603,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
       kr = xkperp / xk_cutoff
       step = damping * kr**16 / (1. + kr**16)       
       if (xm .eq. xme) sig3 = sig3 * (1.0 + step)            
- 	      	 	      	      
+                                      
       
 
 *     -----------------------------
@@ -761,7 +760,7 @@ c      use zfun_hilbert
       integer :: NSBESSJ,IFAIL
       COMPLEX WSPEC(3,3)
       complex :: factor
-	real :: UminPara,UmaxPara
+        real :: UminPara,UmaxPara
       real :: XI1(NUPER),JNXI1(NUPER, NBESSJ)
       real :: XI2(NUPER),JNXI2(NUPER, NBESSJ)
 
@@ -795,15 +794,15 @@ c      use zfun_hilbert
 
          reson = (omgrf - l * real(omgc)) / omgrf
 c         if (abs(reson) .lt. 0.02)then
-	 if (rho .gt. 1.0) then
+         if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          else
             zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
             dzetal(l) = 0.0
          end if
-	 
-c	 zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+         
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
@@ -872,10 +871,10 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
          if(rgamma .lt. 1.0e-08)
      .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
      .                                                      exilovergam)
-	 
+         
          delta_x = 0.0 
-	 delta_y = 0.0 
-	 delta_z = 0.0
+         delta_y = 0.0 
+         delta_z = 0.0
 
          do l = lmin, lmax
             labs = abs(l)
@@ -883,8 +882,8 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
             if(nzfun .eq. 0) call z_approx(sgn_kprl, zetal(l), 0.0,
      .                                                     z0, z1, z2)
             if(nzfun .eq. 1) then
-	       call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
-	       
+               call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
+               
                if(use_new_z2 .eqv. .true. .and. l .eq. 0) then
                   call z_approx_e(sgn_kprl, zetal(l), gammab(l),
      .               z0_new, z1_new, z2_new, zetai_table, 
@@ -896,25 +895,25 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
                end if
      
             end if
-	    
+            
             if(nzfun .eq. 2) call z_smithe(sgn_kprl,zetal(l),gammab(l),
      .                                                     z0, z1, z2)
             if(nzfun .eq. 3) call z_table(sgn_kprl,zetal(l),gammab(l),
      .                                      gamma_coll(l), z0, z1, z2)
-	    	    
+                    
             delta_xl = - zieps0 / q * omgp2 / omgrf**2 * zetal(0)
      .         * xkperp * l * exilovergam(labs)  * omgrf / omgc * z0
-	    
+            
             delta_yl = - zieps0 / q * omgp2 / omgrf**2 * zetal(0)
      .         * zi * xkperp * omgrf /omgc * (exilp(labs) - exil(labs))
-     .         * z0	
+     .         * z0     
          
             delta_zl = - zieps0 / q * omgp2 / omgrf**2 * zetal(0)
-     .         * xkprl * 2.0 * zetal(0) * exil(labs) * z1	
-	    	    	    
-	    delta_x = delta_x + delta_xl 
-	    delta_y = delta_y + delta_yl 
-	    delta_z = delta_z + delta_zl 	    
+     .         * xkprl * 2.0 * zetal(0) * exil(labs) * z1       
+                            
+            delta_x = delta_x + delta_xl 
+            delta_y = delta_y + delta_yl 
+            delta_z = delta_z + delta_zl            
 
          end do
 
@@ -1041,7 +1040,7 @@ c      use zfun_hilbert
       integer :: NSBESSJ,IFAIL
       COMPLEX WSPEC(3,3)
       complex :: factor
-	real :: UminPara,UmaxPara
+        real :: UminPara,UmaxPara
       real :: XI1(NUPER),JNXI1(NUPER, NBESSJ)
       real :: XI2(NUPER),JNXI2(NUPER, NBESSJ)
 
@@ -1068,7 +1067,7 @@ c      use zfun_hilbert
       
       
       sgn_kprl = sign(1.0, xkprl)
-      akprl = abs(xkprl)       	      
+      akprl = abs(xkprl)              
 
 
 c      xkalp = uxx * xkxsav + uxy * xkysav + uxz * xkphi
@@ -1087,15 +1086,15 @@ c      xkperp = sqrt(xkalp**2 + xkbet**2)
 
          reson = (omgrf - l * real(omgc)) / omgrf
 c         if (abs(reson) .lt. 0.02)then
-	 if (rho .gt. 1.0) then
+         if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          else
             zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
             dzetal(l) = 0.0
          end if
-	 
-c	 zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+         
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
@@ -1178,7 +1177,7 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
 
 
          do l = lmin, lmax
-c	  do l = 0, 0
+c         do l = 0, 0
             labs = abs(l)
 
            if(nzfun .eq. 0) call z_approx(sgn_kprl, zetal(l), 0.0,
@@ -1223,7 +1222,7 @@ c	  do l = 0, 0
       if (ndist .eq. 1) then
       
          if (upshift .ne. 0) xkprl = xkprl_eff
-	 
+         
       
          Emax = 0.5 * xm * vc_mks**2
          Enorm = Emax / 1.6e-19
@@ -1245,15 +1244,15 @@ c	  do l = 0, 0
          NSBESSJ = 2 * NBESSJ + 8
          DensSPEC = xn
          bratio = bmod0 / bmod
-	 if(bratio .gt. 1.0) bratio = 1.0
+         if(bratio .gt. 1.0) bratio = 1.0
 
-	 duperp = uperp(nuper) / (nuper - 1)
-	 dupara = 2.0 * upara(nupar) / (nupar - 1)
+         duperp = uperp(nuper) / (nuper - 1)
+         dupara = 2.0 * upara(nupar) / (nupar - 1)
 
          if(i .ne. i_sav .or. j .ne. j_sav)then
-	 
-	    dfduper0 = 0.0
-	    dfdupar0 = 0.0
+         
+            dfduper0 = 0.0
+            dfdupar0 = 0.0
 
 !           ------------------------------------------------
 !           get CQL3D distribution function on the midplane
@@ -1270,119 +1269,119 @@ c	  do l = 0, 0
 !           ------------------------------------------------
 
             if(bratio .ge. 0.0)then
-	    
-	       dfduper = 0.0
-	       dfdupar = 0.0
-	    
+            
+               dfduper = 0.0
+               dfdupar = 0.0
+            
                do ni = 1, nuper
                   do mi = 1, nupar
 
                      argd = uperp(ni)**2 * (1. - bratio) 
      .                                               + upara(mi)**2
                      if (argd .le. 0.0) argd = 1.0e-06
-		     
-		     uperp0 = uperp(ni) * sqrt(bratio)
+                     
+                     uperp0 = uperp(ni) * sqrt(bratio)
                      upara0 = sign(1.0, upara(mi)) * sqrt(argd)
-		     
-		     dfduper(ni, mi) = 0.0
+                     
+                     dfduper(ni, mi) = 0.0
                      dfdupar(ni, mi) = 0.0
-		     
-		     if(upara0 .ge. upara(1) .and. 
+                     
+                     if(upara0 .ge. upara(1) .and. 
      .                                   upara0 .le. upara(nupar)) then
      
-     		        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
-			mi0 = int((upara0 - upara(1)) / dupara) + 1
-			
-			dfduper0_intplt = dfduper0(ni0, mi0)
-			dfdupar0_intplt = dfdupar0(ni0, mi0)
-			
-		        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
-			
+                        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
+                        mi0 = int((upara0 - upara(1)) / dupara) + 1
+                        
+                        dfduper0_intplt = dfduper0(ni0, mi0)
+                        dfdupar0_intplt = dfdupar0(ni0, mi0)
+                        
+                        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
+                        
                         uperp0_grid = uperp(1) + (ni0 - 1) * duperp
-			upara0_grid = upara(1) + (mi0 - 1) * dupara
-						
-			zeta = (uperp0 - uperp0_grid) / duperp
-			eta  = (upara0 - upara0_grid) / dupara
-			
+                        upara0_grid = upara(1) + (mi0 - 1) * dupara
+                                                
+                        zeta = (uperp0 - uperp0_grid) / duperp
+                        eta  = (upara0 - upara0_grid) / dupara
+                        
                         ai = dfduper0(ni0, mi0)
                         bi = dfduper0(ni0+1 ,mi0) - dfduper0(ni0, mi0)
                         ci = dfduper0(ni0, mi0+1) - dfduper0(ni0, mi0)
                         di = dfduper0(ni0+1, mi0+1)+ dfduper0(ni0, mi0) 
      .                     - dfduper0(ni0+1, mi0) - dfduper0(ni0, mi0+1) 
-			   
-			dfduper0_intplt = ai + bi * zeta 
-     .                                     + ci * eta + di * zeta * eta 			
+                           
+                        dfduper0_intplt = ai + bi * zeta 
+     .                                     + ci * eta + di * zeta * eta                         
 
                         ai = dfdupar0(ni0, mi0)
                         bi = dfdupar0(ni0+1 ,mi0) - dfdupar0(ni0, mi0)
                         ci = dfdupar0(ni0, mi0+1) - dfdupar0(ni0, mi0)
                         di = dfdupar0(ni0+1, mi0+1)+ dfdupar0(ni0, mi0) 
      .                     - dfdupar0(ni0+1, mi0) - dfdupar0(ni0, mi0+1) 
-			   
-			dfdupar0_intplt = ai + bi * zeta 
+                           
+                        dfdupar0_intplt = ai + bi * zeta 
      .                                     + ci * eta + di * zeta * eta
      
-                        end if 			
+                        end if                  
 
-			
-			if (upara0 .ne. 0.0)then
-					     
-			   dfdupar(ni, mi) = dfdupar0_intplt * 
+                        
+                        if (upara0 .ne. 0.0)then
+                                             
+                           dfdupar(ni, mi) = dfdupar0_intplt * 
      .                        upara(mi) / upara0
      
                            dfduper(ni, mi) = dfduper0_intplt * 
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-c     			   dfdth = upara(mi) * dfduper(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
 c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
-			
-		     end if
-		     
-		     
-		     go to 5000
+                        
+                     end if
+                     
+                     
+                     go to 5000
 !                    ----------------------------
 !                    optional analytic Maxwellian
 !                    ----------------------------
-		     pi = 3.141592654
-		     
-		     alpha = sqrt(2.0 * xkt / xm)
+                     pi = 3.141592654
+                     
+                     alpha = sqrt(2.0 * xkt / xm)
 !                     vc_mks = 3.5 * alpha
                      u0 = vc_mks / alpha
-		     
-	             fnorm = u0**3 / pi**1.5 
-			   
-		     u2 = uperp(ni)**2 + upara(mi)**2
-		     
+                     
+                     fnorm = u0**3 / pi**1.5 
+                           
+                     u2 = uperp(ni)**2 + upara(mi)**2
+                     
                      f_cql = exp(-u2 * u0**2) * fnorm
-	             dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
+                     dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
                      dfdupar(ni, mi) = -f_cql * 2. * upara(mi) * u0**2
- 5000                continue		     
+ 5000                continue                
 
 
                   end do
                end do
-	       
+               
             end if
-	    
+            
 
 !           --------------------------------------
 !           Initialize the interpolation in k_perp:
 !           --------------------------------------
             if (nkperp .ne. 0) then
- 	       l_first  = .true.
+               l_first  = .true.
                l_interp = .true.
-	
+        
                call GETNONMAXSIGMA_AORSA_NEWi(W,
      .                          ZSPEC,ASPEC,DensSPEC,BMAG,
      .                          K1,XI1,JNXI1,
      .                          K1,XI1,JNXI1,NBESSJ,
      .                          Enorm,UminPara,UmaxPara,
      .                          NUPAR,NUPER,UPERP,UPARA,
-     .			        DFDUPER,DFDUPAR,
+     .                          DFDUPER,DFDUPAR,
      .                          WSPEC,IFAIL,
      .                          l_first, l_interp, kperp_max, nkperp,
      .                          xkphi)
@@ -1414,7 +1413,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
      .                          K1, XI1, JNXI1, NBESSJ,
      .                          Enorm, UminPara, UmaxPara,
      .                          NUPAR, NUPER, UPERP, UPARA,
-     .			        DFDUPER, DFDUPAR,
+     .                          DFDUPER, DFDUPAR,
      .                          WSPEC, IFAIL)
 
          else
@@ -1424,13 +1423,13 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
 
             l_first = .false.
 
-	      call GETNONMAXSIGMA_AORSA_NEWi(W,
+              call GETNONMAXSIGMA_AORSA_NEWi(W,
      .                       ZSPEC,ASPEC,DensSPEC,BMAG,
      .                       K1, XI1, JNXI1,
      .                       K1, XI1, JNXI1, NBESSJ,
      .                       Enorm, UminPara, UmaxPara,
      .                       NUPAR, NUPER, UPERP, UPARA,
-     .			     DFDUPER, DFDUPAR,
+     .                       DFDUPER, DFDUPAR,
      .                       WSPEC, IFAIL,
      .                       l_first, l_interp, kperp_max, nkperp,
      .                       xkphi)
@@ -1461,7 +1460,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
       kr = xkperp / xk_cutoff
       step = damping * kr**16 / (1. + kr**16)       
       if (xm .eq. xme) sig3 = sig3 * (1.0 + step)
- 	      	      
+                      
       
 
 *     -----------------------------
@@ -1623,7 +1622,7 @@ c      use zfun_hilbert
       integer :: NSBESSJ,IFAIL
       COMPLEX WSPEC(3,3)
       complex :: factor
-	real :: UminPara,UmaxPara
+        real :: UminPara,UmaxPara
       real :: XI1(NUPER),JNXI1(NUPER, NBESSJ)
       real :: XI2(NUPER),JNXI2(NUPER, NBESSJ)
 
@@ -1659,8 +1658,8 @@ c      use zfun_hilbert
 !     -------------------------------------------------------------       
 c      if (akprl .lt. akprl_min .and. abs_dKdL .lt. 0.1) then
 c         xkprl = akprl_min * sgn_kprl
-c	 dkdL_giv = 0.1 * sgn_dKdL
-c      end if      	      
+c        dkdL_giv = 0.1 * sgn_dKdL
+c      end if                 
             
       
 *     ---------------------------------
@@ -1672,15 +1671,15 @@ c      end if
 
          reson = (omgrf - l * real(omgc)) / omgrf
 c         if (abs(reson) .lt. 0.02)then
-	 if (rho .gt. 1.0) then
+         if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          else
             zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
             dzetal(l) = 0.0
          end if
-	 
-c	 zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+         
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
@@ -1767,7 +1766,7 @@ c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
      .                                                     z0, z1, z2)
      
            if(nzfun .eq. 1) then
-	      call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
+              call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
      
               if(use_new_z2 .eqv. .true. .and. l .eq. 0) then      
                  call z_approx_e(sgn_kprl, zetal(l), gammab(l),
@@ -1779,7 +1778,7 @@ c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
                  z2 = z2_new
               end if
            end if
-	   	    
+                    
          
            if(nzfun .eq. 2) call z_smithe(sgn_kprl,zetal(l),gammab(l),
      .                                                     z0, z1, z2)
@@ -1824,7 +1823,7 @@ c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
       if (ndist .eq. 1) then
       
          if (upshift .ne. 0) xkprl = xkprl_eff
-	 
+         
       
          Emax = 0.5 * xm * vc_mks**2
          Enorm = Emax / 1.6e-19
@@ -1846,15 +1845,15 @@ c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
          NSBESSJ = 2 * NBESSJ + 8
          DensSPEC = xn
          bratio = bmod0 / bmod
-	 if(bratio .gt. 1.0) bratio = 1.0
+         if(bratio .gt. 1.0) bratio = 1.0
 
-	 duperp = uperp(nuper) / (nuper - 1)
-	 dupara = 2.0 * upara(nupar) / (nupar - 1)
+         duperp = uperp(nuper) / (nuper - 1)
+         dupara = 2.0 * upara(nupar) / (nupar - 1)
 
          if(i .ne. i_sav .or. j .ne. j_sav)then
-	 
-	    dfduper0 = 0.0
-	    dfdupar0 = 0.0
+         
+            dfduper0 = 0.0
+            dfdupar0 = 0.0
 
 !           ------------------------------------------------
 !           get CQL3D distribution function on the midplane
@@ -1871,119 +1870,119 @@ c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
 !           ------------------------------------------------
 
             if(bratio .ge. 0.0)then
-	    
-	       dfduper = 0.0
-	       dfdupar = 0.0
-	    
+            
+               dfduper = 0.0
+               dfdupar = 0.0
+            
                do ni = 1, nuper
                   do mi = 1, nupar
 
                      argd = uperp(ni)**2 * (1. - bratio) 
      .                                               + upara(mi)**2
                      if (argd .le. 0.0) argd = 1.0e-06
-		     
-		     uperp0 = uperp(ni) * sqrt(bratio)
+                     
+                     uperp0 = uperp(ni) * sqrt(bratio)
                      upara0 = sign(1.0, upara(mi)) * sqrt(argd)
-		     
-		     dfduper(ni, mi) = 0.0
+                     
+                     dfduper(ni, mi) = 0.0
                      dfdupar(ni, mi) = 0.0
-		     
-		     if(upara0 .ge. upara(1) .and. 
+                     
+                     if(upara0 .ge. upara(1) .and. 
      .                                   upara0 .le. upara(nupar)) then
      
-     		        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
-			mi0 = int((upara0 - upara(1)) / dupara) + 1
-			
-			dfduper0_intplt = dfduper0(ni0, mi0)
-			dfdupar0_intplt = dfdupar0(ni0, mi0)
-			
-		        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
-			
+                        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
+                        mi0 = int((upara0 - upara(1)) / dupara) + 1
+                        
+                        dfduper0_intplt = dfduper0(ni0, mi0)
+                        dfdupar0_intplt = dfdupar0(ni0, mi0)
+                        
+                        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
+                        
                         uperp0_grid = uperp(1) + (ni0 - 1) * duperp
-			upara0_grid = upara(1) + (mi0 - 1) * dupara
-						
-			zeta = (uperp0 - uperp0_grid) / duperp
-			eta  = (upara0 - upara0_grid) / dupara
-			
+                        upara0_grid = upara(1) + (mi0 - 1) * dupara
+                                                
+                        zeta = (uperp0 - uperp0_grid) / duperp
+                        eta  = (upara0 - upara0_grid) / dupara
+                        
                         ai = dfduper0(ni0, mi0)
                         bi = dfduper0(ni0+1 ,mi0) - dfduper0(ni0, mi0)
                         ci = dfduper0(ni0, mi0+1) - dfduper0(ni0, mi0)
                         di = dfduper0(ni0+1, mi0+1)+ dfduper0(ni0, mi0) 
      .                     - dfduper0(ni0+1, mi0) - dfduper0(ni0, mi0+1) 
-			   
-			dfduper0_intplt = ai + bi * zeta 
-     .                                     + ci * eta + di * zeta * eta 			
+                           
+                        dfduper0_intplt = ai + bi * zeta 
+     .                                     + ci * eta + di * zeta * eta                         
 
                         ai = dfdupar0(ni0, mi0)
                         bi = dfdupar0(ni0+1 ,mi0) - dfdupar0(ni0, mi0)
                         ci = dfdupar0(ni0, mi0+1) - dfdupar0(ni0, mi0)
                         di = dfdupar0(ni0+1, mi0+1)+ dfdupar0(ni0, mi0) 
      .                     - dfdupar0(ni0+1, mi0) - dfdupar0(ni0, mi0+1) 
-			   
-			dfdupar0_intplt = ai + bi * zeta 
+                           
+                        dfdupar0_intplt = ai + bi * zeta 
      .                                     + ci * eta + di * zeta * eta
      
-                        end if 			
+                        end if                  
 
-			
-			if (upara0 .ne. 0.0)then
-					     
-			   dfdupar(ni, mi) = dfdupar0_intplt * 
+                        
+                        if (upara0 .ne. 0.0)then
+                                             
+                           dfdupar(ni, mi) = dfdupar0_intplt * 
      .                        upara(mi) / upara0
      
                            dfduper(ni, mi) = dfduper0_intplt * 
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-c     			   dfdth = upara(mi) * dfduper(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
 c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
-			
-		     end if
-		     
-		     
-		     go to 5000
+                        
+                     end if
+                     
+                     
+                     go to 5000
 !                    ----------------------------
 !                    optional analytic Maxwellian
 !                    ----------------------------
-		     pi = 3.141592654
-		     
-		     alpha = sqrt(2.0 * xkt / xm)
+                     pi = 3.141592654
+                     
+                     alpha = sqrt(2.0 * xkt / xm)
 !                     vc_mks = 3.5 * alpha
                      u0 = vc_mks / alpha
-		     
-	             fnorm = u0**3 / pi**1.5 
-			   
-		     u2 = uperp(ni)**2 + upara(mi)**2
-		     
+                     
+                     fnorm = u0**3 / pi**1.5 
+                           
+                     u2 = uperp(ni)**2 + upara(mi)**2
+                     
                      f_cql = exp(-u2 * u0**2) * fnorm
-	             dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
+                     dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
                      dfdupar(ni, mi) = -f_cql * 2. * upara(mi) * u0**2
- 5000                continue		     
+ 5000                continue                
 
 
                   end do
                end do
-	       
+               
             end if
-	    
+            
 
 !           --------------------------------------
 !           Initialize the interpolation in k_perp:
 !           --------------------------------------
             if (nkperp .ne. 0) then
- 	       l_first  = .true.
+               l_first  = .true.
                l_interp = .true.
-	
+        
                call GETNONMAXSIGMA_AORSA_NEWi(W,
      .                          ZSPEC,ASPEC,DensSPEC,BMAG,
      .                          K1,XI1,JNXI1,
      .                          K1,XI1,JNXI1,NBESSJ,
      .                          Enorm,UminPara,UmaxPara,
      .                          NUPAR,NUPER,UPERP,UPARA,
-     .			        DFDUPER,DFDUPAR,
+     .                          DFDUPER,DFDUPAR,
      .                          WSPEC,IFAIL,
      .                          l_first, l_interp, kperp_max, nkperp,
      .                          xkphi)
@@ -2015,7 +2014,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
      .                          K1, XI1, JNXI1, NBESSJ,
      .                          Enorm, UminPara, UmaxPara,
      .                          NUPAR, NUPER, UPERP, UPARA,
-     .			        DFDUPER, DFDUPAR,
+     .                          DFDUPER, DFDUPAR,
      .                          WSPEC, IFAIL)
 
          else
@@ -2025,13 +2024,13 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
 
             l_first = .false.
 
-	      call GETNONMAXSIGMA_AORSA_NEWi(W,
+              call GETNONMAXSIGMA_AORSA_NEWi(W,
      .                       ZSPEC,ASPEC,DensSPEC,BMAG,
      .                       K1, XI1, JNXI1,
      .                       K1, XI1, JNXI1, NBESSJ,
      .                       Enorm, UminPara, UmaxPara,
      .                       NUPAR, NUPER, UPERP, UPARA,
-     .			     DFDUPER, DFDUPAR,
+     .                       DFDUPER, DFDUPAR,
      .                       WSPEC, IFAIL,
      .                       l_first, l_interp, kperp_max, nkperp,
      .                       xkphi)
@@ -2063,7 +2062,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
       step = damping * kr**16 / (1. + kr**16)       
       if (xm .eq. xme) sig3 = sig3 * (1.0 + step)
 
-      	      
+              
       
 
 *     -----------------------------
@@ -2221,7 +2220,7 @@ c      use zfun_hilbert
       integer :: NSBESSJ,IFAIL
       COMPLEX WSPEC(3,3)
       complex :: factor
-	real :: UminPara,UmaxPara
+        real :: UminPara,UmaxPara
       real :: XI1(NUPER),JNXI1(NUPER, NBESSJ)
       real :: XI2(NUPER),JNXI2(NUPER, NBESSJ)
 
@@ -2266,8 +2265,8 @@ c      end if
 c      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
 c      if (xkperp .eq. 0.0) xkperp = 1.0e-08
                         
-      		      
-		     
+                      
+                     
 !     ----------------------------------------------
 !     Optional: Don't allow xkprl to be 0 (upshift = -2)
 !     ----------------------------------------------        
@@ -2275,7 +2274,7 @@ c      if (upshift .eq. -2) then
 c         if (akprl .lt. akprl_min) then
 c            xkprl = akprl_min* sgn_kprl
 c         end if 
-c      end if	
+c      end if   
             
       
 c      if(xkperp .gt. kperp_max)then
@@ -2293,15 +2292,15 @@ c      end if
 
          reson = (omgrf - l * real(omgc)) / omgrf
 c         if (abs(reson) .lt. 0.02)then
-	 if (rho .gt. 1.0) then
+         if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          else
             zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
             dzetal(l) = 0.0
          end if
-	 
-c	 zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+         
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
@@ -2388,20 +2387,20 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
      .                                                     z0, z1, z2)
      
            if(nzfun .eq. 1) then
-	      call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
+              call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
      
-c              if(use_new_z2 .eq. .true. ) then	      
+c              if(use_new_z2 .eq. .true. ) then       
 c                 call z_approx_i(sgn_kprl, zetal(l), gammab(l),
 c     .              z0_new, z1_new, z2_new, zetai_table, 
 c     .              dKdL_table, z0_table, z1_table, z2_table, 
 c     .              dKdL_giv, nmax, mmax, ntable, mtable)
 c                 z0 = z0_new
 c                 z1 = z1_new
-c                 z2 = z2_new		 
+c                 z2 = z2_new            
 c              end if
 
-           end if		 
-		 
+           end if                
+                 
 
            if(nzfun .eq. 2) call z_smithe(sgn_kprl,zetal(l),gammab(l),
      .                                                     z0, z1, z2)
@@ -2441,7 +2440,7 @@ c              end if
       if (ndist .eq. 1) then
       
          if (upshift .ne. 0) xkprl = xkprl_eff
-	 
+         
       
          Emax = 0.5 * xm * vc_mks**2
          Enorm = Emax / 1.6e-19
@@ -2463,15 +2462,15 @@ c              end if
          NSBESSJ = 2 * NBESSJ + 8
          DensSPEC = xn
          bratio = bmod0 / bmod
-	 if(bratio .gt. 1.0) bratio = 1.0
+         if(bratio .gt. 1.0) bratio = 1.0
 
-	 duperp = uperp(nuper) / (nuper - 1)
-	 dupara = 2.0 * upara(nupar) / (nupar - 1)
+         duperp = uperp(nuper) / (nuper - 1)
+         dupara = 2.0 * upara(nupar) / (nupar - 1)
 
          if(i .ne. i_sav .or. j .ne. j_sav)then
-	 
-	    dfduper0 = 0.0
-	    dfdupar0 = 0.0
+         
+            dfduper0 = 0.0
+            dfdupar0 = 0.0
 
 !           ------------------------------------------------
 !           get CQL3D distribution function on the midplane
@@ -2488,119 +2487,119 @@ c              end if
 !           ------------------------------------------------
 
             if(bratio .ge. 0.0)then
-	    
-	       dfduper = 0.0
-	       dfdupar = 0.0
-	    
+            
+               dfduper = 0.0
+               dfdupar = 0.0
+            
                do ni = 1, nuper
                   do mi = 1, nupar
 
                      argd = uperp(ni)**2 * (1. - bratio) 
      .                                               + upara(mi)**2
                      if (argd .le. 0.0) argd = 1.0e-06
-		     
-		     uperp0 = uperp(ni) * sqrt(bratio)
+                     
+                     uperp0 = uperp(ni) * sqrt(bratio)
                      upara0 = sign(1.0, upara(mi)) * sqrt(argd)
-		     
-		     dfduper(ni, mi) = 0.0
+                     
+                     dfduper(ni, mi) = 0.0
                      dfdupar(ni, mi) = 0.0
-		     
-		     if(upara0 .ge. upara(1) .and. 
+                     
+                     if(upara0 .ge. upara(1) .and. 
      .                                   upara0 .le. upara(nupar)) then
      
-     		        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
-			mi0 = int((upara0 - upara(1)) / dupara) + 1
-			
-			dfduper0_intplt = dfduper0(ni0, mi0)
-			dfdupar0_intplt = dfdupar0(ni0, mi0)
-			
-		        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
-			
+                        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
+                        mi0 = int((upara0 - upara(1)) / dupara) + 1
+                        
+                        dfduper0_intplt = dfduper0(ni0, mi0)
+                        dfdupar0_intplt = dfdupar0(ni0, mi0)
+                        
+                        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
+                        
                         uperp0_grid = uperp(1) + (ni0 - 1) * duperp
-			upara0_grid = upara(1) + (mi0 - 1) * dupara
-						
-			zeta = (uperp0 - uperp0_grid) / duperp
-			eta  = (upara0 - upara0_grid) / dupara
-			
+                        upara0_grid = upara(1) + (mi0 - 1) * dupara
+                                                
+                        zeta = (uperp0 - uperp0_grid) / duperp
+                        eta  = (upara0 - upara0_grid) / dupara
+                        
                         ai = dfduper0(ni0, mi0)
                         bi = dfduper0(ni0+1 ,mi0) - dfduper0(ni0, mi0)
                         ci = dfduper0(ni0, mi0+1) - dfduper0(ni0, mi0)
                         di = dfduper0(ni0+1, mi0+1)+ dfduper0(ni0, mi0) 
      .                     - dfduper0(ni0+1, mi0) - dfduper0(ni0, mi0+1) 
-			   
-			dfduper0_intplt = ai + bi * zeta 
-     .                                     + ci * eta + di * zeta * eta 			
+                           
+                        dfduper0_intplt = ai + bi * zeta 
+     .                                     + ci * eta + di * zeta * eta                         
 
                         ai = dfdupar0(ni0, mi0)
                         bi = dfdupar0(ni0+1 ,mi0) - dfdupar0(ni0, mi0)
                         ci = dfdupar0(ni0, mi0+1) - dfdupar0(ni0, mi0)
                         di = dfdupar0(ni0+1, mi0+1)+ dfdupar0(ni0, mi0) 
      .                     - dfdupar0(ni0+1, mi0) - dfdupar0(ni0, mi0+1) 
-			   
-			dfdupar0_intplt = ai + bi * zeta 
+                           
+                        dfdupar0_intplt = ai + bi * zeta 
      .                                     + ci * eta + di * zeta * eta
      
-                        end if 			
+                        end if                  
 
-			
-			if (upara0 .ne. 0.0)then
-					     
-			   dfdupar(ni, mi) = dfdupar0_intplt * 
+                        
+                        if (upara0 .ne. 0.0)then
+                                             
+                           dfdupar(ni, mi) = dfdupar0_intplt * 
      .                        upara(mi) / upara0
      
                            dfduper(ni, mi) = dfduper0_intplt * 
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-c     			   dfdth = upara(mi) * dfduper(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
 c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
-			
-		     end if
-		     
-		     
-		     go to 5000
+                        
+                     end if
+                     
+                     
+                     go to 5000
 !                    ----------------------------
 !                    optional analytic Maxwellian
 !                    ----------------------------
-		     pi = 3.141592654
-		     
-		     alpha = sqrt(2.0 * xkt / xm)
+                     pi = 3.141592654
+                     
+                     alpha = sqrt(2.0 * xkt / xm)
 !                     vc_mks = 3.5 * alpha
                      u0 = vc_mks / alpha
-		     
-	             fnorm = u0**3 / pi**1.5 
-			   
-		     u2 = uperp(ni)**2 + upara(mi)**2
-		     
+                     
+                     fnorm = u0**3 / pi**1.5 
+                           
+                     u2 = uperp(ni)**2 + upara(mi)**2
+                     
                      f_cql = exp(-u2 * u0**2) * fnorm
-	             dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
+                     dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
                      dfdupar(ni, mi) = -f_cql * 2. * upara(mi) * u0**2
- 5000                continue		     
+ 5000                continue                
 
 
                   end do
                end do
-	       
+               
             end if
-	    
+            
 
 !           --------------------------------------
 !           Initialize the interpolation in k_perp:
 !           --------------------------------------
             if (nkperp .ne. 0) then
- 	       l_first  = .true.
+               l_first  = .true.
                l_interp = .true.
-	
+        
                call GETNONMAXSIGMA_AORSA_NEWi_1(W,
      .                          ZSPEC,ASPEC,DensSPEC,BMAG,
      .                          K1,XI1,JNXI1,
      .                          K1,XI1,JNXI1,NBESSJ,
      .                          Enorm,UminPara,UmaxPara,
      .                          NUPAR,NUPER,UPERP,UPARA,
-     .			        DFDUPER,DFDUPAR,
+     .                          DFDUPER,DFDUPAR,
      .                          WSPEC,IFAIL,
      .                          l_first, l_interp, kperp_max, nkperp,
      .                          xkphi)
@@ -2632,7 +2631,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
      .                          K1, XI1, JNXI1, NBESSJ,
      .                          Enorm, UminPara, UmaxPara,
      .                          NUPAR, NUPER, UPERP, UPARA,
-     .			        DFDUPER, DFDUPAR,
+     .                          DFDUPER, DFDUPAR,
      .                          WSPEC, IFAIL)
 
          else
@@ -2642,13 +2641,13 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
 
             l_first = .false.
 
-	      call GETNONMAXSIGMA_AORSA_NEWi_1(W,
+              call GETNONMAXSIGMA_AORSA_NEWi_1(W,
      .                       ZSPEC,ASPEC,DensSPEC,BMAG,
      .                       K1, XI1, JNXI1,
      .                       K1, XI1, JNXI1, NBESSJ,
      .                       Enorm, UminPara, UmaxPara,
      .                       NUPAR, NUPER, UPERP, UPARA,
-     .			     DFDUPER, DFDUPAR,
+     .                       DFDUPER, DFDUPAR,
      .                       WSPEC, IFAIL,
      .                       l_first, l_interp, kperp_max, nkperp,
      .                       xkphi)
@@ -2824,7 +2823,7 @@ c      use zfun_hilbert
       integer :: NSBESSJ,IFAIL
       COMPLEX WSPEC(3,3)
       complex :: factor
-	real :: UminPara,UmaxPara
+        real :: UminPara,UmaxPara
       real :: XI1(NUPER),JNXI1(NUPER, NBESSJ)
       real :: XI2(NUPER),JNXI2(NUPER, NBESSJ)
 
@@ -2870,8 +2869,8 @@ c      end if
 c      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
 c      if (xkperp .eq. 0.0) xkperp = 1.0e-08
                         
-    		      
-		     
+                      
+                     
 !     ----------------------------------------------
 !     Optional: Don't allow xkprl to be 0 (upshift = -2)
 !     ----------------------------------------------        
@@ -2879,7 +2878,7 @@ c      if (upshift .eq. -2) then
 c         if (akprl .lt. akprl_min) then
 c            xkprl = akprl_min* sgn_kprl
 c         end if 
-c      end if	
+c      end if   
             
       
 c      if(xkperp .gt. kperp_max)then
@@ -2897,15 +2896,15 @@ c      end if
 
          reson = (omgrf - l * real(omgc)) / omgrf
 c         if (abs(reson) .lt. 0.02)then
-	 if (rho .gt. 1.0) then
+         if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          else
             zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
             dzetal(l) = 0.0
          end if
-	 
-c	 zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+         
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
@@ -3032,7 +3031,7 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
       if (ndist .eq. 1) then
       
          if (upshift .ne. 0) xkprl = xkprl_eff
-	 
+         
       
          Emax = 0.5 * xm * vc_mks**2
          Enorm = Emax / 1.6e-19
@@ -3054,15 +3053,15 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
          NSBESSJ = 2 * NBESSJ + 8
          DensSPEC = xn
          bratio = bmod0 / bmod
-	 if(bratio .gt. 1.0) bratio = 1.0
+         if(bratio .gt. 1.0) bratio = 1.0
 
-	 duperp = uperp(nuper) / (nuper - 1)
-	 dupara = 2.0 * upara(nupar) / (nupar - 1)
+         duperp = uperp(nuper) / (nuper - 1)
+         dupara = 2.0 * upara(nupar) / (nupar - 1)
 
          if(i .ne. i_sav .or. j .ne. j_sav)then
-	 
-	    dfduper0 = 0.0
-	    dfdupar0 = 0.0
+         
+            dfduper0 = 0.0
+            dfdupar0 = 0.0
 
 !           ------------------------------------------------
 !           get CQL3D distribution function on the midplane
@@ -3079,119 +3078,119 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
 !           ------------------------------------------------
 
             if(bratio .ge. 0.0)then
-	    
-	       dfduper = 0.0
-	       dfdupar = 0.0
-	    
+            
+               dfduper = 0.0
+               dfdupar = 0.0
+            
                do ni = 1, nuper
                   do mi = 1, nupar
 
                      argd = uperp(ni)**2 * (1. - bratio) 
      .                                               + upara(mi)**2
                      if (argd .le. 0.0) argd = 1.0e-06
-		     
-		     uperp0 = uperp(ni) * sqrt(bratio)
+                     
+                     uperp0 = uperp(ni) * sqrt(bratio)
                      upara0 = sign(1.0, upara(mi)) * sqrt(argd)
-		     
-		     dfduper(ni, mi) = 0.0
+                     
+                     dfduper(ni, mi) = 0.0
                      dfdupar(ni, mi) = 0.0
-		     
-		     if(upara0 .ge. upara(1) .and. 
+                     
+                     if(upara0 .ge. upara(1) .and. 
      .                                   upara0 .le. upara(nupar)) then
      
-     		        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
-			mi0 = int((upara0 - upara(1)) / dupara) + 1
-			
-			dfduper0_intplt = dfduper0(ni0, mi0)
-			dfdupar0_intplt = dfdupar0(ni0, mi0)
-			
-		        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
-			
+                        ni0 = int((uperp0 - uperp(1)) / duperp) + 1
+                        mi0 = int((upara0 - upara(1)) / dupara) + 1
+                        
+                        dfduper0_intplt = dfduper0(ni0, mi0)
+                        dfdupar0_intplt = dfdupar0(ni0, mi0)
+                        
+                        if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
+                        
                         uperp0_grid = uperp(1) + (ni0 - 1) * duperp
-			upara0_grid = upara(1) + (mi0 - 1) * dupara
-						
-			zeta = (uperp0 - uperp0_grid) / duperp
-			eta  = (upara0 - upara0_grid) / dupara
-			
+                        upara0_grid = upara(1) + (mi0 - 1) * dupara
+                                                
+                        zeta = (uperp0 - uperp0_grid) / duperp
+                        eta  = (upara0 - upara0_grid) / dupara
+                        
                         ai = dfduper0(ni0, mi0)
                         bi = dfduper0(ni0+1 ,mi0) - dfduper0(ni0, mi0)
                         ci = dfduper0(ni0, mi0+1) - dfduper0(ni0, mi0)
                         di = dfduper0(ni0+1, mi0+1)+ dfduper0(ni0, mi0) 
      .                     - dfduper0(ni0+1, mi0) - dfduper0(ni0, mi0+1) 
-			   
-			dfduper0_intplt = ai + bi * zeta 
-     .                                     + ci * eta + di * zeta * eta 			
+                           
+                        dfduper0_intplt = ai + bi * zeta 
+     .                                     + ci * eta + di * zeta * eta                         
 
                         ai = dfdupar0(ni0, mi0)
                         bi = dfdupar0(ni0+1 ,mi0) - dfdupar0(ni0, mi0)
                         ci = dfdupar0(ni0, mi0+1) - dfdupar0(ni0, mi0)
                         di = dfdupar0(ni0+1, mi0+1)+ dfdupar0(ni0, mi0) 
      .                     - dfdupar0(ni0+1, mi0) - dfdupar0(ni0, mi0+1) 
-			   
-			dfdupar0_intplt = ai + bi * zeta 
+                           
+                        dfdupar0_intplt = ai + bi * zeta 
      .                                     + ci * eta + di * zeta * eta
      
-                        end if 			
+                        end if                  
 
-			
-			if (upara0 .ne. 0.0)then
-					     
-			   dfdupar(ni, mi) = dfdupar0_intplt * 
+                        
+                        if (upara0 .ne. 0.0)then
+                                             
+                           dfdupar(ni, mi) = dfdupar0_intplt * 
      .                        upara(mi) / upara0
      
                            dfduper(ni, mi) = dfduper0_intplt * 
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-c     			   dfdth = upara(mi) * dfduper(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
 c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
-			
-		     end if
-		     
-		     
-		     go to 5000
+                        
+                     end if
+                     
+                     
+                     go to 5000
 !                    ----------------------------
 !                    optional analytic Maxwellian
 !                    ----------------------------
-		     pi = 3.141592654
-		     
-		     alpha = sqrt(2.0 * xkt / xm)
+                     pi = 3.141592654
+                     
+                     alpha = sqrt(2.0 * xkt / xm)
 !                     vc_mks = 3.5 * alpha
                      u0 = vc_mks / alpha
-		     
-	             fnorm = u0**3 / pi**1.5 
-			   
-		     u2 = uperp(ni)**2 + upara(mi)**2
-		     
+                     
+                     fnorm = u0**3 / pi**1.5 
+                           
+                     u2 = uperp(ni)**2 + upara(mi)**2
+                     
                      f_cql = exp(-u2 * u0**2) * fnorm
-	             dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
+                     dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
                      dfdupar(ni, mi) = -f_cql * 2. * upara(mi) * u0**2
- 5000                continue		     
+ 5000                continue                
 
 
                   end do
                end do
-	       
+               
             end if
-	    
+            
 
 !           --------------------------------------
 !           Initialize the interpolation in k_perp:
 !           --------------------------------------
             if (nkperp .ne. 0) then
- 	       l_first  = .true.
+               l_first  = .true.
                l_interp = .true.
-	
+        
                call GETNONMAXSIGMA_AORSA_NEWi_2(W,
      .                          ZSPEC,ASPEC,DensSPEC,BMAG,
      .                          K1,XI1,JNXI1,
      .                          K1,XI1,JNXI1,NBESSJ,
      .                          Enorm,UminPara,UmaxPara,
      .                          NUPAR,NUPER,UPERP,UPARA,
-     .			        DFDUPER,DFDUPAR,
+     .                          DFDUPER,DFDUPAR,
      .                          WSPEC,IFAIL,
      .                          l_first, l_interp, kperp_max, nkperp,
      .                          xkphi)
@@ -3223,7 +3222,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
      .                          K1, XI1, JNXI1, NBESSJ,
      .                          Enorm, UminPara, UmaxPara,
      .                          NUPAR, NUPER, UPERP, UPARA,
-     .			        DFDUPER, DFDUPAR,
+     .                          DFDUPER, DFDUPAR,
      .                          WSPEC, IFAIL)
 
          else
@@ -3233,13 +3232,13 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
 
             l_first = .false.
 
-	      call GETNONMAXSIGMA_AORSA_NEWi_2(W,
+              call GETNONMAXSIGMA_AORSA_NEWi_2(W,
      .                       ZSPEC,ASPEC,DensSPEC,BMAG,
      .                       K1, XI1, JNXI1,
      .                       K1, XI1, JNXI1, NBESSJ,
      .                       Enorm, UminPara, UmaxPara,
      .                       NUPAR, NUPER, UPERP, UPARA,
-     .			     DFDUPER, DFDUPAR,
+     .                       DFDUPER, DFDUPAR,
      .                       WSPEC, IFAIL,
      .                       l_first, l_interp, kperp_max, nkperp,
      .                       xkphi)
@@ -3405,9 +3404,9 @@ c      write(6, *)"jmid = ", jmid
 c     DLG: find the first R coord past the axis R=r0
       do i = 1, nnodex
          if(capr(i) .ge. r0)then
-	    istart = i
-	    go to 200
-	 end if
+            istart = i
+            go to 200
+         end if
       end do
 
       stop "ERROR (sigma.f): no capr(i) >= r0?"

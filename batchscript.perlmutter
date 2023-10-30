@@ -1,0 +1,16 @@
+#!/bin/bash -l
+
+#SBATCH -A m77
+#SBATCH -C cpu
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --qos=debug
+#SBATCH -t 00:15:00 
+#SBATCH -J test_aorsa
+#SBATCH -o AORSA2D.o%j
+
+#Perlmutter has 16 cores per compute node
+export PGPLOT_FONT=/global/homes/j/jwright/perlmutter-builds/pgplot/grfont.dat
+module list
+srun -n 4 ./xaorsa2d  > log_aorsa2d
+

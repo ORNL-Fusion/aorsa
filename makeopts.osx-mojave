@@ -1,14 +1,22 @@
 include compileropts.gnu
 
-FC = mpif90 
-LIBS += /usr/local/opt/pgplot/lib/libpgplot.a 
+FC = mpif90 -cpp
 
-NETCDF_DIR = /usr/local/opt/netcdf
-LIBS += $(NETCDF_DIR)/lib/libnetcdff.a -L /usr/local/opt/netcdf/lib -lnetcdf
-INCLUDE_DIRS += -I $(NETCDF_DIR)/include
+NETCDF_DIR := $(shell brew --prefix netcdf)
+NETCDFF_DIR := $(shell brew --prefix netcdf-fortran)
 
-LIBS += -L /usr/local/opt/scalapack/lib/ -lscalapack \
-	/usr/local/opt/openblas/lib/libopenblas.a 
-	 
-LIBS += /usr/local/opt/libpng/lib/libpng16.a -L /opt/X11/lib -lX11
+LIBS += -L ${NETCDFF_DIR}/lib -lnetcdff -L ${NETCDF_DIR}/lib -lnetcdf
+INCLUDE_DIRS += -I $(NETCDF_DIR)/include -I $(NETCDFF_DIR)/include
 
+SCALAPACK_DIR := $(shell brew --prefix scalapack)
+BLAS_DIR := $(shell brew --prefix openblas)
+PGPLOT_DIR := $(shell brew --prefix giza)
+
+LIBS += -L $(SCALAPACK_DIR)/lib -lscalapack \
+	-L $(BLAS_DIR)/lib -lopenblas
+
+LIBS += -L $(PGPLOT_DIR)/lib -lpgplot -lgiza
+
+LIBS +=  -L /opt/X11/lib -lX11
+
+DEFS += -DGIZA

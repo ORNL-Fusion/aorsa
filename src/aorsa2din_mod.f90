@@ -3,20 +3,20 @@
       implicit none
       
       logical :: write_for_azzam = .false. ! write out matrix for Azzam
-      logical :: use_new_z2            					  
+      logical :: use_new_z2                                               
       logical :: use_fourier_z2       
 
 !     --------------------------------------------------------
 !     Declarations and defaults for aorsa2d.in input variables
 !     --------------------------------------------------------
 
-      CHARACTER*128 :: eqdsk = 'g1080408021.txt'               ! eqdsk name
-      CHARACTER*128 :: netCDF_file1 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 1
-      CHARACTER*128 :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
+      CHARACTER(128) :: eqdsk = 'g1080408021.txt'               ! eqdsk name
+      CHARACTER(128) :: netCDF_file1 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 1
+      CHARACTER(128) :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
       
-      CHARACTER*128 :: root =  'none'  ! if (root = 'none') sum all modes
+      CHARACTER(128) :: root =  'none'  ! if (root = 'none') sum all modes
                                        ! if (root = 'fast') sum only modes within 20% of fast wave 
-                                       ! if (root = 'slow') sum only modes within 20% of slow wave  				       				            
+                                       ! if (root = 'slow') sum only modes within 20% of slow wave                                                                          
       
       real :: xkx_ono = -30.          !kx (m-1) for which Ono's dispersion relations is plotted
       real :: xky_ono = 0.0           !ky (m-1) for which Ono's dispersion relations is plotted      
@@ -34,10 +34,10 @@
       
       real :: enorm_factor = 0.0      ! if (enorm_factor .eq. 0.0) AORSA & CQL3D use same enorm (default)
                                       ! if (enorm_factor .gt. 0.0) AORSA enorm = enorm_factor x the maximum energy 
-				       
+                                       
       real :: xkperp_cutoff = 0.75    ! fraction of xkperp above which the electron conductivity (sig3) 
                                       !  is enhanced to short out noise in E_parallel (default = 0.75)
-				      
+                                      
       real :: damping = 0.0           !  enhancement factor (default = 0.0) for the electron conductivity (sig3) 
                                       !  applied above the fractional value of xkperp (xkperp_cutoff) to 
                                       !  short out noise in E_parallel 
@@ -173,14 +173,14 @@
       real :: ydisp = 0.0               !-----ydisp = y value (m) at which contours of D(x, kx) are drawn
       real :: xkydisp = 0.0             !-----xkydisp = ky value (m-1) for which contours of D(x, kx) are drawn
       
-      real*4 :: dfquotient = 0.0        !-----dfquotient = divisor of df for which a single contour of D(x, kx) is drawn
+      real :: dfquotient = 0.0        !-----dfquotient = divisor of df for which a single contour of D(x, kx) is drawn
                                         !     if (dfquotient .eq.  0.0) all 20 contours are drawn (default)
                                         !     if (dfquotient .ne.  0.0) only one coutour is drawn with df/dfquotient
-					
-      real*4 :: rmin_zoom = 2.15        !-----R_min for edge density plot
-      real*4 :: rmax_zoom = 2.35        !-----R_max for edge density plot
+                                        
+      real :: rmin_zoom = 2.15        !-----R_min for edge density plot
+      real :: rmax_zoom = 2.35        !-----R_max for edge density plot
       
-      real*4 :: yplot = .05             !-----yplot = cut in y for slow wave dipersion plots
+      real :: yplot = .05             !-----yplot = cut in y for slow wave dipersion plots
       
       real :: alphan = 1.0
       real :: alphan2 = 1.0
@@ -217,55 +217,55 @@
       integer :: n_prof_flux = 0          !-----n_prof_flux = flag determining whether profiles are wrt toroidal or poloidal flux
                                           !           if(n_prof_flux .eq. 0) profiles are wrt sqrt(poloidal) flux (default)
                                           !           if(n_prof_flux .ne. 0) profiles are wrt sqrt(toroidal) flux 
-				       
+                                       
       integer :: upshift = 1              !-----upshift: if (upshift .ne.  0) upshift is turned on (default)
                                           !-----if (upshift .eq. -1) upshift is turned off for xkperp > xkperp_cutoff
-					  !-----if (upshift .eq. -2) don't allow k_parallel too close to zero
+                                          !-----if (upshift .eq. -2) don't allow k_parallel too close to zero
                                           !-----if (upshift .eq.  0) upshift is turned off always
-					  
+                                          
       integer :: odd_order = 0            !-----odd_order: 
                                           !     if (odd_order .eq.  0) odd_order derivatives are NOT included (default)
                                           !     if (odd_order .ne.  0) odd_order derivatives are included (Maxwellians ONLY) 
-					  
+                                          
       integer :: nsmooth = 4              !-----nsmooth: 
                                           !     if (nsmooth .eq. 0) derivatives are NOT smoothed
-                                          !     if (nsmooth .ne. 0) derivatives are smoothed nsmooth times (default: 4 times)					  
-					  
+                                          !     if (nsmooth .ne. 0) derivatives are smoothed nsmooth times (default: 4 times)                                     
+                                          
       integer :: eqdsk_special = 0        !     if (eqdsk_special .eq.  0) regular geqdsk (default)
-                                          !     if (eqdsk_special .ne.  0) special eqdsk for Alcator-C lower hybrid					  					  
-					  
+                                          !     if (eqdsk_special .ne.  0) special eqdsk for Alcator-C lower hybrid                                                                               
+                                          
       logical :: nphi_sum_only = .false.  !-----if (nphi_sum_only .eq. .true.) skip aorsa and just sum the modes for nphi_number > 1                                 
                                           !-----if (nphi_sum_only .eq. .false.) run aorsa and sum modes if nphi_number > 1 (default)
 
       logical :: anti_alias = .false.     !-----if (anti_alias .eq. .false.) no filter:  keep all modes (default)                                 
                                           !-----if (anti_alias .eq. .true. ) anti-aliasing filter (two-thirds rule)
-					  
+                                          
       logical :: use_new_wdot = .false.   !-----if (use_new_wdot .eq. .false.) use original wdote - resonant terms only (default)                                 
-                                          !-----if (use_new_wdot .eq. .true. ) use new wdote - both resonant and non-resonant terms					 
-					 
+                                          !-----if (use_new_wdot .eq. .true. ) use new wdote - both resonant and non-resonant terms                                      
+                                         
       logical :: use_no_damp = .false.    !-----if (use_no_damp .eq. .true.) turn off artificial damping for power calculation                                  
-                                          !-----if (use_no_damp .eq. .false.) keep artificial damping for power calculation calculation (default)  					  
-					  						  
+                                          !-----if (use_no_damp .eq. .false.) keep artificial damping for power calculation calculation (default)                                         
+                                                                                          
       logical :: read_solution = .false.  !-----if (read_solution .eq. .true.) skip scalapack solution and read fields from out_fields                                 
-                                          !-----if (read_solution .eq. .false.) solve for field with scalapack (default)					  					   
-				          
+                                          !-----if (read_solution .eq. .false.) solve for field with scalapack (default)                                                                                   
+                                          
 
       logical :: plot_only = .false.      !-----if (plot_only .eq. .true.) skip aorsa and just do plots                                 
                                           !-----if (plot_only .eq. .false.) run aorsa and do plots (default)
-					  
+                                          
       logical :: curved_ant = .true.      !-----if (curved_ant .eq. .true.) antenna follows flux surface (default)                                 
                                           !-----if (curved_ant .eq. .false.) antenna is vertical
-					  
-      integer :: norm = 1                 !-----if (norm .eq. 1) normalize to jdote (default)	
+                                          
+      integer :: norm = 1                 !-----if (norm .eq. 1) normalize to jdote (default)   
                                           !-----if (norm .eq. 2) normalize to wdot 
-					  !-----if (norm .eq. 3) normalize to wdot_ql 				  		 					   
-					  
+                                          !-----if (norm .eq. 3) normalize to wdot_ql                                                                                      
+                                          
 
-      integer :: z2_electron = 0          !-----if (z2_electron .eq. 0) use the original Z2 function for electrons (default)	
+      integer :: z2_electron = 0          !-----if (z2_electron .eq. 0) use the original Z2 function for electrons (default)    
                                           !-----if (z2_electron .eq. 1) use the Z2 table for electrons with l = 0 (Taylor expansion along field line)
-					  !-----if (z2_electron .eq. 2) use Fourier expansion along field line for electrons with l = 0 (full orbits)
-				  					  					  				   					  					  					  					   
-				            
+                                          !-----if (z2_electron .eq. 2) use Fourier expansion along field line for electrons with l = 0 (full orbits)
+                                                                                                                                                                                                                                                                                                                   
+                                            
       integer :: i_write = 0              !-----i_write: if (i_write .eq. 0) 4-D ORBIT_RF file is NOT written (default)
                                           !-----         if (i_write .ne. 0) 4-D ORBIT_RF file IS written
 
@@ -281,17 +281,17 @@
       integer :: nkperp = 201             !-----nkperp: number of kperp values used in Lee's interpolation version of the 
                                           !     non-Maxwellian sigma (default = 201: interpolates on 201 points)
                                           !     if (nkperp .eq. 0) there is no interpolation
-				     
+                                     
       integer :: nzeta_wdote = 51         !-----nzeta_wdote: if (nzeta_wdote .eq. 0) no wdot calculation for electrons
                                           !-----             if (nzeta_wdote .eq. 1) wdote is calculated without interpolation
                                           !-----             if (nzeta_wdote .ge. 2) wdote is calculated with interpolation
                                           !-----                 over nzeta_wdote grid points (default is 51) 
-					     
+                                             
       integer :: nzeta_wdoti = 51         !-----nzeta_wdoti: if (nzeta_wdoti .eq. 0) no wdot calculation for ions
                                           !-----             if (nzeta_wdoti .eq. 1) wdoti is calculated without interpolation
                                           !-----             if (nzeta_wdoti .ge. 2) wdoti is calculated with interpolation
-                                          !-----                 over nzeta_wdoti grid points (default is 51)    					  
-					  
+                                          !-----                 over nzeta_wdoti grid points (default is 51)                                             
+                                          
       integer :: i_sav = 0
       integer :: j_sav = 0      
       integer :: i_sav1 = 0
@@ -305,7 +305,7 @@
       integer :: ftrap = 1                !-----ftrap = integer flag determining whether trapped particles effect current drive
                                           !        if(ftrap.eq.0) no trapped particles
                                           !        if(ftrap.ne.0) include trapped particles (default)
-				     
+                                     
       integer :: nnode_local = 0          !-----nnode_local = number of local Fourier modes used to calculate local Wdot
                                           !-----      if (nnode_local .le. 0)Wdot is NOT calculated (default)
                                           !-----      if (nnode_local .gt. 0)Wdot is calculated
@@ -334,7 +334,7 @@
       
       integer :: iprint = 1               !-----iprint:  if (iprint .eq. 28) print fields_local
                                           !-----         if (iprint .eq. 1) don't print fields_local (default)
-				     
+                                     
       integer :: iexact = 1               !-----iexact:  not used
       integer :: iroot = 2                !-----iroot: not used
       integer :: iequat = 1
@@ -352,9 +352,9 @@
       integer :: nzfun = 1                !-----nzfun:  if(nzfun.eq.0) Simple Z function is used from ZFUN 
                                           !-----        if(nzfun.eq.1) Generalized Z function of Brambilla is used (default)
                                           !-----        if(nzfun.eq.2) Z function of Smithe is used by doing numerical integrals.
-                                          !-----        if(nzfun.eq.3) Z function table lookup of Smithe is used 				  
-					  
-				     
+                                          !-----        if(nzfun.eq.3) Z function table lookup of Smithe is used                                  
+                                          
+                                     
       integer :: iabsorb = 2              !-----iabsorb not used
       integer :: itemp = 0                !-----itemp not used
       integer :: nfreqm = 1               !-----nfreqm not used

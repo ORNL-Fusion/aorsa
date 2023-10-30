@@ -1,4 +1,4 @@
-  	module qlsum_myra_mod
+        module qlsum_myra_mod
          contains
 !module METS2AORSA_MYRA
 
@@ -111,7 +111,7 @@
     complex sumwdot_11, sumwdot_31
     complex sumwdotkx_11, sumwdotkx_31
     complex sumwdotky_11, sumwdotky_31
-	
+        
     complex sum2_1, sum2_2, sum2_3
     complex sum1_1, sum1_2, sum1_3, sum1_4
     complex sumkx2_1, sumkx2_2, sumkx2_3 
@@ -229,38 +229,38 @@
              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
-	     xkperpn = sqrt(xkrhon**2 + xketan**2)
-	     
+             xkperpn = sqrt(xkrhon**2 + xketan**2)
+             
             ! ------------------------------------
             ! Optional: leave out upshift in xkprl
             ! --------------------------------- --          
               if (upshift .eq. 0)xkprln = uzz * xkphi
-!	      if (upshift .eq. 0)xkprln = nphi /rt
-	      
-	     if (upshift .eq. -1) then      
+!             if (upshift .eq. 0)xkprln = nphi /rt
+              
+             if (upshift .eq. -1) then      
                 if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
-             end if	      
-	     
-	     
-	     sgn_kprl = sign(1.0, xkprln)
-             akprl = abs(xkprln)		      
-		     
+             end if           
+             
+             
+             sgn_kprl = sign(1.0, xkprln)
+             akprl = abs(xkprln)                      
+                     
 !            ----------------------------------------------
 !            Optional: Don't allow xkprl to be 0 (upshift = -2)
 !            ----------------------------------------------        
              if (upshift .eq. -2) then
                 if (akprl .lt. akprl_min) then
-		    xkprln = akprl_min * sgn_kprl
-		end if 
-             end if		     
-	     
+                    xkprln = akprl_min * sgn_kprl
+                end if 
+             end if                  
+             
 
              y0 = 1.5
              y = y0
-	     
+             
       
              l = 1
-	     if(xkprln .eq. 0)xkprln = 1.0e-06
+             if(xkprln .eq. 0)xkprln = 1.0e-06
              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
      &                                    * gradprlb / bmod)
 
@@ -298,13 +298,13 @@
 
              end if
 
-             if (upshift .ne. 0) xkprln = xkprl_eff	     
-	
+             if (upshift .ne. 0) xkprln = xkprl_eff          
+        
              NPARA_sav(n, m) = xkprln * C / W
 
              xkperpn = sqrt(xkrhon**2 + xketan**2)
              if(xkperpn .eq. 0.0)xkperpn = 1.0e-08
-	
+        
              cosbeta_n_m  = xkrhon / xkperpn
              sinbeta_n_m  = xketan / xkperpn
              zbeta(n,m) = cmplx( cosbeta_n_m , sinbeta_n_m  )
@@ -340,9 +340,9 @@
              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
 
              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
-	
+        
              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
-	  
+          
              if (zeta0 .gt. zetamax) zetamax = zeta0
              if (zeta0 .lt. zetamin) zetamin = zeta0
           end do
@@ -360,14 +360,14 @@
        ! ------------------------------------------------- !
        ! ---Pre-calculate Bessel functions on zeta mesh -- !
        ! ------------------------------------------------- !
-	  
+          
        do i = 1, nzeta + 1
           zetai(i) = zetamin + (i - 1) * dzeta
           zeta = cmplx(zetai(i), 0.0)
-	  
+          
           call besjc(zeta, nharm + 2, b, ier)
 !          if(ier .ne. 0) write(6, *) "ier = ", ier
-	  
+          
           do iharm = 0, NHARM + 1
              Jni(iharm,  i) = b(iharm + 1)
              Jni(-iharm, i) = (-1.0)**iharm * b(iharm + 1)
@@ -385,38 +385,38 @@
              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
-	     xkperpn = sqrt(xkrhon**2 + xketan**2)
-	     
-	    ! ------------------------------------
+             xkperpn = sqrt(xkrhon**2 + xketan**2)
+             
+            ! ------------------------------------
             ! Optional: leave out upshift in xkprl
             ! --------------------------------- --          
              if (upshift .eq. 0)xkprln = uzz * xkphi
 !             if (upshift .eq. 0)xkprln = nphi / rt
-	      
-	     if (upshift .eq. -1) then      
+              
+             if (upshift .eq. -1) then      
                 if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
              end if
-	     
-	     
-	     sgn_kprl = sign(1.0, xkprln)
-             akprl = abs(xkprln)		      
-		     
+             
+             
+             sgn_kprl = sign(1.0, xkprln)
+             akprl = abs(xkprln)                      
+                     
 !            ----------------------------------------------
 !            Optional: Don't allow xkprl to be 0 (upshift = -2)
 !            ----------------------------------------------        
              if (upshift .eq. -2) then
                 if (akprl .lt. akprl_min) then
-		    xkprln = akprl_min * sgn_kprl
-		end if 
-             end if		     
-	     	     
+                    xkprln = akprl_min * sgn_kprl
+                end if 
+             end if                  
+                     
 
              y0 = 1.5
              y = y0
-	     
+             
       
              l = 1
-	     if(xkprln .eq. 0)xkprln = 1.0e-06
+             if(xkprln .eq. 0)xkprln = 1.0e-06
              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
      &                                    * gradprlb / bmod)
 
@@ -455,37 +455,37 @@
              end if
 
              if (upshift .ne. 0) xkprln = xkprl_eff
-	     
-	
+             
+        
              NPARA_sav(n, m) = xkprln * C * WI
 
              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
              xkperpni = 1.0 / xkperpn
-	
+        
              cosbeta_n_m = xkrhon * xkperpni
              sinbeta_n_m  = xketan * xkperpni
              zbeta(n,m) = cmplx( cosbeta_n_m , sinbeta_n_m )
-	  
+          
              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
-	  
+          
              i = int((zeta0 - zetamin) * dzetai) + 1
              p = (zeta0 - zetai(i)) * dzetai
              A1 = 0.5 * P * (P - 1.)
              A2 = 1. - P * P
              A3 = 0.5 * P * (P + 1.)
-	  
+          
              do iharm = -NHARM - 1, NHARM + 1
-	  
+          
                 Jn(iharm, n, m) = Jni(iharm, i)    &
-     &   	   + p * (Jni(iharm, i + 1) - Jni(iharm, i))
+     &             + p * (Jni(iharm, i + 1) - Jni(iharm, i))
                 if(i .ne. 1 )then
                    Jn(iharm, n, m) = A1 * Jni(iharm, i - 1)     &
      &                             + A2 * Jni(iharm, i)         &
      &                             + A3 * Jni(iharm, i + 1)
                 end if
-	      
+              
              end do
-	  
+          
           end do
        end do
     
@@ -512,16 +512,16 @@
        
        sumb_11 = 0.0
        sumb_31 = 0.0
-	  
+          
        sumc_11 = 0.0
-       sumc_31 = 0.0	
-	  
+       sumc_31 = 0.0    
+          
        sume_11 = 0.0
        sume_31 = 0.0
-	  
+          
        sumf_11 = 0.0
-       sumf_31 = 0.0	  
-	          
+       sumf_31 = 0.0      
+                  
        sumwdot_11 = 0.0
        sumwdot_31 = 0.0 
        
@@ -564,11 +564,11 @@
 
              is_resonance_nm(n,m) = (RRP * RRM .le. 0.0)
              if (is_resonance_nm(n,m)) then
-	         ires = ires + 1
-	         nres(ires) = n
-		 mres(ires) = m
-	     end if
-	  end do
+                 ires = ires + 1
+                 nres(ires) = n
+                 mres(ires) = m
+             end if
+          end do
        end do
        iresmax = ires
        
@@ -580,16 +580,16 @@
        do n = nkx1, nkx2
           do m = nky1, nky2
              cexp0 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m)
-	     cexp1 = cexp0 * zbeta(n,m)
-	     cexp2 = cexp0 / zbeta(n,m)
-		
+             cexp1 = cexp0 * zbeta(n,m)
+             cexp2 = cexp0 / zbeta(n,m)
+                
              epsx = isq2 * (ealphak(n, m) - zi * ebetak(n, m)) * cexp1
              epsy = isq2 * (ealphak(n, m) + zi * ebetak(n, m)) * cexp2
              epsz = ebk(n, m) * cexp0
-	     
+             
              sum2_1 = sum2_1 + conjg(epsx) * Jn(IHARM + 1, n, m)
              sum2_2 = sum2_2 + conjg(epsy) * Jn(IHARM - 1, n, m)
-             sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)	     
+             sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)         
           end do  !  end sum over ky
        end do    !   end sum over kx
 !  1000 continue
@@ -600,63 +600,63 @@
 
        do ires = 1, iresmax
           n = nres(ires)
-	  m = mres(ires)
-	                                                 
+          m = mres(ires)
+                                                         
 !          cexp1 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m) * zbeta(n,m)
 !          cexp2 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m) / zbeta(n,m)
           cexp0 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m)
-	  cexp1 = cexp0 * zbeta(n,m)
-	  cexp2 = cexp0 / zbeta(n,m)
-		
+          cexp1 = cexp0 * zbeta(n,m)
+          cexp2 = cexp0 / zbeta(n,m)
+                
           epsx = isq2 * (ealphak(n, m) - zi * ebetak(n, m)) * cexp1
           epsy = isq2 * (ealphak(n, m) + zi * ebetak(n, m)) * cexp2
           epsz = ebk(n, m) * cexp0
-	     
+             
 !          sum2_1 = sum2_1 + conjg(epsx) * Jn(IHARM + 1, n, m)
 !          sum2_2 = sum2_2 + conjg(epsy) * Jn(IHARM - 1, n, m)
 !          sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)
-	     
-	  sumkx2_1 = sumkx2_1 + xkxsav(n) * conjg(epsx) * Jn(IHARM + 1, n, m)
+             
+          sumkx2_1 = sumkx2_1 + xkxsav(n) * conjg(epsx) * Jn(IHARM + 1, n, m)
           sumkx2_2 = sumkx2_2 + xkxsav(n) * conjg(epsy) * Jn(IHARM - 1, n, m)
           sumkx2_3 = sumkx2_3 + xkxsav(n) * conjg(epsz) * Jn(IHARM, n, m)
-	     
-	  sumky2_1 = sumky2_1 + xkysav(m) * conjg(epsx) * Jn(IHARM + 1, n, m)
+             
+          sumky2_1 = sumky2_1 + xkysav(m) * conjg(epsx) * Jn(IHARM + 1, n, m)
           sumky2_2 = sumky2_2 + xkysav(m) * conjg(epsy) * Jn(IHARM - 1, n, m)
-          sumky2_3 = sumky2_3 + xkysav(m) * conjg(epsz) * Jn(IHARM, n, m)	     	     	    
+          sumky2_3 = sumky2_3 + xkysav(m) * conjg(epsz) * Jn(IHARM, n, m)                           
 
           UPAR0 = SQMUT0 / NPARA_sav(n, m) * (1. - NWCW)
-	
-	  u = sqrt(upar0**2 + uperpk2) + 1.0e-08
+        
+          u = sqrt(upar0**2 + uperpk2) + 1.0e-08
           sinth = uperpk / u + 1.0e-08
-	  sinth_inv = 1.0 / sinth
-		
-	  facte = (nwcw - sinth**2) /  upar0
-	
+          sinth_inv = 1.0 / sinth
+                
+          facte = (nwcw - sinth**2) /  upar0
+        
           i = int((UPAR0 - UPAR(1)) * dui) + 1
-	  i_uprl = i
+          i_uprl = i
           p = (UPAR0 - UPAR(i)) * dui
-		
-	  dfduper0 = dfduper(k_uper, NUPAR)
+                
+          dfduper0 = dfduper(k_uper, NUPAR)
           if (i .ne. NUPAR) then
              dfduper0 = dfduper(k_uper, i) + (dfduper(k_uper, i+1) - dfduper(k_uper, i)) * p
           end if
-		
+                
           U0 = DFDUPER0
-			
+                        
           factor = PISQMUT0 / abs(NPARA_sav(n, m)) 
-	  
-	  ttmp = UPER(k_uper) **2 * (Jn(IHARM + 1, n, m) * epsx     &
+          
+          ttmp = UPER(k_uper) **2 * (Jn(IHARM + 1, n, m) * epsx     &
      &                            +  Jn(IHARM - 1, n, m) * epsy )
-	  cross2 = SQ2 * UPER(k_uper) * UPAR0 * Jn(IHARM, n, m) * epsz
-	  
-	  cross3 = SQ2 * UPER(k_uper) * UPAR0 * (Jn(IHARM + 1, n, m) * epsx     &
+          cross2 = SQ2 * UPER(k_uper) * UPAR0 * Jn(IHARM, n, m) * epsz
+          
+          cross3 = SQ2 * UPER(k_uper) * UPAR0 * (Jn(IHARM + 1, n, m) * epsx     &
      &                                         + Jn(IHARM - 1, n, m) * epsy)
       
-	  ld = 2.0 * UPAR0**2 * Jn(IHARM, n, m) * epsz
-	  
-	  sumb_11_nm = ttmp + cross2
-          sumb_31_nm = cross3 + ld	  
-			
+          ld = 2.0 * UPAR0**2 * Jn(IHARM, n, m) * epsz
+          
+          sumb_11_nm = ttmp + cross2
+          sumb_31_nm = cross3 + ld        
+                        
 !         sumb_11_nm = UPER(k_uper) * UPER(k_uper)  * Jn(IHARM + 1, n, m) * epsx     &
 !    &               + UPER(k_uper) * UPER(k_uper)  * Jn(IHARM - 1, n, m) * epsy     &
 !    &               + SQ2 * UPER(k_uper) * UPAR0  * Jn(IHARM, n, m)     * epsz
@@ -667,7 +667,7 @@
      
           sumb_11_nm = sumb_11_nm * factor 
           sumb_31_nm = sumb_31_nm * factor 
-				
+                                
           sume_11_nm = sumb_11_nm * facte
           sume_31_nm = sumb_31_nm * facte
           
@@ -676,10 +676,10 @@
      
           sumf_11_nm = sumc_11_nm * facte
           sumf_31_nm = sumc_31_nm * facte
-          		
+                        
 !          sumwdot_11_nm = sumb_11_nm * u0
-!          sumwdot_31_nm = sumb_31_nm * u0	
-											     
+!          sumwdot_31_nm = sumb_31_nm * u0      
+                                                                                             
           sumf_11(i_uprl) = sumf_11(i_uprl) + sumf_11_nm
           sumf_31(i_uprl) = sumf_31(i_uprl) + sumf_31_nm
 
@@ -691,26 +691,26 @@
 
           sumb_11(i_uprl) = sumb_11(i_uprl) + sumb_11_nm
           sumb_31(i_uprl) = sumb_31(i_uprl) + sumb_31_nm
-		
+                
 
-		
-	  sumwdotkx_11 = sumwdotkx_11 + xkxsav(n) * sumwdot_11_nm
-	  sumwdotkx_31 = sumwdotkx_31 + xkxsav(n) * sumwdot_31_nm	
-		
-	  sumwdotky_11 = sumwdotky_11 + xkysav(m) * sumwdot_11_nm
-	  sumwdotky_31 = sumwdotky_31 + xkysav(m) * sumwdot_31_nm
-	  
-	  sumwdot_11 = sumwdot_11 + (ttmp + cross2) * factor * u0
-	  sumwdot_31 = sumwdot_31 + (cross3 + ld  ) * factor * u0	  
-	  
-	  sum1_1 = sum1_1 + ttmp   * factor * u0   
+                
+          sumwdotkx_11 = sumwdotkx_11 + xkxsav(n) * sumwdot_11_nm
+          sumwdotkx_31 = sumwdotkx_31 + xkxsav(n) * sumwdot_31_nm       
+                
+          sumwdotky_11 = sumwdotky_11 + xkysav(m) * sumwdot_11_nm
+          sumwdotky_31 = sumwdotky_31 + xkysav(m) * sumwdot_31_nm
+          
+          sumwdot_11 = sumwdot_11 + (ttmp + cross2) * factor * u0
+          sumwdot_31 = sumwdot_31 + (cross3 + ld  ) * factor * u0         
+          
+          sum1_1 = sum1_1 + ttmp   * factor * u0   
      
-	  sum1_2 = sum1_2 + cross2 * factor * u0
+          sum1_2 = sum1_2 + cross2 * factor * u0
      
-	  sum1_3 = sum1_3 + cross3 * factor * u0         
+          sum1_3 = sum1_3 + cross3 * factor * u0         
                
-          sum1_4 = sum1_4 + ld     * factor * u0							
-		
+          sum1_4 = sum1_4 + ld     * factor * u0                                                        
+                
       enddo  !  End sum over resonant modes
               
       ttmp_11 = 0.0 
@@ -730,17 +730,17 @@
      
        sum_fx0 = sum_fx0  + sumkx2_1 * sumwdot_11    &
      &                    + sumkx2_2 * sumwdot_11    &
-     &  		  + sumkx2_3 * sumwdot_31    &
+     &                    + sumkx2_3 * sumwdot_31    &
      &                    + sum2_1 * sumwdotkx_11    &
      &                    + sum2_2 * sumwdotkx_11    &
-     &  		  + sum2_3 * sumwdotkx_31
+     &                    + sum2_3 * sumwdotkx_31
      
        sum_fy0 = sum_fy0  + sumky2_1 * sumwdot_11    &
      &                    + sumky2_2 * sumwdot_11    &
-     &  	          + sumky2_3 * sumwdot_31    &
+     &                    + sumky2_3 * sumwdot_31    &
      &                    + sum2_1 * sumwdotky_11    &
      &                    + sum2_2 * sumwdotky_11    &
-     &  	          + sum2_3 * sumwdotky_31    
+     &                    + sum2_3 * sumwdotky_31    
       
        
 
@@ -898,7 +898,7 @@
     complex sumwdot_11, sumwdot_31
     complex sumwdotkx_11, sumwdotkx_31
     complex sumwdotky_11, sumwdotky_31
-	
+        
     complex sum2_1, sum2_2, sum2_3
     complex sumkx2_1, sumkx2_2, sumkx2_3 
     complex sumky2_1, sumky2_2, sumky2_3        
@@ -1015,39 +1015,39 @@
              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
-	     xkperpn = sqrt(xkrhon**2 + xketan**2)
-	     
+             xkperpn = sqrt(xkrhon**2 + xketan**2)
+             
             ! ------------------------------------
             ! Optional: leave out upshift in xkprl
             ! --------------------------------- --          
              if (upshift .eq. 0)xkprln = uzz * xkphi
-!	     if (upshift .eq. 0)xkprln = nphi / rt
-	      
-	     if (upshift .eq. -1) then      
+!            if (upshift .eq. 0)xkprln = nphi / rt
+              
+             if (upshift .eq. -1) then      
                 if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
              end if
-	     
-	     	     
-	     
-	     sgn_kprl = sign(1.0, xkprln)
-             akprl = abs(xkprln)		      
-		     
+             
+                     
+             
+             sgn_kprl = sign(1.0, xkprln)
+             akprl = abs(xkprln)                      
+                     
 !            ----------------------------------------------
 !            Optional: Don't allow xkprl to be 0 (upshift = -2)
 !            ----------------------------------------------        
              if (upshift .eq. -2) then
                 if (akprl .lt. akprl_min) then
-		    xkprln = akprl_min * sgn_kprl
-		end if 
-             end if		     
-	     	     
+                    xkprln = akprl_min * sgn_kprl
+                end if 
+             end if                  
+                     
 
              y0 = 1.5
              y = y0
-	     
+             
       
              l = 1
-	     if(xkprln .eq. 0)xkprln = 1.0e-06
+             if(xkprln .eq. 0)xkprln = 1.0e-06
              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
      &                                    * gradprlb / bmod)
 
@@ -1085,13 +1085,13 @@
 
              end if
 
-             if (upshift .ne. 0) xkprln = xkprl_eff	     
-	
+             if (upshift .ne. 0) xkprln = xkprl_eff          
+        
              NPARA_sav(n, m) = xkprln * C / W
 
              xkperpn = sqrt(xkrhon**2 + xketan**2)
              if(xkperpn .eq. 0.0)xkperpn = 1.0e-08
-	
+        
              cosbeta_n_m  = xkrhon / xkperpn
              sinbeta_n_m  = xketan / xkperpn
              zbeta(n,m) = cmplx( cosbeta_n_m , sinbeta_n_m  )
@@ -1127,9 +1127,9 @@
              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
 
              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
-	
+        
              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
-	  
+          
              if (zeta0 .gt. zetamax) zetamax = zeta0
              if (zeta0 .lt. zetamin) zetamin = zeta0
           end do
@@ -1147,14 +1147,14 @@
        ! ------------------------------------------------- !
        ! ---Pre-calculate Bessel functions on zeta mesh -- !
        ! ------------------------------------------------- !
-	  
+          
        do i = 1, nzeta + 1
           zetai(i) = zetamin + (i - 1) * dzeta
           zeta = cmplx(zetai(i), 0.0)
-	  
+          
           call besjc(zeta, nharm + 2, b, ier)
 !          if(ier .ne. 0) write(6, *) "ier = ", ier
-	  
+          
           do iharm = 0, NHARM + 1
              Jni(iharm,  i) = b(iharm + 1)
              Jni(-iharm, i) = (-1.0)**iharm * b(iharm + 1)
@@ -1172,40 +1172,40 @@
              xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
              xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
-	     xkperpn = sqrt(xkrhon**2 + xketan**2)
-	     
-	    ! ------------------------------------
+             xkperpn = sqrt(xkrhon**2 + xketan**2)
+             
+            ! ------------------------------------
             ! Optional: leave out upshift in xkprl
             ! --------------------------------- --          
              if (upshift .eq. 0)xkprln = uzz * xkphi
-!	     if (upshift .eq. 0)xkprln = nphi / rt
-	     
-	     if (upshift .eq. -1) then      
+!            if (upshift .eq. 0)xkprln = nphi / rt
+             
+             if (upshift .eq. -1) then      
                 if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
              end if
-	     
-	     
-	     
-	     sgn_kprl = sign(1.0, xkprln)
+             
+             
+             
+             sgn_kprl = sign(1.0, xkprln)
              akprl = abs(xkprln)
-		      
-		     
+                      
+                     
 !            ----------------------------------------------
 !            Optional: Don't allow xkprl to be 0 (upshift = -2)
 !            ----------------------------------------------        
              if (upshift .eq. -2) then
                 if (akprl .lt. akprl_min) then
-		    xkprln = akprl_min * sgn_kprl
-		end if 
-             end if		     
-	     	     
+                    xkprln = akprl_min * sgn_kprl
+                end if 
+             end if                  
+                     
 
              y0 = 1.5
              y = y0
-	     
+             
       
              l = 1
-	     if(xkprln .eq. 0)xkprln = 1.0e-06
+             if(xkprln .eq. 0)xkprln = 1.0e-06
              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
      &                                    * gradprlb / bmod)
 
@@ -1244,37 +1244,37 @@
              end if
 
              if (upshift .ne. 0) xkprln = xkprl_eff
-	     
-	
+             
+        
              NPARA_sav(n, m) = xkprln * C * WI
 
              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
              xkperpni = 1.0 / xkperpn
-	
+        
              cosbeta_n_m = xkrhon * xkperpni
              sinbeta_n_m  = xketan * xkperpni
              zbeta(n,m) = cmplx( cosbeta_n_m , sinbeta_n_m )
-	  
+          
              zeta0 = xkperpn * uperpk * c * sqmut0i * wci
-	  
+          
              i = int((zeta0 - zetamin) * dzetai) + 1
              p = (zeta0 - zetai(i)) * dzetai
              A1 = 0.5 * P * (P - 1.)
              A2 = 1. - P * P
              A3 = 0.5 * P * (P + 1.)
-	  
+          
              do iharm = -NHARM - 1, NHARM + 1
-	  
+          
                 Jn(iharm, n, m) = Jni(iharm, i)    &
-     &   	   + p * (Jni(iharm, i + 1) - Jni(iharm, i))
+     &             + p * (Jni(iharm, i + 1) - Jni(iharm, i))
                 if(i .ne. 1 )then
                    Jn(iharm, n, m) = A1 * Jni(iharm, i - 1)     &
      &                             + A2 * Jni(iharm, i)         &
      &                             + A3 * Jni(iharm, i + 1)
                 end if
-	      
+              
              end do
-	  
+          
           end do
        end do
     
@@ -1301,16 +1301,16 @@
        
        sumb_11 = 0.0
        sumb_31 = 0.0
-	  
+          
        sumc_11 = 0.0
-       sumc_31 = 0.0	
-	  
+       sumc_31 = 0.0    
+          
        sume_11 = 0.0
        sume_31 = 0.0
-	  
+          
        sumf_11 = 0.0
-       sumf_31 = 0.0	  
-	          
+       sumf_31 = 0.0      
+                  
        sumwdot_11 = 0.0
        sumwdot_31 = 0.0       
        
@@ -1348,11 +1348,11 @@
 
              is_resonance_nm(n,m) = (RRP * RRM .le. 0.0)
              if (is_resonance_nm(n,m)) then
-	         ires = ires + 1
-	         nres(ires) = n
-		 mres(ires) = m
-	     end if
-	  end do
+                 ires = ires + 1
+                 nres(ires) = n
+                 mres(ires) = m
+             end if
+          end do
        end do
        iresmax = ires 
        
@@ -1365,16 +1365,16 @@
 !            cexp1 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m) * zbeta(n,m)
 !            cexp2 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m) / zbeta(n,m)
              cexp0 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m)
-	     cexp1 = cexp0 * zbeta(n,m)
-	     cexp2 = cexp0 / zbeta(n,m)
-		
+             cexp1 = cexp0 * zbeta(n,m)
+             cexp2 = cexp0 / zbeta(n,m)
+                
              epsx = isq2 * (ealphak(n, m) - zi * ebetak(n, m)) * cexp1
              epsy = isq2 * (ealphak(n, m) + zi * ebetak(n, m)) * cexp2
              epsz = ebk(n, m) * cexp0
-	     
+             
              sum2_1 = sum2_1 + conjg(epsx) * Jn(IHARM + 1, n, m)
              sum2_2 = sum2_2 + conjg(epsy) * Jn(IHARM - 1, n, m)
-             sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)	     
+             sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)         
           end do
        end do
 ! 1000  continue
@@ -1385,59 +1385,59 @@
 
        do ires = 1, iresmax
           n = nres(ires)
-	  m = mres(ires)
-	                                                 
+          m = mres(ires)
+                                                         
           cexp1 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m) * zbeta(n,m)
           cexp2 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m) / zbeta(n,m)
           cexp0 = xx(n, i_global) * yy(m, j_global) * zbeta_iharm(n,m)
-		
+                
           epsx = isq2 * (ealphak(n, m) - zi * ebetak(n, m)) * cexp1
           epsy = isq2 * (ealphak(n, m) + zi * ebetak(n, m)) * cexp2
           epsz = ebk(n, m) * cexp0
-	     
+             
 !          sum2_1 = sum2_1 + conjg(epsx) * Jn(IHARM + 1, n, m)
 !          sum2_2 = sum2_2 + conjg(epsy) * Jn(IHARM - 1, n, m)
 !          sum2_3 = sum2_3 + conjg(epsz) * Jn(IHARM, n, m)
-	     
-	  sumkx2_1 = sumkx2_1 + xkxsav(n) * conjg(epsx) * Jn(IHARM + 1, n, m)
+             
+          sumkx2_1 = sumkx2_1 + xkxsav(n) * conjg(epsx) * Jn(IHARM + 1, n, m)
           sumkx2_2 = sumkx2_2 + xkxsav(n) * conjg(epsy) * Jn(IHARM - 1, n, m)
           sumkx2_3 = sumkx2_3 + xkxsav(n) * conjg(epsz) * Jn(IHARM, n, m)
-	     
-	  sumky2_1 = sumky2_1 + xkysav(m) * conjg(epsx) * Jn(IHARM + 1, n, m)
+             
+          sumky2_1 = sumky2_1 + xkysav(m) * conjg(epsx) * Jn(IHARM + 1, n, m)
           sumky2_2 = sumky2_2 + xkysav(m) * conjg(epsy) * Jn(IHARM - 1, n, m)
-          sumky2_3 = sumky2_3 + xkysav(m) * conjg(epsz) * Jn(IHARM, n, m)	     	     	    
+          sumky2_3 = sumky2_3 + xkysav(m) * conjg(epsz) * Jn(IHARM, n, m)                           
 
           UPAR0 = SQMUT0 / NPARA_sav(n, m) * (1. - NWCW)
-	
-	  u = sqrt(upar0**2 + uperpk2) + 1.0e-08
+        
+          u = sqrt(upar0**2 + uperpk2) + 1.0e-08
           sinth = uperpk / u + 1.0e-08
-	  sinth_inv = 1.0 / sinth
-		
-	  facte = (nwcw - sinth**2) /  upar0
-	
+          sinth_inv = 1.0 / sinth
+                
+          facte = (nwcw - sinth**2) /  upar0
+        
           i = int((UPAR0 - UPAR(1)) * dui) + 1
-	  i_uprl = i
+          i_uprl = i
           p = (UPAR0 - UPAR(i)) * dui
-		
-	  dfduper0 = dfduper(k_uper, NUPAR)
+                
+          dfduper0 = dfduper(k_uper, NUPAR)
           if (i .ne. NUPAR) then
             dfduper0 = dfduper(k_uper, i) + (dfduper(k_uper, i+1) - dfduper(k_uper, i)) * p
           end if
-	  
-		
+          
+                
           DFACTPAR = NPARA_sav(n, m) * UPAR0 * SQMUT0I
           DFACTPER = NPARA_sav(n, m) * UPER(k_uper) * SQMUT0I
-	  
+          
           dfdupar0 = dfdupar(k_uper, NUPAR)
           if(i .ne. NUPAR)then
              dfdupar0 = dfdupar(k_uper, i) +                    &
      &       (dfdupar(k_uper, i+1) - dfdupar(k_uper, i)) * p
-          end if	  
-	
-          U0 = (1. - DFACTPAR) * DFDUPER0 + DFACTPER * DFDUPAR0	  
-			
+          end if          
+        
+          U0 = (1. - DFACTPAR) * DFDUPER0 + DFACTPER * DFDUPAR0   
+                        
           factor = PISQMUT0 / abs(NPARA_sav(n, m)) 
-			
+                        
           sumb_11_nm = UPER(k_uper) * UPER(k_uper)  * Jn(IHARM + 1, n, m) * epsx     &
      &               + UPER(k_uper) * UPER(k_uper)  * Jn(IHARM - 1, n, m) * epsy     &
      &               + SQ2 * UPER(k_uper) * UPAR0  * Jn(IHARM, n, m)     * epsz
@@ -1448,7 +1448,7 @@
      
           sumb_11_nm = sumb_11_nm * factor 
           sumb_31_nm = sumb_31_nm * factor 
-				
+                                
           sume_11_nm = sumb_11_nm * facte
           sume_31_nm = sumb_31_nm * facte
           
@@ -1457,10 +1457,10 @@
      
           sumf_11_nm = sumc_11_nm * facte
           sumf_31_nm = sumc_31_nm * facte
-          		
+                        
           sumwdot_11_nm = sumb_11_nm * u0
-          sumwdot_31_nm = sumb_31_nm * u0	
-											     
+          sumwdot_31_nm = sumb_31_nm * u0       
+                                                                                             
           sumf_11(i_uprl) = sumf_11(i_uprl) + sumf_11_nm
           sumf_31(i_uprl) = sumf_31(i_uprl) + sumf_31_nm
 
@@ -1472,37 +1472,37 @@
 
           sumb_11(i_uprl) = sumb_11(i_uprl) + sumb_11_nm
           sumb_31(i_uprl) = sumb_31(i_uprl) + sumb_31_nm
-		
-	  sumwdot_11 = sumwdot_11 + sumwdot_11_nm
-	  sumwdot_31 = sumwdot_31 + sumwdot_31_nm
-		
-	  sumwdotkx_11 = sumwdotkx_11 + xkxsav(n) * sumwdot_11_nm
-	  sumwdotkx_31 = sumwdotkx_31 + xkxsav(n) * sumwdot_31_nm	
-		
-	  sumwdotky_11 = sumwdotky_11 + xkysav(m) * sumwdot_11_nm
-	  sumwdotky_31 = sumwdotky_31 + xkysav(m) * sumwdot_31_nm							
-		
+                
+          sumwdot_11 = sumwdot_11 + sumwdot_11_nm
+          sumwdot_31 = sumwdot_31 + sumwdot_31_nm
+                
+          sumwdotkx_11 = sumwdotkx_11 + xkxsav(n) * sumwdot_11_nm
+          sumwdotkx_31 = sumwdotkx_31 + xkxsav(n) * sumwdot_31_nm       
+                
+          sumwdotky_11 = sumwdotky_11 + xkysav(m) * sumwdot_11_nm
+          sumwdotky_31 = sumwdotky_31 + xkysav(m) * sumwdot_31_nm                                                       
+                
        enddo
        
        
        sum_wdot = sum_wdot + sum2_1 * sumwdot_11    &
      &                     + sum2_2 * sumwdot_11    &
-     &  		   + sum2_3 * sumwdot_31 
+     &                     + sum2_3 * sumwdot_31 
      
      
        sum_fx0 = sum_fx0  + sumkx2_1 * sumwdot_11    &
      &                    + sumkx2_2 * sumwdot_11    &
-     &  		  + sumkx2_3 * sumwdot_31    &
+     &                    + sumkx2_3 * sumwdot_31    &
      &                    + sum2_1 * sumwdotkx_11    &
      &                    + sum2_2 * sumwdotkx_11    &
-     &  		  + sum2_3 * sumwdotkx_31
+     &                    + sum2_3 * sumwdotkx_31
      
        sum_fy0 = sum_fy0  + sumky2_1 * sumwdot_11    &
      &                    + sumky2_2 * sumwdot_11    &
-     &  	          + sumky2_3 * sumwdot_31    &
+     &                    + sumky2_3 * sumwdot_31    &
      &                    + sum2_1 * sumwdotky_11    &
      &                    + sum2_2 * sumwdotky_11    &
-     &  	          + sum2_3 * sumwdotky_31    
+     &                    + sum2_3 * sumwdotky_31    
       
        
 
@@ -1562,13 +1562,13 @@
 !*************************************************************************
 !
 
-	subroutine zpow(n, z, iharm, zout )
-	implicit none
-	integer n, iharm
-	complex z(n), zout(n)
+        subroutine zpow(n, z, iharm, zout )
+        implicit none
+        integer n, iharm
+        complex z(n), zout(n)
 
-	integer i,ipow
-	complex one, zero
+        integer i,ipow
+        complex one, zero
         complex zin
 
         integer nharm
@@ -1599,8 +1599,8 @@
            iend = min(n,istart+nb-1)
            isize = iend-istart+1
 
-	  do i=1,isize
-	    zout(istart-1+i) = one
+          do i=1,isize
+            zout(istart-1+i) = one
           enddo
 
 
@@ -1624,9 +1624,9 @@
 
 
 
-	if (iharm.lt.0) then
+        if (iharm.lt.0) then
            if (use_zdiv) then
-	     do i=1,isize
+             do i=1,isize
                 zin = zout(istart-1+i)
                 call zdiv( zin, zout(istart-1+i) )
             enddo
@@ -1640,9 +1640,9 @@
 
         enddo
 
-	return
-	end subroutine 
-	
+        return
+        end subroutine 
+        
 !
 !*************************************************************************
 !
@@ -1681,7 +1681,7 @@
 
         return
         end subroutine
-	
+        
 
 
 !
@@ -1689,5 +1689,5 @@
 !
 
          end module qlsum_myra_mod
-	 
+         
 
