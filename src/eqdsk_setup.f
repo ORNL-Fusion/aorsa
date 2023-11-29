@@ -2085,7 +2085,7 @@ c          write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
 *     -----------------------------
 *     deposit dldb on 2D flux grid:
 *     -----------------------------         
-      write(*,*) 'flux_to_rz, profile_in:',profile_in
+!      write(*,*) 'flux_to_rz, profile_in:',profile_in
       call flux_to_rz(nnodex, nnodey, profile_in, 
      &   profile_out, rho_in, nrho, rho_ij) 
           

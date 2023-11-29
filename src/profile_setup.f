@@ -25,15 +25,15 @@ c                 call flush(6)
      &            (profile_in(2) - profile_in(1)) /
      &            (rho(2) - rho(1)) * (rho_ij(i,j) - rho(1))
        
-               elseif(rho_ij(i,j) .ge.rho(nrho)) then
+               elseif(k.eq.nrho) then !SF fixed bounding error
                ! need one sidded to the right.
                    
 c                 profile_out(i,j) = profile_in(nrho) +
 c     &            (profile_in(nrho) - profile_in(nrho - 1)) /
 c     &            (rho(nrho) - rho(nrho-1)) * (rho_ij(i,j) - rho(nrho))
-
-                  profile_out(i,j) = profile_in(nrho)     
-      
+                  if (rho_ij(i,j) .ge.rho(nrho))then
+                     profile_out(i,j) = profile_in(nrho)
+                  endif
                elseif(rho_ij(i,j) - rho(k) .ge. 0.0 .and.
      &             rho_ij(i,j) -rho(k+1) .lt. 0.0 ) then
                   ! standard  caseprint*, 'last if'

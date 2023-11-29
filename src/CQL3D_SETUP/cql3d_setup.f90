@@ -19,8 +19,8 @@
       integer n_u_basis, n_theta_basis, ni, mi,kspeci
       real enorm_factor
 
-      integer, parameter :: n_u_dim = 300
-      integer, parameter :: n_theta_dim = 200
+      integer, parameter :: n_u_dim = 600 !SF why the fuck is this hardcoded... who did this? I've just made it bigger for now, deal with later
+      integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
 
 !     ----------------
@@ -141,13 +141,13 @@
 
       open(unit=237,file='out237',status='unknown', form='formatted')
 
-      open(unit=140, file='f_cql_3D.vtk', status='unknown', &
+      open(unit=140, file='f_cql_3D1.vtk', status='unknown', &
      &                                              form='formatted')       
       
 !      open(unit=115,file='out115',status='unknown', form='formatted')
 !      open(unit=143,file='ahern',status='unknown', form='formatted')
       
-      open(unit=50,file='cql3d.out',status='unknown', form='formatted')
+      open(unit=50,file='cql3d1.out',status='unknown', form='formatted')
 
 
 
@@ -247,7 +247,7 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
       !     -------------------------------------------------
-      kspeci = 1
+      kspeci = 2 !reversed from normal order for reasons...
       CALL netcdfr3d_multigen(netCDF_file,kspeci)
 
       vc_mks = vc * 1.0e-02
@@ -475,8 +475,6 @@
 !     ------------------------
 
        do i_psi = 1, n_psi
-
-
           do i_theta = 1, n_theta_(i_psi)
              theta_(i_theta) =  theta(i_theta, i_psi)
           end do
@@ -571,7 +569,7 @@
       do i_psi = 1, n_psi
           do i_theta = 1, n_theta_(i_psi)
        
-             do  i_u = 1, n_u             
+             do  i_u = 1, n_u
                 f1(i_u) = f_cql(i_theta, i_u, i_psi)
              end do
                      
@@ -1073,8 +1071,8 @@
       integer n_u_basis, n_theta_basis, ni, mi, kspeci
       real enorm_factor
 
-      integer, parameter :: n_u_dim = 300
-      integer, parameter :: n_theta_dim = 200
+      integer, parameter :: n_u_dim = 600 !SF JAIL, do not pass go do not collect 
+      integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
 
 !     ----------------
@@ -1191,13 +1189,13 @@
 
       open(unit=238,file='out238',status='unknown', form='formatted')
 !      open(unit=139,file='Point.3D',status='unknown', form='formatted')
-      open(unit=140, file='f_cql_3D.vtk', status='unknown', &
+      open(unit=140, file='f_cql_3D2.vtk', status='unknown', &
      &                                              form='formatted')       
       
 !      open(unit=115,file='out115',status='unknown', form='formatted')
 !      open(unit=143,file='ahern',status='unknown', form='formatted')
       
-      open(unit=50,file='cql3d.out',status='unknown', form='formatted')
+      open(unit=50,file='cql3d2.out',status='unknown', form='formatted')
 
 
 
@@ -1292,7 +1290,7 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
 !     -------------------------------------------------
-      kspeci=2
+      kspeci=1
       CALL netcdfr3d_multigen(netCDF_file,kspeci)
 
       vc_mks = vc * 1.0e-02
@@ -1579,7 +1577,6 @@
 !     ----------------------
 !     calculate derivatives:
 !     ----------------------
-
       do i_psi = 1, n_psi
 
          do i_theta = 1, n_theta_(i_psi)
@@ -1612,7 +1609,6 @@
 !     ------------------------------
 !     interpolate onto AORSA u grid: 
 !     ------------------------------       
-       
       do i_psi = 1, n_psi
           do i_theta = 1, n_theta_(i_psi)
        
@@ -1805,7 +1801,7 @@
 !     &              df_cql_uprp, df_cql_uprl,  &
 !     &              UPERP, UPARA, DFDUPER, DFDUPAR)
      
-!      do ni = 1, nuper
+!      do ni = 1, nuperWW
 !          do mi = 1, nupar
 !     
 !             dfdth = upara(mi) * dfduper(ni, mi)  &

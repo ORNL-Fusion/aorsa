@@ -189,8 +189,9 @@ c
       parameter (nkpltdim = 2 * nkdim2)
       parameter (mkpltdim = 2 * mkdim2)
 
-      parameter (n_theta_max = 150)
-      parameter (n_u_max = 150)
+      !SF cursed
+      parameter (n_theta_max = 300)
+      parameter (n_u_max = 600)
       parameter (n_psi_max = 150)
 
       real:: u(n_u_max), theta_u(n_theta_max)
@@ -3732,63 +3733,122 @@ c      end do
 
       if (ndisti2 .eq. 1 .or. ndisti1 .eq. 1) then
 
-         if (ndisti1 .eq. 1)
-     &      open(unit=42,file='out_cql3d.coef1', status='unknown',
+         if (ndisti1 .eq. 1)then
+           open(unit=42,file='out_cql3d.coef1', status='unknown',
+     &                                             form='formatted')
+            read (42, 309) nuper
+            read (42, 309) nupar
+            read (42, 309) nnoderho
+
+            allocate( UPERP(nuper) )
+            allocate( UPARA(nupar) )
+            allocate( f_cql_cart(nuper, nupar, nnoderho) )
+
+            allocate( wperp1_cql(nnoderho) )
+            allocate( wpar1_cql(nnoderho) )
+
+            allocate( wperp2_cql(nnoderho) )
+            allocate( wpar2_cql(nnoderho) )
+
+            allocate( bqlavg_i1(nuper, nupar, nnoderho) )
+            allocate( cqlavg_i1(nuper, nupar, nnoderho) )
+            allocate( eqlavg_i1(nuper, nupar, nnoderho) )
+            allocate( fqlavg_i1(nuper, nupar, nnoderho) )
+
+            allocate( bqlavg_i1_2d(nupar, nuper) )
+            allocate( cqlavg_i1_2d(nupar, nuper) )
+
+            allocate( E_kick_2d (nupar, nnoderho) )
+            allocate( f_cql_cart_2d (nupar, nuper) )
+
+
+            read (42, 3310) vc_cgs
+            read (42, 3310) UminPara, UmaxPara
+
+            read (42, 3310) (rhon(n), n = 1, nnoderho)
+            read (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
+            read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
+
+            read (42, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
+     &           i_uperp = 1, nuper), i_upara = 1, nupar), n = 1,
+     &           nnoderho)
+
+            read (42, 3310) (((cqlavg_i1(i_uperp, i_upara, n),
+     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+
+            read (42, 3310) (((eqlavg_i1(i_uperp, i_upara, n),
+     &           i_uperp = 1, nuper), i_upara = 1, nupar), n = 1,
+     &           nnoderho)
+
+            read (42, 3310) (((fqlavg_i1(i_uperp, i_upara, n),
+     &           i_uperp = 1, nuper), i_upara = 1, nupar), n = 1,
+     &           nnoderho)
+
+            read (42, 3310) xmi
+
+            close (42)
+         endif
+
+         !SF currently plots are borked for multiple diffusion coefficients
+         !fix another time
+         if (ndisti2 .eq. 1)then
+            open(unit=242,file='out_cql3d.coef2', status='unknown',
      &                                             form='formatted')
 
-         if (ndisti2 .eq. 1)
-     &      open(unit=42,file='out_cql3d.coef2', status='unknown',
-     &                                             form='formatted')
+            read (242, 309) nuper
+            read (242, 309) nupar
+            read (242, 309) nnoderho
 
-         read (42, 309) nuper
-         read (42, 309) nupar
-         read (42, 309) nnoderho
+            if (allocated(uperp) .eqv. .false.)then
+               allocate( UPERP(nuper) )
+               allocate( UPARA(nupar) )
+               allocate( f_cql_cart(nuper, nupar, nnoderho) )
 
-         allocate( UPERP(nuper) )
-         allocate( UPARA(nupar) )
-         allocate( f_cql_cart(nuper, nupar, nnoderho) )
+               allocate( wperp1_cql(nnoderho) )
+               allocate( wpar1_cql(nnoderho) )
 
-         allocate( wperp1_cql(nnoderho) )
-         allocate( wpar1_cql(nnoderho) )
+               allocate( wperp2_cql(nnoderho) )
+               allocate( wpar2_cql(nnoderho) )
 
-         allocate( wperp2_cql(nnoderho) )
-         allocate( wpar2_cql(nnoderho) )
+               allocate( bqlavg_i1(nuper, nupar, nnoderho) )
+               allocate( cqlavg_i1(nuper, nupar, nnoderho) )
+               allocate( eqlavg_i1(nuper, nupar, nnoderho) )
+               allocate( fqlavg_i1(nuper, nupar, nnoderho) )
 
-         allocate( bqlavg_i1(nuper, nupar, nnoderho) )
-         allocate( cqlavg_i1(nuper, nupar, nnoderho) )
-         allocate( eqlavg_i1(nuper, nupar, nnoderho) )
-         allocate( fqlavg_i1(nuper, nupar, nnoderho) )
+               allocate( bqlavg_i1_2d(nupar, nuper) )
+               allocate( cqlavg_i1_2d(nupar, nuper) )
 
-         allocate( bqlavg_i1_2d(nupar, nuper) )
-         allocate( cqlavg_i1_2d(nupar, nuper) )
+               allocate( E_kick_2d (nupar, nnoderho) )
+               allocate( f_cql_cart_2d (nupar, nuper) )
+            endif
+            
 
-         allocate( E_kick_2d (nupar, nnoderho) )
-         allocate( f_cql_cart_2d (nupar, nuper) )
+            read (242, 3310) vc_cgs
+            read (242, 3310) UminPara, UmaxPara
 
+            read (242, 3310) (rhon(n), n = 1, nnoderho)
+            read (242, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
+            read (242, 3310) (upara(i_upara), i_upara = 1, nupar)
 
-         read (42, 3310) vc_cgs
-         read (42, 3310) UminPara, UmaxPara
+            read (242, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
+     &           i_uperp = 1, nuper), i_upara = 1, nupar), n = 1,
+     &           nnoderho)
 
-         read (42, 3310) (rhon(n), n = 1, nnoderho)
-         read (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
-         read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
-
-         read (42, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
+            read (242, 3310) (((cqlavg_i1(i_uperp, i_upara, n),
      &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-         read (42, 3310) (((cqlavg_i1(i_uperp, i_upara, n),
-     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+            read (242, 3310) (((eqlavg_i1(i_uperp, i_upara, n),
+     &           i_uperp = 1, nuper), i_upara = 1, nupar), n = 1,
+     &           nnoderho)
 
-         read (42, 3310) (((eqlavg_i1(i_uperp, i_upara, n),
-     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+            read (242, 3310) (((fqlavg_i1(i_uperp, i_upara, n),
+     &           i_uperp = 1, nuper), i_upara = 1, nupar), n = 1,
+     &           nnoderho)
 
-         read (42, 3310) (((fqlavg_i1(i_uperp, i_upara, n),
-     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+            read (242, 3310) xmi
 
-         read (42, 3310) xmi
-
-         close (42)
-
+            close (242)
+         endif
 !        --------------------------------------------
 !        read data for plotting f(u_perp, u_parallel)
 !        --------------------------------------------

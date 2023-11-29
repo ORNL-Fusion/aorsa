@@ -366,7 +366,7 @@ c
 
       integer fcount, nnodex, nnodey, nxmx, nymx 
 
-      real x, len, y(1), dy(1), br, bz, bphi, modb, x_extint, sgn_vprl
+      real x, len, y(2), dy(3), br, bz, bphi, modb, x_extint, sgn_vprl
       real bratio_phi
       real xprime, yprime, dxdphi, dydphi, dr, dz, rt, capr, xwleft
       real drdl, dzdl, dphidl
@@ -432,7 +432,7 @@ c
       integer fcount, nnodex, nnodey, nxmx, nymx 
 c      integer nmodesmax, mmodesmax
 
-      real x, phi, y(1), dy(1), br, bz, bphi, modb, x_extint, sgn_vprl
+      real x, phi, y(2), dy(2), br, bz, bphi, modb, x_extint, sgn_vprl
       real bratio_phi
       real xprime, yprime, dxdphi, dydphi, dr, dz, rt, capr, xwleft
       
@@ -839,8 +839,8 @@ C     CONVERGED ACCORDING TO THE CRITERIA CHOSEN.
 C     IMPLICIT REAL*8 (A-H,O-Z), INTEGER (I-N)
       INTEGER M
 C     REAL*8 DY(M)
-      REAL   DY(M)
-      LOGICAL CONV(M), FINISH
+      REAL   DY(100)
+      LOGICAL CONV(100), FINISH
       COMMON /ERRCOM/ EPS, S(100), Y(100), NMAX
 C     REAL*8 EPS, S, Y
       REAL   EPS, S, Y

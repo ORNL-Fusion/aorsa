@@ -535,9 +535,13 @@
        istatus = nf90_get_var(ncid, vid, vnorm)
        write(*,*)'after ncvgp vnorm=',vnorm
 
+       !momentum grid
+       istatus = nf90_inq_varid(ncid, 'x', vid)
+       istatus = nf90_get_var(ncid, vid, x) 
+       
        !pitch angle variables
        istatus = nf90_inq_varid(ncid, 'iy_', vid)
-       istatus = nf90_get_var(ncid, vid, iy_)!, 1, lrz)
+       istatus = nf90_get_var(ncid, vid, iy_)
        
        count_y(1)=iy
        count_y(2)=lrz
@@ -613,7 +617,6 @@
        theta = y
        u = x
        rho_a = rya
-       
        f_CQL = f(:,:,:,kspeci)       
        wperp_cql = wperp(:,kspeci,:)
        wpar_cql = wpar(:,kspeci,:)

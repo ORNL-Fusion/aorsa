@@ -1339,11 +1339,12 @@ c     &      form='formatted')
          open(unit=28, file='fields_local',   status='unknown',
      &      form='formatted')
 
+         WRITE(*,*) 'ndisti1234',ndisti1, ndisti2, ndisti3, ndisti4
          if (ndiste .eq. 1)  open(unit=40, file='out_cql3d.coefe',
      &                            status='unknown', form='formatted')
          if (ndisti1 .eq. 1) open(unit=41, file='out_cql3d.coef1',
      &                            status='unknown', form='formatted')
-         if (ndisti2 .eq. 1) open(unit=42, file='out_cql3d.coef2',
+         if (ndisti2 .eq. 1) open(unit=142, file='out_cql3d.coef2',
      &                            status='unknown', form='formatted')
          if (ndisti3 .eq. 1) open(unit=43, file='out_cql3d.coef3',
      &                            status='unknown', form='formatted')
@@ -2668,7 +2669,7 @@ c      akprl_min = abs(nphi / rt)
 
             call blacs_barrier(icontxt, 'All')
 
-            open(unit=50, file='cql3d.out', status='unknown',
+            open(unit=50, file='cql3d1.out', status='unknown',
      &                                                 form='formatted')
 
 !           ---------------------------------------------
@@ -2712,7 +2713,7 @@ c      akprl_min = abs(nphi / rt)
 
             call blacs_barrier(icontxt, 'All')
 
-            open(unit=50,file='cql3d.out', status='unknown',
+            open(unit=50,file='cql3d2.out', status='unknown',
      &                                                 form='formatted')
 
 !           ---------------------------------------------
@@ -9441,32 +9442,32 @@ c                 c_ehst = 1.0
 *        ----------------------------------------------------------------
          if(eta2 .ne. 0.0 .and. ndisti2 .eq. 1)then
 
-            write (42, 309) nuper
-            write (42, 309) nupar
-            write (42, 309) nnoderho
+            write (142, 309) nuper
+            write (142, 309) nupar
+            write (142, 309) nnoderho
 
-            write (42, 3310) vc2_cgs_cql3d
-            write (42, 3310) UminPara, UmaxPara
+            write (142, 3310) vc2_cgs_cql3d
+            write (142, 3310) UminPara, UmaxPara
 
-            write (42, 3310) (rhon(n), n = 1, nnoderho)
-            write (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
-            write (42, 3310) (upara(i_upara), i_upara = 1, nupar)
+            write (142, 3310) (rhon(n), n = 1, nnoderho)
+            write (142, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
+            write (142, 3310) (upara(i_upara), i_upara = 1, nupar)
 
-            write (42, 3310) (((bqlavg_i2(i_uperp, i_upara, n),
+            write (142, 3310) (((bqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-            write (42, 3310) (((cqlavg_i2(i_uperp, i_upara, n),
+            write (142, 3310) (((cqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-            write (42, 3310) (((eqlavg_i2(i_uperp, i_upara, n),
+            write (142, 3310) (((eqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-            write (42, 3310) (((fqlavg_i2(i_uperp, i_upara, n),
+            write (142, 3310) (((fqlavg_i2(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-            write (42, 3310) xmi2
+            write (142, 3310) xmi2
 
-            close (42)
+            close (142)
             call dql_write_nc('out_cql3d.coef2','out_cql3d.coef2.nc')
 
          end if
