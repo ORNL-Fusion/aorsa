@@ -1047,7 +1047,7 @@ c         write(6, 1312)i, agrid(i), fpsi(i), dfpsida(i)
       mr = nxeqd
       mz = nyeqd
       ma = nxeqd
-
+      write(*,*) 'DCON-2 output'
       do ipsi = 1, ma
          psis(ipsi) = agrid(ipsi)
          fs(ipsi) = abs(fpsi(ipsi))
@@ -1058,7 +1058,7 @@ c         write(6, 1312)i, agrid(i), fpsi(i), dfpsida(i)
 
          qs1(ipsi) = dqpsida(ipsi)
 
-         if(myid .eq. 0)write(6, 1312) ipsi, psis(ipsi), rho_tors(ipsi)
+         if(myid==0) write(6, 1312) ipsi,psis(ipsi),rho_tors(ipsi)
       end do
 
       r0 = rmaxis
@@ -1203,7 +1203,7 @@ c         write(6, 1312)n, rhon(n)
                do j = 1, nnodey 
                   psi_tor2d(i,j) = rho_tor2d(i,j)**2
                      
-                  if(rho(i,j) .lt. 1.0)then                 
+                  if(rho(i,j) .lt. 1.0) then !JCW mirror
                      rho(i,j) = rho_tor2d(i,j)
                      psi(i,j) = psi_tor2d(i,j) 
                      psi_dim(i,j) = psi(i,j) * psi_tor_max
@@ -1219,7 +1219,9 @@ c         write(6, 1312)n, rhon(n)
          write(15, *) "psio = ", psio
          write(6, *)  "psi_tor_max = ", psi_tor_max
          write(15, *) "psi_tor_max = ", psi_tor_max
-               
+
+         write(6,*) 'jcw capr rho'
+         write(15,*) 'jcw capr rho'         
          do i = 1, nnodex
             write(6,  1312)i, capr(i), rho(i,16) 
             write(15, 1312)i, capr(i), rho(i,16)
@@ -2480,7 +2482,7 @@ c           calculate fields:
             rhot = curv2(a, ma, psis, rho_tors, yprho, sigma)
 
 
-            bphi = f / r
+            bphi = f / r  !jcw div r
             bpsi0 = 0.0
 
 
@@ -2651,22 +2653,25 @@ c
       rhoeqdsk(nxeqd) = 0.0
       dpsii = psigrid(2) - psigrid(1)
       sum = 0.0
-      do j = nxeqd - 1, 1, -1
+      do j = nxeqd - 1, 1, -1 !JCW rho from eqdsk. doesnt work for mirrors
           qval = 0.5 * (qpsi(j) + qpsi(j+1))
           sum = sum + dpsii * qval
           rhoeqdsk(j) = sqrt(abs(2. * sum / beqd))
       end do
+      if (qpsi(1)==0.) then
+         if (myid==0) then
+            write(*,*) 'Mirror eqdsk detected using sqrt(pol mesh)'
+         end if
+         rhoeqdsk=sqrt(psigrid)
+      end if
       rhomax = rhoeqdsk(1)
+      write(*,*) 'rhomax = ',rhomax
       psi_tor_max = rhomax**2 * beqd / 2.
       
 
       do j = 1, nxeqd
           rhoeqdsk(j) = rhoeqdsk(j) / rhomax
       end do
-
-c      write(6, *)
-c      write(6, *)"    rhoeqdskw     psigridw       agrid"
-c      write(6, *)
 
       do j = 1, nxeqd
          psigridw(j) =   psigrid(nxeqd + 1 - j)
@@ -4113,6 +4118,7 @@ c         write(6, 1312)i, agrid(i), fpsi(i), dfpsida(i)
       mz = nyeqd
       ma = nrhoeqd
 
+      write(*,*) 'DCON output'
       do ipsi = 1, ma
          psis(ipsi) = agrid(ipsi)
          fs(ipsi) = abs(fpsi(ipsi))
