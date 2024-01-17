@@ -1,15 +1,14 @@
 include compileropts.gnu
-
+# module load  cray-hdf5
+# module load cray-netcdf
+PGPLOT_PATH=/global/homes/j/jwright/perlmutter-builds/pgplot
 FC = ftn
-LIBS = ../pgplot/libpgplot.a
-# /global/cfs/projectdirs/m77/pgplot-perlmutter
-NETCDF_INCLUDE_DIR =/opt/cray/pe/netcdf/4.9.0.1/gnu/9.1/include
-#${CRAY_PARALLEL_NETCDF_DIR}/include
+LIBS = $(PGPLOT_PATH)/libpgplot.a
 
-NETCDF_DIR =/opt/cray/pe/netcdf/4.9.0.1/gnu/9.1/lib
-#${CRAY_PARALLEL_NETCDF_DIR}/lib
+NETCDF_INCLUDE_DIR = ${NETCDF_DIR}/include
 
-LIBS += $(NETCDF_DIR)/libnetcdff.a -L $(NETCDF_DIR) -lnetcdf
+
+LIBS += -L$(NETCDF_DIR)/lib -lnetcdff -lnetcdf
 INCLUDE_DIRS +=  -I ${NETCDF_INCLUDE_DIR}
-#presently only works without -O2 below
-F90FLAGS += -O2 -std=f2003 -fno-align-commons
+
+F90FLAGS += -cpp -O2 -std=f2003 -fno-align-commons
