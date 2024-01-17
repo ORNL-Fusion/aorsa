@@ -1,6 +1,6 @@
 include compileropts.gnu
 
-FC = mpif90 -cpp
+FC = mpif90 -cpp -O2 #-g
 
 NETCDF_DIR := $(shell brew --prefix netcdf)
 NETCDFF_DIR := $(shell brew --prefix netcdf-fortran)
