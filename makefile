@@ -146,10 +146,17 @@ ifeq ($(LSB_IS),Ubuntu)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
-
-#$(error EXIT)
-
+ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
+  include makeopts.eofe7
+  SYSTEM_IDENTIFIED = 1
+endif
+ifeq ($(HOSTNAME),eofe7.mit.edu)  #building on host
+  include makeopts.eofe7
+  SYSTEM_IDENTIFIED = 1
+endif
+ 
 ifeq ($(SYSTEM_IDENTIFIED),0)
+  $(info $(HOSTNAME))
   $(error No build configuration for this system)
 endif
 
