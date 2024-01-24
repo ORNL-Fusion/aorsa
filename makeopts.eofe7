@@ -1,4 +1,4 @@
-include compileropts.gnu.6.2.0
+include compileropts.gnu
 #CENTOS7 systems at mit engaging cluster
 FC = mpif90 -cpp
 NETCDF_LIB=/home/software/gcc/6.2.0/pkg/netcdf/4.6.3-c/lib
