@@ -161,7 +161,7 @@ c*** ceez.f arrays:
       real zbratio(nxmx, nymx, 3)
       real zpsi(nxmx, nymx, 3)
 
-        real temp(2 *(nxmx + nymx) )
+      real temp(2 *(nxmx + nymx) )
       real surf2, curv2
 
 
@@ -2830,7 +2830,7 @@ c*** ceez.f arrays:
       real zbratio(nxmx, nymx, 3)
       real zpsi(nxmx, nymx, 3)
 
-        real temp(2 *(nxmx + nymx) )
+      real temp(2 *(nxmx + nymx) )
       real surf2, curv2
 
 

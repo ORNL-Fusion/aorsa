@@ -1,6 +1,6 @@
 include compileropts.gnu
 #CENTOS7 systems at mit engaging cluster
-FC = mpif90 -cpp
+FC = mpif90 -g -cpp
 NETCDF_LIB=/home/software/gcc/6.2.0/pkg/netcdf/4.6.3-c/lib
 NETCDF_INC=/home/software/gcc/6.2.0/pkg/netcdf/4.6.3-c/include
 SCALAPACK_LIB=/nfs/psfclab001/software/spack/var/spack/environments/scalapack/.spack-env/view/lib

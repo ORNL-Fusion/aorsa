@@ -1,4 +1,4 @@
-module use /orcd/nese/psfc/001/software/modulefiles/psfc-modules
+module use /nfs/psfclab001/software/modulefiles/
 module load gcc
 module load openmpi/3.0.4
 module load psfc/pgplot/gcc6.2.0/5.2.2 netcdf/4.6.3

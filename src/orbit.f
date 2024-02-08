@@ -114,9 +114,6 @@ c*** ceez.f arrays:
       real zbmod(nxmx, nymx, 3)
       real zbratio(nxmx, nymx, 3)
 
-c      real temp(2 *(nxmx + nymx) )
-c      real surf2, curv2
-
       integer n_theta_(n_psi_max)
 
       real dtau(n_theta_max), dtau_tot(n_theta_max), 
@@ -299,14 +296,14 @@ c      real surf2, curv2
       y_len(2) = yprimex0
       y_len(3) = phi0                 
                     
-      call f(len, y_len, dy_len)           
+      call f(len, y_len, dy_len) !version with d/dphi
 
 *     ---------------------------------------------
 *     Do norb_dim steps of field line trace in len
 *     ----------------------------------------------                    
       do n_len = 1, norb_dim        
          fcount = 0
-                       
+            !f2 version doing d/dl
          call extint(nmax, len, y_len, f2, h0, mmax, error)              
             
          xprimex = y_len(1)
@@ -324,17 +321,19 @@ c      real surf2, curv2
          capr_x(n_len) = x_extint + rt
          capz_x(n_len) = y_extint
          modb_x(n_len) = modb
-                         
-c        write(6, 2213) n_len, len_x(n_len), 
-c     .     capr_x(n_len), capz_x(n_len), phin_x(n_len), 
-c     .     fcount, h0
+
+#ifdef DEBUG                         
+         write(6, 2213) n_len, len_x(n_len), 
+     &     capr_x(n_len), capz_x(n_len), phin_x(n_len), 
+     &     fcount, h0
+#endif
      
          h0 = 2.0e-02                                           
 
          if (y_extint .ge. ytop .or. y_extint .le. ybottom) go to 201
 
          if (capr_x(n_len) .le. rwleft .or. 
-     .                          capr_x(n_len) .ge. rwright) go to 201
+     &                          capr_x(n_len) .ge. rwright) go to 201
 
          if (abs(len) .ge. len2) go to 201
 
@@ -366,14 +365,14 @@ c
 
       integer fcount, nnodex, nnodey, nxmx, nymx 
 
-      real x, len, y(1), dy(1), br, bz, bphi, modb, x_extint, sgn_vprl
+      real x, len, y(3), dy(3), br, bz, bphi, modb, x_extint, sgn_vprl
       real bratio_phi
       real xprime, yprime, dxdphi, dydphi, dr, dz, rt, capr, xwleft
       real drdl, dzdl, dphidl
                   
       real bxn(nmodesmax, mmodesmax), byn(nmodesmax, mmodesmax), 
-     .   bzn(nmodesmax, mmodesmax), bmod(nmodesmax, mmodesmax),
-     .   bratio(nmodesmax, mmodesmax)
+     &   bzn(nmodesmax, mmodesmax), bmod(nmodesmax, mmodesmax),
+     &   bratio(nmodesmax, mmodesmax)
 
       real sigma, surf2
       real zbxn (nmodesmax, mmodesmax, 3)
@@ -384,25 +383,25 @@ c
       real xprimea(nmodesmax), yprimea(mmodesmax)
 
       common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxmx, nymx, 
-     .   dr, dz,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, capr
+     &   dr, dz,
+     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, capr
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
-     .   xprimea, yprimea
+     &   xprimea, yprimea
 
       len = x
       xprime = y(1)
       yprime = y(2)
 
       br = surf2 (xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   bxn, nxmx, zbxn, sigma)
+     &   bxn, nxmx, zbxn, sigma)
 
       bz = surf2 (xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   byn, nxmx, zbyn, sigma)
+     &   byn, nxmx, zbyn, sigma)
 
       bphi =surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   bzn, nxmx, zbzn, sigma)
+     &   bzn, nxmx, zbzn, sigma)
 
       x_extint = xprime + xwleft
       capr = x_extint + rt
@@ -430,9 +429,8 @@ c
       implicit none
 
       integer fcount, nnodex, nnodey, nxmx, nymx 
-c      integer nmodesmax, mmodesmax
 
-      real x, phi, y(1), dy(1), br, bz, bphi, modb, x_extint, sgn_vprl
+      real x, phi, y(3), dy(3), br, bz, bphi, modb, x_extint, sgn_vprl
       real bratio_phi
       real xprime, yprime, dxdphi, dydphi, dr, dz, rt, capr, xwleft
       
@@ -441,13 +439,12 @@ c      integer nmodesmax, mmodesmax
 *     IMPORTANT!! The following dimensions must exactly match 
 *     those in subroutine the main program in eqdsk_setup.f
 *-------------------------------------------------------------
-c      parameter (nmodesmax = 450)
-c      parameter (mmodesmax = 450)
+c     integer, parameter:: nmodesmax = 450, mmodesmax = 450
       
       
       real bxn(nmodesmax, mmodesmax), byn(nmodesmax, mmodesmax), 
-     .   bzn(nmodesmax, mmodesmax), bmod(nmodesmax, mmodesmax),
-     .   bratio(nmodesmax, mmodesmax)
+     &   bzn(nmodesmax, mmodesmax), bmod(nmodesmax, mmodesmax),
+     &   bratio(nmodesmax, mmodesmax)
 
       real sigma, surf2
       real zbxn (nmodesmax, mmodesmax, 3)
@@ -458,55 +455,50 @@ c      parameter (mmodesmax = 450)
       real xprimea(nmodesmax), yprimea(mmodesmax)
 
       common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxmx, nymx, 
-     .   dr, dz,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, capr
+     &   dr, dz,
+     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, capr
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
-     .   xprimea, yprimea
+     &   xprimea, yprimea
 
       phi = x
       xprime = y(1)
       yprime = y(2)
 
-c      call intplt2(xprime, yprime, br,   nnodex, nnodey, bxn,
-c     .   nxmx, nymx, dr, dz)
-c      call intplt2(xprime, yprime, bz,   nnodex, nnodey, byn,
-c     .   nxmx, nymx, dr, dz)
-c      call intplt2(xprime, yprime, bphi, nnodex, nnodey, bzn,
-c     .   nxmx, nymx, dr, dz)
-c      call intplt2(xprime, yprime, modb, nnodex, nnodey, bmod,
-c     .   nxmx, nymx, dr, dz)
-c      call intplt2(xprime, yprime, bratio_phi, nnodex, nnodey, bratio,
-c     .   nxmx, nymx, dr, dz)
-
 
       br = surf2 (xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   bxn, nxmx, zbxn, sigma)
+     &   bxn, nxmx, zbxn, sigma)
 
       bz = surf2 (xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   byn, nxmx, zbyn, sigma)
+     &   byn, nxmx, zbyn, sigma)
 
       bphi =surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   bzn, nxmx, zbzn, sigma)
+     &   bzn, nxmx, zbzn, sigma)
 
       modb =surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   bmod, nxmx, zbmod, sigma)
+     &   bmod, nxmx, zbmod, sigma)
      
       bratio_phi=surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-     .   bratio, nxmx, zbratio, sigma)
+     &   bratio, nxmx, zbratio, sigma)
 
 
 
-      x_extint = xprime + xwleft
-      capr = x_extint + rt
-
-      dxdphi = sgn_vprl * capr * br / bphi
-      dydphi = sgn_vprl * capr * bz / bphi
+      x_extint = xprime + xwleft   != xprime + rwleft -rt
+      capr = x_extint + rt         != xprime + rwleft
 
 
-      dy(1) = dxdphi
-      dy(2) = dydphi
+      if (bphi <= 1.0e-4) then !find dX/dell
+         dy(1) = sgn_vprl * br / modb
+         dy(2) = sgn_vprl * bz / modb
+      else 
+         dxdphi = sgn_vprl * capr * br / bphi
+         dydphi = sgn_vprl * capr * bz / bphi
+
+
+         dy(1) = dxdphi
+         dy(2) = dydphi
+      end if
 
       fcount = fcount + 1
 
@@ -557,15 +549,6 @@ c
 
       do n_theta = 1, n_theta_(i_psi)
 
-c         thetai = theta_(n_theta, i_psi)
-c         costhi = cos(thetai)
-c         sinthi = sin(thetai)
-c         tanthi = tan(thetai)
-
-c         write(6, 100)modb_init
-c  100    format(1p,8e12.4)
-c         call exit
-
          dtau(n_theta) = 0.0
 
          sinth2_i = b_i / modb_init * sinth2_init(n_theta, i_psi)
@@ -573,7 +556,7 @@ c         call exit
          tanth2_i = sinth2_i / costh2_i
          costh_i = sqrt(costh2_i)
          
-         if(sinth2_i .gt. 1.0) go to 300
+         if(sinth2_i .gt. 1.0) cycle
 
          argi = 1.0 - (mri - 1.0) * tanth2_i
 
@@ -587,23 +570,17 @@ c         call exit
      .            * 2.0 / abs(costh_i) / (1.0 + sqrt(argi))
          end if
 
-
-
 *        -------
 *        Trapped
 *        -------
          if(argi .lt. 0.0) then          ! trapped
 
             dtau(n_theta) = dl / sgn_vprl
-     .           * 2.0 * abs(costh_i)  / (mri - 1.0) / sinth2_i
+     &           * 2.0 * abs(costh_i)  / (mri - 1.0) / sinth2_i
          end if
-
-  300    continue
 
       end do
       
-
-
 
       return
       end
@@ -613,12 +590,8 @@ c
 c***************************************************************************
 c
 
-
-
       SUBROUTINE EXTINT (NMAX, X, Y, F, H0, MMAX, ERROR)
-C     IMPLICIT REAL*8 (A-H,O-Z), INTEGER (I-N)
       INTEGER NMAX, MMAX
-C     REAL*8 X, H0, Y(NMAX)
       REAL   X, H0, Y(NMAX)
 C
 C          A DEFERRED-LIMIT INTEGRATOR (J.P. BORIS AND N.K. WINSOR)
@@ -689,43 +662,47 @@ C                  RETURNED .TRUE. WHEN THE ENTIRE SYSTEM OF EQUATIONS
 C                  HAS SATISFIED THE CONVERGENCE CRITERION.
 C
       LOGICAL LATERL, CONV(100), PREVIN, FINISH
-C     REAL*8 STEPFC, X0, U, SUM, YM, BETA, H, DEN, SQRT2, YP
       REAL   STEPFC, X0, U, SUM, YM, BETA, H, DEN, SQRT2, YP
       INTEGER J, K, L, M, N, LMAX, KASIDE, PTS, MM, MMAXP
       INTEGER KMIN
-C     REAL*8 HM(11), S(11), P(11), YBAR(100,11), Y0(100)
       REAL   HM(11), S(11), P(11), YBAR(100,11), Y0(100)
-C     REAL*8 YNEW(100), YOLD(100), DY(100), DY0(100), YHOLD(7,10,100)
       REAL   YNEW(100), YOLD(100), DY(100), DY0(100), YHOLD(7,10,100)
-C
-C
-C INITIALIZE..100
+
+
+! INITIALIZE..100
       MMAXP = MMAX + 1
       SQRT2 =  SQRT(2.0)
       FINISH = .FALSE.
       LATERL = .FALSE.
       X0 = X
-      DO 100 N = 1,NMAX
-  100   Y0(N) = Y(N)
+      DO N = 1,NMAX
+        Y0(N) = Y(N)
+      END DO
       LMAX = (MMAX + 1)/2 + 1
       CALL F (X0, Y, DY0)
-C
-C START A NEW LEVEL..200
+
+! START A NEW LEVEL..200
+
   204 X = X0 + H0
       KMIN = 1
       STEPFC = 2.0**(MMAX/3.0+0.5)
-      DO 205 N = 1, NMAX
-  205   CONV(N) = .FALSE.
+      DO N = 1, NMAX
+         CONV(N) = .FALSE.
+      END DO
+
       IF (.NOT.LATERL .OR. (MMAX.LT.1)) GO TO 203
 C     ELSE BEGIN SHIFTING OLD INFORMATION INTO POSITION..
-      DO 202 N = 1, NMAX
+      DO N = 1, NMAX
         Y(N) = YHOLD(2,1,N)
         YBAR(N,1) = Y(N)
-        DO 202 L = 1, LMAX
+        DO L = 1, LMAX
           MM2 = MMAX - 2
           MMIN = IABS(2*L-3)
-          DO 202 M = MMIN, MM2
-  202       YHOLD(L,M,N) = YHOLD (L+1, M+2, N)
+          DO M = MMIN, MM2
+             YHOLD(L,M,N) = YHOLD (L+1, M+2, N)
+          END DO
+        END DO
+      END DO
 C
 C COMPUTING BETA AND ASSOCIATED QUANTITIES..300
   203 H = H0/2
@@ -736,6 +713,7 @@ C COMPUTING BETA AND ASSOCIATED QUANTITIES..300
 C
 C EXTRAPOLATIONS OF HIGHER ORDER EXPANSIONS..400
       DO 400 MM = 1, MMAXP
+
 C     BEGINNING THE LOOP OVER MMAX EXTRAPOLATIONS IN THIS LEVEL..
         M = MM - 1
         STEPFC = STEPFC/SQRT2
@@ -746,48 +724,56 @@ C     BEGINNING THE LOOP OVER MMAX EXTRAPOLATIONS IN THIS LEVEL..
         L = (M + 1)/2 + 1
         IF (M.GT.2) HM(MM) = HM(MM-2)/2
         H = HM(MM)
-C       S(MM) = 1 - DEXP(-BETA*H*H)
         S(MM) = 1 -  EXP(-BETA*H*H)
+
         IF (PREVIN) GO TO 503
 C       ELSE GENERATE THE M-TH MIDPOINT INTEGRAL..
-          DO 404 N = 1, NMAX
+          DO N = 1, NMAX
             YOLD(N) = Y0(N)
-  404       YNEW(N) = Y0(N) + H*DY0(N)
+            YNEW(N) = Y0(N) + H*DY0(N)
+          END DO
           CALL F (X0+H, YNEW, DY)
           PTS = (H0*1.000001)/H
           DO 405 K = 2, PTS
 C         BEGIN THE MIDPOINT INTEGRATION..
-            DO 406 N = 1, NMAX
+            DO N = 1, NMAX
               U = YOLD(N) + 2*H*DY(N)
               YOLD(N) = YNEW (N)
-  406         YNEW (N) = U
+              YNEW (N) = U
+            END DO
             CALL F (X0 + K*H, YNEW, DY)
             IF ((K.NE.KASIDE).OR.(L.LT.2)) GO TO 405
 C           ELSE BEGIN PUTTING INFORMATION ASIDE..
-              DO 408 N = 1, NMAX
-  408           YHOLD (L, M, N) = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
+              DO N = 1, NMAX
+                YHOLD (L, M, N) = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
+              END DO
               L = L - 1
               KASIDE = 2*KASIDE
 C           END OF PUTTING INFORMATION ASIDE
   405     CONTINUE
 C         END OF THE MIDPOINT INTEGRATION
+
 C
 C NOW ADVANCE THE DEPENDENT VARIABLES..500
   503   IF (M.GT.0) GO TO 504
-        DO 505 N = 1, NMAX
+        DO N = 1, NMAX
           YBAR(N,1) = (YNEW(N) + YOLD(N) + H*DY(N))/2
-  505     Y(N) = YBAR(N,1)
+          Y(N) = YBAR(N,1)
+        END DO
         IF (MMAX.EQ.0) GO TO 700
         GO TO 400
+
 C       NOW DETERMINE THE INTERPOLATIONAL POLYNOMIALS..
   504   IF (STEPFC.LT.1.1) KMIN = KMIN + 1
         DEN = 1
-        DO 401 K = KMIN, M
+        DO K = KMIN, M
           P(K) = ((H/HM(K))**2)
-          DO 410 J = KMIN, M
+          DO J = KMIN, M
             IF (J.NE.K) P(K) = P(K)*(S(J) - S(MM))/(S(J) - S(K))
-  410     CONTINUE
-  401     DEN = DEN - P(K)
+          END DO
+          DEN = DEN - P(K)
+        END DO
+
 C       END DETERMINATION OF THE INTERPOLATIONAL POLYNOMIALS
         DO 500 N=1, NMAX
           IF (CONV(N)) GO TO 500
@@ -796,13 +782,15 @@ C       END DETERMINATION OF THE INTERPOLATIONAL POLYNOMIALS
           IF (.NOT.PREVIN) YM = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
           SUM = 0.0
           IF (M.LT.2) GO TO 501
-          DO 502 J = KMIN, M
-  502       SUM = SUM + (YBAR(N,J) - YP)*P(J)
+          DO J = KMIN, M
+            SUM = SUM + (YBAR(N,J) - YP)*P(J)
+          END DO
   501     DY(N) = 0.0
           IF (DEN.NE.0.0) DY(N) = ((YM - YP) - SUM)/DEN
           Y(N) = YP + DY(N)
           YBAR(N,MM) = YM
   500   CONTINUE
+
         CALL ERROR (M, DY, CONV, FINISH)
         IF (FINISH) GO TO 700
   400 CONTINUE
@@ -811,7 +799,7 @@ C PREPARE FOR THE NEXT LEVEL IF NECESSARY..600
       LATERL = .TRUE.
       H0 = H0/2
       GO TO 204
-C
+
 C RETURN..700
   700 H0 = H0 * STEPFC
       RETURN
@@ -845,19 +833,21 @@ C     REAL*8 DY(M)
 C     REAL*8 EPS, S, Y
       REAL   EPS, S, Y
       INTEGER NMAX, NTIMES (100)
+
       IF (M.NE.1) GO TO 1
-        DO 3 N = 1, NMAX
-    3     NTIMES(N) = 0
-        NCONV = 0
-    1 DO 2 N = 1, NMAX
-C       IF (.NOT.(DABS(DY(N))/S(N).LT.EPS).OR. CONV(N))  GO TO 2
-        IF (.NOT.( ABS(DY(N))/S(N).LT.EPS).OR. CONV(N))  GO TO 2
+      DO N = 1, NMAX
+        NTIMES(N) = 0
+      END DO
+      NCONV = 0
+
+    1 DO N = 1, NMAX
+        IF (.NOT.( ABS(DY(N))/S(N).LT.EPS).OR. CONV(N))  CYCLE
         NTIMES(N) = NTIMES(N) + 1
         IF (NTIMES(N).EQ. 1) NCONV = NCONV + 1
         IF (NTIMES(N).EQ. 2) CONV(N) = .TRUE.
-C       IF (DABS(Y(N)).GT. S(N)) S(N) = DABS(Y(N))
         IF ( ABS(Y(N)).GT. S(N)) S(N) =  ABS(Y(N))
-    2 CONTINUE
+      END DO
+
       IF (NCONV.EQ.NMAX) FINISH = .TRUE.
       RETURN
       END

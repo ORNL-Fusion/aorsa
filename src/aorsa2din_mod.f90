@@ -274,6 +274,7 @@
       integer :: i_antenna = 1            ! i_antenna = flag determining which antenna model is used
                                           ! if(i_antenna .eq. 0) antenna current is Gaussian 
                                           ! if(i_antenna .eq. 1) antenna current is cos(ky * y)  (default)
+                                          ! 2,3,4 ranval for y,x,z components
                                           ! where ky = omgrf / vphase = (omgrf / clight) * antlc = k0 * antlc
                                           ! For constant current, set antlc = 0.0
       integer :: nuper = 65
