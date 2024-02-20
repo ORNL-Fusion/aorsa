@@ -27,7 +27,16 @@ c      use zfun_hilbert
 
       implicit none
 
+      ! for pgplot
       integer, parameter :: real32=selected_real_kind(6,37)
+      ! constants
+      real, parameter ::  q = 1.6e-19, qe = -q
+      complex, parameter :: zi = cmplx(0.0,1.0)
+      real, parameter :: eps0 = 8.85e-12, pi = 3.141592654, 
+     &       twopi = 2.0 * pi, 
+     &       xmu0 = 1.26e-06, clight = 1.0 / sqrt(eps0 * xmu0)
+
+
       complex :: l2norm_res, l2norm_rhs
       integer :: ieer ! fft error flag
       integer :: n_theta_max, n_theta, n_psi_max, nt, k, nbessj
@@ -132,23 +141,22 @@ c      CHARACTER(128) :: root
       real :: vce_cgs,vc1_cgs,vc2_cgs,vc3_cgs, vc4_cgs, vc5_cgs, vc6_cgs
 
       integer ::  nrhomax, nthetamax, ndim
+
       integer, parameter ::
      &     ntable    = 1000,
      &     mtable    = 1000,
      &     norb_dim  = 4000,
      &     norb_dim2 = norb_dim*2
-
       real :: capr_xp(norb_dim), capz_xp(norb_dim), phin_xp(norb_dim)
       real :: capr_xm(norb_dim), capz_xm(norb_dim), phin_xm(norb_dim)
       real :: len_xm(norb_dim),  len_xp(norb_dim)
       real :: b_capr(norb_dim2),  c_capr(norb_dim2),  d_capr(norb_dim2)
       real :: b_capz(norb_dim2),  c_capz(norb_dim2),  d_capz(norb_dim2)
       real :: b_phin(norb_dim2),  c_phin(norb_dim2),  d_phin(norb_dim2)
-
       real :: len_x(norb_dim2),  capr_x(norb_dim2),
      &     capz_x(norb_dim2), phin_x(norb_dim2)
 
-      real :: ispline
+      real, external :: ispline
 
 
       complex z0_table1(ntable, mtable)
@@ -299,7 +307,7 @@ c      CHARACTER(128) :: root
       character(1):: trans
 
       integer :: info
-      complex b, zi, cexpkxky
+      complex :: b, cexpkxky
       complex alpha
 
       real :: norm2, norm2_max, alphae, alpha1
@@ -404,8 +412,8 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real :: xkthrho, wphase, vsound, domgk, xkthdx, omgestar, rhoi10,
      &   v0i, vthi10, vthe, vthi, vphase, rhoi1overl, rnz, eta2,
      &   xk0, shearedge, eta1, xn1, xmi1, xmh, xme, qi1, xmi2,
-     &   xmi3, t0i, t0i2, t0i3, t0e, q, teedge, clight, xmu0, xlnlam,
-     &   omgci10, omgrf, xmax, qe, qi2, pi, twopi, eps0, qi3,
+     &   xmi3, t0i, t0i2, t0i3, t0e, teedge, 
+     &   omgci10, omgrf, xmax, qi2, qi3, xlnlam, 
      &   costh, sinth, radius, rnx,  rny, rnphi
       real :: ymaxp, yminp, xminp, xmaxp
       real :: rhoi20, vthi20, omgci20
@@ -482,7 +490,7 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real :: xkti4avg(nrhomax), xkti5avg(nrhomax), xkti6avg(nrhomax)
       real :: dldbavg(nrhomax)
 
-
+      !collisional quantities
       real :: fyavg(nrhomax), qhat, omgte, omgti,
      &     vthe0, vthi0, xnuee, xnuii, xnu7omg
 
@@ -818,8 +826,7 @@ c     &        uzzk(nkdim1 : nkdim2, mkdim1 : mkdim2)
       integer :: icnc
       logical :: ismine, ismine1
 
-      integer :: numroc
-      external numroc
+      integer, external :: numroc
 
       integer :: lld,nrow_local,ncol_local
 
@@ -1130,7 +1137,7 @@ c       complex, dimension(:,:), allocatable :: Btmp
       read (63, aorsa2din)
 
       rt_init = rt
-      b0_init = b0
+      b0_init = b0  !JCW value only from namelist at this point
 
       if (z2_electron .eq. 0) then
          use_new_z2 = .false.
@@ -1252,7 +1259,7 @@ c      jdiag = nmodesy / 2
          fqksav = 0.0
          fsksav = 0.0
 
-             fdksav2d = 0.0
+         fdksav2d = 0.0
          feksav2d = 0.0
          ffksav2d = 0.0
 
@@ -1264,40 +1271,37 @@ c      jdiag = nmodesy / 2
          fqksav2d = 0.0
          fsksav2d = 0.0
 
-      capd = 0.0
-      capd2d = 0.0
+         capd = 0.0
+         capd2d = 0.0
 
-      xkb = 0.0
-      xkb2d = 0.0
+         xkb = 0.0
+         xkb2d = 0.0
 
-      nphi = nphi_array(nsum)
-      nt = nt + 1
+         nphi = nphi_array(nsum)
+         nt = nt + 1
 
-      signkz =  1.0
-      if(nphi .lt. 0) signkz = -1.0
+         signkz =  1.0
+         if(nphi .lt. 0) signkz = -1.0
 
-      ceta = 8.27
-      xnexp = 2.48
-      cfit = .0987
-      afit = 12.3
-      damp = 23.83/(0.678 + zeffcd)
+         ceta = 8.27
+         xnexp = 2.48
+         cfit = .0987
+         afit = 12.3
+         damp = 23.83/(0.678 + zeffcd)
 
-
-
-
-      time0=second1(dummy)
+         time0=second1(dummy)
 
 *     ----------------------------------------------------------
 *     simplifying assumption that all processors can open
 *     same files and perform read
 *     no need to re-broadcast input data
 *     ----------------------------------------------------------
-      if (myid .eq. 0) then
-          write(6,*) 'blacs started: nprow,npcol,nproc ',
+         if (myid .eq. 0) then
+            write(6,*) 'blacs started: nprow,npcol,nproc ',
      &            nprow,npcol,nproc
 c          write(15,*) 'blacs started: nprow,npcol,nproc ',
 c     &            nprow,npcol,nproc
-      endif
+         end if
 
 c      write(6, *) 'myid = ', myid
 
@@ -1389,7 +1393,6 @@ c      jequat  = nnodey / 2
 
       rholim = sqrt(psilim)
 
-      q = 1.6e-19
       if(te0 .eq. 0.0)te0 = ti0
 
       t0e = te0
@@ -1433,18 +1436,7 @@ c      jequat  = nnodey / 2
       qi6 = z6 * q
       qi_slo = z_slo * q
 
-      qe = -q
-      zi = cmplx(0.0,1.0)
-      eps0 = 8.85e-12
-
-      pi = 3.141592654
-      twopi = 2.0 * pi
-
       xlnlam = 20.0
-      xmu0 = 1.26e-06
-      clight = 1.0 / sqrt(eps0 * xmu0)
-
-
       xkphi0 = nphi / rt_init
       xkphia = nphi / rant
       if(xkphi0 .eq. 0.0)xkphi0 = 1.0e-05
@@ -1743,9 +1735,9 @@ c         write(6, 7017)rhoi10
          write(6, 1814)xn2
          write(6, 1834)xn3
 
-         write(6, 1012)omgrf
-         write(6, 1009)xnurf
-         write(6, 1013)nphi
+         write(6, 2222) 'omgrf',    omgrf,'hertz' !1012
+         write(6, 2222) 'frequency',xnurf,'hertz' !1009
+!         write(6, 2223) 'nphi',     nphi, ' '     !1013
          write(6, 1321)wphase
          write(6, 1322)vphase
          write(6, 1323)vthe
@@ -1919,7 +1911,11 @@ c         write(15, 7017)rhoi10
 *        -------------------------------------------------------
 *        Recalculate rnz and vphase with major radius from eqdsk
 *        --------------------------------------------- ---------
-         xkphi0 = nphi / rt
+         if (eqtype=='mirror') then !JCW mirror
+            xkphi0 = pi/antlen  !really ~kz,kr
+         else
+            xkphi0 = nphi / rt
+         end if
          if(xkphi0 .eq. 0.0)xkphi0 = 1.0e-05
 
          vphase = omgrf / xkphi0
@@ -4276,7 +4272,7 @@ c     write (6, *) "b0 = ", b0
 c     write (6, *) "xmu0 = ", xmu0
 c     write (6, *) "xn1 = ", xn1
 c     write (6, *) "xmi1 = ", xmi1
-
+! JCW xn1 (charge neutrality is not set by iprofile=5, existing issue not related to mirrors
       valfven = sqrt(b0**2/(xmu0 * xn1 * xmi1))
       kalfven = omgrf / valfven
 
@@ -4429,18 +4425,29 @@ c     &                             + pressi4 pressi5 + pressi6
                vthe0 = sqrt(2.0 * xkte(i,j) / xme)
 
                tauii = 1.0 / xnuii
-               omgti =  vthi0 / (rt * qhat)
-               omgte =  vthe0 / (rt * qhat)
+               if (eqtype=='mirror') then !JCW mirror
+                  ! The bounce frequency for a mirror is just from axial dist.
+                  omgti = vthi0 / (ytop - ybottom)
+                  omgte = vthi0 / (ytop - ybottom)
+               else
+                  omgti =  vthi0 / (rt * qhat)
+                  omgte =  vthe0 / (rt * qhat) !qhat is 0 for mirror but never changed from 1.0 initial value
+               end if
                xnu7omg = xnuii / omgti
 
 *              -----------------------------
 *              Assume circular flux surfaces
 *              -----------------------------
 
-               a = sqrt((x(i)-r0)**2 + (y(j)-z0)**2)
+               a = sqrt((x(i)-r0)**2 + (y(j)-z0)**2) !minor radius, nit meaningful for mirrors
 
                rmaxa = rt + a
                rmina = rt - a
+
+               if (eqtype=='mirror') then
+                  rmaxa = rt + a
+                  rmina = rt
+               end if
 
                epsa = (rmaxa - rmina) / (rmaxa + rmina)
                if( epsa .eq. 0.0) epsa = 1.0e-08
@@ -4486,8 +4493,6 @@ c     &                             + pressi4 pressi5 + pressi6
                muhat(i, j) = epsa**2 / taup
 
             end if
-
-
 
 
 
@@ -4633,20 +4638,13 @@ c            acold(i,j) = xnphi**2 - capk_perp
          re_acold = real(acold(i,j))
 
          if (myid .eq. 0) then
-c            write(6, 2163)i, capr(i), x(i), btau(i, j),
-c     &         bmod(i,j), reomg1, reomg2, reomg3, reomg4, reomg5,
-c     &         xnea(i,j), re_acold
-c            write(15, 2163)i, capr(i), x(i), btau(i, j),
-c     &         bmod(i,j), reomg1, reomg2, reomg3, reomg4, reomg5,
-c     &         xnea(i,j), re_acold
-
             write(6, 2163)i, capr(i), x(i), btau(i, j),
      &         bmod(i,j), reomg1, reomg2, reomg3, reomgpi, reomglh,
      &         xnea(i,j), re_acold
             write(15, 2163)i, capr(i), x(i), btau(i, j),
      &         bmod(i,j), reomg1, reomg2, reomg3, reomgpi, reomglh,
      &         xnea(i,j), re_acold
-         endif
+         end if
       end do
 
       if (myid .eq. 0) then
@@ -11076,6 +11074,8 @@ c      write(6,*) "finished plots; starting deallocation"
  2013 format(3x,
      1   "2*pi*rt/Ly * imaginary part of impedance (reactance) = ",
      1   1p,e12.4," ohms     ")
+ 2222 format(3x,A18," = ",1pe12.4,1X,A)
+ 2223 format(3x,A18," = ",i12,1X,A)
  1014 format(3x,"               xkz = ",1p,e12.4," m-1   ")
  1321 format(3x,"         vph / vth = ",1p,e12.4,"       ")
  1391 format(3x," critical shear(0) = ",1p,e12.4," s-1   ")
@@ -11116,7 +11116,7 @@ c      write(6,*) "finished plots; starting deallocation"
  7017 format(3x,"             rhoi1 = ",1p,e12.4," m     ")
  7217 format(3x,"             qavg0 = ",1p,e12.4,"       ")
  1020 format(3x,"            nnodex = ",i12, "       "/
-     1       3x,"            nnodey = ",i12, "       ")
+     &       3x,"            nnodey = ",i12, "       ")
 
  3013 format(3x,"                i0 = ",i12,"       ")
 30131 format(3x,"             ileft = ",i12,"       ")
@@ -11130,79 +11130,77 @@ c      write(6,*) "finished plots; starting deallocation"
 71161 format(3x,"        xnui / omg = ",1p,e12.4,"       ")
 
  1309 format(3x,
-     1   "             total power absorbed = ",1p,e12.4," watts/m ")
+     &   "             total power absorbed = ",1p,e12.4," watts/m ")
 11091 format(3x,
-     1   "       total power absorbed (old) = ",1p,e12.4," watts/m ")
-
-
+     &   "       total power absorbed (old) = ",1p,e12.4," watts/m ")
 
 
 
 81109 format(
      &   3x, "      power absorbed by electrons = ",1e12.5,
      &   " watts/m "/
-     1   3x, "  power absorbed by majority ions = ",1e12.5,
-     1   " watts/m "/
-     1   3x, "  power absorbed by minority ions = ",1e12.5,
-     1   " watts/m ")
+     &   3x, "  power absorbed by majority ions = ",1e12.5,
+     &   " watts/m "/
+     &   3x, "  power absorbed by minority ions = ",1e12.5,
+     &   " watts/m ")
 
  1112 format(
-     1   3x,"      power absorbed by electrons = ",1f12.4," %      " /
-     1   3x,"  power absorbed by majority ions = ",1f12.4," %      " /
-     1   3x,"  power absorbed by minority ions = ",1f12.4," %      " /
-     1   3x,"power absorbed by 3rd ion species = ",1f12.4," %      " /
-     1   3x,"             total power absorbed = ",1f12.4," %      " )
+     &   3x,"      power absorbed by electrons = ",1f12.4," %      " /
+     &   3x,"  power absorbed by majority ions = ",1f12.4," %      " /
+     &   3x,"  power absorbed by minority ions = ",1f12.4," %      " /
+     &   3x,"power absorbed by 3rd ion species = ",1f12.4," %      " /
+     &   3x,"             total power absorbed = ",1f12.4," %      " )
  1189 format(
-     1   3x,"                             ref1 = ",f12.3," %"/
-     1   3x,"                            trans = ",f12.3," %"/
-     1   3x,"                           trans2 = ",f12.3," %"/
-     1   3x,"                             conv = ",f12.3," %"/
-     1   3x,"                            conv2 = ",f12.3," %"/
-     1   3x,"  power absorbed by minority ions = ",f12.3," %"/
-     1   3x,"  power absorbed by majority ions = ",f12.3," %"/
-     1   3x,"power absorbed by 3rd ion species = ",f12.3," %"/
-     1   3x,"      power absorbed by electrons = ",f12.3," %"/
-     1   3x,"             total power absorbed = ",f12.3," %"/
-     1   3x,"                        total sum = ",f12.3," %")
+     &   3x,"                             ref1 = ",f12.3," %"/
+     &   3x,"                            trans = ",f12.3," %"/
+     &   3x,"                           trans2 = ",f12.3," %"/
+     &   3x,"                             conv = ",f12.3," %"/
+     &   3x,"                            conv2 = ",f12.3," %"/
+     &   3x,"  power absorbed by minority ions = ",f12.3," %"/
+     &   3x,"  power absorbed by majority ions = ",f12.3," %"/
+     &   3x,"power absorbed by 3rd ion species = ",f12.3," %"/
+     &   3x,"      power absorbed by electrons = ",f12.3," %"/
+     &   3x,"             total power absorbed = ",f12.3," %"/
+     &   3x,"                        total sum = ",f12.3," %")
  1289 format(
-     1   3x,"                         x(iedge) = ",1p,e12.4," m"/
-     1   3x,"                               bz = ",1p,e12.4," T"/
-     1   3x,"              real(eps parallel)  = ",1p,e12.4,"  "/
-     1   3x,"    estimate: real(eps parallel)  = ",1p,e12.4,"  "/
-     1   3x,"                 real :: (eps left)  = ",1p,e12.4,"  "/
-     1   3x,"     estimate:   real :: (eps left)  = ",1p,e12.4,"  "/
-     1   3x,"                real :: (eps right)  = ",1p,e12.4,"  "/
-     1   3x,"    estimate:   real :: (eps right)  = ",1p,e12.4,"  "/
-     1   3x,"                               xn = ",1p,e12.4," m-3"/
-     1   3x,"                               LN = ",1p,e12.4," m"/
-     1   3x,"                        mod2 (ez) = ",1p,e12.4," (V/m)**2"/
-     1   3x,"                            L rf  = ",1p,e12.4," m"/
-     1   3x,"                x=omgrf/omgci(i)  = ",1p,e12.4,"    "/
-     1   3x,"                             xkti = ",1p,e12.4," deg"/
-     1   3x,"                             xkte = ",1p,e12.4," deg")
+     &   3x,"                         x(iedge) = ",1p,e12.4," m"/
+     &   3x,"                               bz = ",1p,e12.4," T"/
+     &   3x,"              real(eps parallel)  = ",1p,e12.4,"  "/
+     &   3x,"    estimate: real(eps parallel)  = ",1p,e12.4,"  "/
+     &   3x,"                 real :: (eps left)  = ",1p,e12.4,"  "/
+     &   3x,"     estimate:   real :: (eps left)  = ",1p,e12.4,"  "/
+     &   3x,"                real :: (eps right)  = ",1p,e12.4,"  "/
+     &   3x,"    estimate:   real :: (eps right)  = ",1p,e12.4,"  "/
+     &   3x,"                               xn = ",1p,e12.4," m-3"/
+     &   3x,"                               LN = ",1p,e12.4," m"/
+     &   3x,"                        mod2 (ez) = ",1p,e12.4," (V/m)**2"/
+     &   3x,"                            L rf  = ",1p,e12.4," m"/
+     &   3x,"                x=omgrf/omgci(i)  = ",1p,e12.4,"    "/
+     &   3x,"                             xkti = ",1p,e12.4," deg"/
+     &   3x,"                             xkte = ",1p,e12.4," deg")
  1389 format(
-     1   3x,"                           dlnndr = ",1p,e12.4," m-1"/
-     1   3x,"                            deprl = ",1p,e12.4,
-     1   " (V/m)**2/m"/
-     1   3x,"                           deleft = ",1p,e12.4,
-     1   " (V/m)**2/m"/
-     1   3x,"                           derght = ",1p,e12.4,
-     1   " (V/m)**2/m"/
-     1   3x,"                        real :: (ez) = ",1p,e12.4," V/m"/
-     1   3x,"                         imag(ez) = ",1p,e12.4," V/m")
+     &   3x,"                           dlnndr = ",1p,e12.4," m-1"/
+     &   3x,"                            deprl = ",1p,e12.4,
+     &   " (V/m)**2/m"/
+     &   3x,"                           deleft = ",1p,e12.4,
+     &   " (V/m)**2/m"/
+     &   3x,"                           derght = ",1p,e12.4,
+     &   " (V/m)**2/m"/
+     &   3x,"                        real :: (ez) = ",1p,e12.4," V/m"/
+     &   3x,"                         imag(ez) = ",1p,e12.4," V/m")
  1290 format(
-     1   3x,"             alpha rf parallel    = ",1p,e12.4,"  "/
-     1   3x," estimate of alpha rf parallel    = ",1p,e12.4,"  "/
-     1   3x,"                 alpha rf left    = ",1p,e12.4,"  "/
-     1   3x,"     estimate of alpha rf left    = ",1p,e12.4,"  "/
-     1   3x,"                 alpha rf right   = ",1p,e12.4,"  "/
-     1   3x,"     estimate of alpha rf right   = ",1p,e12.4,"  "/
-     1   3x,"                 alpha rf total   = ",1p,e12.4,"  "/
-     1   3x," electron ponderomotive potential = ",1p,e12.4," eV"/
-     1   3x,"      ion ponderomotive potential = ",1p,e12.4," eV")
+     &   3x,"             alpha rf parallel    = ",1p,e12.4,"  "/
+     &   3x," estimate of alpha rf parallel    = ",1p,e12.4,"  "/
+     &   3x,"                 alpha rf left    = ",1p,e12.4,"  "/
+     &   3x,"     estimate of alpha rf left    = ",1p,e12.4,"  "/
+     &   3x,"                 alpha rf right   = ",1p,e12.4,"  "/
+     &   3x,"     estimate of alpha rf right   = ",1p,e12.4,"  "/
+     &   3x,"                 alpha rf total   = ",1p,e12.4,"  "/
+     &   3x," electron ponderomotive potential = ",1p,e12.4," eV"/
+     &   3x,"      ion ponderomotive potential = ",1p,e12.4," eV")
  1110 format(
-     1   3x,"               real power emitted = ",1p,e12.4," watts/m "/
-     1   3x,"          imaginary power emitted = ",1p,e12.4," watts/m ")
+     &   3x,"               real power emitted = ",1p,e12.4," watts/m "/
+     &   3x,"          imaginary power emitted = ",1p,e12.4," watts/m ")
  1113 format(3x,'driven current per meter = ',1p,e12.4,' Amps/m')
  1114 format(3x,'current driven per watt = ',1p,e12.4,' A/W')
  1215 format(3x,'current drive efficiency = ',1p,e12.4,' A/W/m**2')
@@ -11232,7 +11230,7 @@ c      write(6,*) "finished plots; starting deallocation"
  1218 format(3x,'pscale = ',1p,e12.4,' ')
  1219 format(3x,'gamma = ',1p,e12.4,' ')
  1111 format(3x," At x = ",1p,e12.4," m",
-     1       3x," ifail = ",i5)
+     &       3x," ifail = ",i5)
   162 format("1")
   169 format(" ")
 
@@ -11246,20 +11244,11 @@ c      write(6,*) "finished plots; starting deallocation"
  1001 format(8e10.3)
 
 
-c  164 format(" ",1x," i  ",  3x," R(x) ",
-c     &           6x,"  x   ",6x," btau ",6x," bmod ",6x,"re om1",
-c     &           6x,"re om2",6x,"re om3",6x,"re om4",6x,"re om5",
-c     &           6x," xne  ",6x," Acold")
-
   164 format(1x ,1x," i  ",  3x," R(x) ",
      &           6x,"  x   ",6x," btau ",6x," bmod ",6x,"re om1",
      &           6x,"re om2",6x,"re om3",6x,"re omgpi",4x,"re omglh",
      &           4x," xne  ",6x," Acold")
 
-c 9164 format(" ",1x," j  ",  3x," R(x) ",
-c     &           6x,"  y   ",6x," btau ",6x," bmod ",6x,"re om1",
-c     &           6x,"re om2",6x,"re om3",6x,"re om4",6x,"re om5",
-c     &           6x," xne  ",6x," Acold")
 
  9164 format(" ",1x," j  ",  3x," R(x) ",
      &           6x,"  y   ",6x," btau ",6x," bmod ",6x,"re om1",
@@ -11269,35 +11258,34 @@ c     &           6x," xne  ",6x," Acold")
 
 
  1164 format(" ",3x," R(x) ",
-
-     1           6x,"  x   ", 6x,"vymean",6x,"mu*vyx",
-     1           5x,"mu*vzxx",6x,"mu*vzx",
-     1           6x,"      ",6x,"      ",6x,"      ",
-     1           6x,"      ")
+     &           6x,"  x   ", 6x,"vymean",6x,"mu*vyx",
+     &           5x,"mu*vzxx",6x,"mu*vzx",
+     &           6x,"      ",6x,"      ",6x,"      ",
+     &           6x,"      ")
 
  4000 format(" ",3x,"  x    ",5x,"re k**2",5x,"re k**2",
-     1           5x,"re k**2",5x,"re k**2",5x,"re k**2",
-     1           5x,"re k**2",5x,"re k**2",5x,"re k**2")
+     &           5x,"re k**2",5x,"re k**2",5x,"re k**2",
+     &           5x,"re k**2",5x,"re k**2",5x,"re k**2")
 
  7000 format(" ",3x,"  x   ",6x," amp1 ",6x," amp2 ",
-     1           6x," amp3 ",6x," amp4 ",6x," amp5 ",
-     1           6x," amp6 ",6x," amp7 ",6x," amp8 ")
+     &           6x," amp3 ",6x," amp4 ",6x," amp5 ",
+     &           6x," amp6 ",6x," amp7 ",6x," amp8 ")
 
  7100 format(" ",3x,"  x   ",6x,"  sx1 ",6x,"  sx2 ",
-     1           6x,"  sx3 ",6x,"  sx4 ",6x,"  sx5 ",
-     1           6x,"  sx6 ",6x,"  sx7 ",6x,"  sx8 ",
-     1           6x,"sx sum")
+     &           6x,"  sx3 ",6x,"  sx4 ",6x,"  sx5 ",
+     &           6x,"  sx6 ",6x,"  sx7 ",6x,"  sx8 ",
+     &           6x,"sx sum")
  4002 format(" ",3x,"  x   ",6x,"re dt1",6x,"re dt2",
-     1           6x,"re dt3",6x,"re dt4",6x,"re dt5",
-     1           6x,"re dt6",6x,"re dt7",6x,"re dt8")
+     &           6x,"re dt3",6x,"re dt4",6x,"re dt5",
+     &           6x,"re dt6",6x,"re dt7",6x,"re dt8")
 
  4001 format(" ",3x,"  x   ", 5x,"im k**2",5x,"im k**2",
-     1           5x,"im k**2",5x,"im k**2",5x,"im k**2",
-     1           5x,"im k**2",5x,"im k**2",5x,"im k**2")
+     &           5x,"im k**2",5x,"im k**2",5x,"im k**2",
+     &           5x,"im k**2",5x,"im k**2",5x,"im k**2")
 
  4003 format(" ",3x,"  x   ",6x,"im dt1",6x,"im dt2",
-     1           6x,"im dt3",6x,"im dt4",6x,"im dt5",
-     1           6x,"im dt6",6x,"im dt7",6x,"im dt8")
+     &           6x,"im dt3",6x,"im dt4",6x,"im dt5",
+     &           6x,"im dt6",6x,"im dt7",6x,"im dt8")
 
 
  1650 format(3x,"dispersion relation             ")

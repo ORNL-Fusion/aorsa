@@ -11,6 +11,7 @@
 !     --------------------------------------------------------
 
       CHARACTER(128) :: eqdsk = 'g1080408021.txt'               ! eqdsk name
+      CHARACTER(128) :: eqtype = 'mirror'               ! eq type. tokamak, mirror
       CHARACTER(128) :: netCDF_file1 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 1
       CHARACTER(128) :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
       
@@ -30,7 +31,7 @@
 
             
       real :: xlt = 20.0E-02          ! width of current strap (m)
-      real :: wd = 50.0E-02           ! separation between centers of antenna elements
+      real :: wd = 50.0E-02           ! separation between centers of antenna elements, used to calc spectrum
       
       real :: enorm_factor = 0.0      ! if (enorm_factor .eq. 0.0) AORSA & CQL3D use same enorm (default)
                                       ! if (enorm_factor .gt. 0.0) AORSA enorm = enorm_factor x the maximum energy 

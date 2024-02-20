@@ -641,8 +641,8 @@ c-----iroot: decides which of the two fast wave roots to follow
 c-----iequat:  if(iequat.eq.1) complete equations are solved
 c-----         if(iequat.eq.2) Fukayama's equations are solved
 
-c-----igeom: if(igeom.eq.1)not used
-c-----       if(igeom.eq.2)Solovev flux surfaces
+c-----igeom: if(igeom.eq.1) not used
+c-----       if(igeom.eq.2) Solovev flux surfaces
 c-----       if(igeom.eq.5) GA - EQDSK surfaces are used.
 c-----       if(igeom.eq.6) ORNL - EQDSK surfaces are used.
 c
@@ -791,7 +791,7 @@ c      write (6, 101) nky1, nky2
 
 c      write(29,1000)nkzm
 
-      qhat = qavg0
+      qhat = qavg0  !jcw default value doesntseem to be used
 
 
       t0e = t0e   * q
@@ -1213,14 +1213,13 @@ c         write(6, 1312)n, rhon(n)
             end do
          end if
     
-      if (myid .eq. 0)then
-      
+      if (myid .eq. 0) then      
          write(6, *)  "psio = ", psio
          write(15, *) "psio = ", psio
          write(6, *)  "psi_tor_max = ", psi_tor_max
          write(15, *) "psi_tor_max = ", psi_tor_max
 
-         write(6,*) 'jcw capr rho'
+         write(6,*)  'jcw capr rho'
          write(15,*) 'jcw capr rho'         
          do i = 1, nnodex
             write(6,  1312)i, capr(i), rho(i,16) 
@@ -1231,21 +1230,15 @@ c         write(6, 1312)n, rhon(n)
       
       rholim = .99
 
-c      write (6, *)
-c      write (6, *) "r0 = ", r0, "m"
-c      write (6, *) "b0 = ", b0, "Tesla"
-c      write (6, *) "psio = ", psio, "Webers/rad"
-c      write (6, *) "psimag = ", psimag, "Webers/rad"
-c      write (6, *) "psisep = ", psisep, "Webers/rad"
-c      write (6, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
-
-c      write (115, *)
-c      write (115, *) "r0 = ", r0, "m"
-c      write (115, *) "b0 = ", b0, "Tesla"
-c      write (115, *) "psio = ", psio, "Webers/rad" 
-c      write (115, *) "psimag = ", psimag, "Webers/rad"
-c      write (115, *) "psisep = ", psisep, "Webers/rad"   
-c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"      
+#ifdef DEBUG
+      write (6, *)
+      write (6, *) "r0 = ", r0, "m"
+      write (6, *) "b0 = ", b0, "Tesla"
+      write (6, *) "psio = ", psio, "Webers/rad"
+      write (6, *) "psimag = ", psimag, "Webers/rad"
+      write (6, *) "psisep = ", psisep, "Webers/rad"
+      write (6, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
+#endif
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1272,13 +1265,11 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
      &          rho, nxmx, nymx, nnodex, nnodey, capr, rt, 0.0, jmid)
            end do
       end do
-         
 
-      call polavg(capr_bpol_mid2, capr_bpol_mid, rho, nxmx, nymx,
-     &   nrhomax,
-     &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)   
-         
-     
+      call polavg(capr_bpol_mid2, capr_bpol_mid, rho, 
+     &   nxmx, nymx, nrhomax, nnodex, nnodey, nnoderho, 
+     &   drho, dx, dy, capr, rt, dvol, fvol)   
+
       if (myid .eq. 0)then
       
          write(15, *)"rt = ", rt
@@ -2362,12 +2353,12 @@ c
 
       integer islpsw, islpsw1, ierr
       real sigma, slp1, slpn
-        real zx1(nyeqdmax), zxm(nyeqdmax), zy1(nxeqdmax), zyn(nxeqdmax)
-        real zxy11, zxym1, zxy1n, zxymn
+      real zx1(nyeqdmax), zxm(nyeqdmax), zy1(nxeqdmax), zyn(nxeqdmax)
+      real zxy11, zxym1, zxy1n, zxymn
       real zp(nxeqdmax, nyeqdmax, 3)
       real zpr(nxeqdmax, nyeqdmax, 3)
       real zpz(nxeqdmax, nyeqdmax, 3)
-        real temp(2 *(nxeqdmax + nyeqdmax) )
+      real temp(2 *(nxeqdmax + nyeqdmax) )
       real surf2, curv2
 
       real capr(nxmx), capz(nymx), r, z, psio, r0, b0
@@ -2422,7 +2413,7 @@ c       sigma = 0.0 for tensor product cubic splines
 c       sigma = 50 for bi-linear interpolation
 c       documentation recommend sigma=1.0 as standard value
 c       ----------------------------------
-        sigma = 1.0
+      sigma = 1.0
       islpsw = 255
       islpsw1 = 3
       call surf1 (mr, mz, rg, zg, psig, nxeqdmax,
@@ -2454,7 +2445,7 @@ c       ----------------------------------
 
       do i = 1, nnodex
          do j = 1, nnodey
-            r = capr(i)
+            r = capr(i)  !JCW watch out for r=0
             z = capz(j)
 
 
@@ -2525,11 +2516,17 @@ c            if(j .eq. jequat)write(6, 1312) i, r, br, bz, bphi, f
       end do
 
 *     --------
-*     Find b0:
+*     Find b0:  JCW b0 is defined by eqdsk for this call, why change it?
 *     --------
-      a = 1.e-04
-      f = curv2(a, ma, psis, fs, ypf, sigma)
-      b0 = f / r0
+! define b0 to be consistent with F=R*BPHI on axis regardless of what eqdsk
+! head said. Rely on it for mirrors though, eventually replace with 
+! d/dR grad psi
+!      if (eqtype/='mirror') then
+      if (r0>=1e-4) then !mirror
+         a = 1.e-04
+         f = curv2(a, ma, psis, fs, ypf, sigma)
+         b0 = f / r0
+      end if
 
 
  1312 format(i10, 1p,8e12.4)
@@ -5310,6 +5307,7 @@ c      write(115, 2846) tmin
  6813 format(3x,"              xne0 = ",1p,e12.4," m-3   ")
  1814 format(3x,"              xn20 = ",1p,e12.4," m-3   ")
  1834 format(3x,"              xn30 = ",1p,e12.4," m-3   ")
+ 2222 format(3x,A18," = ",1pe12.4,1X,A6)
  6834 format(3x,"              eta1 = ",1p,e12.4,"       ")
  6835 format(3x,"              eta2 = ",1p,e12.4,"       ")
  6836 format(3x,"              eta3 = ",1p,e12.4,"       ")
@@ -5345,7 +5343,7 @@ c      write(115, 2846) tmin
 71160 format(3x,"         xnu / omg = ",1p,e12.4,"       ")
 
 
-  162 format("1")
+  162 format("1") !jcw this is supposed to be a new page
   169 format(" ")
   163 format("0")
  2162 format(1p,8e12.4)

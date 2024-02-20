@@ -3,12 +3,12 @@
 
 GF_VER=$(shell eval gfortran  -dumpversion)
 
-ifeq ($(GF_VER), "6.2.0")
- C13_ARGS=""
- $(info $(GF_VER) )
+ifeq ($(GF_VER),6.2.0)
+C13_ARGS=
+$(info $(GF_VER) "found" )
 else
- $(info $(GF_VER) )
- C13_ARGS= -fallow-argument-mismatch
+$(info $(GF_VER) "newer gcc" )
+C13_ARGS= #-fallow-argument-mismatch
 endif
 
 COMMON_OPTION  = -fno-automatic -fdefault-real-8 -fdefault-double-8 
