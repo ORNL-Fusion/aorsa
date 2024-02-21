@@ -8,7 +8,7 @@ C13_ARGS=
 $(info $(GF_VER) "found" )
 else
 $(info $(GF_VER) "newer gcc" )
-C13_ARGS= #-fallow-argument-mismatch
+C13_ARGS= -fallow-argument-mismatch
 endif
 
 COMMON_OPTION  = -fno-automatic -fdefault-real-8 -fdefault-double-8 
