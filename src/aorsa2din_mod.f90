@@ -11,7 +11,7 @@
 !     --------------------------------------------------------
 
       CHARACTER(128) :: eqdsk = 'g1080408021.txt'               ! eqdsk name
-      CHARACTER(128) :: eqtype = 'mirror'               ! eq type. tokamak, mirror
+      CHARACTER(128) :: eqtype = 'tokamak'               ! eq type. tokamak, mirror
       CHARACTER(128) :: netCDF_file1 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 1
       CHARACTER(128) :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
       
