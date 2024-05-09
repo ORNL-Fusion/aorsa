@@ -353,13 +353,6 @@ c
 
       real:: xmaxz, xminz, ymaxz, yminz
 
-c      real exkmod(nkpltdim, mkpltdim),
-c     .     eykmod(nkpltdim, mkpltdim),
-c     .     ezkmod(nkpltdim, mkpltdim),
-c     .     exklog(nkpltdim, mkpltdim),
-c     .     eyklog(nkpltdim, mkpltdim),
-c     .     ezklog(nkpltdim, mkpltdim)
-
       real, dimension(:,:), allocatable :: exkmod,
      &     eykmod, ezkmod, exklog, eyklog, ezklog
 
@@ -369,10 +362,6 @@ c     .     ezklog(nkpltdim, mkpltdim)
       complex z2_table1(ntable, mtable)
       real:: zetai_table(ntable)
       real:: dKdL_table(mtable)
-
-c      complex exk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-c     &        eyk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-c     &        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2)
 
       complex, dimension(:,:), allocatable :: exk, eyk, ezk
 
@@ -397,14 +386,6 @@ c     &        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2)
      &   redotj4, redotj5, redotj6, divq, capd, capd_plot, xkb,
      &   xkb_plot, reomglha, xjz
 
-c      real, dimension(:,:), allocatable :: dxuxx, dxuxy, dxuxz,
-c     .   dxuyx, dxuyy, dxuyz, dxuzx, dxuzy, dxuzz,
-c     .   dyuxx, dyuxy, dyuxz, dyuyx, dyuyy, dyuyz,
-c     .   dyuzx, dyuzy, dyuzz, dyyuxx, dyyuxy, dyyuxz,
-c     .   dyyuyx, dyyuyy, dyyuyz, dyyuzx, dyyuzy, dyyuzz,
-c     .   dxyuxx, dxyuxy, dxyuxz, dxyuyx, dxyuyy, dxyuyz,
-c     .   dxyuzx, dxyuzy, dxyuzz, dxxuxx, dxxuxy, dxxuxz,
-c     .   dxxuyx, dxxuyy, dxxuyz, dxxuzx, dxxuzy, dxxuzz
 
       real, dimension(:,:), allocatable :: dxxuyy, dyyuzz
 
@@ -576,29 +557,16 @@ c--set default values of input data:
       open(unit=144,file='Eb_spectrum.vtk',status='unknown',
      &                                       form='formatted')
 
-c      open(unit=53,file='movie_ex',status='unknown',form='formatted')
-c      open(unit=58,file='movie_ey',status='unknown',form='formatted')
-c      open(unit=52,file='movie_ez',status='unknown',form='formatted')
-c      open(unit=59,file='movie_eb',status='unknown',form='formatted')
-c       open(unit=60,file='movie_ealpha',status='unknown',
-c     &   form='formatted')
-
       open(unit=51,file='rho',status='unknown',form='formatted')
-c      open(unit=61,file='acold',status='unknown',form='formatted')
-
 
       open(unit=66,file='bharvey',status='unknown',form='formatted')
-
-
       open(unit=57,file='swain',status='unknown',form='formatted')
       open(unit=62,file='murakami',status='unknown', form='formatted')
       open(unit=72,file='bertelli',status='unknown', form='formatted')
-
       open(unit=65,file='mchoi',status='unknown', form='formatted')
       open(unit=67,file='mchoi2',status='unknown', form='formatted')
       open(unit=69,file='mchoi3',status='unknown', form='formatted')
       open(unit=68,file='zowens',status='unknown', form='formatted')
-
 
       open(unit=64,file='E_lab_frame',status='unknown',form='formatted')
 
@@ -774,8 +742,8 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       read (38, 310) ((xkb(i, n), i = 1, nnodex), n = 1, nkxplt)
 
 
-      do n = 1, nkxplt
-         write(6, *) "n = ", n, "capd(64, n) = ", capd(64, n)
+      do n = 1, nkxplt  !JCW magic numbers fix
+         write(6, *) "n = ", n, "capd(nxmx/2, n) = ", capd(nxmx/2, n)
       end do
 
       read(38, 309) nnoderho

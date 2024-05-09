@@ -128,12 +128,17 @@ c
          
          write(15, 901) term1, term2, term3
          write(6,  901) term1, term2, term3
+
+!these index pairs were always 64,64 which could fail for small problems
+         write(15, 901) u(nnodex/2,nnodey/2), v(nnodex/2,nnodey/2), 
+     &      w(nnodex/2,nnodey/2)
+         write(6,  901) u(nnodex/2,nnodey/2), v(nnodex/2,nnodey/2), 
+     &      w(nnodex/2,nnodey/2)
          
-         write(15, 901) u(64,64), v(64,64), w(64,64)
-         write(6,  901) u(64,64), v(64,64), w(64,64)
-         
-         write(15, 901) fdk(64,64), fek(64,64), ffk(64,64)
-         write(6,  901) fdk(64,64), fek(64,64), ffk(64,64)       
+         write(15, 901) fdk(nnodex/2,nnodey/2), fek(nnodex/2,nnodey/2), 
+     &      ffk(nnodex/2,nnodey/2)
+         write(6,  901) fdk(nnodex/2,nnodey/2), fek(nnodex/2,nnodey/2), 
+     &      ffk(nnodex/2,nnodey/2)       
          
          
       endif
@@ -214,11 +219,15 @@ c
          write(15, 901) term1, term2, term3
          write(6,  901) term1, term2, term3
          
-         write(15, 901) u(64,64), v(64,64), w(64,64)
-         write(6,  901) u(64,64), v(64,64), w(64,64)
+         write(15, 901) u(nnodex/2,nnodey/2), v(nnodex/2,nnodey/2), 
+     &       w(nnodex/2,nnodey/2)
+         write(6,  901) u(nnodex/2,nnodey/2), v(nnodex/2,nnodey/2), 
+     &       w(nnodex/2,nnodey/2)
          
-         write(15, 901) fgk(64,64), fak(64,64), fpk(64,64)
-         write(6,  901) fgk(64,64), fak(64,64), fpk(64,64)
+         write(15, 901) fgk(nnodex/2,nnodey/2), fak(nnodex/2,nnodey/2), 
+     &       fpk(nnodex/2,nnodey/2)
+         write(6,  901) fgk(nnodex/2,nnodey/2), fak(nnodex/2,nnodey/2), 
+     &       fpk(nnodex/2,nnodey/2)
       endif
 
 
@@ -298,11 +307,14 @@ c
          write(15, 901) term1, term2, term3
          write(6,  901) term1, term2, term3
          
-         write(15, 901) u(64,64), v(64,64), w(64,64)
-         write(6,  901) u(64,64), v(64,64), w(64,64)
-         
-         write(15, 901) frk(64,64), fqk(64,64), fsk(64,64)
-         write(6,  901) frk(64,64), fqk(64,64), fsk(64,64)       
+         write(15, 901) u(nnodex/2,nnodey/2), v(nnodex/2,nnodey/2), 
+     &        w(nnodex/2,nnodey/2)
+         write(6,  901) u(nnodex/2,nnodey/2), v(nnodex/2,nnodey/2), 
+     &        w(nnodex/2,nnodey/2)
+         write(15, 901) frk(nnodex/2,nnodey/2), fqk(nnodex/2,nnodey/2), 
+     &        fsk(nnodex/2,nnodey/2)
+         write(6,  901) frk(nnodex/2,nnodey/2), fqk(nnodex/2,nnodey/2), 
+     &        fsk(nnodex/2,nnodey/2)       
          
       endif
 

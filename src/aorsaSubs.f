@@ -368,7 +368,7 @@ c
 c***************************************************************************
 c
       subroutine deriv_xy(f, id, jd, i, j, imax, jmax, dx, dy, d2fdxy)
-
+!JCW make these pure fns with disabled bounds checking?
       implicit none
 
       integer id, jd, i, j, imax, jmax
@@ -417,7 +417,7 @@ c
          end do
       end do
 
-      ans = ans / r0
+!      ans = ans / r0
 
       return
       end
@@ -451,7 +451,7 @@ c
          end do
       end do
 
-      ans = ans / r0
+!      ans = ans / r0
 
       return
       end
@@ -485,7 +485,7 @@ c
          end do
       end do
 
-      ans = ans / r0
+!      ans = ans / r0
 
       return
       end
@@ -514,7 +514,7 @@ c
      &                      + capr(i+1) * f(i+1, j) ) / 2.0
       end do
 
-      ans = ans / r0
+!      ans = ans / r0
 
       return
       end  

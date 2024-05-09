@@ -2,6 +2,7 @@
       implicit none
 
       integer, parameter:: nmodesmax=16, mmodesmax=16
+
 !     ---------------------------------------------------
 !     Maximum number of modes allowed:
 !     IMPORTANT NOTE: when changing these parameters, you 

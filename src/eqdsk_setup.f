@@ -2562,7 +2562,7 @@ c
       real  zsep, rsep, sum, dpsii, qval, rhomax
       real ylimiter(maxlimpt), xlimiter(maxlimpt)
       real dpsi, psisep, sdimeqd, redeqd, reqd, ydimeqd
-
+!reqd=rcentr
       real zax1, zax2, xax1, xax2, ymideqd, xdimeqd,
      &    toteqd, beqd, psimx2, psimx1, zma, rma, psi_tor_max
 

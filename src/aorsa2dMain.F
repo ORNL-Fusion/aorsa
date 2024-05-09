@@ -4,7 +4,7 @@
 *     This version includes odd-order derivative in the conductivity
 *     Special eqdsk_setup for Alcator-C lower hybrid
 *        (eqdsk_special .ne. 0)
-*     Does not change the sign of psi for abnormal eqdsk's
+*     Does not change the sign of psi for abnormal eqdsks
 *     Uses simple but slower load and solve
 *        - good out to the outer box wall
 *----------------------------------------------------------------------
@@ -20,10 +20,11 @@
       use wdot_sum_mod
 
 
+
       use profile_mod
 
       use aorsa2din_mod
-c      use zfun_hilbert
+!c      use zfun_hilbert
 
       implicit none
 
@@ -59,7 +60,7 @@ c      use zfun_hilbert
      &    dKdL_max_table, dKdL_min_table, psiorb, sin_antang, cos_antang
       real :: antang_rad,xn00,xn10,xn20,xn30, xn40, xn50, xn60, xn_slo0
 
-c      CHARACTER(128) :: root
+!c      CHARACTER(128) :: root
 
       character(16):: title
       character(16):: titll
@@ -202,6 +203,7 @@ c      CHARACTER(128) :: root
       real :: rhod2(ndim), xneavg2(ndim), tekev2(ndim), tikev2(ndim),
      &    xn_beam2(ndim), e_beam2(ndim), zeffavg2(ndim)
 
+      !JCW Fix number of flux surfaces for quantities
       integer, parameter :: n_psi_dim = 64
 
       integer :: n_psi
@@ -1169,11 +1171,11 @@ c       complex, dimension(:,:), allocatable :: Btmp
 *     ---------------------------------------------------------
       if(nphi_number .gt. 1) prfin=0.0
 
-c      idiag = nmodesx / 2
-c      jdiag = nmodesy / 2
+      idiag = nmodesx / 2
+      jdiag = nmodesy / 2
 
-      idiag = 104
-      jdiag = 90
+!      idiag = 104  !bad assumes certain problem size
+!      jdiag = 90
 
       nbessj = lmax + 2
 
@@ -1239,7 +1241,7 @@ c      jdiag = nmodesy / 2
       if(nphi_sum_only .eqv. .true.)go to 9001
 
 *     ----------------
-*     loop over nphi's
+*     loop over nphis
 *     ----------------
       nt = 0
 
@@ -1981,7 +1983,7 @@ c            write(6, 1022)rnz
                btau(i,j) = sqrt(bxn(i,j)**2 + byn(i,j)**2)
                bpol(i,j) = btau(i,j) * bmod(i,j)
                bzeta(i,j) = bzn(i,j)
-               pitch(i,j) = btau(i,j) / bzeta(i,j)
+               pitch(i,j) = btau(i,j) / bzeta(i,j)     !JCW fix
 
 
 *              ---------------------------
@@ -2424,9 +2426,13 @@ c               gradprlb(i,j) = bmod(i,j) / capr(i)
       xwleft = rwleft - rt
       xwright = rwright - rt
 
-      akprl_min = 0.25 * abs(nphi / rt)
+!JCW if rt is 0 or nearly zero, set min kpar to 1/4 (1/rmax)
+      if (rt > 1.e-3) then !1mm
+         akprl_min = 0.25 * abs(nphi / rt)
+      else 
+         akprl_min = 0.25 / capr(nnodex-1)
 c      akprl_min = abs(nphi / rt)
-
+      end if
 
 
 
@@ -2866,15 +2872,12 @@ c--   x(i) : -xmax / 2.0   to   xmax / 2.0
 
 
       do i = 1, nnodex
-         xprime(i) = (i-1) * dx
-     &     + dx / 2.0
+         xprime(i) = (i-1) * dx + dx / 2.0
 c--   Note: the code gives slightly smoother results with dx/2.0 added
          x(i) = xprime(i) + xwleft
          capr(i) = rt + x(i)
 c         write(6, 1312)i, x(i), xprime(i), capr(i)
-
          xkphi(i) = nphi / capr(i)
-
       end do
 
       do i = 2, nnodex - 1
@@ -2943,7 +2946,7 @@ c      write(6, 1312) jzoom2
 
       jequat = jmid
 
-
+!JCW theta def for mirrors? el instead?
 *-------------------------------------------
 *     define theta(i,j)
 *        theta0(i,j) : -pi / 2.0  to  pi / 2.0
@@ -4314,7 +4317,7 @@ c     write (6, *) "xmi1 = ", xmi1
             n = int(rho(i,j) / drho) + 1
             if(n .le. nnoderho)then
                dvol(n)  =  dvol(n) + dx * dy * 2.0 * pi * capr(i)
-               darea(n) = darea(n) + dx * dy * capr(i) / rt
+               darea(n) = darea(n) + dx * dy  !JCW wrong  * capr(i) / rt
             end if
          end do
       end do
@@ -4440,7 +4443,7 @@ c     &                             + pressi4 pressi5 + pressi6
 *              Assume circular flux surfaces
 *              -----------------------------
 
-               a = sqrt((x(i)-r0)**2 + (y(j)-z0)**2) !minor radius, nit meaningful for mirrors
+               a = sqrt((x(i)-r0)**2 + (y(j)-z0)**2) !minor radius, not meaningful for mirrors
 
                rmaxa = rt + a
                rmina = rt - a
@@ -4451,7 +4454,7 @@ c     &                             + pressi4 pressi5 + pressi6
                end if
 
                epsa = (rmaxa - rmina) / (rmaxa + rmina)
-               if( epsa .eq. 0.0) epsa = 1.0e-08
+               if( epsa .eq. 0.0 ) epsa = 1.0e-08
 
                xnustar = xnuii / (omgti * epsa**1.5)
                nu_star(i, j) = xnustar
@@ -4770,7 +4773,7 @@ c     -----------------------------
 c      call zfun_hil_init(ieer)
 
 c     -------------------------------------
-c     setup Smithe's Z function table when nzfun = 3
+c     setup Smithe\'s Z function table when nzfun = 3
 c     -------------------------------------
       if (nzfun .eq. 3) then
 
@@ -5076,7 +5079,7 @@ c        call flush
   386 format('time to call eqdsk_setup = ',f9.3, " min")
 
 *     -----------------------------------------------------------------
-*     Read 2D lookup table for Lee Berry's new Z function (xnuomge = 0)
+*     Read 2D lookup table for Lee Berry\'s new Z function (xnuomge = 0)
 *     -----------------------------------------------------------------
       open(unit=195,file='Ztable',status='unknown',form='formatted')
       read (195, 3409)  nmax, mmax
@@ -5145,8 +5148,8 @@ c           call flush
 *     ------------------------------------------
 *     define scalapack array descriptor for amat
 *     ------------------------------------------
-      mb = 3*33
-      nb = mb
+      mb = 3*64  !33 is a magic number, so is 3 for the number of E components
+      nb = mb    !try 64=8*8 assuming 8 is minimum modesx
 
       nrow = 3 * nnodex * nnodey
       ncol = nrow
@@ -5157,7 +5160,7 @@ c           call flush
       lld = max(1,nrow_local)
 
       p_amat_dim = nrow_local * ncol_local + 1
-      p_amat_size = p_amat_dim * 16 / 1.0e+06
+      p_amat_size = p_amat_dim * 16 / 1000000
 
       if (isolve .ne. 0) then
 
@@ -5193,12 +5196,13 @@ c           call flush
 
       call descinit( desc_amat, nrow,ncol, mb,nb, 0,0, icontxt,
      &         lld, info )
-      if (info.ne.0) then
+      if (.true.) then !(info.ne.0) then
         write(6,*) '** descinit for amat returns info = ', info
         write(6,*) 'lld = ', lld
         write(15,*) '** descinit for amat returns info = ', info
         write(15,*) 'lld = ', lld
-        stop '** error ** '
+        write(6,*) 'nrow,mb: ',nrow,mb
+!        stop '** error ** '
       endif
 
       do irnc=1,nrow_local*ncol_local
@@ -7408,7 +7412,7 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
 
 
 *                   ----------------------------------------------
-*                   Optional: Don't allow xkprl to be 0 (upshift = -2)
+*                   Optional: Don\'t allow xkprl to be 0 (upshift = -2)
 *                   ----------------------------------------------
                     if (upshift .eq. -2) then
                        if (akprl .lt. akprl_min) then
@@ -7421,7 +7425,7 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
      &                                     * gradprlb(i,j) / bmod(i,j))
 
 *                    ------------------------------------------------
-*                    Calculate Brambilla's xkrpl_eff using l = 1 only
+*                    Calculate Brambilla\'s xkrpl_eff using l = 1 only
 *                    ------------------------------------------------
                      y0 = 1.5
                      yb = y0
@@ -8833,15 +8837,18 @@ c                 c_ehst = 1.0
 
 
 
+! cannot use rt here
 *     ------------------
 *     Normalize to jdote:
 *     ------------------
-      if(norm .eq. 1)powtot = 2.0 * pi * rt * ptot
+      if(norm .eq. 1)powtot = 2.0 * pi * ptot !*rt  sgrator also divides by rt
+! which seems wrong. Is this a volume avg?
+! regardless these would cancel out
 
 *     -----------------
 *     Normalize to wdot:
 *     -----------------
-      if(norm .eq. 2)powtot = 2.0 * pi * rt * ptot_wdot
+      if(norm .eq. 2)powtot = 2.0 * pi * ptot_wdot !*rt
 
 *     --------------------
 *     Normalize to wdot_ql:
@@ -9561,7 +9568,7 @@ c                 c_ehst = 1.0
 
       t1 = second1(dummy)
 *     ------------------------------------------------------------------------
-*     calculate individual species edotj's and driven current on solution mesh
+*     calculate individual species edotj\'s and driven current on solution mesh
 *     ------------------------------------------------------------------------
 
       do i = 1, nnodex
@@ -9947,7 +9954,7 @@ c      go to 9945
       do n = 1, nnoderho
          if (rhom1avg(n) .gt. 1.0e-15)then
             gamma_avg(n) = muhat_avg(n)
-     &                   * bmod2_avg(n) / (ipsi_avg(n) / rt)**2
+     &                   * bmod2_avg(n) / ipsi_avg(n)**2  !/rt)**2
          endif
          beta_avg(n) = (epsn(n) / qsafety_avg(n))**2
      &                              * (1. + 2.0 * qsafety_avg(n)**2)
@@ -9961,7 +9968,8 @@ c      go to 9945
       ank(1) = 0.0
       bnk(1) = - gamma_avg(1) - 4.0 * dn(1) * beta_avg(1) / dr**2
       cnk(1) =   4.0 * dn(1) * beta_avg(2) / dr**2
-      ynk(1) = capr_fzeta_avg(1) / rt - rt * bdotf_avg(1) / ipsi_avg(1)
+!      ynk(1) = capr_fzeta_avg(1) / rt - rt * bdotf_avg(1) / ipsi_avg(1)
+      ynk(1) = capr_fzeta_avg(1) - bdotf_avg(1) / ipsi_avg(1)
 
       do n = 2, nnoderho - 1
          ank(n) = rh(n-1) * beta_avg(n-1) * dh(n-1) / (rn(n) * dr**2)
@@ -9969,7 +9977,8 @@ c      go to 9945
          bnk(n) = - gamma_avg(n)
      &            - rh(n-1) * beta_avg(n) * dh(n-1) / (rn(n) * dr**2)
      &            - rh(n)   * beta_avg(n) * dh(n)   / (rn(n) * dr**2)
-         ynk(n) = capr_fzeta_avg(n) /rt - rt * bdotf_avg(n) /ipsi_avg(n)
+!         ynk(n) = capr_fzeta_avg(n) /rt - rt * bdotf_avg(n) /ipsi_avg(n)
+         ynk(n) = capr_fzeta_avg(n) - bdotf_avg(n) /ipsi_avg(n)
 
       end do
 
@@ -9983,8 +9992,8 @@ c      go to 9945
       do n = 1, nnoderho
          kpsi_avg(n) = 0.0
          if (rhom1avg(n) .gt. 1.0e-10)then
-            kpsi_avg(n) = xkhat(n) / (rhom1avg(n) * ipsi_avg(n) / rt)
-
+            kpsi_avg(n) = xkhat(n) / (rhom1avg(n) * ipsi_avg(n) )
+!/ rt)
          endif
       end do
 
@@ -10005,7 +10014,7 @@ c      if(myid .eq. 0) write(15, *)"        n    rhon   pitch angle(deg)"
 
       do n = 1, nnoderho - 1
          angle = atan2(pitch_avg(n), 1.0)
-         angle = angle / pi * 180.0
+         angle = angle / pi * 180.0  !JCW some inf here 
          if(myid .eq. 0)write(6, 1312)n, rhon(n), pitch_avg(n), angle,
      &                       beta_avg(n), qsafety_avg(n), epsn(n)
          if(myid .eq. 0)write(15,1312)n, rhon(n), pitch_avg(n), angle,
@@ -10021,13 +10030,13 @@ c      if(myid .eq. 0) write(15, *)"        n    rhon   pitch angle(deg)"
       an(1) = 0.0
       bn(1) = - 4.0 * dn(1) / dr**2
       cn(1) = - bn(1)
-      yn(1) = - capr_fzeta_avg(1) / rt
+      yn(1) = - capr_fzeta_avg(1) ! / rt
 
       do n = 2, nnoderho - 1
          an(n) = rh(n-1) * dh(n-1) / (rn(n) * dr**2)
          cn(n) = rh(n) * dh(n)     / (rn(n) * dr**2)
          bn(n) = - an(n) - cn(n)
-         yn(n) = - capr_fzeta_avg(n) / rt
+         yn(n) = - capr_fzeta_avg(n) ! / rt
       end do
 
       an(nnoderho) = 0.0
@@ -10233,17 +10242,17 @@ c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
      &         + pcedotj4 + pcedotj5 + pcedotj6 + pcedotjs
 
 
-      pedotje = pedotje * twopi * rt
-      pedotj1 = pedotj1 * twopi * rt
-      pedotj2 = pedotj2 * twopi * rt
-      pedotj3 = pedotj3 * twopi * rt
-      pedotj4 = pedotj4 * twopi * rt
-      pedotj5 = pedotj5 * twopi * rt
-      pedotj6 = pedotj6 * twopi * rt
-      pedotjs = pedotjs * twopi * rt
-      pedotjt = pedotjt * twopi * rt
+      pedotje = pedotje * twopi !* rt
+      pedotj1 = pedotj1 * twopi !* rt
+      pedotj2 = pedotj2 * twopi !* rt
+      pedotj3 = pedotj3 * twopi !* rt
+      pedotj4 = pedotj4 * twopi !* rt
+      pedotj5 = pedotj5 * twopi !* rt
+      pedotj6 = pedotj6 * twopi !* rt
+      pedotjs = pedotjs * twopi !* rt
+      pedotjt = pedotjt * twopi !* rt
 
-      i_ant = i_ant * twopi * rt
+      i_ant = i_ant * twopi !* rt
 
 
 71667 format(' Species absorption from Estar dot J:')
@@ -10321,14 +10330,14 @@ c--      Calculate species fractions from Wdot:
 
 81667 format(' Species absorption from Wdot:')
 
-         pe  = pe  * twopi * rt
-         pi1 = pi1 * twopi * rt
-         pi2 = pi2 * twopi * rt
-         pi3 = pi3 * twopi * rt
-         pi4 = pi4 * twopi * rt
-         pi5 = pi5 * twopi * rt
-         pi6 = pi6 * twopi * rt
-         pt  = pt  * twopi * rt
+         pe  = pe  * twopi !* rt
+         pi1 = pi1 * twopi !* rt
+         pi2 = pi2 * twopi !* rt
+         pi3 = pi3 * twopi !* rt
+         pi4 = pi4 * twopi !* rt
+         pi5 = pi5 * twopi !* rt
+         pi6 = pi6 * twopi !* rt
+         pt  = pt  * twopi !* rt
 
          write(15, 169)
          write(15, 81667)
@@ -10423,23 +10432,6 @@ c     &                   + pi4_ql +pi5_ql + pi6_ql
      &   3x, "             total power absorbed = ",1e12.5,
      &   " Watts ", " = ", f10.4, " %       ")
 
-*        ---------------------------------------------------
-*        Calculate the differential volume elements, dvol(n):
-*        ---------------------------------------------------
-
-c         dvol  = 0.0
-c         darea = 0.0
-
-c         do i = 1, nnodex
-c            do j = 1, nnodey
-c               n = int(rho(i,j) / drho) + 1
-c               if(n .lt. nnoderho)then
-c                  dvol(n)  =  dvol(n) + dx * dy * 2.0 * pi * capr(i)
-c                 darea(n) = darea(n) + dx * dy * capr(i) / rt
-c               end if
-c            end do
-c         end do
-
 
          write(38, 309) nmax, mmax
          write(38, 310) (zetai_table(n), n = 1, nmax)
@@ -10457,7 +10449,6 @@ c         end do
          write(38, 310) (xkphi(i), i = 1, nnodex)
 
 
-
          write(130, 309) nnodex, nnodey, jmid
          write(130, 310) psilim
          write(130, 310) (capr(i), i = 1, nnodex)
@@ -10469,7 +10460,6 @@ c         end do
          write(130, 310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
          write(130, 310) ((xkprl_a(i,j), i = 1, nnodex), j = 1, nnodey)
          write(130, 310) ((P_a(i, j), i = 1, nnodex), j = 1, nnodey)
-
 
 
          write(38, 310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
@@ -10530,6 +10520,7 @@ c         end do
          write(38, 310) ((ebeta(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((eb(i, j), i = 1, nnodex), j = 1, nnodey)
 
+         !JCW btau in 1.0 bzeta is 0. for mirror
          write(38, 310) ((btau(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((bzeta(i, j), i = 1, nnodex), j = 1, nnodey)
 
@@ -10551,8 +10542,8 @@ c         end do
          write (38, 310) ((xkb(i, n), i = 1, nnodex), n = nkx1, nkx2)
 
 
-         do n = nkx1, nkx2
-            write(6, *) "n = ", n, "xkb(64, n) = ", xkb(64, n)
+         do n = nkx1, nkx2 !JCW magic numbers fix
+            write(6, *) "n = ", n, "xkb(nxmx/2, n) = ", xkb(nxmx/2, n)
          end do
 
          write(38, 309) nnoderho
@@ -10819,6 +10810,7 @@ c         end do
          write(38, 310) ((dldb_tot12(i, j), i = 1, nnodex),
      &                                      j = 1, nnodey)
 
+
          write (38, 309) ndisti1, ndisti2, ndisti3
 
          write (38, 310) ((eplus_flux_plot(i, j), i = 1, nnodex),
@@ -10829,7 +10821,6 @@ c         end do
 
          write (38, 310) ((xkperp_flux_plot(i, j), i = 1, nnodex),
      &                                             j = 1, nnodey)
-
 
 
 
@@ -10865,9 +10856,8 @@ c         end do
 
          close (130)
 
-
-
       end if
+
 
       tmin = (second1(dummy) - t1) / 60.
       if (myid.eq.0) then
@@ -11622,7 +11612,7 @@ c         deallocate( ntable )
 
  9000 continue
 *     -----------------------
-*     End of loop over nphi's
+*     End of loop over nphis
 *     -----------------------
 
  9001 continue
@@ -11856,33 +11846,8 @@ c
   102 format (2i10)
       return
       end
+      
 
-
-c
-c***************************************************************************
-c
-
-c      subroutine rhograte(x, f, nx1, nx2, ans, nxdim, dvol)
-
-c      implicit none
-
-c      integer :: n, nx1, nx2, nxdim
-
-c      real :: f(nxdim), x(nxdim), ans(nxdim), dvol(nxdim)
-
-c      ans(nx1) = 0.0
-
-c      do n = nx1, nx2 - 1
-
-c        ans(n+1) = ans(n) + f(n) * dvol(n)
-
-c      end do
-
-
-c  100 format (1i10, 1p,8e12.4)
-c  102 format (2i10)
-c      return
-c      end
 c
 c***************************************************************************
 c
