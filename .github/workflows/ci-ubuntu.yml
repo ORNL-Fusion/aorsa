@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Get toolchain repo
-      run: sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+      run: sudo add-apt-repository -y ppa:ubuntu-toolchain-r/ppa
     - name: Update apt
       run: sudo apt-get update
     - name: Install gfortran-10
