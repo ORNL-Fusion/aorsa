@@ -2174,6 +2174,7 @@ c      write(6, 300) y2min, y2max
 c      write(*,*)"ymin = ", ymin
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 
       CALL PGPAGE
       CALL PGSVP (0.15,0.85,0.15,0.85)
@@ -2197,7 +2198,7 @@ c      write(6, *)y2
 c      write(6, *) y2min, y2max
 c      call exit
 
-
+      if (abs(y2min-y2max) .lt. 1e-3) y2max=y2min+1.e-3
       CALL PGSWIN (rhomin, rhomax, y2min, y2max)
       CALL PGSCI(nblack)
       CALL PGBOX  (' ', 0.0, 0, 'CMST', 0.0, 0)

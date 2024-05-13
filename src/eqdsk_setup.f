@@ -245,7 +245,7 @@ c      double precision ws(lenws)
       real xk(nxmx), yk(nymx)
       real bmod_eqdskk
 
-      real rho_lim, rhowall
+      real rho_lim, rhowall !jcw rhowall not used
       real diffx, diffy, diff, diffmin
       integer neqdsk_min, meqdsk_min, ik, jk
 
@@ -1179,18 +1179,18 @@ c         write(6, 1312)n, rhon(n)
       end do     
         
      
-         rho = 0.0
+      rho = 0.0
 *        ----------------------------------------------------
 *        Default:  if n_prof_flux equals 0, use poloidal flux     
 *        ----------------------------------------------------   
 
-            do i = 1, nnodex
-               do j = 1, nnodey             
-                  rho(i,j) = rho_pol2d(i,j)
-                  psi(i,j) = psi_pol2d(i,j)
-                  psi_dim(i,j) = psi(i,j) * psio
-               end do
-            end do
+      do i = 1, nnodex
+         do j = 1, nnodey             
+            rho(i,j) = rho_pol2d(i,j)
+            psi(i,j) = psi_pol2d(i,j)
+            psi_dim(i,j) = psi(i,j) * psio
+         end do
+      end do
 
 
 *        --------------------------------------------------------------
@@ -1198,20 +1198,20 @@ c         write(6, 1312)n, rhon(n)
 *        Note:  Here we use toroidal flux  inside rho_pol = 1.0  
 *                       and poloidal flux outside rho_pol = 1.0!!        
 *        --------------------------------------------------------------      
-         if(n_prof_flux .ne. 0)then
-            do i = 1, nnodex
-               do j = 1, nnodey 
-                  psi_tor2d(i,j) = rho_tor2d(i,j)**2
+      if(n_prof_flux .ne. 0)then
+         do i = 1, nnodex
+            do j = 1, nnodey 
+               psi_tor2d(i,j) = rho_tor2d(i,j)**2
                      
-                  if(rho(i,j) .lt. 1.0) then !JCW mirror
-                     rho(i,j) = rho_tor2d(i,j)
-                     psi(i,j) = psi_tor2d(i,j) 
-                     psi_dim(i,j) = psi(i,j) * psi_tor_max
-                  end if 
+               if(rho(i,j) .lt. 1.0) then !JCW mirror
+                  rho(i,j) = rho_tor2d(i,j)
+                  psi(i,j) = psi_tor2d(i,j) 
+                  psi_dim(i,j) = psi(i,j) * psi_tor_max
+               end if 
                       
-               end do
             end do
-         end if
+         end do
+      end if
     
       if (myid .eq. 0) then      
          write(6, *)  "psio = ", psio
@@ -1502,7 +1502,7 @@ c      do i = 2, nnodex - 1
         do i = i0, nnodex - 1
       
 c        do j = 1, nnodey - 1
-          do j = j0, j0
+          do j = j0, j0  !search only midplane
 
 
             capr_x0 = capr(i) + dx / 2.0
@@ -1515,13 +1515,13 @@ c        do j = 1, nnodey - 1
             yprimex0 = y_extint - ybottom
             
             psix_prev = psix
-            
+            !check that this is working JCW
             psix =surf2(xprimex0, yprimex0, nnodex, nnodey, 
      &         xprime, yprime,
      &         psi, nxmx, zpsi, sigma)
-     
+            !outside
             if(psix .gt. psilim_ .and. psix_prev .le. psilim_)i_max =i-1     
-            
+            !inside
             if(psix .le. psilim_)then
             
 c           write(6, 1314) i, j, psix, psilim_
@@ -2062,7 +2062,7 @@ c          write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
          end do  ! end do for y big loop
       end do     ! end do for x  big loop
       
-      
+      !JCW nrho is 0 here . FIXME
       nrho = i_max - i0 + 1
       
       rho_ij = rho(1:nnodex, 1:nnodey)

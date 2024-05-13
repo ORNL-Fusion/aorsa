@@ -6742,6 +6742,7 @@ c      write(6, 300) y2min, y2max
       ymin = ymin
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 
       CALL PGPAGE
       CALL PGSVP (0.15,0.85,0.15,0.85)
@@ -7178,7 +7179,7 @@ c      write(6, *) "rhomax = ", rhomax
       ymin = ymin
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 
 c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
@@ -7244,7 +7245,7 @@ c
       ymin = ymin
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 
 c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
@@ -7313,7 +7314,7 @@ c
       ymin = 0.0
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 
 c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
@@ -7379,7 +7380,7 @@ c      ymax = ymax * 1.1
       ymin = ymin
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c      ymin = 0.0
 
 c Advance plotter to a new page, define coordinate range of graph and draw axes
@@ -7449,7 +7450,7 @@ c
       ymin = ymin
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 
       CALL PGPAGE
@@ -7788,7 +7789,7 @@ c
       rhomin=x1(1)
 
       call a1mnmx(y1, nrmax, nr, ymin, ymax)
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
 
@@ -8207,6 +8208,7 @@ c
       nyellow = 7
       norange = 8
 
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
 
@@ -8300,7 +8302,7 @@ c
 c      ymin=0.0
 
       ymax = ymax * 0.5
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
 

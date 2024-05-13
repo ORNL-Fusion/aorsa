@@ -932,6 +932,7 @@
          capr, caprminp, caprmaxp, qmin, qmax)
       qmin = 0.0
 !     qmax = 5.0
+      qmax = sign(max(qmax,1.00),qmax)
 
       CALL PGPAGE
       CALL PGSVP (0.15,0.85,0.15,0.85)
@@ -1341,7 +1342,7 @@
       if (ymin .le. 0.0) ymin = ymin * 1.1
 
       ymin = 0.0
-
+      if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 ! Advance plotter to a new page, define coordinate range of graph and draw axes
 
 !      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)

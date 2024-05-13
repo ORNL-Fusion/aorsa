@@ -1463,7 +1463,7 @@ c         write(18, 310) ((rho_tor2d(i, j), i = 1,nnodex),j = 1,nnodey)
 *       sigma = 50 for bi-linear interpolation
 *       documentation recommend sigma=1.0 as standard value
 *       --------------------------------------------------------
-        sigma = 1.0
+      sigma = 1.0  !jcw magic numbers
       islpsw = 255
       islpsw1 = 3
 
@@ -1502,7 +1502,7 @@ c         write(18, 310) ((rho_tor2d(i, j), i = 1,nnodex),j = 1,nnodey)
      
 
 
-      n_theta_check = 75
+      n_theta_check = 75  !JCW magic number
      
 
 
