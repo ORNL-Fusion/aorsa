@@ -253,7 +253,7 @@ c
 *              -----------------------------
 c--            lb(nl):  0 to lbmax
 c--            lbprime(nl): -lbmax / 2 to lbmax / 2
-
+!JCWfix for mirror
                lbmax = 2.0 * pi * rt * qsafety(i, j)
                                                                 
 
