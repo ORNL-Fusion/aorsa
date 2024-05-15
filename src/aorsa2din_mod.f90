@@ -11,13 +11,13 @@
 !     --------------------------------------------------------
 
       CHARACTER(128) :: eqdsk = 'g1080408021.txt'               ! eqdsk name
-      CHARACTER(128) :: eqtype = 'tokamak'               ! eq type. tokamak, mirror
+      CHARACTER(128) :: eqtype = 'tokamak'                      ! eq type. tokamak, mirror
       CHARACTER(128) :: netCDF_file1 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 1
       CHARACTER(128) :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
       
-      CHARACTER(128) :: root =  'none'  ! if (root = 'none') sum all modes
-                                       ! if (root = 'fast') sum only modes within 20% of fast wave 
-                                       ! if (root = 'slow') sum only modes within 20% of slow wave                                                                          
+      CHARACTER(128) :: root = 'none' ! if (root = 'none') sum all modes
+                                      ! if (root = 'fast') sum only modes within 20% of fast wave 
+                                      ! if (root = 'slow') sum only modes within 20% of slow wave
       
       real :: xkx_ono = -30.          !kx (m-1) for which Ono's dispersion relations is plotted
       real :: xky_ono = 0.0           !ky (m-1) for which Ono's dispersion relations is plotted      
@@ -26,7 +26,7 @@
       
       real :: scrape = 100.           ! scrape-off length in rho for iprofile = 5 (numerical profiles) 
       real :: nmin = 1.0e+18          ! minimum density allowed in scrape-off layer for iprofile = 5 (numerical profiles)
-      real :: Temin = .015          ! minimum temperature (keV) allowed in scrape-off layer for iprofile = 5
+      real :: Temin = .015            ! minimum temperature (keV) allowed in scrape-off layer for iprofile = 5
       real :: rhomax = 1.0            ! maximum value of the rho grid
 
             

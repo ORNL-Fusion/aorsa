@@ -1057,7 +1057,7 @@ c         write(6, 1312)i, agrid(i), fpsi(i), dfpsida(i)
          rho_tors(ipsi) = rhoeqdsk(ipsi)
 
          qs1(ipsi) = dqpsida(ipsi)
-
+         if(myid==0) write(6, *) "ipsi,psis(ipsi),rho_tors(ipsi)"
          if(myid==0) write(6, 1312) ipsi,psis(ipsi),rho_tors(ipsi)
       end do
 

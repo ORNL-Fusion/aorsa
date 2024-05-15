@@ -168,7 +168,7 @@
       parameter (n_theta_max = 200)
       parameter (n_psi_max = 200)
 
-      parameter (nxmx = nmodesmax)
+      parameter (nxmx = nmodesmax) !from size_mod, but used to set lwork for scalapack
       parameter (nymx = mmodesmax)
 
       parameter (nlmx = 512)
@@ -187,6 +187,8 @@
       parameter (nldim  = nxmx * nymx)
       parameter (nldim3 = 3 * nldim)
       parameter (ndfmax = nldim3)
+      parameter (lwork = ndfmax) !jcw temp
+      parameter (lrwork = ndfmax)
 
       parameter (lmaxdim = 99)
 
@@ -824,7 +826,7 @@ c     &        uzzk(nkdim1 : nkdim2, mkdim1 : mkdim2)
       complex, allocatable :: p_brhs(:), p_brhs_copy(:)
 
       real :: err_max,err,b_nrm2,err_nrm2
-      complex, dimension(ndfmax) ::brhs2,brhsk,brhs_tmp
+      complex, dimension(ndfmax) :: brhs2,brhsk,brhs_tmp
       integer :: icnc
       logical :: ismine, ismine1
 
@@ -874,7 +876,6 @@ c       integer, dimension(:,:,:), allocatable :: descbrhs_all
         real :: rho_thresh
 
 
-
         complex :: aij, beta
 c       complex, dimension(:,:), allocatable :: brhs
         real,    dimension(:,:), allocatable :: work
@@ -884,8 +885,12 @@ c       complex, dimension(:,:), allocatable :: Btmp
 
         complex, dimension(ndfmax) :: row,rowk
 
-        complex, dimension(ndfmax) :: workn
-        real, dimension(ndfmax) :: rwork
+!        complex, dimension(:), allocatable :: workn
+!        real, dimension(:), allocatable :: rwork
+        complex :: workn(lwork)
+        real :: rwork(lrwork)
+        
+        real :: srwork(2), sworkn(2)
         real :: pzlange, anorm, rcond
 
         logical, parameter :: use_fft = .true.
@@ -1235,9 +1240,6 @@ c       complex, dimension(:,:), allocatable :: Btmp
       call blacs_gridinfo( icontxt, nprow, npcol, myrow, mycol)
 
 
-
-
-
       if(nphi_sum_only .eqv. .true.)go to 9001
 
 *     ----------------
@@ -1440,10 +1442,14 @@ c      jequat  = nnodey / 2
       qi_slo = z_slo * q
 
       xlnlam = 20.0
-      xkphi0 = nphi / rt_init
-      xkphia = nphi / rant
-      if(xkphi0 .eq. 0.0)xkphi0 = 1.0e-05
 
+      if (nphi==0) then
+         xkphi0 = 1.0e-5
+         xkphia = 1.0e-5
+      else
+         xkphi0 = nphi / (rt_init+1.e-5)  !JCW fix better. cylindrical equations at the origin
+         xkphia = nphi / (rant+1e-5)
+      end if
 
       xnurf = freqcy
 
@@ -1740,7 +1746,7 @@ c         write(6, 7017)rhoi10
 
          write(6, 2222) 'omgrf',    omgrf,'hertz' !1012
          write(6, 2222) 'frequency',xnurf,'hertz' !1009
-!         write(6, 2223) 'nphi',     nphi, ' '     !1013
+         write(6, 2223) 'nphi',     nphi, ' '     !1013
          write(6, 1321)wphase
          write(6, 1322)vphase
          write(6, 1323)vthe
@@ -5182,6 +5188,7 @@ c           call flush
       allocate(p_amat(p_amat_dim))
       p_amat(:) = cmplx(0.0,0.0)
 
+
       if(write_for_azzam)then
         allocate(p_amat_copy(p_amat_dim))
         p_amat_copy(:) = cmplx(0.0,0.0)
@@ -5207,6 +5214,14 @@ c           call flush
         write(6,*) 'nrow,mb: ',nrow,mb
 !        stop '** error ** '
       endif
+      call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond,
+     &          sworkn, -1, srwork, -1, info)
+      write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
+!      lwork = int(sworkn(1))
+!jcw temp      lrwork = int(srwork(1))
+
+!      allocate (workn(lwork))
+!      allocate (rwork(lrwork))
 
       do irnc=1,nrow_local*ncol_local
         p_amat(irnc) = cmplx(0., 0.)
@@ -6776,15 +6791,15 @@ c        call flush
 *       ------------------------------
 *       Optional: get condition number
 *       ------------------------------
-       lwork = ndfmax
-       lrwork = ndfmax
+!      lwork = ndfmax
+!      lrwork = ndfmax
       anorm = pzlange('1', nrow, ncol, p_amat, 1, 1, desc_amat, rwork)
       call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond,
      &          workn, lwork, rwork, lrwork, info)
 
       if (info.ne.0) then
-         write(6,*) 'pzgecon returns info = ', info
-         write(15,*) 'pzgecon returns info = ', info
+         write(6,*) 'pzgecon returns info = ', info,lwork,lrwork
+         write(15,*) 'pzgecon returns info = ', info,lwork,lrwork
          stop '** error ** '
       endif
 
@@ -11734,6 +11749,8 @@ c         deallocate( ntable )
       deallocate (xkprl_a, P_a)
       deallocate (work)
       deallocate (workc)
+!      deallocate (workn)
+!      deallocate (rwork)
 
       if (myid .eq. 0) then
          close (963)

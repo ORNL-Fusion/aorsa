@@ -270,7 +270,7 @@ c      parameter (mmodesmax = 450)
 *     ---------------------------------
 *     set default values of input data:
 *     ---------------------------------
-
+      write(*,*) 'entering rf2x',allocated(rho_fine)
       nnoderho = 50
 
       n_prof_flux = 1
@@ -620,6 +620,7 @@ c      rhomax = 1.0
       allocate(y_fine(nnodey_fine) )
       allocate(capr_fine(nnodex_fine) )
       allocate(rho_fine(nnodex_fine, nnodey_fine) )
+      write(*,*) 'entering2 rf2x',allocated(rho_fine)
 
 *     -----------------------------
 *     Define fine x mesh: x_fine(i)
@@ -673,7 +674,7 @@ c      rhomax = 1.0
             n = int(rho_fine(i,j) / drho) + 1
             if(n .le. nnoderho .and. n .ge. 1)then
                dvol(n) = dvol(n)+ dx_fine * dy_fine *twopi *capr_fine(i)
-               darea(n) = darea(n)+ dx_fine * dy_fine * capr_fine(i)/ rt               
+               darea(n) = darea(n)+ dx_fine * dy_fine !JCW * capr_fine(i)/ rt
             end if
          end do
       end do
@@ -1272,7 +1273,7 @@ c      rhomax = 1.0
       deallocate(y_fine)
       deallocate(capr_fine)
       deallocate(rho_fine)
-
+      write(*,*) 'exiting rf2x'
       return
       end
 
