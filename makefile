@@ -20,6 +20,7 @@ ORBIT_F_WARNING_FLAGS =
 OBJ_FILES = \
  $(OBJ_DIR)/cauchy_mod.o \
  $(OBJ_DIR)/size_mod.o \
+ $(OBJ_DIR)/cbessel_mod.o \
  $(OBJ_DIR)/aorsa2din_mod.o \
  $(OBJ_DIR)/swim_global_data_mod.o \
  $(OBJ_DIR)/precision_mod.o \
@@ -147,7 +148,7 @@ ifeq ($(LSB_IS),Ubuntu)
   endif
 endif
 ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
-  include makeopts.eofe7
+  include makeopts.eofe7   #.intel
   SYSTEM_IDENTIFIED = 1
 endif
 ifeq ($(HOSTNAME),eofe7.mit.edu)  #building on host

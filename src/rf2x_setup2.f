@@ -1,4 +1,3 @@
-
       subroutine run_rf2x(nmodesx, nmodesy, rwleft, rwright,
      &   ytop, ybottom, myid, nxdim, nydim,
      &   rt, b0, rho,
@@ -270,7 +269,9 @@ c      parameter (mmodesmax = 450)
 *     ---------------------------------
 *     set default values of input data:
 *     ---------------------------------
-      write(*,*) 'entering rf2x',allocated(rho_fine)
+      if (myid.eq.0) then
+         write(*,*) 'entering rf2x',allocated(rho_fine),size(rho_fine)
+      end if 
       nnoderho = 50
 
       n_prof_flux = 1
@@ -620,7 +621,9 @@ c      rhomax = 1.0
       allocate(y_fine(nnodey_fine) )
       allocate(capr_fine(nnodex_fine) )
       allocate(rho_fine(nnodex_fine, nnodey_fine) )
-      write(*,*) 'entering2 rf2x',allocated(rho_fine)
+      if (myid.eq.0) then
+         write(*,*) 'entering2 rf2x',allocated(rho_fine)
+      end if
 
 *     -----------------------------
 *     Define fine x mesh: x_fine(i)
@@ -1273,7 +1276,9 @@ c      rhomax = 1.0
       deallocate(y_fine)
       deallocate(capr_fine)
       deallocate(rho_fine)
-      write(*,*) 'exiting rf2x'
+      if (myid.eq.0) then
+         write(*,*) 'exiting rf2x'
+      end if
       return
       end
 

@@ -1191,7 +1191,7 @@ c       complex, dimension(:,:), allocatable :: Btmp
          stop '** blacs not setup '
       endif
 
-
+      write(*,*) 'myid', myid !JCW temp
 
       if (myid .eq. 0) then
          open(unit=53, file='out_fields', status='unknown',
@@ -5218,7 +5218,7 @@ c           call flush
      &          sworkn, -1, srwork, -1, info)
       write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
 !      lwork = int(sworkn(1))
-!jcw temp      lrwork = int(srwork(1))
+!      lrwork = int(srwork(1)) !jcw temp
 
 !      allocate (workn(lwork))
 !      allocate (rwork(lrwork))

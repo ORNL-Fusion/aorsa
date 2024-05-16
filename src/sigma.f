@@ -265,14 +265,15 @@
          gamma = 0.5 * xkperp**2 * rhol**2
          rgamma = real(gamma)
 
-
+         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
+         if (0) then
          if(rgamma .ge. 1.0e-08)
      .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
          if(rgamma .lt. 1.0e-08)
      .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
      .                                                      exilovergam)
-
+         end if
 
          dkwxx = 0.0
          dkwxy = 0.0
@@ -635,7 +636,7 @@
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -864,14 +865,16 @@
          gamma = 0.5 * xkperp**2 * rhol**2
          rgamma = real(gamma)
 
-
+         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
+         if (0) then
          if(rgamma .ge. 1.0e-08)
      .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
          if(rgamma .lt. 1.0e-08)
      .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
      .                                                      exilovergam)
-         
+         end if
+
          delta_x = 0.0 
          delta_y = 0.0 
          delta_z = 0.0
@@ -923,7 +926,7 @@
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -1158,14 +1161,15 @@
          gamma = 0.5 * xkperp**2 * rhol**2
          rgamma = real(gamma)
 
-
+         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
+         if (0) then
          if(rgamma .ge. 1.0e-08)
      .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
          if(rgamma .lt. 1.0e-08)
      .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
      .                                                      exilovergam)
-
+         end if
 
          sig0 = 0.0
          sig1 = 0.0
@@ -1488,7 +1492,7 @@
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -1496,7 +1500,7 @@
 
 !
 !***************************************************************************
-!
+!!JCW called for maxwellian sigma=1
 
       subroutine sigmad_cql3d_e(i, j, n, m, rho, rho_a,
      .   gradprlb, bmod, bmod0,
@@ -1743,14 +1747,15 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          gamma = 0.5 * xkperp**2 * rhol**2
          rgamma = real(gamma)
 
-
+         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
+         if (0) then
          if(rgamma .ge. 1.0e-08)
      .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
          if(rgamma .lt. 1.0e-08)
      .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
      .                                                      exilovergam)
-
+         end if
 
          sig0 = 0.0
          sig1 = 0.0
@@ -2090,7 +2095,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -2365,13 +2370,15 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          rgamma = real(gamma)
 
 
+         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
+         if (0) then
          if(rgamma .ge. 1.0e-08)
      .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
          if(rgamma .lt. 1.0e-08)
      .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
      .                                                      exilovergam)
-
+         end if
 
          sig0 = 0.0
          sig1 = 0.0
@@ -2704,7 +2711,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -2969,13 +2976,15 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          rgamma = real(gamma)
 
 
+         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
+         if (0) then
          if(rgamma .ge. 1.0e-08)
      .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
          if(rgamma .lt. 1.0e-08)
      .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
      .                                                      exilovergam)
-
+         end if
 
          sig0 = 0.0
          sig1 = 0.0
@@ -3294,7 +3303,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -3761,7 +3770,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, ' besic failed')
       end
 
 !
@@ -3770,30 +3779,32 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
       subroutine besiexp(gamma, lmax, expbes, expbesp, lmaxdim,
-     .   expbesovergam)
+     &   expbesovergam)
 
-*     ----------------------------------------------------------
-*     Calculates exp(-gamma) times the modified bessel functions
-*     (and derivatives) of order up to lmax
-*     ----------------------------------------------------------
+      use Complex_Bessel
+!     ----------------------------------------------------------
+!     Calculates exp(-gamma) times the modified bessel functions
+!     (and derivatives) of order up to lmax
+!     ----------------------------------------------------------
 
       implicit none
 
-      integer lmax, nmax, ier, l, lmaxdim
+      integer lmax, nmax, ier, l, lmaxdim, nz
       real gammod
       complex gamma, expbes(0: lmaxdim), expbesp(0: lmaxdim),
-     .   expbesovergam(0: lmaxdim),
-     .   xil(0: lmaxdim), xilp(0: lmaxdim), exgam
+     &   expbesovergam(0: lmaxdim),
+     &   xil(0: lmaxdim), xilp(0: lmaxdim), exgam
 
       complex b(100)
 
       exgam = exp(-gamma)
       gammod = cabs(gamma)
 
-      if(gammod .le. 700.)then
+ !     if(gammod .le. 700.)then
          nmax = lmax + 1
-         call besic(gamma, nmax, b, ier)
-         if(ier .ne. 0)write(6,100) ier
+ !        call besic(gamma, nmax, b, ier)
+         call cbesi(gamma, 0.0, 2, nmax, b,nz, ier)
+        if(ier .ne. 0)write(6,100) ier
 
          do l = 0, lmax
             xil(l) = b(l+1)
@@ -3801,17 +3812,17 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
          do l = 0, lmax
            if(l .eq. 0) xilp(0) = xil(1)
-           if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l)
-           expbes(l) = exgam * xil(l)
-           expbesp(l) = exgam * xilp(l)
+           if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l)  !derivative by recurrence
+           expbes(l) =  xil(l)  !*exgam JCW bad way to do this
+           expbesp(l) = xilp(l) !*exgam
          end do
-      end if
+!      end if
 
-      if(gammod .gt. 700.)then
-         do l = 0, lmax
-            call bes_asym(gamma, l, expbes(l), expbesp(l))
-         end do
-      end if
+!      if(gammod .gt. 700.)then
+!         do l = 0, lmax
+!            call bes_asym(gamma, l, expbes(l), expbesp(l))
+!         end do
+!      end if
 
       do l = 0, lmax
          expbesovergam(l) = expbes(l) / gamma

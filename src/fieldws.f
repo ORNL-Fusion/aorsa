@@ -1,5 +1,5 @@
       subroutine plotws()
-
+      !> Not called
       use size_mod
 
       implicit none
@@ -158,7 +158,7 @@ c
      &   nkpltdim, mkpltdim, nkxplt, nkyplt, ipage, n1, n2, n3, n4
       integer:: i_psi, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
       integer:: i_psi_array(6), i_psi_index
-      integer:: nkpr
+      integer:: nkpr, ierr
 
       integer:: nuper, nupar, i_uperp, i_upara, nz
       real:: uminpara, umaxpara, vc_cgs, vpara_cgs
@@ -357,9 +357,9 @@ c
      &     eykmod, ezkmod, exklog, eyklog, ezklog
 
       real:: fmodm(mkpltdim)
-      complex z0_table1(ntable, mtable)
-      complex z1_table1(ntable, mtable)
-      complex z2_table1(ntable, mtable)
+      complex:: z0_table1(ntable, mtable)
+      complex:: z1_table1(ntable, mtable)
+      complex:: z2_table1(ntable, mtable)
       real:: zetai_table(ntable)
       real:: dKdL_table(mtable)
 
@@ -477,7 +477,8 @@ c
      &   mod_Eb(nxmx, nymx), mod_Ealpha(nxmx, nymx),
      &   mod_Ebeta(nxmx, nymx), mod_E(nxmx, nymx),
      &   dldb_tot12(nxmx, nymx), reex_dx(nxmx, nymx),
-     &     reey_dx(nxmx, nymx), reez_dx(nxmx, nymx) )
+     &     reey_dx(nxmx, nymx), reez_dx(nxmx, nymx) ,stat=ierr)
+
       allocate(
      &   ximex_dx(nxmx, nymx), ximey_dx(nxmx, nymx),
      &   ximez_dx(nxmx, nymx),
@@ -506,6 +507,7 @@ c
       allocate(xkb(nxmx, nkpltdim))
       allocate(xkb_plot(nxmx, nkpltdim))
 
+!JCW init to zero
 c--set default values of input data:
 
       ibackground = 0
