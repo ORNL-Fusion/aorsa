@@ -272,7 +272,7 @@ c      parameter (mmodesmax = 450)
       if (myid.eq.0) then
          write(*,*) 'entering rf2x',allocated(rho_fine),size(rho_fine)
       end if 
-      nnoderho = 50
+      nnoderho = nnodex/2 !50  !JCW bad magic number
 
       n_prof_flux = 1
 
@@ -787,10 +787,9 @@ c      rhomax = 1.0
 *     --------------------------------------------
 *     Integrate flux averaged quantities over rhon:
 *     --------------------------------------------
-
+      write(*,*) 'rhograte test', 1,nnoderho,nrhomax
       call rhograte(rhon, xjprlavg, 1, nnoderho, xjprl_int, 
      &                                               nrhomax, darea)
-     
      
       call rhograte(rhon, redotjeavg, 1, nnoderho, redotje_int, 
      &                                                nrhomax, dvol)
@@ -983,7 +982,9 @@ c      rhomax = 1.0
          
       end if
      
-         
+      if (myid.eq.0) then
+         write(*,*) 'before dealloc0 rf2x',allocated(rho_fine)
+      end if         
 
 
       do n = 1, nnoderho
@@ -1271,7 +1272,9 @@ c      rhomax = 1.0
  1312 format(1i10, 1p,8e12.4)
  2313 format(1p,8e12.4)
  2314 format(1p,e11.4, 1p,e11.4)
-
+      if (myid.eq.0) then
+         write(*,*) 'before dealloc rf2x',allocated(rho_fine)
+      end if
       deallocate(x_fine)
       deallocate(y_fine)
       deallocate(capr_fine)

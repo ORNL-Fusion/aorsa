@@ -12,10 +12,10 @@ OBJ_DIR = obj
 INCLUDE_DIRS = 
 LIBS = 
 F90FLAGS = 
-WARNING_FLAGS = 
+WARNING_FLAGS =  -check all
 
 # per file build warning flags
-ORBIT_F_WARNING_FLAGS = 
+ORBIT_F_WARNING_FLAGS =
 
 OBJ_FILES = \
  $(OBJ_DIR)/cauchy_mod.o \
@@ -148,7 +148,13 @@ ifeq ($(LSB_IS),Ubuntu)
   endif
 endif
 ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
-  include makeopts.eofe7   #.intel
+  ifdef MKLROOT
+  include makeopts.eofe7.intel
+  $(info "Intel found" )
+  else
+  include makeopts.eofe7
+  $(info "gcc assumed" )
+  endif
   SYSTEM_IDENTIFIED = 1
 endif
 ifeq ($(HOSTNAME),eofe7.mit.edu)  #building on host
@@ -201,8 +207,8 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F90
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F
 	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${WARNING_FLAGS}
 
-${OBJ_DIR}/orbit.o: ${SRC_DIR}/orbit.f
-	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${SIGMA_F_WARNING_FLAGS}
+#${OBJ_DIR}/orbit.o: ${SRC_DIR}/orbit.f
+#	${COMPILE90} -c $< -o $@ ${INCLUDE_DIRS} ${ORBIT_F_WARNING_FLAGS}
 
 
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 
@@ -219,7 +225,7 @@ $(OBJ_DIR)/eqdsk_setup.o:    $(SRC_DIR)/eqdsk_setup.f
 
 $(OBJ_DIR)/orbit.o:          $(SRC_DIR)/orbit.f
 	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/orbit.o \
-                             $(SRC_DIR)/orbit.f $(INCLUDE_DIRS)			     
+                             $(SRC_DIR)/orbit.f  ${ORBIT_F_WARNING_FLAGS}$(INCLUDE_DIRS)
 
 $(OBJ_DIR)/eqdsk_plot.o:     $(SRC_DIR)/eqdsk_plot.f90
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/eqdsk_plot.o \

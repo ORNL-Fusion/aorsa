@@ -193,7 +193,7 @@ c      real tau_bounce(nxmx, nymx, n_theta_max)
 
       integer n_theta, n_u, n_psi
       integer i_theta, i_u, i_psi
-      real vc, vc_mks, sinthi, modbi, argi, vprl, dtau_sum, modbh,
+      real sinthi, modbi, argi, vprl, dtau_sum, modbh,
      &   dtau_tot_sum, dldb_tot_sum, dldb_tot1, dldb_tot2
 
 
@@ -873,60 +873,7 @@ c      write (115, *) "rwright = ", rwright
 c      write (115, *) "ytop = ", ytop
 c      write (115, *) "ybottom = ", ybottom
 
-!     ------------------------------
-!       read cql3d data in u and theta
-!     ------------------------------
-
-!       read (39, 9311) n_u
-!       read (39, 9311) n_psi
-!       read (39, 310) vc
-
-!        read (39, 310) (u(i_u), i_u = 1, n_u)
-!       read (39, 9311) (n_theta_(i_psi), i_psi = 1, n_psi)
-!        read (39, 310) ((theta_(i_theta, i_psi),
-!     &         i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
-
-!        read (39, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-
-
-      vc_mks = vc * 1.0e-02
-
-!     ---------------------
-!       Write some CQL3D data
-!     ---------------------
-
-c       WRITE (115,*)
-c       WRITE (115,*) "n_theta_max = ", n_theta_max
-c       WRITE (115,*) "n_u = ", n_u
-c       WRITE (115,*) "n_psi = ", n_psi
-c       WRITE (115,*) "n_theta_(i) = ", n_theta_
-c       WRITE (115,*) "vc = ", vc
-c       WRITE (115,*) "vc_mks = ", vc_mks, "m/sec"
-
-
-
-c       WRITE(115,*)
-
-c      write(115, *)
-c      write(115, *) "rho/a(i_psi)"
-c      write(115, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-
-c      write(115, *)
-c      write(115, *) "u(i_u) ="
-c      write(115, 310) (u(i_u), i_u = 1, n_u)
-
-
       i_psi = 5
-c      write(115, *)
-c      write(115, *) "theta(i_theta, 5) = "
-c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
-
-
-
-
-
-
-
 
 
 *     ------------------------------
@@ -3228,7 +3175,7 @@ c      real tau_bounce(nxmx, nymx, n_theta_max)
 
       integer n_theta, n_u, n_psi
       integer i_theta, i_u, i_psi
-      real vc, vc_mks, sinthi, modbi, argi, vprl, dtau_sum, modbh,
+      real sinthi, modbi, argi, vprl, dtau_sum, modbh,
      &   dtau_tot_sum, dldb_tot_sum, dldb_tot1, dldb_tot2
 
 
@@ -3932,60 +3879,8 @@ c      write (115, *) "rwright = ", rwright
 c      write (115, *) "ytop = ", ytop
 c      write (115, *) "ybottom = ", ybottom
 
-!     ------------------------------
-!       read cql3d data in u and theta
-!     ------------------------------
-
-!       read (39, 9311) n_u
-!       read (39, 9311) n_psi
-!       read (39, 310) vc
-
-!        read (39, 310) (u(i_u), i_u = 1, n_u)
-!       read (39, 9311) (n_theta_(i_psi), i_psi = 1, n_psi)
-!        read (39, 310) ((theta_(i_theta, i_psi),
-!     &         i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
-
-!        read (39, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-
-
-      vc_mks = vc * 1.0e-02
-
-!     ---------------------
-!       Write some CQL3D data
-!     ---------------------
-
-c       WRITE (115,*)
-c       WRITE (115,*) "n_theta_max = ", n_theta_max
-c       WRITE (115,*) "n_u = ", n_u
-c       WRITE (115,*) "n_psi = ", n_psi
-c       WRITE (115,*) "n_theta_(i) = ", n_theta_
-c       WRITE (115,*) "vc = ", vc
-c       WRITE (115,*) "vc_mks = ", vc_mks, "m/sec"
-
-
-
-c       WRITE(115,*)
-
-c      write(115, *)
-c      write(115, *) "rho/a(i_psi)"
-c      write(115, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-
-c      write(115, *)
-c      write(115, *) "u(i_u) ="
-c      write(115, 310) (u(i_u), i_u = 1, n_u)
-
 
       i_psi = 5
-c      write(115, *)
-c      write(115, *) "theta(i_theta, 5) = "
-c      write(115, 310)(theta_(i_theta, i_psi),i_theta =1,n_theta_(i_psi))
-
-
-
-
-
-
-
 
 
 *     ------------------------------

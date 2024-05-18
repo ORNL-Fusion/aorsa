@@ -4,3 +4,12 @@ module load openmpi/3.0.4
 module load psfc/pgplot/gcc6.2.0/5.2.2 netcdf/4.6.3
 module load psfc/totalview
 #scalapack with rpath
+
+
+#[jcwright@node074 aorsa]$ module list
+#Currently Loaded Modulefiles:
+module use /home/software/psfc/modulefiles/
+module load intel/2020-04
+module load impi/2020-04
+module load psfc/netcdf/intel-17/4.4.1.1
+module load psfc/pgplot/gcc6.2.0/5.2.2

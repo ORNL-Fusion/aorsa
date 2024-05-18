@@ -1,0 +1,6 @@
+include compileropts.intel
+#-ftrapuv #there are a LOT of unitialized vars in aorsa
+FC = mpiifort -cpp -g -O0 -traceback  -debug all -mkl=cluster -module mod
+LIBS = -L$(PGPLOT_DIR) -lpgplot -L$(NETCDF_LIB) -L$(NETCDFF_LIB)  -lnetcdff  -lnetcdf
+LIBS +=  -L /usr/lib64 -lX11
+INCLUDE_DIRS = -I$(NETCDF_INC)  -I$(NETCDFF_INC)
