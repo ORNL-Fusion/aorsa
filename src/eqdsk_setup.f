@@ -1,4 +1,4 @@
-c
+c     
 c***************************************************************************
 c
 
@@ -791,7 +791,7 @@ c      write (6, 101) nky1, nky2
 
 c      write(29,1000)nkzm
 
-      qhat = qavg0  !jcw default value doesntseem to be used
+      qhat = qavg0  !jcw default value doesnt seem to be used
 
 
       t0e = t0e   * q
@@ -885,7 +885,7 @@ c      write (115, *) "ybottom = ", ybottom
      &   rmin, rmax, zmin, zmax, rmaxis, zmaxis, b0,
      &   rg, zg, psig, nxeqd, nyeqd, fpsi,
      &   psio, ro, zo, qpsi, eqdsk, psi_tor_max, myid)
-     
+      write(*,*) 'b0 from readeq_ga', b0
       psig2 = psig
       if(psig(nxeqd/2, nyeqd/2) .lt. 0.0) psig2 = -psig 
       
@@ -1124,7 +1124,9 @@ c         write(6, 1312)n, rhon(n)
             write(15,2163)i, capr(i), x(i), bx(i, j), by(i,j), bz(i,j)
          endif
       end do     
-        
+      if (abs(b0) .lt. 100.*epsilon(b0) ) then
+         b0 =  sqrt(bx(1,j)**2 + by(1,j)**2  + bz(1,j)**2 )
+      end if
      
       rho = 0.0
 *        ----------------------------------------------------
@@ -2175,7 +2177,6 @@ c      write(115, 2846) tmin
  1813 format(3x,"              xn10 = ",1p,e12.4," m-3   ")
  6813 format(3x,"              xne0 = ",1p,e12.4," m-3   ")
  1814 format(3x,"              xn20 = ",1p,e12.4," m-3   ")
- 1834 format(3x,"              xn30 = ",1p,e12.4," m-3   ")
  6834 format(3x,"              eta1 = ",1p,e12.4,"       ")
  6835 format(3x,"              eta2 = ",1p,e12.4,"       ")
  6836 format(3x,"              eta3 = ",1p,e12.4,"       ")
@@ -2463,18 +2464,20 @@ c            if(j .eq. jequat)write(6, 1312) i, r, br, bz, bphi, f
       end do
 
 *     --------
-*     Find b0:  JCW b0 is defined by eqdsk for this call, why change it?
+*     Find b0:  
 *     --------
-! define b0 to be consistent with F=R*BPHI on axis regardless of what eqdsk
+! JCW define b0 to be consistent with F=R*BPHI on axis regardless of what eqdsk
 ! head said. Rely on it for mirrors though, eventually replace with 
 ! d/dR grad psi
-!      if (eqtype/='mirror') then
-      if (r0>=1e-4) then !mirror
-         a = 1.e-04
+      if (r0>=1e-4) then !not mirror careful of magic number
+         a = 1.e-04 !look close to magnetic axis
          f = curv2(a, ma, psis, fs, ypf, sigma)
          b0 = f / r0
+      else
+         b0 = bmod(1,jequat)    ! get |B| at R=0, Z=0 assuming a mirror JCW review
       end if
 
+         
 
  1312 format(i10, 1p,8e12.4)
   310 format(1p,6e12.4)
@@ -3893,7 +3896,6 @@ c      write (115, *) "ybottom = ", ybottom
      &   rg, zg, psig, nxeqd, nyeqd, fpsi,
      &   psio, ro, zo, qpsi, eqdsk, psi_tor_max, nrhoeqd)
           
-     
       psig2 = psig
       if(psig(nxeqd/2, nyeqd/2) .lt. 0.0) psig2 = -psig 
       
@@ -4125,7 +4127,7 @@ c         write(6, 1312)n, rhon(n)
      &    qs, qs1, qsafety, r0, b0, 
      &    rho_tors, rho_tor2d)
      
-     
+
       if (myid .eq. 0) then
          write(6, *) 
      & "   i       R(x)        x          bx           by           bz" 
@@ -5201,8 +5203,6 @@ c      write(115, 2846) tmin
  1813 format(3x,"              xn10 = ",1p,e12.4," m-3   ")
  6813 format(3x,"              xne0 = ",1p,e12.4," m-3   ")
  1814 format(3x,"              xn20 = ",1p,e12.4," m-3   ")
- 1834 format(3x,"              xn30 = ",1p,e12.4," m-3   ")
- 2222 format(3x,A18," = ",1pe12.4,1X,A6)
  6834 format(3x,"              eta1 = ",1p,e12.4,"       ")
  6835 format(3x,"              eta2 = ",1p,e12.4,"       ")
  6836 format(3x,"              eta3 = ",1p,e12.4,"       ")

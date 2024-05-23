@@ -1064,6 +1064,7 @@
       xme = 9.11e-31
       zieps0 = zi * eps0
       alpha = sqrt(2. * xkt / xm)
+
       rhol = alpha / omgc
       xkphi = nphi / capr
       omgrfc = omgrf * (1. + zi * xnuomg)
@@ -1160,7 +1161,6 @@
 
          gamma = 0.5 * xkperp**2 * rhol**2
          rgamma = real(gamma)
-
          call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
          if (.false.) then
          if(rgamma .ge. 1.0e-08)
@@ -3804,7 +3804,8 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          nmax = lmax + 1
  !        call besic(gamma, nmax, b, ier)
          call cbesi(gamma, 0.0, 2, nmax, b,nz, ier)
-        if(ier .ne. 0)write(6,100) ier
+         if(ier .ne. 0)write(6,100) ier
+
 
          do l = 0, lmax
             xil(l) = b(l+1)

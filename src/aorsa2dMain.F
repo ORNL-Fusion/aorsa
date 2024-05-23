@@ -1841,24 +1841,23 @@ c         write(15, 7017)rhoi10
 
       if(igeom .eq. 5) then
 
-         if(eqdsk_special .eq. 0)
-     &      call eqdsk_setup(myid, eqdsk, nmodesx, nmodesy,
+         if(eqdsk_special .eq. 0) then
+            call eqdsk_setup(myid, eqdsk, nmodesx, nmodesy,
      &      rwleft, rwright, ytop, ybottom,
      &      rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,
      &      bxn, byn, bzn, bmod, psi_pol2d, rho_pol2d, qsafety,
      &      bmod_mid,  capr_bpol_mid2,  capr_bpol_mid, rho_tor2d,
      &      i_psi_eq, dldb_tot12, dldbavg, n_prof_flux, rhomax)
-
-         if(eqdsk_special .ne. 0)
-     &      call eqdsk_setup2(myid, eqdsk, nmodesx, nmodesy,
+         else
+            call eqdsk_setup2(myid, eqdsk, nmodesx, nmodesy,
      &      rwleft, rwright, ytop, ybottom,
      &      rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,
      &      bxn, byn, bzn, bmod, psi_pol2d, rho_pol2d, qsafety,
      &      bmod_mid,  capr_bpol_mid2,  capr_bpol_mid, rho_tor2d,
      &      i_psi_eq, dldb_tot12, dldbavg, n_prof_flux, rhomax)
-
+         end if
          call blacs_barrier(icontxt, 'All')
-
+!JCW b0 is a normalization and reference field strength
 
  9318    format(a128)
          rt = rmaxis
@@ -1964,12 +1963,12 @@ c            write(6, 1022)rnz
          omgci10 = qi1 * b0 / xmi1
          vthi10 = sqrt(2.0 * t0i / xmi1)
          rhoi10 = vthi10 / omgci10
-         if(myid .eq. 0)write(15, *)"rhoi10 = ", rhoi10
+         if(myid .eq. 0)write(15, *)"rhoi10 = ", rhoi10, t0i,xmi1
 
          omgci20 = qi2 * b0 / xmi2
          vthi20 = sqrt(2.0 * t0i2 / xmi2)
          rhoi20 = vthi20 / omgci20
-         if(myid .eq. 0)write(15, *)"rhoi20 = ", rhoi20
+         if(myid .eq. 0)write(15, *)"rhoi20 = ", rhoi20,b0
 
          omgci30 = qi3 * b0 / xmi3
          vthi30 = sqrt(2.0 * t0i3 / xmi3)
@@ -3370,6 +3369,16 @@ c                  antlc = pi / (xk0 * antlen)
          end do
       end do
 
+      if (i_cur_max==0) then  !probably an issue if this happens - JCW
+         write(*,*) 'warning check doesnt find max for i_cur_max'
+         i_cur_max=nnodex
+      end if
+      if (j_cur_max==0) then
+         write(*,*) 'warning check doesnt find max for j_cur_max'
+         j_cur_max=nnodex
+      end if      
+        
+      ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
 

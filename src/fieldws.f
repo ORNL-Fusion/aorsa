@@ -745,7 +745,7 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
 
 
       do n = 1, nkxplt  !JCW magic numbers fix
-         write(6, *) "n = ", n, "capd(nxmx/2, n) = ", capd(nxmx/2, n)
+         write(6, *) "n = ", n, "capd(nkxplt/2, n) = ",capd(nkxplt/2, n)
       end do
 
       read(38, 309) nnoderho
@@ -5130,7 +5130,7 @@ c Open new graphics device
 c        write(*,*) "prfin = ", prfin
 c        write(*,*) "omgrf = ", omgrf
 c        write(*,*) "period = ", period
-c         write(*,*) "time = ", time
+c         write(*,*) "tie = ", time
 c         write(*,*) "expiwt = ", expiwt
 
          do i = 1, nnodex
@@ -5761,6 +5761,9 @@ c--set up contour levels
 
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
 
+#ifdef DEBUG
+      write(*,*) 'title: ', title
+#endif
       write(6, *)"fmax = ", fmax, "   fmin = ", fmin
       write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
@@ -7612,6 +7615,9 @@ c--set up contour levels
 
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
 
+#ifdef DEBUG
+      write(*,*) 'title: ', title
+#endif
       write(6, *)"fmax = ", fmax, "   fmin = ", fmin
       write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 

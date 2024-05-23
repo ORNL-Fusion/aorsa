@@ -212,7 +212,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.F
 
 
 $(OBJ_DIR)/rf2x_setup2.o:    $(SRC_DIR)/rf2x_setup2.f 
-	                     $(COMPILE90_NOSAVE) -o $(OBJ_DIR)/rf2x_setup2.o \
+	                     $(COMPILE90_NOSAVE) ${WARNING_FLAGS} -o $(OBJ_DIR)/rf2x_setup2.o \
                              $(SRC_DIR)/rf2x_setup2.f $(INCLUDE_DIRS)
 
 $(OBJ_DIR)/profile_setup.o:  $(SRC_DIR)/profile_setup.f

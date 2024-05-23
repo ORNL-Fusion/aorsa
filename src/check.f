@@ -34,7 +34,14 @@ c
                          
          end do 
       end do
-            
+      if (nmin==0) then
+         write(*,*) 'warning check doesnt find min for n'
+         nmin=1
+      end if
+      if (mmin==0) then
+         write(*,*) 'warning check doesnt find min for m'
+         mmin=1
+      end if      
       n = nmin
       m = mmin
       

@@ -270,9 +270,14 @@ c      parameter (mmodesmax = 450)
 *     set default values of input data:
 *     ---------------------------------
       if (myid.eq.0) then
-         write(*,*) 'entering rf2x',allocated(rho_fine),size(rho_fine)
-      end if 
-      nnoderho = nnodex/2 !50  !JCW bad magic number
+         write(*,*) 'entering rf2x',allocated(rho_fine)
+         write(*,*) 'entering rf2x',allocated(capr_fine)
+      end if
+      if (allocated(capr_fine)) then
+         if (myid.eq.0) write(*,*) 'Warning, deallocating capr_fine'
+         deallocate(capr_fine)
+      end if
+      nnoderho = nmodesx/2 !50  !JCW bad magic number
 
       n_prof_flux = 1
 
@@ -612,17 +617,25 @@ c--      Note: the code gives slightly smoother results with dy/2.0 added
 
 c      rhomax = 1.0
       drho = rhomax / (nnoderho - 1)
+#ifdef DEBUG
+      write(*,*) 'rhomax',rhomax,drho
+#endif
       do n = 1, nnoderho
          rhon(n) = (n-1) * drho
       end do
 
-
+      if (myid.eq.0) then
+         write(*,*) 'entering2 rf2x',allocated(rho_fine),
+     &                              allocated(capr_fine)
+      end if
+      
       allocate(x_fine(nnodex_fine) )
       allocate(y_fine(nnodey_fine) )
       allocate(capr_fine(nnodex_fine) )
       allocate(rho_fine(nnodex_fine, nnodey_fine) )
       if (myid.eq.0) then
-         write(*,*) 'entering2 rf2x',allocated(rho_fine)
+         write(*,*) 'entering2b rf2x',allocated(rho_fine),
+     &                              allocated(capr_fine)
       end if
 
 *     -----------------------------
@@ -1520,6 +1533,9 @@ c
       do i = 1, nnodex_fine
          do j = 1, nnodey_fine
             n = int(rho_fine(i,j) / drho) + 1
+            if (n .le. 0) then
+               write(*,*) 'fvol',i,j,drho ,rho_fine(i,j),n
+            end if
             if(n .le. nnoderho)then
                fvol(n) = fvol(n) + dx_fine * dy_fine 
      &                              * twopi * capr_fine(i) * f_fine(i,j)
