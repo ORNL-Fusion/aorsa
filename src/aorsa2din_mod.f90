@@ -355,9 +355,8 @@
       integer :: nzfun = 1                !-----nzfun:  if(nzfun.eq.0) Simple Z function is used from ZFUN 
                                           !-----        if(nzfun.eq.1) Generalized Z function of Brambilla is used (default)
                                           !-----        if(nzfun.eq.2) Z function of Smithe is used by doing numerical integrals.
-                                          !-----        if(nzfun.eq.3) Z function table lookup of Smithe is used                                  
-                                          
-                                     
+                                          !-----        if(nzfun.eq.3) Z function table lookup of Smithe is used
+
       integer :: iabsorb = 2              !-----iabsorb not used
       integer :: itemp = 0                !-----itemp not used
       integer :: nfreqm = 1               !-----nfreqm not used
@@ -392,7 +391,7 @@
       
       real phase, zmin, zmax, phi0, amplt(20) 
                    
-      namelist/aorsa2din/nmodesx, nmodesy, nmodeslb, nwdot, lmax, lmaxe, ibessel, &
+      namelist/aorsa2din/eqtype,nmodesx, nmodesy, nmodeslb, nwdot, lmax, lmaxe, ibessel, &
      &    ti0, xnuead, xnu1ad, xnu2ad, rant, te0, yant,  &
      &    ti02, ti03, ti2lim, ti3lim, nuper, nupar, &
      &    ti04, ti05, ti06, ti4lim, ti5lim, ti6lim,  &

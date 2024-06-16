@@ -1992,7 +1992,7 @@ c            write(6, 1022)rnz
                bpol(i,j) = btau(i,j) * bmod(i,j)
                bzeta(i,j) = bzn(i,j)
                if (eqtype=='mirror') then !JCW mirror
-                  pitch(i,j) = btau(i,j) !1.e10 ! ~ inf JCW
+                  pitch(i,j) = bxn(i,j)/byn(i,j) !1.e10 ! ~ inf JCW
                else
                   pitch(i,j) = btau(i,j) / bzeta(i,j) 
                end if
@@ -3079,7 +3079,11 @@ c     &       capr(i)
 
       do n = 1, nnoderho
          rn(n) = rhon(n) * rmax
-         epsn(n) = rn(n) / rt
+         if (eqtype=='tokamak') then
+            epsn(n) = rn(n) / rt
+         else
+            epsn(n) = 100.0
+         end if
          dn(n) = rmax**2 / taue
 c         if (myid .eq. 0)write(6, 1312)n, rn(n), rhon(n), dn(n)
 c         if (myid .eq. 0)write(15, 1312)n, rn(n), rhon(n), dn(n)
@@ -3371,11 +3375,11 @@ c                  antlc = pi / (xk0 * antlen)
 
       if (i_cur_max==0) then  !probably an issue if this happens - JCW
          write(*,*) 'warning check doesnt find max for i_cur_max'
-         i_cur_max=nnodex
+         stop !i_cur_max=nnodex
       end if
       if (j_cur_max==0) then
          write(*,*) 'warning check doesnt find max for j_cur_max'
-         j_cur_max=nnodex
+         stop !j_cur_max=nnodex
       end if      
         
       ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
@@ -4455,7 +4459,7 @@ c     &                             + pressi4 pressi5 + pressi6
                   ! The bounce frequency for a mirror is just from axial dist.
                   omgti = vthi0 / (ytop - ybottom)
                   omgte = vthi0 / (ytop - ybottom)
-               else
+               else if (eqype=='tokamak') then
                   omgti =  vthi0 / (rt * qhat)
                   omgte =  vthe0 / (rt * qhat) !qhat is 0 for mirror but never changed from 1.0 initial value
                end if
@@ -9989,8 +9993,12 @@ c      go to 9945
             gamma_avg(n) = muhat_avg(n)
      &                   * bmod2_avg(n) / ipsi_avg(n)**2  !/rt)**2
          endif
-         beta_avg(n) = (epsn(n) / qsafety_avg(n))**2
-     &                              * (1. + 2.0 * qsafety_avg(n)**2)
+         if (eqtype=='tokamak') then
+            beta_avg(n) = (epsn(n) / qsafety_avg(n))**2
+     &           * (1. + 2.0 * qsafety_avg(n)**2)
+         else
+            beta_avg(n)=1.0
+         end if
       end do
 
 
@@ -10033,15 +10041,12 @@ c      go to 9945
 
       if(myid .eq. 0) write(6,  *)
       if(myid .eq. 0) write(15,  *)
-c      if(myid .eq. 0) write(6,  *)"        n    rhon   pitch angle(deg)"
-c      if(myid .eq. 0) write(15, *)"        n    rhon   pitch angle(deg)"
 
       if(myid .eq. 0)write(6, 76164)
       if(myid .eq. 0)write(15, 76164)
 76164 format(" ",5x,"   n  ",3x," rhon ",
-     &             6x," pitch",4x,"angle(deg)",4x,"      ",6x,"      ",
-     &             6x,"      ",6x,"      ",6x,"      ",6x,"      ",
-     &             6x,"      ")
+     &             6x," pitch",4x,"angle(deg)",4x,"betaavg",6x,"qavg  ",
+     &             6x,"epsn  ")
       if(myid .eq. 0) write(6,  *)
       if(myid .eq. 0) write(15,  *)
 
