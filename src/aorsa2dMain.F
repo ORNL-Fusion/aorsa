@@ -2000,7 +2000,7 @@ c            write(6, 1022)rnz
 *              ---------------------------
 *              Calculate rotation matrix U  !JCW
 *              ---------------------------
-
+!JCW check
                sqx = sqrt(1.0 - bxn(i,j)**2)
 
                uxx(i, j) =   sqx

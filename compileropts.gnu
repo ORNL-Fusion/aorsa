@@ -9,7 +9,6 @@ $(info $(GF_VER) "found" )
 else
 $(info $(GF_VER) "newer gcc" )
 C13_ARGS= -fallow-argument-mismatch  -fsanitize=address
-endif
 
 COMMON_OPTION  = -fno-automatic -fdefault-real-8 -fdefault-double-8 
 COMMON_OPTION2 = -fdefault-real-8 -fdefault-double-8 
