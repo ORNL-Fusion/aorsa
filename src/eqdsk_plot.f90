@@ -645,7 +645,11 @@
          xktemid(i) = xkte(i, jmid) / q
          xktimid(i) = xkti(i, jmid) / q
          qmid(i) = qsafety(i, jmid)
-         xiotamid(i) = 1.0 / qmid(i)
+         if (abs(qmid(i)) < 1.e-6) then
+            xiotamid(i) = 100.e0
+         else
+            xiotamid(i) = 1.0 / qmid(i)
+         end if
          bpmid(i) = btau(i, jmid)
       end do
 

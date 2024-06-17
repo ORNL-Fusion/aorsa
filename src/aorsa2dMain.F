@@ -4459,7 +4459,7 @@ c     &                             + pressi4 pressi5 + pressi6
                   ! The bounce frequency for a mirror is just from axial dist.
                   omgti = vthi0 / (ytop - ybottom)
                   omgte = vthi0 / (ytop - ybottom)
-               else if (eqype=='tokamak') then
+               else if (eqtype=='tokamak') then
                   omgti =  vthi0 / (rt * qhat)
                   omgte =  vthe0 / (rt * qhat) !qhat is 0 for mirror but never changed from 1.0 initial value
                end if
