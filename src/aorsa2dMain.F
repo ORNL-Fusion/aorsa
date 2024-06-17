@@ -1992,7 +1992,7 @@ c            write(6, 1022)rnz
                bpol(i,j) = btau(i,j) * bmod(i,j)
                bzeta(i,j) = bzn(i,j)
                if (eqtype=='mirror') then !JCW mirror
-                  pitch(i,j) = btau(i,j) !1.e10 ! ~ inf JCW
+                  pitch(i,j) = bxn(i,j)/byn(i,j) !1.e10 ! ~ inf JCW
                else
                   pitch(i,j) = btau(i,j) / bzeta(i,j) 
                end if
@@ -2000,7 +2000,7 @@ c            write(6, 1022)rnz
 *              ---------------------------
 *              Calculate rotation matrix U  !JCW
 *              ---------------------------
-
+!JCW check
                sqx = sqrt(1.0 - bxn(i,j)**2)
 
                uxx(i, j) =   sqx
