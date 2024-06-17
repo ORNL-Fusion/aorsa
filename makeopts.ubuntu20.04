@@ -1,6 +1,6 @@
 include compileropts.gnu
 
-FC = mpif90.openmpi
+FC = mpif90.openmpi -cpp -g
 
 # pgplot
 LIBS += -L/usr/lib/ -lpgplot 
