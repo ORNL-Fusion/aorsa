@@ -17,6 +17,6 @@ LIBS += -L $(SCALAPACK_DIR)/lib -lscalapack \
 
 LIBS += -L $(PGPLOT_DIR)/lib -lpgplot -lgiza
 
-LIBS +=  -L /opt/X11/lib -lX11
+#LIBS +=  -L /opt/X11/lib -lX11
 
 DEFS += -DGIZA -DDEBUG

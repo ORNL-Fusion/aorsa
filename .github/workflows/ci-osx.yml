@@ -9,8 +9,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Get xquartz pt 2
-      run: brew install --cask xquartz
     - name: find gfortran
       run:  ln -s  `brew --prefix`/bin/gfortran-13 `brew --prefix`/bin/gfortran
     - name: Install AORSA deps
