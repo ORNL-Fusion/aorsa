@@ -1,13 +1,16 @@
+#load these for gcc build and execution
 module use /nfs/psfclab001/software/modulefiles/
 module load gcc
-module load openmpi/3.0.4
-module load psfc/pgplot/gcc6.2.0/5.2.2 netcdf/4.6.3
+module load openmpi/4.0.4 #used by scalapack
+#module load psfc/pgplot/gcc6.2.0/5.2.2 
+module load netcdf/4.6.3
 module load psfc/totalview
 module use /nfs/psfclab001/software/modulefiles/psfc-spack
 module load giza
 #scalapack with rpath
 
 
+# load these for an intel build and execution
 #[jcwright@node074 aorsa]$ module list
 #Currently Loaded Modulefiles:
 module use /home/software/psfc/modulefiles/
@@ -15,3 +18,4 @@ module load intel/2020-04
 module load impi/2020-04
 module load psfc/netcdf/intel-17/4.4.1.1
 module load psfc/pgplot/gcc6.2.0/5.2.2
+module load giza
