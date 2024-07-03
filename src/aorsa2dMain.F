@@ -431,7 +431,8 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       complex :: djxdx, djydy
 
       real :: xprimec(nxmx), caprc(nxmx), xcourse(nxmx), capr(nxmx),
-     &   xprime(nxmx), x(nxmx), dx, dxc, drdx(nxmx), d2rdx2(nxmx)
+     &     xprime(nxmx), x(nxmx), dx, dxc, drdx(nxmx), d2rdx2(nxmx)
+      
       real :: dbxdx, dbxdy, dbydx, dbydy, dbphidx, dbphidy,
      &   d2bxdx2, d2bydx2, d2bzdx2,
      &   d2bxdxy, d2bydxy, d2bzdxy,
@@ -893,7 +894,8 @@ c       complex, dimension(:,:), allocatable :: Btmp
         real, dimension(:), allocatable :: rwork
 !fi
 
-        real :: srwork(2), sworkn(2)
+        real :: srwork(2)
+        complex :: sworkn(2)
         real :: pzlange, anorm, rcond
 
         logical, parameter :: use_fft = .true.
@@ -1119,6 +1121,9 @@ c       complex, dimension(:,:), allocatable :: Btmp
       allocate ( ebk(nkdim1 : nkdim2, mkdim1 : mkdim2) )
 
 
+!     Initialize arrays
+
+      capr=0; xprime=0; x=0; drdx=0; d2rdx2=0
 
 *     --------------------------
 *     setup parallel environment
@@ -1192,6 +1197,8 @@ c       complex, dimension(:,:), allocatable :: Btmp
          write(6,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
          write(15,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
          stop '** blacs not setup '
+      else if (nproc .ne. nprow*npcol) then
+         stop '** nproc is not equal to nprow*npcol '
       endif
 
       write(*,*) 'myid', myid !JCW temp
@@ -1306,7 +1313,7 @@ c       complex, dimension(:,:), allocatable :: Btmp
 *     ----------------------------------------------------------
          if (myid .eq. 0) then
             write(6,*) 'blacs started: nprow,npcol,nproc ',
-     &            nprow,npcol,nproc
+     &            nprow,npcol,nproc,icontxt
 c          write(15,*) 'blacs started: nprow,npcol,nproc ',
 c     &            nprow,npcol,nproc
          end if
@@ -2437,16 +2444,6 @@ c               gradprlb(i,j) = bmod(i,j) / capr(i)
       xwleft = rwleft - rt
       xwright = rwright - rt
 
-!JCW if rt is 0 or nearly zero, set min kpar to 1/4 (1/rmax)
-      if (rt > 1.e-3) then !1mm
-         akprl_min = 0.25 * abs(nphi / rt)
-      else 
-         akprl_min = 0.25 / capr(nnodex-1)
-c      akprl_min = abs(nphi / rt)
-      end if
-
-
-
 
 *     --------------------------------
 *     Distribution function from CQL3D
@@ -2891,6 +2888,16 @@ c         write(6, 1312)i, x(i), xprime(i), capr(i)
          xkphi(i) = nphi / capr(i)
       end do
 
+!     JCW if rt is 0 or nearly zero, set min kpar to 1/4 (1/rmax)
+      write(*,*) "rt :", rt,capr  !capr seems to be zero as well? capr defined later
+      if (rt > 1.e-3) then !1mm
+         akprl_min = 0.25 * abs(nphi / rt)
+      else 
+         akprl_min = 0.25 / capr(nnodex-1)
+c      akprl_min = abs(nphi / rt)
+      end if
+
+
       do i = 2, nnodex - 1
          drdx(i) = (capr(i+1) - capr(i-1) ) / (2.0 * dx)
          d2rdx2(i) = (capr(i+1) - 2.0 * capr(i) + capr(i-1)) / dx**2
@@ -3301,7 +3308,7 @@ c      end if
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
-               if (capr(i) .gt. rt) then
+               if (capr(i) .gt. rt) then !select lfs in tokamak
 
 *                 ------------------------------------------------
 *                 if(i_antenna .eq. 0) antenna current is Gaussian
@@ -3309,6 +3316,8 @@ c      end if
 
                   if (i_antenna .eq. 0) then
                      shapey = exp(- deltay**2 / yant_max**2)
+                     shapey =1.0
+                     write(*,*) 'shapey', i,j,y(j),deltay, yant,yant_max
                   end if
 
 
@@ -3330,6 +3339,7 @@ c                  antlc = pi / (xk0 * antlen)
                xjx(i,j) = xjantx * shapey  * gausspsi * Ix
                xjy(i,j) = xjanty * shapey  * gausspsi * Iy
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
+               write(*,*) "gausspsi", i,j,gausspsi
 
             end if
 
@@ -3357,6 +3367,8 @@ c                  antlc = pi / (xk0 * antlen)
 
          end do
       end do
+      write(*,*) 'shapey', shapey, deltay, yant_max, psiant,dpsiant
+
 
 *     ----------------------------
 *     find maximum antenna current
@@ -3382,7 +3394,9 @@ c                  antlc = pi / (xk0 * antlen)
          stop !j_cur_max=nnodex
       end if      
         
-      ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
+! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
+      write(*,*) 'current location',i_cur_max,j_cur_max,capr(i_cur_max),
+     &   cur_mod_max
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
 
@@ -4579,7 +4593,6 @@ c     &                             + pressi4 pressi5 + pressi6
            right = capk_perp + capk_x
 
             xnphi = bzn(i,j) * xkphi(i) / xk0
-c            acold(i,j) = xnphi**2 - capk_perp
 
             acold(i,j) = capk_perp - xnphi**2
             bcold(i,j) = left - xnphi**2
@@ -4591,7 +4604,6 @@ c            acold(i,j) = xnphi**2 - capk_perp
 
          end do
       end do
-
       call dgrate(xprime, kimag_cold, 1, nnodex, ans, nxmx)
       spa_cold = 1.0 - exp(-2.0 * ans)
 

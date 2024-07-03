@@ -2,6 +2,7 @@
       subroutine disp_ono(yplot)
     
       use size_mod
+      use  aorsa2din_mod, only:eqtype
 
       implicit none
 
@@ -46,7 +47,10 @@
       integer nblack, nred, nyellow, ngreen, nblue, ncyan, nmagenta,
      &   nwhite, norange
 
+      integer:: scalex=1.
       common/boundcom/rhoplasm
+
+      if (eqtype=='mirror') scalex=10.0
 
       open(unit=130, file='Ono_disp', status='unknown',
      &      form='formatted')
@@ -119,20 +123,20 @@ c      yplot = 0.05
 !     -------------------------------------------
 !     Plot contours of k**2 - slow root
 !     -------------------------------------------
-      titx = 'R (m)'
+      titx = 'R (m)*10'
       tity = 'Z (m)'
-      title = 'Re(k**2) - slow root'
-      call ezconc(capr, y, real(xkperp2_slow), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
+      title = 'Re(k^{2}) - slow root'
+      call ezconc(capr*scalex, y, real(xkperp2_slow), ff, nnodex, 
+     &   nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity, iflag)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
      &   nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
       title = 'k_{parallel}'
-      call ezconc(capr, y, xkprl, ff, nnodex, nnodey, numb,
+      call ezconc(capr*scalex, y, xkprl, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
      &   nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity)
 
@@ -151,7 +155,7 @@ c      yplot = 0.05
      &   nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity)
 
-      title = 'Im(k**2) - slow root'
+      title = 'Im(k/u2/d) - slow root'
       call ezconc(capr, y, aimag(xkperp2_slow), ff, nnodex, nnodey,numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,

@@ -132,7 +132,8 @@ c
       subroutine fieldws(dfquotient, rmin_zoom, rmax_zoom)
 
       use size_mod
-
+      use aorsa2din_mod , only:nzeta_wdoti
+      
       implicit none
 
       character(32):: title
@@ -1102,8 +1103,8 @@ c
      &   nxmx, nymx, nlevmax, title, titx, tity)
 
 
-      title= 'Flux average bmod_mid'
-      titll= 'bmod_mid (T)'
+      title= 'Flux average bmod_{mid}'
+      titll= 'bmod_{mid} (T)'
       titlr='       '
 
       call ezplot0(title, titll, titlr, rhon_half, bmod_midavg,
@@ -1309,11 +1310,11 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
      &   redotj5avg_int, redotj6avg_int, redotjeavg_int,
      &   nnoderho, nrhomax)
 
-      write(15, *)
-      write(15, *) 'Flux surface driven current'
-      write(15, *)
-      write(15, *) '        n      rho       J (A/m2)     I (A)'
-      write(15, *)
+c      write(15, *)
+c      write(15, *) 'Flux surface driven current'
+c      write(15, *)
+c      write(15, *) '        n      rho       J (A/m2)     I (A)'
+c      write(15, *)
 
 c      do n = 1, nnoderho_half
 c        write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
@@ -1385,6 +1386,7 @@ c      end do
       titlr= '       '
       titlb= 'rho'
 
+      if (nzeta_wdoti/=0) then
       call ezplot7(title, titll, titlr, titlb, rhon_half,
      &   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
      &   wdoti6avg, wdoteavg, nnoderho_half, nrhomax)
@@ -1394,18 +1396,18 @@ c      end do
       titlr= '       '
       titlb= 'rho'
 
-      wdoteavg = 0.0
+!      wdoteavg = 0.0  !JCW why?
 
-      if (prfin .ne. 0.0)
-     &   wdoteavg = wdoteavg / prfin * 1.0e+06 * 1.0e-06
+!      if (prfin .ne. 0.0)
+!     &   wdoteavg = wdoteavg / prfin * 1.0e+06 * 1.0e-06
 
-      call ezplot1_red(title, titll, titlr, rhon_half, wdoteavg,
-     &    nnoderho_half, nrhomax)
+!      call ezplot1_red(title, titll, titlr, rhon_half, wdoteavg,
+!     &    nnoderho_half, nrhomax)
 
-      title= 'Integrated wdot'
-      titll= 'P (Watts)'
-      titlr= '       '
-      titlb= 'rho'
+!      title= 'Integrated wdot'
+!      titll= 'P (Watts)'
+!      titlr= '       '
+!      titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon,
      &   wdoti1avg_int, wdoti2avg_int, wdoti3avg_int, wdoti4avg_int,
@@ -1424,12 +1426,14 @@ c      end do
       titll= 'wdoti2 (watts/m3)'
       titlr= '       '
       titlb= 'rho'
-
+      
       call ezplot1(title, titll, titlr, rhon_half, wdoti2avg,
      &    nnoderho_half, nrhomax)
 
+      end if
+      
       title= 'Flux average Toroidal force'
-      titll= 'force (Nt/m3)'
+      titll= 'force (Nt/m^{3})'
       titlr='       '
 
       call ezplot7(title, titll, titlr, titlb, rhon_half,
@@ -3604,17 +3608,17 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
          write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
       end do
 
-      write(15, *)
-      write(15, *) 'Mod E in the midplane'
-      write(15, *)
-      write(15, *) '        i      R(i)       mod_E_mid      '
-      write(15, *)
+c      write(15, *)
+c      write(15, *) 'Mod E in the midplane'
+c      write(15, *)
+c      write(15, *) '        i      R(i)       mod_E_mid      '
+c      write(15, *)
 
-      write(6, *)
-      write(6, *) 'Mod E in the midplane'
-      write(6, *)
-      write(6, *) '        i      R(i)       mod_E_mid      '
-      write(6, *)
+c      write(6, *)
+c      write(6, *) 'Mod E in the midplane'
+c      write(6, *)
+c      write(6, *) '        i      R(i)       mod_E_mid      '
+c      write(6, *)
 
 c      do i = 1, nnodex
 c        write (15, 1312) i, capr(i), mod_E_mid(i)
@@ -6507,7 +6511,7 @@ c
 
       real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     &     y5(nrmax), y6(nrmax), ye(nrmax)
+     &       y5(nrmax), y6(nrmax), ye(nrmax)
       real:: y1max, y2max, y3max, y4max, y5max, y6max, yemax
       real:: y1min, y2min, y3min, y4min, y5min, y6min, yemin
       real:: ymin, ymax
@@ -6518,12 +6522,12 @@ c
       character(32):: titlb
 
       integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
-     &    ncolelec, ncolln2, ncollin, ncolbrd
+     &   ncolelec, ncolln2, ncollin, ncolbrd
 
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
      &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
      &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-
+      write(*,*) 'DEBUG ezplot7', title
       nwhite = 0
       nblack = 1
       nred = 2
@@ -6625,7 +6629,7 @@ c
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
      &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
      &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-
+      write(*,*) 'DEBUG ezplot70', title
       nwhite = 0
       nblack = 1
       nred = 2

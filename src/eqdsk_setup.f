@@ -2605,9 +2605,8 @@ c
           rhoeqdsk(j) = sqrt(abs(2. * sum / beqd))
       end do
       if (qpsi(1)==0.) then
-         if (myid==0) then
-            write(*,*) 'Mirror eqdsk detected using sqrt(pol mesh)'
-         end if
+         if (myid==0) write(*,*)
+     &    'Mirror eqdsk detected using sqrt(pol mesh) for rhoeqdsk'
          rhoeqdsk=sqrt(psigrid)
       end if
       rhomax = rhoeqdsk(1)
@@ -5152,7 +5151,10 @@ c          write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
 *     ----------------------- 
       t1 = second1(dummy)
       
-      if(myid .eq. 0)call eqdsk_plot
+      if(myid .eq. 0) then
+         call eqdsk_plot
+         write(*,*) 'calling eqdsk_plot in eqdsk_setup'
+      end if
          
       tmin = (second1(dummy) - t1) / 60.
 c      write(6 , 2846) tmin
