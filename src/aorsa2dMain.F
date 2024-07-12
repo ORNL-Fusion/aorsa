@@ -3317,7 +3317,9 @@ c      end if
                   if (i_antenna .eq. 0) then
                      shapey = exp(- deltay**2 / yant_max**2)
                      shapey =1.0
-                     write(*,*) 'shapey', i,j,y(j),deltay, yant,yant_max
+                  if (myid==0) then
+                  write(*,*) 'shapey-a', i,j,y(j),deltay, yant,yant_max
+                  end if
                   end if
 
 
@@ -3339,8 +3341,10 @@ c                  antlc = pi / (xk0 * antlen)
                xjx(i,j) = xjantx * shapey  * gausspsi * Ix
                xjy(i,j) = xjanty * shapey  * gausspsi * Iy
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
-               write(*,*) "gausspsi", i,j,gausspsi
 
+               if (myid==0) then               
+               write(*,*) "gausspsi", i,j,gausspsi
+               end if
             end if
 
             if(i_antenna .eq. 2) then
@@ -3396,7 +3400,7 @@ c                  antlc = pi / (xk0 * antlen)
         
 ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
       write(*,*) 'current location',i_cur_max,j_cur_max,capr(i_cur_max),
-     &   cur_mod_max
+     &   cur_mod_max,capr(i_cur_max),y(j)
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
 
@@ -5235,7 +5239,7 @@ c           call flush
 
       call descinit( desc_amat, nrow,ncol, mb,nb, 0,0, icontxt,
      &         lld, info )
-      if (.true.) then !(info.ne.0) then
+      if (.false.) then !(info.ne.0) then
         write(6,*) '** descinit for amat returns info = ', info
         write(6,*) 'lld = ', lld
         write(15,*) '** descinit for amat returns info = ', info
@@ -5248,7 +5252,7 @@ c           call flush
 !if not static
       call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond,
      &          sworkn, -1, srwork, -1, info)
-      write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
+!      write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
       lwork = int(sworkn(1))
       lrwork = int(srwork(1)) !jcw temp
 
@@ -5559,7 +5563,7 @@ c              if (myid .eq. 0) then
                ! dead block for debugging : JCW 2023 (who didnt code this block)
                go to 7070
 
-c              if(myid .eq. 0) then
+              if(myid .eq. 0) then
 
                   open(unit=116,file='trace',status='unknown',
      &                                                 form='formatted')
@@ -5578,7 +5582,7 @@ c              if(myid .eq. 0) then
 
                   close (116)
                   call trace_plot
-c               end if
+               end if
 
                call blacs_barrier(icontxt, 'All')
                stop 3
@@ -9702,9 +9706,14 @@ c           if(nnode_local .le. 0)xjprl(i,j) = redotj_ehst(i,j)
       call sgrator(x, y, redotjt, 1, nnodex, 1, nnodey, pedotjt,
      &   capr, rt, nxmx, nymx)
 
-      call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
-     &   capr, rt, nxmx, nymx, j_cur_max)
-
+      if (eqtype=='mirror') then !JCW mirror
+         call sgrator1(x, y, xjz, 1, nnodex, 1, nnodey, i_ant,
+     &        capr, rt, nxmx, nymx, j_cur_max)
+      else
+         call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
+     &        capr, rt, nxmx, nymx, j_cur_max)
+      end if
+      
       call sgrator(x, y, xjprl, 1, nnodex, 1, nnodey, xjtot,
      &   capr, rt,  nxmx, nymx)
 
@@ -10318,8 +10327,8 @@ c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
      &                    pedotj6, pcedotj6,
      &                    pedotjs, pcedotjs,
      &                    pedotjt, pcedotjt
-
-         z_load = pedotjt / (i_ant**2)
+ 
+        z_load = pedotjt / (i_ant**2)
          write(15, 169)
          write(15, 1148) i_ant
  1148 format(3x, "                  antenna current = ",1e12.5," Amps")

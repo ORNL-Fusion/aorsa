@@ -138,8 +138,7 @@ c
 
       real:: cnmod2(nphimx),xnphi(nphimx),pabs(nphimx), jdriven(nphimx)
       real:: spa(nphimx)
-      real:: pabs_weight, pabs_sum, prfin, pscale, j_driven_weight
-      real:: jdriven_weight, jdriven_sum
+      real:: prfin
 
       real:: xplot(nxplot_dim), yplot(nyplot_dim)
       real:: xplotm(nxplot_dim), yplotm(nyplot_dim)
