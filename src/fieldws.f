@@ -132,7 +132,8 @@ c
       subroutine fieldws(dfquotient, rmin_zoom, rmax_zoom)
 
       use size_mod
-
+      use aorsa2din_mod , only:nzeta_wdoti, eqtype
+      
       implicit none
 
       character(32):: title
@@ -241,7 +242,7 @@ c
       real:: capr_bpol_mid2(nxmx, nymx), bmod_midavg(nrhomax)
       real:: bmod_mid(nxmx, nymx), bratio(nxmx, nymx)
 
-      real:: xkxsav(nkpltdim), xkysav(mkpltdim), pscale
+      real:: xkxsav(nkpltdim), xkysav(mkpltdim)
       real:: wdoti1avg(nrhomax), wdoti2avg(nrhomax), wdoti3avg(nrhomax)
       real:: wdoti4avg(nrhomax), wdoti5avg(nrhomax), wdoti6avg(nrhomax)
       real:: zdummy(3)
@@ -417,18 +418,19 @@ c
       real:: ff(101)
       real:: q, omgrf, xk0, n0, clight, xmu0, eps0, rhoplasm
       real:: period, pi, time, dt
-      complex:: expiwt
       real:: temax, temin, timin, tmin, tmax, timax, caprmaxp,
      &   caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
-      real:: bpmin, bpmax
+      real:: bpmin, bpmax, scalex
       integer:: nnodex, j, i, nnodey, numb, jmid, jcut, jmid_sav
       complex:: zi
 
-      namelist/fieldin/ibackground, xminz, xmaxz, yminz, ymaxz, logmax,
-     &   ipage,
-     &   numb, ycut, i_psi1, i_psi2, i_psi3, i_psi4, i_psi5, i_psi6
+
+!--------------End declarations-------------------
+      scalex = 1.0
+      if (eqtype=='mirror') scalex=10.0 !JCW mirror maybe make namelist input
 
 
+      
       allocate (xkperp_cold(nxmx, nymx), acold(nxmx, nymx),
      &   bcold(nxmx, nymx), ccold(nxmx, nymx),
      &   ex(nxmx, nymx), ey(nxmx, nymx), ez(nxmx, nymx),
@@ -1034,58 +1036,58 @@ c
 
       title = 'Real z0_table1'
       call ezconc(zetai_table, dKdL_table, real(z0_table1),
-     &   ff, nmax, mmax,
-     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)
+     &     ff, nmax, mmax, numb, ntable, mtable, nlevmax,
+     &     title, titx, tity, iflag,1.0)
 
       title = 'Imag z0_table1'
       call ezconc(zetai_table, dKdL_table, aimag(z0_table1),
      &    ff, nmax, mmax,
-     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
       title = 'Real z1_table1'
       call ezconc(zetai_table, dKdL_table, real(z1_table1),
      &   ff, nmax, mmax,
-     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
       title = 'Imag z1_table1'
       call ezconc(zetai_table, dKdL_table, aimag(z1_table1),
      &    ff, nmax, mmax,
-     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
       title = 'Real z2_table1'
       call ezconc(zetai_table, dKdL_table, real(z2_table1),
      &   ff, nmax, mmax,
-     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
       title = 'Imag z2_table1'
       call ezconc(zetai_table, dKdL_table, aimag(z2_table1),
      &    ff, nmax, mmax,
-     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag)
+     &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
       titx = 'R (m)'
       tity = 'Z (m)'
 
-      title = 'bmod_mid surfaces'
+      title = 'bmod_{mid} surfaces'
       call ezconc(capr, y, bmod_mid, ff, nnodex, nnodey, 50,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title = 'bratio surfaces'
       call ezconc(capr, y, bratio, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'ipsi'
       call ezconc(capr, y, ipsi, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &    nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title= 'I(psi) '
       titll= 'I(psi) m-T'
@@ -1094,16 +1096,16 @@ c
      &    nnoderho, nrhomax)
 
 
-      title = 'capr_bpol_mid2 surfaces'
+      title = 'R*B_{pol}-mid2 surfaces'
       call ezconc(capr, y, capr_bpol_mid2, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
-      title= 'Flux average bmod_mid'
-      titll= 'bmod_mid (T)'
+      title= '<|B|_{mid}>'
+      titll= 'bmod_{mid} (T)'
       titlr='       '
 
       call ezplot0(title, titll, titlr, rhon_half, bmod_midavg,
@@ -1117,7 +1119,7 @@ c
      &    nnoderho_half, nrhomax)
 
 
-      title= 'Flux average capr_bpol'
+      title= '<R*B_{pol}>'
       titll= 'capr_bpol (mT)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, capr_bpol_midavg,
@@ -1276,10 +1278,10 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
 
       title = 'Contour plot of density'
       call ezconc(capr, y, xn, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title= 'Flux surface average redotj'
       titll= 'redotj (watts/m3)'
@@ -1309,11 +1311,11 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
      &   redotj5avg_int, redotj6avg_int, redotjeavg_int,
      &   nnoderho, nrhomax)
 
-      write(15, *)
-      write(15, *) 'Flux surface driven current'
-      write(15, *)
-      write(15, *) '        n      rho       J (A/m2)     I (A)'
-      write(15, *)
+c      write(15, *)
+c      write(15, *) 'Flux surface driven current'
+c      write(15, *)
+c      write(15, *) '        n      rho       J (A/m2)     I (A)'
+c      write(15, *)
 
 c      do n = 1, nnoderho_half
 c        write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
@@ -1385,6 +1387,7 @@ c      end do
       titlr= '       '
       titlb= 'rho'
 
+      if (nzeta_wdoti/=0) then
       call ezplot7(title, titll, titlr, titlb, rhon_half,
      &   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
      &   wdoti6avg, wdoteavg, nnoderho_half, nrhomax)
@@ -1394,18 +1397,18 @@ c      end do
       titlr= '       '
       titlb= 'rho'
 
-      wdoteavg = 0.0
+!      wdoteavg = 0.0  !JCW why?
 
-      if (prfin .ne. 0.0)
-     &   wdoteavg = wdoteavg / prfin * 1.0e+06 * 1.0e-06
+!      if (prfin .ne. 0.0)
+!     &   wdoteavg = wdoteavg / prfin * 1.0e+06 * 1.0e-06
 
-      call ezplot1_red(title, titll, titlr, rhon_half, wdoteavg,
-     &    nnoderho_half, nrhomax)
+!      call ezplot1_red(title, titll, titlr, rhon_half, wdoteavg,
+!     &    nnoderho_half, nrhomax)
 
-      title= 'Integrated wdot'
-      titll= 'P (Watts)'
-      titlr= '       '
-      titlb= 'rho'
+!      title= 'Integrated wdot'
+!      titll= 'P (Watts)'
+!      titlr= '       '
+!      titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon,
      &   wdoti1avg_int, wdoti2avg_int, wdoti3avg_int, wdoti4avg_int,
@@ -1424,12 +1427,14 @@ c      end do
       titll= 'wdoti2 (watts/m3)'
       titlr= '       '
       titlb= 'rho'
-
+      
       call ezplot1(title, titll, titlr, rhon_half, wdoti2avg,
      &    nnoderho_half, nrhomax)
 
+      end if
+      
       title= 'Flux average Toroidal force'
-      titll= 'force (Nt/m3)'
+      titll= 'force (Nt/m^{3})'
       titlr='       '
 
       call ezplot7(title, titll, titlr, titlb, rhon_half,
@@ -1456,10 +1461,10 @@ c      end do
 
       title = 'Toroidal angular speed G(psi)'
       call ezconc(capr, y, gpsi, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 *     -----------------------
 *     plot G(psi) in midplane
@@ -1484,10 +1489,10 @@ c      end do
 
       title = 'Poloidal speed / B_pol = K(psi)'
       call ezconc(capr, y, kpsi, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 *     -----------------------
 *     plot K(psi) in midplane
@@ -1512,10 +1517,10 @@ c      end do
 
       title = 'Toroidal velocity (uzeta)'
       call ezconc(capr, y, uzeta, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 *     -----------------------
 *     plot uzeta in midplane
@@ -1542,10 +1547,10 @@ c      end do
 
       title = 'Poloidal velocity (utheta)'
       call ezconc(capr, y, utheta, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 *     -----------------------
 *     plot utheta in midplane
@@ -1576,10 +1581,10 @@ c      end do
 
       title = 'ExB shearing rate (omgexb)'
       call ezconc(capr, y, omgexb, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 *     -----------------------
 *     plot omgexb in midplane
@@ -1647,10 +1652,10 @@ c      end do
 
       title = 'collisionality (nu_star)'
       call ezconc(capr, y, nu_star, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -1816,10 +1821,10 @@ c
 
       title = 'Contour plot of psi'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 *     --------------------
 *     plot psi in midplane
@@ -1849,20 +1854,20 @@ c
 
       title = 'Mod 1/B surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
 
       title = 'Contour plot of theta'
       call ezconc(capr, y, theta, ff, nnodex, nnodey, 28,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 c--   Plot xkperp_cold:
@@ -1876,17 +1881,17 @@ c--   Plot xkperp_cold:
 
       title = 'Re xkperp_cold'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, 1, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'Im xkperp_cold'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, 1, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 *     --------------------------------------
@@ -1933,10 +1938,10 @@ c--   Plot xkperp_cold2 in 2D:
 
       title = 'Re xkperp_cold2'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, 1, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 c--   Plot Acold in 2D:
@@ -1949,10 +1954,10 @@ c--   Plot Acold in 2D:
 
       title = 'Re Acold (resonance)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, 1, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -1966,10 +1971,10 @@ c--   Plot Bcold in 2D:(slow wave cutoff)
 
       title = 'Re Bcold (slow wave cutoff)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, 1, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -1983,10 +1988,10 @@ c--   Plot Ccold in 2D:(fast wave cutoff)
 
       title = 'Re Ccold (fast wave cutoff)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, 1, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c      call ezconz(capr, y, freal, ff, nnodex, nnodey, 1,
 c     &   nxmx, nymx, nlevmax, title, titx, tity)
@@ -2004,10 +2009,10 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Majority resonant surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, 15,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &  nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb,nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       do i = 1, nnodex
@@ -2018,10 +2023,10 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Minority resonant surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, 15,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       do i = 1, nnodex
@@ -2032,10 +2037,10 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Species 3 resonant surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, 15,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -2047,30 +2052,30 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
       call ezconc1(capr, y, fmod, ff, nnodex, nnodey, 1,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title = 'Contour plot of Janty'
       call ezconc(capr, y, xjy, ff, nnodex, nnodey, 2,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'Contour plot of Jantx'
       call ezconc(capr, y, xjx, ff, nnodex, nnodey, 2,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'Contour plot of Jantz'
       call ezconc(capr, y, xjz, ff, nnodex, nnodey, 2,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &    nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -2082,10 +2087,10 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Real E alpha'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c      call ezconz(capr, y, freal, ff, nnodex, nnodey, numb,
 c     &   nxmx, nymx, nlevmax, title, titx, tity)
@@ -2152,10 +2157,10 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Imag E alpha'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -2165,18 +2170,18 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
       end do
       title = 'Real Ebeta'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title = 'Imag Ebeta'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -2188,17 +2193,17 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
       end do
       title = 'Real Eb'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
-      call pseudo(capr, y, freal, ff, nnodex, nnodey, numb,
+      call pseudo(capr*scalex, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       write(140, 3966)
@@ -2214,10 +2219,10 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
 
       title = 'Imag Eb'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c
 c--plot plasma current (electrons)
@@ -2231,10 +2236,10 @@ c
       end do
       title = 'Real Je_alpha'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       do i = 1, nnodex
@@ -2245,10 +2250,10 @@ c
       end do
       title = 'Real Je_beta'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       do i = 1, nnodex
@@ -2259,10 +2264,10 @@ c
       end do
       title = 'Real Je_b'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c
 c--plot E alpha in midplane
@@ -2453,10 +2458,10 @@ c
 
       title = '1/2 Re JedotE'
       call ezconc(capr, y, redotje, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -2468,21 +2473,21 @@ c
 
       title = '1/2 Re J1dotE'
       call ezconc(capr, y, redotj1, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
       title = '1/2 Re J2dotE'
 
       call ezconc(capr, y, redotj2, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 
       if (iflag .eq. 0) call boundary  (capr, y, rho, ff,
-     &   nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodex, nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c
 c**********************************************************
@@ -2492,10 +2497,10 @@ c
 
       title = '1/2 Re J3dotE'
       call ezconc(capr, y, redotj3, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 c
@@ -2506,24 +2511,24 @@ c
 
       title = '1/2 Re J4dotE'
       call ezconc(capr, y, redotj4, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = '1/2 Re J5dotE'
       call ezconc(capr, y, redotj5, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = '1/2 Re J6dotE'
       call ezconc(capr, y, redotj6, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c
 c***********************************************************
@@ -2534,10 +2539,10 @@ c
 
       title = '1/2 Re JsdotE'
       call ezconc(capr, y, redotjs, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c
 c***********************************************************
@@ -2554,17 +2559,17 @@ c
 
       title = '1/2 Re JdotE'
       call ezconc(capr, y, redotjt, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'div Q'
       call ezconc(capr, y, divq, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       if (dfquotient .eq. 0.0) then
          numb = 20
@@ -2629,10 +2634,10 @@ c      CALL FREDDY(capd, nnodex, nkxplt, 1.0, 25.0)
 
       title = 'wdote'
       call ezconc(capr, y,wdote, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -2657,18 +2662,18 @@ c        white background
 
       title = 'wdoti1'
       call ezconc(capr, y,wdoti1, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title = 'wdoti2'
       call ezconc(capr, y,wdoti2, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       write(140, 3849)
  3849 format('SCALARS wdoti2 float 1')
@@ -2706,41 +2711,41 @@ c        white background
 
       title = 'wdoti3'
       call ezconc(capr, y,wdoti3, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'wdoti4'
       call ezconc(capr, y,wdoti4, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'wdoti5'
       call ezconc(capr, y,wdoti5, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title = 'wdot_tot'
       call ezconc(capr, y,wdott, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
       title = 'Toroidal force'
       call ezconc(capr, y, fz0, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -2755,7 +2760,8 @@ c        white background
       tity = 'ky (m-1)'
       title = 'Mod E alpha(kx, ky)'
       call ezconc(xkxsav, xkysav, exkmod, ff, nkxplt, nkyplt, numb,
-     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
       title='3-D plot of Mod E alpha(kx,ky)'
       titz='Mod E alpha(kx,ky)'
@@ -2807,7 +2813,8 @@ c--   plot log of E alpha
       tity = 'ky (m-1)'
       title = 'log E alpha(kx, ky)'
       call ezconc(xkxsav, xkysav, exklog, ff, nkxplt, nkyplt, numb,
-     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
       title='3-D plot of log E alpha(kx,ky)'
       titz='log E alpha(kx,ky)'
@@ -2818,7 +2825,8 @@ c--   plot log of E alpha
 
       title = 'Mod E beta(kx, ky)'
       call ezconc(xkxsav, xkysav, eykmod, ff, nkxplt, nkyplt, numb,
-     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
       title='3-D plot of Mod E beta(kx,ky)'
       titz='Mod E beta(kx,ky)'
@@ -2862,7 +2870,8 @@ c--   plot log of E beta
 
       title = 'log E beta(kx, ky)'
       call ezconc(xkxsav, xkysav, eyklog, ff, nkxplt, nkyplt, numb,
-     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
       title='3-D plot of log E beta(kx,ky)'
       titz='log E beta(kx,ky)'
@@ -2873,7 +2882,8 @@ c--   plot log of E beta
 
       title = 'Mod E b(kx, ky)'
       call ezconc(xkxsav, xkysav, ezkmod, ff, nkxplt, nkyplt, numb,
-     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
 
 !        ---------------------------------------------
@@ -2951,7 +2961,8 @@ c--   plot log of Eb
 
       title = 'log E b(kx, ky)'
       call ezconc(xkxsav, xkysav, ezklog, ff, nkxplt, nkyplt, numb,
-     &   nkpltdim, mkpltdim, nlevmax, title, titx, tity, iflag)
+     &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
       title='3-D plot of log E b(kx,ky)'
       titz='Mod E b(kx,ky)'
@@ -2973,10 +2984,10 @@ c--   plot log of Eb
 
       title = 'Mod E alpha'
       call ezconc(capr, y, mod_Ealpha, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title='3-D plot of Mod E alpha'
@@ -2993,10 +3004,10 @@ c--   plot log of Eb
 
       title = 'Mod E beta'
       call ezconc(capr, y, mod_Ebeta, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title='3-D plot of Mod E beta'
       titz='Mod Ebeta'
@@ -3017,10 +3028,10 @@ c--   plot log of Eb
 
       title = ' Mod Eb'
       call ezconc(capr, y, mod_Eb, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title='3-D plot of Mod Eb'
       titz='Mod Eb'
@@ -3071,10 +3082,10 @@ c            end if
 
       title = ' Mod(E_plus)'
       call ezconc(capr, y, mod_Eplus, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title='3-D plot of Mod Eplus'
@@ -3106,10 +3117,10 @@ c            end if
 
       title = ' Mod(E_minus)'
       call ezconc(capr, y, mod_Eminus, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title='3-D plot of Mod Eminus'
@@ -3145,10 +3156,10 @@ c            end if
 
       title = 'real(E_plus)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       write(140, 3950)
  3950 format('SCALARS re_eplus float 1')
@@ -3175,10 +3186,10 @@ c            end if
 
       title = 'Real(E_minus)'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       write(140, 3952)
  3952 format('SCALARS re_eminus float 1')
@@ -3204,10 +3215,10 @@ c            end if
 
       title = 'B toroidal'
       call ezconc(capr, y, bzeta, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 c      title='3-D plot of B toroidal'
 c      titz='Btor'
@@ -3224,10 +3235,10 @@ c      end do
 
       title = 'B poloidal'
       call ezconc(capr, y, btau, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title='3-D plot of B poloidal'
       titz='Bpol'
@@ -3247,24 +3258,24 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
 
 c      title = 'Spx'
 c      call ezconc(capr, y, spx, ff, nnodex, nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     &   nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
+c     &     scalex)
 
 c      title = 'Spy'
 c      call ezconc(capr, y, spy, ff, nnodex, nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     &   nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
+c     &     scalex)
 
 c      title = 'Spz'
 c      call ezconc(capr, y, spz, ff, nnodex, nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     &   nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity)
+c     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
+c     &     scalex)
 
 
 *     --------------
@@ -3604,17 +3615,17 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
          write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
       end do
 
-      write(15, *)
-      write(15, *) 'Mod E in the midplane'
-      write(15, *)
-      write(15, *) '        i      R(i)       mod_E_mid      '
-      write(15, *)
+c      write(15, *)
+c      write(15, *) 'Mod E in the midplane'
+c      write(15, *)
+c      write(15, *) '        i      R(i)       mod_E_mid      '
+c      write(15, *)
 
-      write(6, *)
-      write(6, *) 'Mod E in the midplane'
-      write(6, *)
-      write(6, *) '        i      R(i)       mod_E_mid      '
-      write(6, *)
+c      write(6, *)
+c      write(6, *) 'Mod E in the midplane'
+c      write(6, *)
+c      write(6, *) '        i      R(i)       mod_E_mid      '
+c      write(6, *)
 
 c      do i = 1, nnodex
 c        write (15, 1312) i, capr(i), mod_E_mid(i)
@@ -4033,7 +4044,7 @@ c      end do
 
          title = 'bqlavg_psi1(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
 
 !        ---------------------------------------------
@@ -4070,7 +4081,7 @@ c      end do
 
          title = 'bqlavg_psi2(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(142, 4852)
  4852    format('SCALARS bqlavg_psi2 float 1')
@@ -4093,7 +4104,7 @@ c      end do
 
          title = 'bqlavg_psi3(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(142, 4853)
  4853    format('SCALARS bqlavg_psi3 float 1')
@@ -4115,7 +4126,7 @@ c      end do
 
          title = 'bqlavg_psi4(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(142, 4854)
  4854    format('SCALARS bqlavg_psi4 float 1')
@@ -4138,7 +4149,7 @@ c      end do
 
          title = 'bqlavg_psi5(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(142, 4855)
  4855    format('SCALARS bqlavg_psi5 float 1')
@@ -4159,7 +4170,7 @@ c      end do
 
          title = 'bqlavg_psi6(u_perp, u_parallel)'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(142, 4856)
  4856    format('SCALARS bqlavg_psi6 float 1')
@@ -4209,7 +4220,7 @@ c      end do
 
          title = 'cqlavg_psi1(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
 
 !        ---------------------------------------------
@@ -4246,7 +4257,7 @@ c      end do
 
          title = 'cqlavg_psi2(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(242, 4952)
  4952    format('SCALARS cqlavg_psi2 float 1')
@@ -4269,7 +4280,7 @@ c      end do
 
          title = 'cqlavg_psi3(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(242, 4953)
  4953    format('SCALARS cqlavg_psi3 float 1')
@@ -4291,7 +4302,7 @@ c      end do
 
          title = 'cqlavg_psi4(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(242, 4954)
  4954    format('SCALARS cqlavg_psi4 float 1')
@@ -4314,7 +4325,7 @@ c      end do
 
          title = 'cqlavg_psi5(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(242, 4955)
  4955    format('SCALARS cqlavg_psi5 float 1')
@@ -4335,7 +4346,7 @@ c      end do
 
          title = 'cqlavg_psi6(u_perp, u_parallel)'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
-     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
+     &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(242, 4956)
  4956    format('SCALARS cqlavg_psi6 float 1')
@@ -4583,10 +4594,10 @@ c      end do
 
       title = 'Real Bx_wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -4600,10 +4611,10 @@ c      end do
 
       title = 'Real Bz_wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       do i = 1, nnodex
@@ -4616,10 +4627,10 @@ c      end do
 
       title = 'dxxuyy'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -4635,10 +4646,10 @@ c      end do
 
       title = 'dyyuzz'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -4652,10 +4663,10 @@ c      end do
 
       title = 'gradprlb'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -4670,10 +4681,10 @@ c      end do
 
       title = 'Real ntilda_e'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 c
@@ -4734,33 +4745,33 @@ c
 
       title = 'Radial force (fpsi0)'
       call ezconc(capr, y, fpsi0, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'Poloidal force (ftheta0)'
       call ezconc(capr, y, ftheta0, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'pressure surfaces'
       call ezconc(capr, y, pressi, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       numb = 20
 
       title = 'dl/B surfaces'
       call ezconc(capr, y, dldb_tot12, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       do i = 1, nnodex
@@ -4773,10 +4784,10 @@ c
 
       title = 'E_plus_flux_plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -4791,10 +4802,10 @@ c
 
       title = 'E_minus_flux_plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -4810,10 +4821,10 @@ c
 
       title = 'xkperp_flux_plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -4915,7 +4926,8 @@ c      end do
       titx   = 'rho'
       tity = 'theta'
       call ezconc(rhon, thetam, freal, ff, nnoderho, mnodetheta, numb,
-     &   nrhomax, nthetamax, nlevmax, title, titx, tity, iflag)
+     &     nrhomax, nthetamax, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
 
 *     ---------------------
@@ -4942,7 +4954,8 @@ c      end do
       titx   = 'rho'
       tity = 'theta'
       call ezconc(rhon, thetam, freal, ff, nnoderho, mnodetheta, numb,
-     &   nrhomax, nthetamax, nlevmax, title, titx, tity, iflag)
+     &     nrhomax, nthetamax, nlevmax, title, titx, tity,
+     &     iflag, scalex)
 
 
 
@@ -5125,17 +5138,9 @@ c Open new graphics device
       do it = 1, 50
          time = time + dt
 
-         expiwt = exp(-zi * omgrf * time)
-
-c        write(*,*) "prfin = ", prfin
-c        write(*,*) "omgrf = ", omgrf
-c        write(*,*) "period = ", period
-c         write(*,*) "tie = ", time
-c         write(*,*) "expiwt = ", expiwt
-
-         do i = 1, nnodex
+         do i = 1, nnodex !?do concurrent or slicing indices?
             do j = 1, nnodey
-               freal(i,j) = real(eb(i,j) * expiwt)
+               freal(i,j) = real(eb(i,j) * exp(-zi * omgrf * time))
             end do
          end do
 
@@ -5143,16 +5148,16 @@ c         write(*,*) "expiwt = ", expiwt
 
 c        black and white movie:
          call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
-     &      nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &      nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 
 
 c        color movie:
 c         call pseudo(capr, y, freal, ff, nnodex, nnodey, numb,
-c     &      nxmx, nymx, nlevmax, title, titx, tity, iflag)
+c     &      nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 
          if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-     &      nnodey, numb,
-     &      nxmx, nymx, nlevmax, title, titx, tity)
+     &        nnodey, numb,    nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       end do
 
@@ -5352,10 +5357,12 @@ c
 c********************************************************************
 c
       subroutine ezconc(r, theta, f, flevel, nr, nth, nlevel,
-     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag, scale)
 
       implicit none
 
+!     real, intent(in), optional:: scale
+      real:: scale
       integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
      &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
      &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
@@ -5365,7 +5372,7 @@ c
 
       integer:: nlevlt, ilevlt, nlevgt, ilevgt, nxsub, nysub, nth, nr,
      &   nrmax, nlevel, nthmax, ncollab, ncolion, nlevmax, ncollin,
-     &    ncolelec, iflag
+     &    ncolelec, iflag,rcol
 
       real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
      &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
@@ -5380,6 +5387,12 @@ c
       character(32):: titx
       character(32):: tity
 
+      real:: scalex
+
+      scalex=scale
+!      if (present(scale)) scalex=scale
+      
+      
       nwhite = 0
       nblack = 1
       nred = 2
@@ -5390,10 +5403,10 @@ c
       nyellow = 7
       norange = 8
 
-      dx = r(2) - r(1)
+      dx = (r(2) - r(1))*scalex
       dy = theta(2) - theta(1)
 
-      tr(1) = r(1) - dx
+      tr(1) = r(1)*scalex - dx
       tr(2) = dx
       tr(3) = 0.0
       tr(4) = theta(1) - dy
@@ -5499,14 +5512,22 @@ c--Advance graphics frame and get ready to plot
 c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
-
+         
          call pgsci(nyellow)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
      &       nlevlt, tr)
       endif
+! C /3.0, 3.2, 3.5, 3.6, 3.766413, 4.0 ,5.0, 10.0, 100.0/
 
       if(nlevgt .gt. 0) then
-
+         CALL PGSFS(1)
+         DO I=1, Nlevel-1
+            RCOL = 0.5+0.5*REAL(I-1)/REAL(NLEVEL-1)
+            CALL PGSCR(I+10, RCOL, RCOL, RCOL)
+            CALL PGSCI(I+10)
+            CALL PGCONF(f, nrmax, nthmax, 1, nr, 1, nth,
+     &        flevel(I),flevel(I+1),TR)
+         END DO
          call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)
@@ -6097,10 +6118,12 @@ c
 c********************************************************************
 c
       subroutine boundary(r, theta, f, flevel, nr, nth, nlevel,
-     &   nrmax, nthmax, nlevmax, title, titx, tity)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, scale)
 
       implicit none
 
+!     real, intent(in), optional:: scale
+      real:: scale
       integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
      &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
      &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
@@ -6115,7 +6138,7 @@ c
       real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
      &   ypmin, theta, r, flevel, f, xmin, ymin, xmax, rhoplasm
 
-      real:: tr(6), dx, dy
+      real:: tr(6), dx, dy, rin
 
       dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
@@ -6125,7 +6148,12 @@ c
       character(32):: titx
       character(32):: tity
 
+      real:: scalex
       common/boundcom/rhoplasm
+
+      scalex=scale
+!      if (present(scale)) scalex=scale
+      
 
       nwhite = 0
       nblack = 1
@@ -6137,10 +6165,10 @@ c
       nyellow = 7
       norange = 8
 
-      dx = r(2) - r(1)
+      dx = (r(2) - r(1))*scalex
       dy = theta(2) - theta(1)
 
-      tr(1) = r(1) - dx
+      tr(1) = r(1)*scalex - dx
       tr(2) = dx
       tr(3) = 0.0
       tr(4) = theta(1) - dy
@@ -6150,7 +6178,7 @@ c
 
       nlevelb = 1
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(r*scalex, nrmax, nr, xmin, xmax)
       call a1mnmx(theta, nthmax, nth, ymin, ymax)
 !      xmin = MINVAL(r)
 !      xmax = MAXVAL(r)
@@ -6507,7 +6535,7 @@ c
 
       real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
       real:: x1(nrmax), y1(nrmax), y2(nrmax), y3(nrmax), y4(nrmax),
-     &     y5(nrmax), y6(nrmax), ye(nrmax)
+     &       y5(nrmax), y6(nrmax), ye(nrmax)
       real:: y1max, y2max, y3max, y4max, y5max, y6max, yemax
       real:: y1min, y2min, y3min, y4min, y5min, y6min, yemin
       real:: ymin, ymax
@@ -6518,12 +6546,12 @@ c
       character(32):: titlb
 
       integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
-     &    ncolelec, ncolln2, ncollin, ncolbrd
+     &   ncolelec, ncolln2, ncollin, ncolbrd
 
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
      &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
      &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-
+      write(*,*) 'DEBUG ezplot7', title
       nwhite = 0
       nblack = 1
       nred = 2
@@ -6625,7 +6653,7 @@ c
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
      &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
      &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-
+      write(*,*) 'DEBUG ezplot70', title
       nwhite = 0
       nblack = 1
       nred = 2

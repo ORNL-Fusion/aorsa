@@ -138,8 +138,7 @@ c
 
       real:: cnmod2(nphimx),xnphi(nphimx),pabs(nphimx), jdriven(nphimx)
       real:: spa(nphimx)
-      real:: pabs_weight, pabs_sum, prfin, pscale, j_driven_weight
-      real:: jdriven_weight, jdriven_sum
+      real:: prfin
 
       real:: xplot(nxplot_dim), yplot(nyplot_dim)
       real:: xplotm(nxplot_dim), yplotm(nyplot_dim)
@@ -281,7 +280,6 @@ c     &                                       k = 1, nphi3d)
 
 c      read (36, 310) (spa(nt),   nt = 1, nt_max)
 
-
       read (36, 310) (rhon(n),    n = 1, nnoderho)
       read (36, 310) (redotj2sum(n), n = 1, nnoderho)
       read (36, 310) (redotjesum(n), n = 1, nnoderho)
@@ -291,7 +289,6 @@ c      read (36, 310) (spa(nt),   nt = 1, nt_max)
       read (36, 310) (redotj5sum(n), n = 1, nnoderho)
 
       write (37, 310) (rhon(n),    n = 1, nnoderho)
-
 
       read (36, 310) (redotji2_int(n), n = 1, nnoderho)
       read (36, 310) (redotje_int(n),  n = 1, nnoderho)
@@ -2271,22 +2268,23 @@ c
       call a1mnmx(r, nrmax, nr, xmin, xmax)
       call a1mnmx(theta, nthmax, nth, ymin, ymax)
 
-c      write(6, *) "xmin = ", xmin
-c      write(6, *) "xmax = ", xmax
-c      write(6, *) "ymin = ", ymin
-c      write(6, *) "ymax = ", ymax
+      write(6, *) "xmin = ", xmin
+      write(6, *) "xmax = ", xmax
+      write(6, *) "ymin = ", ymin
+      write(6, *) "ymax = ", ymax
 
 c--set up contour levels
 
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
 
-c      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
+      write(6, *)"title = ", title
+      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
 c      write(16,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
        if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
-c         write(6, *)"fmax = ", fmax
-c         write(6, *)"fmin = ", fmin
+         write(6, *)"fmax = ", fmax
+         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if

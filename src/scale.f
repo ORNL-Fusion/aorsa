@@ -2,6 +2,7 @@
       subroutine disp_ono(yplot)
     
       use size_mod
+      use  aorsa2din_mod, only:eqtype
 
       implicit none
 
@@ -28,11 +29,11 @@
       real rho(nxmx, nymx)
 
       real f3(nmax)
-      real y(nmax), k, capk, c, xdeg, yh, L, kr, nr
+      real y(nmax), k, xdeg, yh, L, kr, nr
       real factrl, xn, an, diff1, diff2
 
       real ans_simpson, ans_trapezoidal, ans_analytic, ymax, ymin
-      real dummy, time, t1, t2, second1, pi, x, a, e, dydx, sum
+      real dummy, time, t1, t2, second1, x, a, dydx, sum
 
       character(32):: title
       character(32):: titlx
@@ -46,7 +47,10 @@
       integer nblack, nred, nyellow, ngreen, nblue, ncyan, nmagenta,
      &   nwhite, norange
 
+      integer:: scalex=1.
       common/boundcom/rhoplasm
+
+      if (eqtype=='mirror') scalex=10.0
 
       open(unit=130, file='Ono_disp', status='unknown',
      &      form='formatted')
@@ -64,12 +68,9 @@
       numb = 100
 
 
-      pi = 3.14159
-      e =  2.71828
       a = 3.0
       k = .0015
-      capk = 6000.
-      f3 = 0.
+      f3(:) = 0. !Used to plot a line a y=0 to set range or maybe reset color to black?
 
       read(130, 309) nnodex, nnodey, jmid
       read(130, 310) rhoplasm
@@ -119,44 +120,46 @@ c      yplot = 0.05
 !     -------------------------------------------
 !     Plot contours of k**2 - slow root
 !     -------------------------------------------
-      titx = 'R (m)'
+      titx = 'R (m)*10'
       tity = 'Z (m)'
-      title = 'Re(k**2) - slow root'
-      call ezconc(capr, y, real(xkperp2_slow), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      title = 'Re(k^{2}) - slow root'
+      call ezconc(capr*scalex, y, real(xkperp2_slow), ff, nnodex, 
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     iflag, scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title = 'k_{parallel}'
-      call ezconc(capr, y, xkprl, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      call ezconc(capr*scalex, y, xkprl, ff, nnodex, nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       title = 'Re(P)'
-      call ezconc(capr, y, real(P), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      call ezconc(capr*scalex, y, real(P), ff, nnodex, nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
       title = 'Im(P)'
-      call ezconc(capr, y, aimag(P), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      call ezconc(capr*scalex, y, aimag(P), ff, nnodex, nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
-      title = 'Im(k**2) - slow root'
-      call ezconc(capr, y, aimag(xkperp2_slow), ff, nnodex, nnodey,numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      title = 'Im(k^{2}) - slow root'
+      call ezconc(capr*scalex, y, aimag(xkperp2_slow), ff, nnodex,
+     &     nnodey,numb,nxmx, nymx, nlevmax, title, titx, tity,
+     &     iflag, scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 !     ------------------------
 !     Plot cut in y at yplot
@@ -170,7 +173,7 @@ c      yplot = 0.05
       xkperp_fast_plot = csqrt(xkperp2_fast_plot)
 
       titlx  = 'R (m)'
-      tityl = 'kperp2 (m-2)'
+      tityl = 'kperp2 (m^{-2})'
       tityr = ' '
       title = 'fast and slow roots'
 
@@ -178,7 +181,7 @@ c      yplot = 0.05
      &   real(xkperp2_slow_plot), real(xkperp2_fast_plot), f3,
      &   npoints, nmax, ymax, ymin, xmin, xmax)
 
-      tityl = 'kperp (m-1)'
+      tityl = 'kperp (m^{-1})'
 
       call ezplot2_b(title, titlx, tityl, tityr, xgrid,
      &   real(xkperp_slow_plot), real(xkperp_fast_plot), f3,
@@ -189,7 +192,7 @@ c     call ezplot1_s(title, titlx, tityl, tityr, xgrid,
 c     &   real(xkperp2_slow_plot), f3,
 c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
-      tityl = 'kperp2 (m-2)'
+      tityl = 'kperp^{2} (m^{-2})'
       title = 'fast root'
       call ezplot1_s(title, titlx, tityl, tityr, xgrid,
      &   real(xkperp2_fast_plot), f3,
@@ -199,19 +202,21 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 !     Plot contours of k**2 - fast root
 !     -------------------------------------------
 
-      title = 'Re(k**2) - fast root'
-      call ezconc(capr, y, real(xkperp2_fast), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      title = 'Re(k^{2}) - fast root'
+      call ezconc(capr*scalex, y, real(xkperp2_fast), ff, nnodex, 
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     iflag, scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
-      title = 'Im(k**2) - fast root'
-      call ezconc(capr, y, aimag(xkperp2_fast), ff, nnodex, nnodey,numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      title = 'Im(k^{2}) - fast root'
+      call ezconc(capr*scalex, y, aimag(xkperp2_fast), ff, nnodex,
+     &     nnodey,numb,nxmx, nymx, nlevmax, title, titx, tity,
+     &     iflag, scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
       xkperp_slow = csqrt(xkperp2_slow)
@@ -252,11 +257,12 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
 
       title = 'Re(k) - slow root'
-      call ezconc(capr, y, real(xkperp_slow), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+      call ezconc(capr*scalex, y, real(xkperp_slow), ff, nnodex, nnodey,
+     &     numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     iflag, scalex)
+      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 
@@ -283,8 +289,7 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
 
       subroutine ezplot1_s(title, titx, titll, titlr, x1, y1, y3,
-     &   nr, nrmax,
-     &   ymax, ymin, xmin, xmax, ncolor)
+     &   nr, nrmax, ymax, ymin, xmin, xmax, ncolor)
 
       implicit none
 
@@ -352,8 +357,8 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
   300 format (1p,9e11.3)
 
-      CALL PGSCI(nblack)
-      call pgline(nr, x1, y3)
+  !    CALL PGSCI(nblack)
+  !    call pgline(nr, x1, y3)
 
       return
       end
@@ -428,8 +433,8 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
       call pgline(nr, x1, y2)
 
 
-      CALL PGSCI(nblack)
-      call pgline(nr, x1, y3)
+  !    CALL PGSCI(nblack)
+  !    call pgline(nr, x1, y3)
 
 
   300 format (1p,9e11.3)

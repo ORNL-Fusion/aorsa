@@ -431,7 +431,8 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       complex :: djxdx, djydy
 
       real :: xprimec(nxmx), caprc(nxmx), xcourse(nxmx), capr(nxmx),
-     &   xprime(nxmx), x(nxmx), dx, dxc, drdx(nxmx), d2rdx2(nxmx)
+     &     xprime(nxmx), x(nxmx), dx, dxc, drdx(nxmx), d2rdx2(nxmx)
+      
       real :: dbxdx, dbxdy, dbydx, dbydy, dbphidx, dbphidy,
      &   d2bxdx2, d2bydx2, d2bzdx2,
      &   d2bxdxy, d2bydxy, d2bzdxy,
@@ -893,7 +894,8 @@ c       complex, dimension(:,:), allocatable :: Btmp
         real, dimension(:), allocatable :: rwork
 !fi
 
-        real :: srwork(2), sworkn(2)
+        real :: srwork(2)
+        complex :: sworkn(2)
         real :: pzlange, anorm, rcond
 
         logical, parameter :: use_fft = .true.
@@ -1119,6 +1121,9 @@ c       complex, dimension(:,:), allocatable :: Btmp
       allocate ( ebk(nkdim1 : nkdim2, mkdim1 : mkdim2) )
 
 
+!     Initialize arrays
+
+      capr=0; xprime=0; x=0; drdx=0; d2rdx2=0
 
 *     --------------------------
 *     setup parallel environment
@@ -1192,6 +1197,8 @@ c       complex, dimension(:,:), allocatable :: Btmp
          write(6,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
          write(15,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
          stop '** blacs not setup '
+      else if (nproc .ne. nprow*npcol) then
+         stop '** nproc is not equal to nprow*npcol '
       endif
 
       write(*,*) 'myid', myid !JCW temp
@@ -1306,7 +1313,7 @@ c       complex, dimension(:,:), allocatable :: Btmp
 *     ----------------------------------------------------------
          if (myid .eq. 0) then
             write(6,*) 'blacs started: nprow,npcol,nproc ',
-     &            nprow,npcol,nproc
+     &            nprow,npcol,nproc,icontxt
 c          write(15,*) 'blacs started: nprow,npcol,nproc ',
 c     &            nprow,npcol,nproc
          end if
@@ -2437,16 +2444,6 @@ c               gradprlb(i,j) = bmod(i,j) / capr(i)
       xwleft = rwleft - rt
       xwright = rwright - rt
 
-!JCW if rt is 0 or nearly zero, set min kpar to 1/4 (1/rmax)
-      if (rt > 1.e-3) then !1mm
-         akprl_min = 0.25 * abs(nphi / rt)
-      else 
-         akprl_min = 0.25 / capr(nnodex-1)
-c      akprl_min = abs(nphi / rt)
-      end if
-
-
-
 
 *     --------------------------------
 *     Distribution function from CQL3D
@@ -2891,6 +2888,16 @@ c         write(6, 1312)i, x(i), xprime(i), capr(i)
          xkphi(i) = nphi / capr(i)
       end do
 
+!     JCW if rt is 0 or nearly zero, set min kpar to 1/4 (1/rmax)
+      write(*,*) "rt :", rt,capr  !capr seems to be zero as well? capr defined later
+      if (rt > 1.e-3) then !1mm
+         akprl_min = 0.25 * abs(nphi / rt)
+      else 
+         akprl_min = 0.25 / capr(nnodex-1)
+c      akprl_min = abs(nphi / rt)
+      end if
+
+
       do i = 2, nnodex - 1
          drdx(i) = (capr(i+1) - capr(i-1) ) / (2.0 * dx)
          d2rdx2(i) = (capr(i+1) - 2.0 * capr(i) + capr(i-1)) / dx**2
@@ -3079,7 +3086,11 @@ c     &       capr(i)
 
       do n = 1, nnoderho
          rn(n) = rhon(n) * rmax
-         epsn(n) = rn(n) / rt
+         if (eqtype=='tokamak') then
+            epsn(n) = rn(n) / rt
+         else
+            epsn(n) = 100.0
+         end if
          dn(n) = rmax**2 / taue
 c         if (myid .eq. 0)write(6, 1312)n, rn(n), rhon(n), dn(n)
 c         if (myid .eq. 0)write(15, 1312)n, rn(n), rhon(n), dn(n)
@@ -3297,7 +3308,7 @@ c      end if
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
-               if (capr(i) .gt. rt) then
+               if (capr(i) .gt. rt) then !select lfs in tokamak
 
 *                 ------------------------------------------------
 *                 if(i_antenna .eq. 0) antenna current is Gaussian
@@ -3305,6 +3316,10 @@ c      end if
 
                   if (i_antenna .eq. 0) then
                      shapey = exp(- deltay**2 / yant_max**2)
+                     shapey =1.0
+                  if (myid==0) then
+                  write(*,*) 'shapey-a', i,j,y(j),deltay, yant,yant_max
+                  end if
                   end if
 
 
@@ -3327,6 +3342,9 @@ c                  antlc = pi / (xk0 * antlen)
                xjy(i,j) = xjanty * shapey  * gausspsi * Iy
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
 
+               if (myid==0) then               
+               write(*,*) "gausspsi", i,j,gausspsi
+               end if
             end if
 
             if(i_antenna .eq. 2) then
@@ -3353,6 +3371,8 @@ c                  antlc = pi / (xk0 * antlen)
 
          end do
       end do
+      write(*,*) 'shapey', shapey, deltay, yant_max, psiant,dpsiant
+
 
 *     ----------------------------
 *     find maximum antenna current
@@ -3371,14 +3391,16 @@ c                  antlc = pi / (xk0 * antlen)
 
       if (i_cur_max==0) then  !probably an issue if this happens - JCW
          write(*,*) 'warning check doesnt find max for i_cur_max'
-         i_cur_max=nnodex
+         stop !i_cur_max=nnodex
       end if
       if (j_cur_max==0) then
          write(*,*) 'warning check doesnt find max for j_cur_max'
-         j_cur_max=nnodex
+         stop !j_cur_max=nnodex
       end if      
         
-      ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
+! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
+      write(*,*) 'current location',i_cur_max,j_cur_max,capr(i_cur_max),
+     &   cur_mod_max,capr(i_cur_max),y(j_cur_max)
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
 
@@ -4455,7 +4477,7 @@ c     &                             + pressi4 pressi5 + pressi6
                   ! The bounce frequency for a mirror is just from axial dist.
                   omgti = vthi0 / (ytop - ybottom)
                   omgte = vthi0 / (ytop - ybottom)
-               else
+               else if (eqtype=='tokamak') then
                   omgti =  vthi0 / (rt * qhat)
                   omgte =  vthe0 / (rt * qhat) !qhat is 0 for mirror but never changed from 1.0 initial value
                end if
@@ -4575,7 +4597,6 @@ c     &                             + pressi4 pressi5 + pressi6
            right = capk_perp + capk_x
 
             xnphi = bzn(i,j) * xkphi(i) / xk0
-c            acold(i,j) = xnphi**2 - capk_perp
 
             acold(i,j) = capk_perp - xnphi**2
             bcold(i,j) = left - xnphi**2
@@ -4587,7 +4608,6 @@ c            acold(i,j) = xnphi**2 - capk_perp
 
          end do
       end do
-
       call dgrate(xprime, kimag_cold, 1, nnodex, ans, nxmx)
       spa_cold = 1.0 - exp(-2.0 * ans)
 
@@ -5219,7 +5239,7 @@ c           call flush
 
       call descinit( desc_amat, nrow,ncol, mb,nb, 0,0, icontxt,
      &         lld, info )
-      if (.true.) then !(info.ne.0) then
+      if (.false.) then !(info.ne.0) then
         write(6,*) '** descinit for amat returns info = ', info
         write(6,*) 'lld = ', lld
         write(15,*) '** descinit for amat returns info = ', info
@@ -5232,7 +5252,7 @@ c           call flush
 !if not static
       call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond,
      &          sworkn, -1, srwork, -1, info)
-      write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
+!      write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
       lwork = int(sworkn(1))
       lrwork = int(srwork(1)) !jcw temp
 
@@ -5543,7 +5563,7 @@ c              if (myid .eq. 0) then
                ! dead block for debugging : JCW 2023 (who didnt code this block)
                go to 7070
 
-c              if(myid .eq. 0) then
+              if(myid .eq. 0) then
 
                   open(unit=116,file='trace',status='unknown',
      &                                                 form='formatted')
@@ -5562,7 +5582,7 @@ c              if(myid .eq. 0) then
 
                   close (116)
                   call trace_plot
-c               end if
+               end if
 
                call blacs_barrier(icontxt, 'All')
                stop 3
@@ -9686,9 +9706,14 @@ c           if(nnode_local .le. 0)xjprl(i,j) = redotj_ehst(i,j)
       call sgrator(x, y, redotjt, 1, nnodex, 1, nnodey, pedotjt,
      &   capr, rt, nxmx, nymx)
 
-      call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
-     &   capr, rt, nxmx, nymx, j_cur_max)
-
+      if (eqtype=='mirror') then !JCW mirror
+         call sgrator1(x, y, xjz, 1, nnodex, 1, nnodey, i_ant,
+     &        capr, rt, nxmx, nymx, j_cur_max)
+      else
+         call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
+     &        capr, rt, nxmx, nymx, j_cur_max)
+      end if
+      
       call sgrator(x, y, xjprl, 1, nnodex, 1, nnodey, xjtot,
      &   capr, rt,  nxmx, nymx)
 
@@ -9989,8 +10014,12 @@ c      go to 9945
             gamma_avg(n) = muhat_avg(n)
      &                   * bmod2_avg(n) / ipsi_avg(n)**2  !/rt)**2
          endif
-         beta_avg(n) = (epsn(n) / qsafety_avg(n))**2
-     &                              * (1. + 2.0 * qsafety_avg(n)**2)
+         if (eqtype=='tokamak') then
+            beta_avg(n) = (epsn(n) / qsafety_avg(n))**2
+     &           * (1. + 2.0 * qsafety_avg(n)**2)
+         else
+            beta_avg(n)=1.0
+         end if
       end do
 
 
@@ -10033,15 +10062,12 @@ c      go to 9945
 
       if(myid .eq. 0) write(6,  *)
       if(myid .eq. 0) write(15,  *)
-c      if(myid .eq. 0) write(6,  *)"        n    rhon   pitch angle(deg)"
-c      if(myid .eq. 0) write(15, *)"        n    rhon   pitch angle(deg)"
 
       if(myid .eq. 0)write(6, 76164)
       if(myid .eq. 0)write(15, 76164)
 76164 format(" ",5x,"   n  ",3x," rhon ",
-     &             6x," pitch",4x,"angle(deg)",4x,"      ",6x,"      ",
-     &             6x,"      ",6x,"      ",6x,"      ",6x,"      ",
-     &             6x,"      ")
+     &             6x," pitch",4x,"angle(deg)",4x,"betaavg",6x,"qavg  ",
+     &             6x,"epsn  ")
       if(myid .eq. 0) write(6,  *)
       if(myid .eq. 0) write(15,  *)
 
@@ -10301,8 +10327,8 @@ c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
      &                    pedotj6, pcedotj6,
      &                    pedotjs, pcedotjs,
      &                    pedotjt, pcedotjt
-
-         z_load = pedotjt / (i_ant**2)
+ 
+        z_load = pedotjt / (i_ant**2)
          write(15, 169)
          write(15, 1148) i_ant
  1148 format(3x, "                  antenna current = ",1e12.5," Amps")
