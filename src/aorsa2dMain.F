@@ -3400,7 +3400,7 @@ c                  antlc = pi / (xk0 * antlen)
         
 ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
       write(*,*) 'current location',i_cur_max,j_cur_max,capr(i_cur_max),
-     &   cur_mod_max,capr(i_cur_max),y(j)
+     &   cur_mod_max,capr(i_cur_max),y(j_cur_max)
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
 

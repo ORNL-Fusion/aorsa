@@ -12,7 +12,7 @@ OBJ_DIR = obj
 INCLUDE_DIRS = 
 LIBS = 
 F90FLAGS = 
-WARNING_FLAGS =  -check all
+WARNING_FLAGS +=  -check all
 
 # per file build warning flags
 ORBIT_F_WARNING_FLAGS =

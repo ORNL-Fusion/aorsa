@@ -5356,7 +5356,7 @@ c         do 23002 i=1, nx
 c
 c********************************************************************
 c
-      subroutine ezconc(rin, theta, f, flevel, nr, nth, nlevel,
+      subroutine ezconc(r, theta, f, flevel, nr, nth, nlevel,
      &   nrmax, nthmax, nlevmax, title, titx, tity, iflag, scale)
 
       implicit none
@@ -5377,9 +5377,9 @@ c
       real:: fmin,ymax,df, fmax, eps,xtick, ytick, xpmax, xpmin, ypmax,
      &   ypmin, theta, r, flevel, f, xmin, ymin, xmax
 
-      real:: tr(6), dx, dy, rin
+      real:: tr(6), dx, dy
 
-      dimension rin(nrmax),r(nrmax),theta(nthmax)
+      dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
       character(8):: xopt,yopt
@@ -5392,7 +5392,6 @@ c
       scalex=scale
 !      if (present(scale)) scalex=scale
       
-      r=rin*scalex
       
       nwhite = 0
       nblack = 1
@@ -5404,10 +5403,10 @@ c
       nyellow = 7
       norange = 8
 
-      dx = r(2) - r(1)
+      dx = (r(2) - r(1))*scalex
       dy = theta(2) - theta(1)
 
-      tr(1) = r(1) - dx
+      tr(1) = r(1)*scalex - dx
       tr(2) = dx
       tr(3) = 0.0
       tr(4) = theta(1) - dy
@@ -6118,7 +6117,7 @@ c     call plmtex('t',1.0,0.5,0.5,title)
 c
 c********************************************************************
 c
-      subroutine boundary(rin, theta, f, flevel, nr, nth, nlevel,
+      subroutine boundary(r, theta, f, flevel, nr, nth, nlevel,
      &   nrmax, nthmax, nlevmax, title, titx, tity, scale)
 
       implicit none
@@ -6141,7 +6140,7 @@ c
 
       real:: tr(6), dx, dy, rin
 
-      dimension rin(nrmax), r(nrmax),theta(nthmax)
+      dimension r(nrmax),theta(nthmax)
       dimension f(nrmax, nthmax)
       dimension flevel(nlevmax)
       character(8):: xopt,yopt
@@ -6155,8 +6154,6 @@ c
       scalex=scale
 !      if (present(scale)) scalex=scale
       
-      r=rin*scalex
-      
 
       nwhite = 0
       nblack = 1
@@ -6168,10 +6165,10 @@ c
       nyellow = 7
       norange = 8
 
-      dx = r(2) - r(1)
+      dx = (r(2) - r(1))*scalex
       dy = theta(2) - theta(1)
 
-      tr(1) = r(1) - dx
+      tr(1) = r(1)*scalex - dx
       tr(2) = dx
       tr(3) = 0.0
       tr(4) = theta(1) - dy
@@ -6181,7 +6178,7 @@ c
 
       nlevelb = 1
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(r*scalex, nrmax, nr, xmin, xmax)
       call a1mnmx(theta, nthmax, nth, ymin, ymax)
 !      xmin = MINVAL(r)
 !      xmax = MAXVAL(r)
