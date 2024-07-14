@@ -1950,38 +1950,6 @@ c
 c***************************************************************************
 c
 
-
-c      real function second1_old(dummy)
-
-c      implicit none
-      
-c      integer :: v(8)
-c      integer mtime, mclock
-c      real dummy
-
-c*****Fortran 90 standard for wall clock time
-c      call date_and_time(values=v)
-c      second1_old=(v(5)*3600)+(v(6)*60)+v(7)+0.001d0*v(8)
-
-c*****FALCON:
-c      double precision mpi_wtime
-c      external mpi_wtime
-c      second1_old = MPI_WTIME()
-
-
-c*****EAGLE:
-c      mtime = mclock()
-c      second1_old  = 0.01 * mtime
-
-c      return
-c      end
-      
-c
-c***************************************************************************
-c
-      
-
-
       subroutine aorsa_grid(nnodex, nnodey, capr, capz, nxmx, nymx,
      &   psisep, psimag, bx0, by0, bz0, bxn, byn, bzn, bmod,
      &   psi, rho, rg, zg, psig, psirg, psizg, psirzg,
@@ -1997,12 +1965,12 @@ c
 
       integer islpsw, islpsw1, ierr
       real sigma, slp1, slpn
-        real zx1(nyeqdmax), zxm(nyeqdmax), zy1(nxeqdmax), zyn(nxeqdmax)
-        real zxy11, zxym1, zxy1n, zxymn
+      real zx1(nyeqdmax), zxm(nyeqdmax), zy1(nxeqdmax), zyn(nxeqdmax)
+      real zxy11, zxym1, zxy1n, zxymn
       real zp(nxeqdmax, nyeqdmax, 3)
       real zpr(nxeqdmax, nyeqdmax, 3)
       real zpz(nxeqdmax, nyeqdmax, 3)
-        real temp(2 *(nxeqdmax + nyeqdmax) )
+      real temp(2 *(nxeqdmax + nyeqdmax) )
       real surf2, curv2
 
       real capr(nxmx), capz(nymx), r, z, psio, r0, b0

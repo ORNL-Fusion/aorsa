@@ -1,7 +1,7 @@
 !
       subroutine trace_plot
       use size_mod
-
+      use aorsa2din_mod , only:nzeta_wdoti, eqtype
       implicit none
 
 
@@ -45,7 +45,6 @@
          fpsi(nxeqdmax), dfpsida(nxeqdmax), &
          qpsi(nxeqdmax), dqpsida(nxeqdmax)
 
-      real xkxsav(nkpltdim), xkysav(mkpltdim), pscale
       real rhon(nrhomax), vyi1avg(nrhomax),  vyi2avg(nrhomax), &
            rhon_half(nrhomax)
       real capr_bpol_midavg(nrhomax), bmod_midavg(nrhomax), &
@@ -83,11 +82,13 @@
       real q, omgrf, xk0, n0, clight, xmu0, eps0, rhoplasm
       real temax, temin, timin, tmin, tmax, timax, caprmaxp, &
          caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
-      real bpmin, bpmax
+      real bpmin, bpmax,scalex
       integer:: nnodex, j, i, nnodey, numb, jmid, nxeqd
 
       namelist/plotin/ibackground, xminz, xmaxz, ymaxz, logmax
-
+      scalex = 1.0
+      if (eqtype=='mirror') scalex=10.0 !JCW mirror maybe make namelist input
+      
       allocate ( xkti(nxmx, nymx), xkte(nxmx, nymx), xn(nxmx, nymx), &
          rho(nxmx, nymx), &
          xjy(nxmx, nymx), bmod(nxmx, nymx), &
@@ -225,10 +226,9 @@
       numb = 20
       title = 'poloidal rho surfaces'
       call ezconc(capr, y, rho, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
       CALL PGSCI(nred)
@@ -269,7 +269,8 @@
 !
       subroutine eqdsk_plot
       use size_mod
-
+      use aorsa2din_mod , only:nzeta_wdoti, eqtype
+      
       implicit none
 
 
@@ -313,7 +314,6 @@
          fpsi(nxeqdmax), dfpsida(nxeqdmax), &
          qpsi(nxeqdmax), dqpsida(nxeqdmax)
 
-      real xkxsav(nkpltdim), xkysav(mkpltdim), pscale
       real rhon(nrhomax), vyi1avg(nrhomax),  vyi2avg(nrhomax), &
            rhon_half(nrhomax)
       real capr_bpol_midavg(nrhomax), bmod_midavg(nrhomax), &
@@ -375,12 +375,13 @@
       real q, omgrf, xk0, n0, clight, xmu0, eps0, rhoplasm
       real temax, temin, timin, tmin, tmax, timax, caprmaxp, &
          caprmin, caprminp, caprmax, xnmax, xnmin, qmin, qmax
-      real bpmin, bpmax
+      real bpmin, bpmax,scalex
       integer:: nnodex, j, i, nnodey, numb, jmid, nxeqd
-!      complex zi
+
 
       namelist/plotin/ibackground, xminz, xmaxz, ymaxz, logmax
-
+      scalex = 1.0
+      if (eqtype=='mirror') scalex=10.0 !JCW mirror maybe make namelist input      
       allocate ( xkti(nxmx, nymx), xkte(nxmx, nymx), xn(nxmx, nymx), &
          rho(nxmx, nymx), &
          xjy(nxmx, nymx), bmod(nxmx, nymx), &
@@ -728,10 +729,9 @@
       numb = 20
       title = 'poloidal rho surfaces'
       call ezconc(capr, y, rho, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,scalex)
 
 
       CALL PGSCI(nred)
@@ -740,40 +740,32 @@
 
       title = 'toroidal rho surfaces'
       call ezconc(capr, y, rho_tor2d, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
-
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,scalex)
 
 
       title = 'psi surfaces'
-!      write(15,*) 'psi test ',psi
-!      write(6,*) 'psi test ',psi
       call ezconc(capr, y, psi, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
-
-!      numb = 99
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,scalex)
 
       title = 'dl/B surfaces'
       call ezconc(capr, y, dldb_tot12, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
       numb = 20
 
       title = 'q surfaces'
       call ezconc(capr, y, qsafety, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity,scalex)
 
 
       do i = 1, nnodex
@@ -786,26 +778,24 @@
 
       title = 'Mod 1/B surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
       title = 'bmod_mid surfaces'
       call ezconc(capr, y, bmod_mid, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,scalex)
 
 
       title = 'capr_{bpol-mid2} surfaces'
       call ezconc(capr, y, capr_bpol_mid2, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,scalex)
 
 
 
@@ -874,21 +864,15 @@
           nnoderho_half, nrhomax)
 
 
-
-
-
-
-
       numb = 15
 
 
 
       title = 'B poloidal'
       call ezconc(capr, y, btau, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex, &
-         nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       title='3-D plot of B poloidal'
       titz='Bpol'
@@ -898,10 +882,10 @@
 
       title = 'B toroidal'
       call ezconc(capr, y, bzeta, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       title='3-D plot of B toroidal'
       titz='Btor'
@@ -912,10 +896,10 @@
 
       title = 'grad_parallel B'
       call ezconc(capr, y, gradprlb, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       title='3-D plot of gradprlb'
       titz='gradprlb'
@@ -980,10 +964,10 @@
 
       title = 'dbxdx surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -993,10 +977,10 @@
 
       title = 'dbydx surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1006,10 +990,10 @@
 
       title = 'dbzdx surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1019,10 +1003,10 @@
 
       title = 'dbxdy surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1032,10 +1016,10 @@
 
       title = 'dbydy surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1045,10 +1029,10 @@
 
       title = 'dbzdy surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1058,10 +1042,10 @@
 
       title = 'dbdx surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1071,10 +1055,10 @@
 
       title = 'dbdy surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1084,10 +1068,10 @@
 
       title = 'dxxbxn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1097,10 +1081,10 @@
 
       title = 'dxxbyn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1110,10 +1094,10 @@
 
       title = 'dxxbzn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
 
@@ -1126,10 +1110,10 @@
 
       title = 'dxybxn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1139,10 +1123,10 @@
 
       title = 'dxybyn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1152,10 +1136,10 @@
 
       title = 'dxybzn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
 
@@ -1168,10 +1152,10 @@
 
       title = 'dyybxn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1181,10 +1165,10 @@
 
       title = 'dyybyn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1194,10 +1178,10 @@
 
       title = 'dyybzn surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
 
@@ -1210,10 +1194,10 @@
 
       title = 'dxxmodb surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1223,10 +1207,10 @@
 
       title = 'dxymodb surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1236,10 +1220,10 @@
 
       title = 'dyymodb surfaces'
       call ezconc(capr, y, fmod, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag)
+         nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity)
+         nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
 ! Close the graphics device.
