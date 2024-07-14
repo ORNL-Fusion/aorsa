@@ -132,7 +132,7 @@ c
       subroutine fieldws(dfquotient, rmin_zoom, rmax_zoom)
 
       use size_mod
-      use aorsa2din_mod , only:nzeta_wdoti, eqtype
+      use aorsa2din_mod, only: eqtype, nzeta_wdoti
       
       implicit none
 
@@ -1067,7 +1067,7 @@ c
       titx = 'R (m)'
       tity = 'Z (m)'
 
-      title = 'bmod_{mid} surfaces'
+      title = '|B|_{mid} surfaces'
       call ezconc(capr, y, bmod_mid, ff, nnodex, nnodey, 50,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
@@ -1075,7 +1075,7 @@ c
      &     scalex)
 
 
-      title = 'bratio surfaces'
+      title = 'Bratio surfaces'
       call ezconc(capr, y, bratio, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
@@ -5414,7 +5414,7 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(r*scalex, nrmax, nr, xmin, xmax)
       call a1mnmx(theta, nthmax, nth, ymin, ymax)
       !This doesn't work because work size is greater than used size
 !      xmin = MINVAL(r)
