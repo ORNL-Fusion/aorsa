@@ -1868,7 +1868,7 @@ c
 
 
 
-      if (eqtype<>'mirror') then
+      if (eqtype/='mirror') then
          title = 'Contour plot of theta'
          call ezconc(capr, y, theta, ff, nnodex, nnodey, 28,
      &        nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
