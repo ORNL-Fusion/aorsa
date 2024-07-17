@@ -9,8 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-   # - name: find gfortran
-   #   run:  ln -s  `brew --prefix`/bin/gfortran-13 `brew --prefix`/bin/gfortran
+    - name: find gfortran
+      run:  ln -s  `brew --prefix`/bin/gfortran-14 `brew --prefix`/bin/gfortran
     - name: Install AORSA deps
       run: brew install gfortran open-mpi scalapack giza netcdf-fortran
     - name: Build
