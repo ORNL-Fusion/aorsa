@@ -3316,7 +3316,6 @@ c      end if
 
                   if (i_antenna .eq. 0) then
                      shapey = exp(- deltay**2 / yant_max**2)
-                     shapey =1.0
                   if (myid==0) then
                   write(*,*) 'shapey-a', i,j,y(j),deltay, yant,yant_max
                   end if
