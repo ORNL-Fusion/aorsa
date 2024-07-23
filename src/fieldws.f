@@ -1292,6 +1292,7 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
      &   redotj1avg, redotj2avg, redotj3avg, redotj4avg, redotj5avg,
      &   redotj6avg, redotjeavg,  nnoderho_half, nrhomax)
 
+      !redo with > 0 only
       title= 'Flux surface average redotj'
       titll= 'redotj (watts/m3)'
       titlr= '       '
@@ -1387,6 +1388,7 @@ c      end do
       titlr= '       '
       titlb= 'rho'
 
+      ! ------- plot with ztable usage -------------!
       if (nzeta_wdoti/=0) then
       call ezplot7(title, titll, titlr, titlb, rhon_half,
      &   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
@@ -1432,6 +1434,7 @@ c      end do
      &    nnoderho_half, nrhomax)
 
       end if
+      !-------------------end!
       
       title= 'Flux average Toroidal force'
       titll= 'force (Nt/m^{3})'
@@ -1441,6 +1444,8 @@ c      end do
      &    fz0i1avg, fz0i2avg, fz0i3avg, fz0i4avg, fz0i5avg,
      &    fz0i6avg, fz0eavg, nnoderho_half, nrhomax)
 
+      !JCW gets to here
+      
       title= 'Flux average toroidal force'
       titll= 'force (Nt/m3)'
       titlr= 'integrated force (Nt/m)'
@@ -1448,6 +1453,7 @@ c      end do
 
       call ezplot2(title, titll, titlr, titlb, rhon_half, fz0avg,
      &    fz0_int, nnoderho_half, nrhomax)
+
 
       title= 'Flux surface average Vy'
       titll= 'Vy (m/s)'
@@ -1487,7 +1493,7 @@ c      end do
 *     plot K(psi) in 2-D
 *     -------------------
 
-      title = 'Poloidal speed / B_pol = K(psi)'
+      title = 'Poloidal speed/B_{pol} = K(psi)'
       call ezconc(capr, y, kpsi, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -1610,7 +1616,7 @@ c      end do
       call ezplot1(title, titll, titlr, rhon_half, xjhat,
      &    nnoderho_half, nrhomax)
 
-
+      if (.false.) then !these are NaN for mirror, check
       title= 'xkhat(rho)'
       titll= 'xkhat (kg m-2 s-1)'
       titlr='       '
@@ -1624,12 +1630,13 @@ c      end do
      &    nnoderho_half, nrhomax)
 
 
-      title= 'toroidal angular speed <G(rho)>'
-      titll= 'G(rho) (s-1)'
+      title= 'toroidal angular speed <G(\rho)>'
+      titll= 'G(\rho) (s^{-1})'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, gpsi_avg,
      &    nnoderho_half, nrhomax)
-
+      end if
+      
       title= 'normalized viscosity <mu_hat>'
       titll= 'mu_hat (kg/m**3/s-1)'
       titlr='       '
@@ -1861,15 +1868,16 @@ c
 
 
 
+      if (eqtype/='mirror') then
+         title = 'Contour plot of theta'
+         call ezconc(capr, y, theta, ff, nnodex, nnodey, 28,
+     &        nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
+         if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
+     &        nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
+     &        scalex)
 
-      title = 'Contour plot of theta'
-      call ezconc(capr, y, theta, ff, nnodex, nnodey, 28,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
-     &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
-     &     scalex)
-
-
+      end if
+      
 c--   Plot xkperp_cold:
       do i = 1, nnodex
          do j = 1, nnodey
@@ -2761,7 +2769,7 @@ c        white background
       title = 'Mod E alpha(kx, ky)'
       call ezconc(xkxsav, xkysav, exkmod, ff, nkxplt, nkyplt, numb,
      &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
-     &     iflag, scalex)
+     &     iflag, 1.0)
 
       title='3-D plot of Mod E alpha(kx,ky)'
       titz='Mod E alpha(kx,ky)'
@@ -6550,8 +6558,8 @@ c
 
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
      &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-      write(*,*) 'DEBUG ezplot7', title
+     &     nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+
       nwhite = 0
       nblack = 1
       nred = 2
@@ -6573,10 +6581,17 @@ c
       ymax = max(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
       ymin = min(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
 c      ymin=0.0
+#ifdef DEBUG      
+      write(*,*) 'DEBUG ezplot7: ', title, ymin, ymax
+#endif
+      if (ymin==0. .and. ymax==0.) then
+         write(*,*) 'ezplot7 no yrange: ',title,ymin,ymax
+         return
+      end if
 
       rhomax=x1(nr)
       rhomin=x1(1)
-      ymax=(ymax+0.1)*1.1 !JCW July 2023. If nzeta_wdot[ei]=0, all yn are zero so add 0.1 in case
+!      ymax=(ymax+0.1)*1.1 !JCW July 2023. If nzeta_wdot[ei]=0, all yn are zero so add 0.1 in case
 
 c      ymax = 2.8e+06
 
@@ -6629,7 +6644,7 @@ c
       subroutine ezplot70(title, titll, titlr, titlb, x1,
      &   y1, y2, y3, y4, y5, y6, ye,
      &   nr, nrmax)
-
+      ! plot seven lines set min to 0
       implicit none
 
       integer:: nr,nrmax
@@ -6652,8 +6667,10 @@ c
 
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
      &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-      write(*,*) 'DEBUG ezplot70', title
+     &     nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
+#ifdef DEBUG
+      write(*,*) 'DEBUG ezplot70 ', title
+#endif
       nwhite = 0
       nblack = 1
       nred = 2
@@ -6728,7 +6745,8 @@ c
 c***************************************************************************
 c
       subroutine ezplot2(title, titll, titlr, titlb,
-     &                                       x1, y1, y2, nr, nrmax)
+     &     x1, y1, y2, nr, nrmax)
+      !plot two 1D curves, black and  green
 
       implicit none
 
@@ -6762,9 +6780,12 @@ c
       norange = 8
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
-
-c      write(6, 300) y2min, y2max
       if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      call a1mnmx(y2, nrmax, nr, y2min, y2max)
+      y2min = y2min * 1.1
+      y2max = y2max * 1.1      
+      ymax = max(y1max, y2max)
+      ymin = min(y1min, y2min)
 
       ymax = y1max
       ymin = y1min
@@ -6776,7 +6797,9 @@ c      write(6, 300) y2min, y2max
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
       if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
-
+#ifdef DEBUG
+      write(*,*) 'ezplot2:  title: ', title, ymin,ymax
+#endif
       CALL PGPAGE
       CALL PGSVP (0.15,0.85,0.15,0.85)
       CALL PGSWIN (rhomin, rhomax, ymin, ymax)
@@ -6789,10 +6812,6 @@ c      write(6, 300) y2min, y2max
 
 
       call pgline(nr, x1, y1)
-
-      call a1mnmx(y2, nrmax, nr, y2min, y2max)
-      y2min = y2min * 1.1
-      y2max = y2max * 1.1
 
       if(y2max .eq. 0.0 .and. y2min .eq. 0.0)return
       CALL PGSWIN (rhomin, rhomax, y2min, y2max)
@@ -6923,14 +6942,19 @@ c
 
       ymax = max(y1max, y2max)
       ymin = min(y1min, y2min)
-
-      if(ymax .eq. 0.0 .and. ymin .eq. 0.0)return
+      
+#ifdef DEBUG
+      write(*,*) 'DEBUG ezplot2q:  title: ', title, ymin,ymax
+#endif
+      if(ymax .eq. 0.0 .and. ymin .eq. 0.0) return
 
       rhomax=x1(nr)
       rhomin=x1(1)
       ymax = ymax * 1.1
       ymin = ymin
-
+#ifdef DEBUG
+      write(*,*) 'title: ', title, rhomin,rhomax,ymin,ymax
+#endif
       CALL PGPAGE
       CALL PGSVP (0.15,0.85,0.15,0.85)
       CALL PGSWIN (rhomin, rhomax, ymin, ymax)
@@ -7188,15 +7212,9 @@ c
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
 
-c      write(6, *) "nr = ", nr
-c      write(6, *) "nrmax = ", nrmax
-
-c      do n = 1, nr
-c         write(6,*) n, x1(n), y1(n)
-c      end do
-
-c      write(6, *) "y1max = ", y1max
-
+#ifdef DEBUG
+      write(*,*) 'ezplot1:  title: ', title, y1min,y1max
+#endif
       if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
 
       ymax = y1max
