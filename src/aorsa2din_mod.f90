@@ -369,7 +369,7 @@
       integer :: ndisti5 = 0
       integer :: ndisti6 = 0      
 
-      integer :: nphimx, nphasemx 
+      integer,parameter :: nphimx=200, nphasemx=12
       integer :: nmodesx = 128          !-----nmodesx=number of modes used in the x direction
       integer :: nmodesy = 128          !-----nmodesy=number of modes used in the y direction
       integer :: nmodeslb = 256         !-----nmodeslb =number of modes used along the field line
@@ -378,10 +378,7 @@
 
       integer :: nphi_number = 10       !-----number of nphi's in the nphi_array 
            
-      parameter (nphimx = 200)          !-----dimension of nphi_array 
       integer :: nphi_array(nphimx) = 0 !-----list of nphi's in the nphi_array
-      
-      parameter (nphasemx = 12) 
       real :: phase_array(nphasemx) = 0.0 !-----list of phase on each antenna strap     
       
       real phase, zmin, zmax, phi0, amplt(20) 

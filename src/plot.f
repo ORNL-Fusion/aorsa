@@ -1,6 +1,6 @@
-c
-c--version 1.0 (10/16/2006)
-c
+!
+!--version 1.0 (10/16/2006)
+!
       subroutine plot(ndisti2)
 
 

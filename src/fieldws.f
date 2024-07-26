@@ -1125,6 +1125,8 @@ c
       call ezplot1(title, titll, titlr, rhon_half, capr_bpol_midavg,
      &    nnoderho_half, nrhomax)
 
+
+      !-------------- plot Plasma Profiles -----------
       call a1mnmx(capr, nxmx, nnodex, caprmin, caprmax)
       caprminp = caprmin * 1.01
       caprmaxp = caprmax * .99
@@ -1141,7 +1143,7 @@ c
       call pgmtxt('t', 2.0, 0.5, 0.5, 'Plasma profiles')
 
       CALL PGSCI(nblue)
-      call pgmtxt('l', 2.0, 0.5, 0.5, ' n (m-3)')
+      call pgmtxt('l', 2.0, 0.5, 0.5, ' n [m^{-3}]')
       call pgline(nnodex, capr, xnmid)
 
       call a1mnmx(xktemid, nxmx, nnodex, temin, temax)
@@ -1196,20 +1198,21 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
      &    nnodex, nxmx, rmin_zoom, rmax_zoom)
 
 *     -----------------------
-*     plot kphi = nphi / R(i)
+*     plot kphi = nphi / R(i) xxxx
 *     -----------------------
-      title = 'k_phi = n_phi / R'
-      titll = 'kphi (m-1)'
+      title = 'k_{\phi} = n_{phi} / R'
+      titll = 'kphi [m^{-1}]'
       call ezplot1q(title, titll, titlr, titlb, capr, xkphi,
      &   nnodex, nxmx)
 
 
       title= 'Flux surface average density'
-      titll= 'density (m-3)'
+      titll= 'density [m^{-3}]'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xnavg,
      &   nnoderho_half, nrhomax)
 
+      
       title= 'Differential volume element'
       titll= 'dVol (m3)'
       titlr='       '
@@ -3088,7 +3091,7 @@ c            end if
          end do
       end do
 
-      title = ' Mod(E_plus)'
+      title = ' Mod(E_{+})'
       call ezconc(capr, y, mod_Eplus, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -3162,7 +3165,7 @@ c            end if
          end do
       end do
 
-      title = 'real(E_plus)'
+      title = 'real(E_{+})'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -4790,7 +4793,7 @@ c
       end do
 
 
-      title = 'E_plus_flux_plot'
+      title = 'E_{+} flux plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -4827,7 +4830,7 @@ c
       end do
 
 
-      title = 'xkperp_flux_plot'
+      title = 'xkperp flux plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -4861,8 +4864,8 @@ c
          fmidim(i) = aimag(eminus_flux_plot(i,jmid))
       end do
 
-      title = 'eminus_flux_plot'
-      titll = 'Re Eminu s(V/m)'
+      title = 'E_{-] flux plot'
+      titll = 'Re Eminus (V/m)'
       titlr = 'Im Eminus (V/m)'
       titlb = 'R (m)'
 
@@ -4879,7 +4882,7 @@ c
          fmidim(i) = aimag(xkperp_flux_plot(i,jmid))
       end do
 
-      title = 'xkperp_flux_plot'
+      title = 'xkperp flux plot'
       titll = 'Re xkperp s(1/m)'
       titlr = 'Im xkperp (1/m)'
       titlb = 'R (m)'
@@ -4930,7 +4933,7 @@ c     &      wdoti2avg(n), wdoti2_ql(n)
 c      end do
 
 
-      title = 'E_plus_flux'
+      title = 'E_{+} flux'
       titx   = 'rho'
       tity = 'theta'
       call ezconc(rhon, thetam, freal, ff, nnoderho, mnodetheta, numb,
@@ -5436,13 +5439,15 @@ c--set up contour levels
 !      fmin = MINVAL(f) !(2:nrmax-1,:))
 !      fmax = MAXVAL(f) !(2:nrmax-1,:))
 
-!      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
-!      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
-
+#ifdef DEBUG
+      write(*,*) 'ezconc title: ', title,scale,scalex,
+     & ymin,ymax,xmin,xmax
+#endif
       iflag = 0
       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
-!         write(6, *)"fmax = ", fmax
-!         write(6, *)"fmin = ", fmin
+         write(6, *)"title = ", title
+         write(6, *)"fmax = ", fmax
+         write(6, *)"fmin = ", fmin
          iflag = 1
          return
       end if
@@ -7477,6 +7482,7 @@ c
       character(32):: titlr
       character(32):: titlb
 
+      integer:: iflag
       integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
      &    ncolelec, ncolln2, ncollin, ncolbrd
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
@@ -7502,6 +7508,18 @@ c
 
       if (ymin .le. 0.0) ymin = ymin * 1.1
       if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
+
+#ifdef DEBUG
+      write(*,*) 'title: ', title
+      write(6, *)"ymax = ", ymax, "   ymin = ", ymin
+#endif
+
+      iflag = 0
+      if(ymax == 0.0 .and. ymin == 0.0) then
+         iflag = 1
+         return
+      end if
+      
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 
       CALL PGPAGE
