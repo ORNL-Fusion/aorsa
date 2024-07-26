@@ -3297,6 +3297,7 @@ c      end if
 !                     write(*,*) 'shapey-a', capr(i),y(j),deltay, shapey
 !                     write(*,*) 'shapey-a   ', dpsiant,gausspsi,rt
 !                  end if
+
                   end if
 
 
