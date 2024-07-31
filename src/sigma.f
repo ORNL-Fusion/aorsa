@@ -3789,41 +3789,29 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
       implicit none
 
-      integer lmax, nmax, ier, l, lmaxdim, nz
-      real gammod
-      complex gamma, expbes(0: lmaxdim), expbesp(0: lmaxdim),
-     &   expbesovergam(0: lmaxdim),
-     &   xil(0: lmaxdim), xilp(0: lmaxdim), exgam
-
-      complex b(100)
-
-      exgam = exp(-gamma)
-      gammod = cabs(gamma)
-
- !     if(gammod .le. 700.)then
-         nmax = lmax + 1
- !        call besic(gamma, nmax, b, ier)
-         call cbesi(gamma, 0.0, 2, nmax, b,nz, ier)
-         if(ier .ne. 0)write(6,100) ier
+      integer, intent(in):: lmax, lmaxdim
+      complex, intent(in):: gamma
+      complex, intent(out):: expbes(0: lmaxdim), expbesp(0: lmaxdim),
+     &     expbesovergam(0: lmaxdim)
 
 
-         do l = 0, lmax
-            xil(l) = b(l+1)
-         end do
+      integer:: nmax, ier, l, nz
+      complex:: b(100), xil(0: lmaxdim), xilp(0: lmaxdim)
 
-         do l = 0, lmax
-           if(l .eq. 0) xilp(0) = xil(1)
-           if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l)  !derivative by recurrence
-           expbes(l) =  xil(l)  !*exgam JCW bad way to do this
-           expbesp(l) = xilp(l) !*exgam
-         end do
-!      end if
+      nmax = lmax + 1
+      call cbesi(gamma, 0.0, 2, nmax, b, nz, ier) !jcw using bessel module now, with kode=2 scales bt exp(-gamma) implicitly
+      if(ier .ne. 0) write(6,100) ier
 
-!      if(gammod .gt. 700.)then
-!         do l = 0, lmax
-!            call bes_asym(gamma, l, expbes(l), expbesp(l))
-!         end do
-!      end if
+      do l = 0, lmax
+         xil(l) = b(l+1)
+      end do
+
+      do l = 0, lmax
+         if(l .eq. 0) xilp(0) = xil(1)
+         if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l) !derivative by recurrence
+         expbes(l) =  xil(l)
+         expbesp(l) = xilp(l)
+      end do
 
       do l = 0, lmax
          expbesovergam(l) = expbes(l) / gamma

@@ -47,7 +47,7 @@
       integer nblack, nred, nyellow, ngreen, nblue, ncyan, nmagenta,
      &   nwhite, norange
 
-      integer:: scalex=1.
+      real:: scalex=1.
       common/boundcom/rhoplasm
 
       if (eqtype=='mirror') scalex=10.0
@@ -123,41 +123,41 @@ c      yplot = 0.05
       titx = 'R (m)*10'
       tity = 'Z (m)'
       title = 'Re(k^{2}) - slow root'
-      call ezconc(capr*scalex, y, real(xkperp2_slow), ff, nnodex, 
+      call ezconc(capr, y, real(xkperp2_slow), ff, nnodex, 
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     iflag, scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
 
       title = 'k_{parallel}'
-      call ezconc(capr*scalex, y, xkprl, ff, nnodex, nnodey, numb,
+      call ezconc(capr, y, xkprl, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
 
       title = 'Re(P)'
-      call ezconc(capr*scalex, y, real(P), ff, nnodex, nnodey, numb,
+      call ezconc(capr, y, real(P), ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
       title = 'Im(P)'
-      call ezconc(capr*scalex, y, aimag(P), ff, nnodex, nnodey, numb,
+      call ezconc(capr, y, aimag(P), ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
       title = 'Im(k^{2}) - slow root'
-      call ezconc(capr*scalex, y, aimag(xkperp2_slow), ff, nnodex,
+      call ezconc(capr, y, aimag(xkperp2_slow), ff, nnodex,
      &     nnodey,numb,nxmx, nymx, nlevmax, title, titx, tity,
      &     iflag, scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -203,18 +203,18 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 !     -------------------------------------------
 
       title = 'Re(k^{2}) - fast root'
-      call ezconc(capr*scalex, y, real(xkperp2_fast), ff, nnodex, 
+      call ezconc(capr, y, real(xkperp2_fast), ff, nnodex, 
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     iflag, scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
       title = 'Im(k^{2}) - fast root'
-      call ezconc(capr*scalex, y, aimag(xkperp2_fast), ff, nnodex,
+      call ezconc(capr, y, aimag(xkperp2_fast), ff, nnodex,
      &     nnodey,numb,nxmx, nymx, nlevmax, title, titx, tity,
      &     iflag, scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -257,10 +257,10 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
 
       title = 'Re(k) - slow root'
-      call ezconc(capr*scalex, y, real(xkperp_slow), ff, nnodex, nnodey,
-     &     numb, nxmx, nymx, nlevmax, title, titx, tity,
-     &     iflag, scalex)
-      if (iflag .eq. 0) call boundary(capr*scalex, y, rho, ff, nnodex,
+      write(*,*) 'scalex',scalex
+      call ezconc(capr, y, real(xkperp_slow), ff, nnodex, nnodey,numb,
+     &     nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
+      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 

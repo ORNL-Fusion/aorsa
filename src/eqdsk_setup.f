@@ -328,41 +328,6 @@ c      double precision ws(lenws)
       real dvydrho(nrhomax)
       
      
-     
-c      real xjx(nxmx, nymx), xjy(nxmx, nymx), xjz(nxmx, nymx)
-c      real bxn(nxmx, nymx), byn(nxmx, nymx), bzn(nxmx, nymx),
-c     &     bmod(nxmx, nymx),
-c     &     bratio(nxmx, nymx),
-c     &     capr_bpol(nxmx, nymx)    
-c      real work(nxmx, nymx)                  
-c      real psi_dim(nxmx, nymx)
-c      real rho(nxmx, nymx), 
-c     &     theta0(nxmx, nymx),
-c     &     bx(nxmx, nymx), by(nxmx, nymx), bz(nxmx, nymx),
-c     &     btau(nxmx, nymx), bzeta(nxmx, nymx),
-c     &     dxdth(nxmx, nymx), dzdth(nxmx, nymx), xntau(nxmx, nymx),
-c     &     xn(nxmx, nymx), xkte(nxmx, nymx), xkti(nxmx, nymx),
-c     &     xkti2(nxmx, nymx), xkti3(nxmx, nymx),
-c     &     xn1a(nxmx, nymx), xnea(nxmx, nymx), xn2a(nxmx, nymx),
-c     &     xn3a(nxmx, nymx), omgce(nxmx, nymx),
-c     &     omgci1(nxmx, nymx), omgci2(nxmx, nymx), omgci3(nxmx, nymx),
-c     &     omgpe2(nxmx, nymx),
-c     &     omgp12(nxmx, nymx), omgp22(nxmx, nymx), omgp32(nxmx, nymx),
-c     &     xiota(nxmx, nymx), xlprl(nxmx, nymx),
-c     &     bpol(nxmx, nymx)
-c      real psi_tor2d(nxmx, nymx), psi_pol2d(nxmx, nymx)
-c      real rhomtot(nxmx, nymx) 
-c      real xnupi(nxmx, nymx) 
-c      real dbxdx(nxmx, nymx), dbydx(nxmx, nymx), dbzdx(nxmx, nymx),
-c     &     dbxdy(nxmx, nymx), dbydy(nxmx, nymx), dbzdy(nxmx, nymx),
-c     &     dbdx(nxmx, nymx),  dbdy(nxmx, nymx)
-c      real gradprlb(nxmx, nymx)
-c      real dxxbxn(nxmx, nymx), dxxbyn(nxmx, nymx), dxxbzn(nxmx, nymx),
-c     &     dxybxn(nxmx, nymx), dxybyn(nxmx, nymx), dxybzn(nxmx, nymx),
-c     &     dyybxn(nxmx, nymx), dyybyn(nxmx, nymx), dyybzn(nxmx, nymx),
-c     &     dxxmodb(nxmx, nymx), dxymodb(nxmx, nymx), dyymodb(nxmx, nymx)
-c      real spx(nxmx, nymx), spy(nxmx, nymx), spz(nxmx, nymx)
-
       real, dimension(:,:), allocatable :: xjx, xjy, xjz,
      &   capr_bpol, 
      &   work, psi_dim, rho, theta0, bx, by, bz, btau, bzeta,
@@ -607,157 +572,6 @@ c        open(unit=115,file='out115',status='unknown',form='formatted')
       nrhs = 1
       nmaxe=1
 
-
-c-----nmodesx=number of modes used in the x direction
-c-----nmodesy=number of modes used in the y direction
-c-----nwdot=number of radial modes used in wdot and flow (fy) calculation
-
-
-c-----ibessel=flag determining whether or not to expand ion Bessel functions
-c           if(ibessel.eq.1) Full Bessel functions and exponential are used
-c           if(ibessel.eq.2) Exact 2nd order expansion from finite difference
-c                            code is used
-c           if(ibessel.eq.3) 2nd order Larmor radius expansion of Bessel
-c                            functions is used with exponential = 1.0
-
-c-----lmax = highest order Bessel function kept in plasma conductivity
-c-----ti0=central value of ion temperature in eV
-c-----nuead=ad hoc collision frequency for electron in sec-1
-c-----nu1ad=ad hoc collision frequency for majority ions in sec-1
-c-----nu2ad=ad hoc collision frequency for minority ions in sec-1
-c-----rant = major radius of antenna in meters
-
-c-----yant = half height of antenna in meters
-c-----te0=central value of eletron temperature in eV
-
-c-----inu:   if(inu.eq.0)real collisions are left out
-c-----iprint:  output is printed every iprint grid points
-c-----iexact:  if (iexact.eq.1) full sixth order equation is solved
-c-----         if (iexact.eq.0) approximate second order equation is solved
-c-----delta0=numerical damping for Bernstein wave:  about 1.e-04 (dimensionless)
-c-----xwall = not used
-
-c-----iroot: decides which of the two fast wave roots to follow
-c-----iequat:  if(iequat.eq.1) complete equations are solved
-c-----         if(iequat.eq.2) Fukayama's equations are solved
-
-c-----igeom: if(igeom.eq.1) not used
-c-----       if(igeom.eq.2) Solovev flux surfaces
-c-----       if(igeom.eq.5) GA - EQDSK surfaces are used.
-c-----       if(igeom.eq.6) ORNL - EQDSK surfaces are used.
-c
-c-----nboundary: if(nboundary .eq. 1)flux surface boundary (default)
-c-----           if(nboundary .eq. 0)square boundary
-c
-c-----epszet=error criterion for Z function calculation if disp is used
-
-c-----iqx:  if(iqx.eq.1) Vaclavik's  kinetic flux is used
-c-----      if(iqx.eq.2) Romero's  kinetic flux is used
-c-----      if(iqx.eq.3) Jaeger's  kinetic flux is used
-c-----      if(iqx.eq.4) Batchelor's  kinetic flux is used (reduces to WKB)
-c-----iqprof: if(iqprof.eq.1) q profile is proportional to density (default)
-c-----        if(iqprof.eq.2) q profile is proportional to sqrt(density)
-c-----iez:  if(iez.eq.0) Ez is calculated from complete equation
-c-----      if(iez.eq.1) Ez is set to zero
-
-c-----icurve: if(icurve .eq. 0)antenna is straight in poloidal direction
-c.                and located at rant
-c-----        if(icurve .eq. 2)antenna follows flux surface and is
-c                located at psiant
-
-c-----nphi = toroidal mode number (integer)
-c-----amu1= ratio of majority ion to hydrogen ion mass
-c-----amu2= ratio of minority ion to hydrogen ion mass
-c-----z1=ratio of majority ion charge to hydrogen ion charge
-c-----z2=ratio of minority ion charge to hydrogen ion charge
-c-----eta=ratio of minority ion density to electron density
-
-
-c-----b0=value of magnetic field at x=0 in Tesla
-c-----q0=value of inverse rotational transform on axis
-c-----rt= major radius of torus
-c-----ekappa = elongation
-c-----rwleft = major radius of the left conducting boundary
-c-----rwright = major radius of the right conducting boundary
-c-----ytop = y value for top boundary
-c-----ytop = y value for bottom boundary
-c-----ymax = radius in vertical (y) direction- in default it is set to awallx
-c-----xnurf= rf frequency in Hertz
-c-----aplasm= location of the plasma-scrape-off interface
-c-----alim = location of limiter
-c-----grad = 0.0 ignors gradients in Wdot (default)
-c-----grad = 1.0 includes gradients in Wdot
-c-----xnlim=electron density in scrape-off region (x>aplasm)
-
-
-c-----xn0=electron density at x=0
-c-----flat=0.0 gives parabolic profiles
-c-----flat=1.0 gives flat profiles
-c-----b1rat= low field value in step function magnetic field
-c-----b2rat=high field value in step function magnetic field
-c-----curdnx=Amps/meter of toroidal length of antenna in the x direction
-c-----curdny=Amps/meter of toroidal length of antenna in the y direction
-c-----curdnz=Amps/meter of toroidal length of antenna in the z direction
-c-----prinf = total applied RF power
-
-
-c-----nstep: determines steepness of step function magnetic field in option
-c-----nabs=polynomial coefficient which determines slope of the absorber
-c-----xnuabs=magnitude of absorber used to stop wall reflections in benchmark case.
-c-----xbnch:  abs(x)>xbnch is the artificial absorber region to stop wall reflections
-c        in benchmark case.
-c-----if (xbnch.eq.0.0) it is ignored.
-c-----xleft=left boundary for energy integrals and outgoing energy flux
-c-----xright=right boundary for energy integrals and incoming energy flux
-
-c-----if(iabsorb.eq.1)electron absorption from simple Landau formula
-c-----if(iabsorb.eq.2)electron absorption from  .5 * real(J* dot E) i.e. ECH
-
-c-----if(isigma.eq.0) cold plasma conductivity is used.
-c-----if(isigma.eq.1) hot  plasma conductivity is used (default).
-
-c-----nzfun:  if(nzfun.eq.0) Simple Z function is used from ZFUN
-c-----        if(nzfun.ge.1) Generalized Z function of Brambilla is used (default).
-
-c-----qavg0 is the rotational transform on axis
-c-----xnuomg is the collison rate used in hot and cold plasma dielectrics
-
-c-----if(itemp.eq.0)use Gaussian temperature-finite at edge-use with nlim=0 at edge
-c-----if(itemp.eq.1)use Fukuyama's profile for temperature with c=-2 and d=1 -use
-c          with nlim=finite at edge
-c-----if(itemp.eq.2)use Gaussian times 1-r**2/xant**2
-c-----telim=electron temperature in scrape-off region (x>aplasm)
-c-----tilim=ion temperature in scrape-off region (x>aplasm)
-
-c-----nfreqm=number of frequencies run
-c-----dfreq=frequency increment
-c-----nkzm=number of kz's run
-c-----dkz=kz increment
-
-c-----if(idens.eq.0)use parabolic density profile
-c-----if(idens.eq.1)use D'Ippolito density profile
-c-----r0 is parameter r0 in D'Ippolito density profile
-c-----xnudip is parameter nu in D'Ippolito density profile
-c-----adip is parameter nu in D'Ippolito density profile
-c-----efold is the number of e-foldings in density between
-c          plasma edge and awall = awallx
-
-c-----amu3=ratio of third ion mass to hydrogen ion mass
-c-----z3=ratio of third ion charge to hydrogen ion charge
-c-----eta3=ratio of third ion density to electron density
-c-----xnu3ad=ad hoc collision frequency for 3rd ion species
-
-c-----xdelta=center of Gaussian for numerical damping of IBW
-c-----wdelta=width of Gaussian for numerical damping of IBW
-c-----xdelt2=second center of Gaussian for numerical damping of IBW
-c-----wdelt2=second width of Gaussian for numerical damping of IBW
-c-----zeffcd=Zeff for Ehst-Karney current drive calculation
-c-----rzoom1 = R on left side of zoomed plot
-c-----rzoom2 = R on right side of zoomed plot
-c-----ibackground controls color of plotting window and labels
-c-----    For white background set ibackground = 0 (box is black)
-c-----    For black background set ibackground = 1 (box is red)
-
       nkx2 = nmodesx / 2
       nkx1 = - nmodesx / 2 + 1
       nnodex = nmodesx
@@ -857,22 +671,6 @@ c      write(29,1000)nkzm
 
       allocate(rho_ij(nnodex,nnodey))     
 
-c      write (6, *) "eqdsk = ", eqdsk
-c      write (6, *) "nnodex = ", nnodex
-c      write (6, *) "nnodey = ", nnodey
-c      write (6, *) "rwleft = ", rwleft
-c      write (6, *) "rwright = ", rwright
-c      write (6, *) "ytop = ", ytop
-c      write (6, *) "ybottom = ", ybottom
-      
-c      write (115, *) "eqdsk = ", eqdsk
-c      write (115, *) "nnodex = ", nnodex
-c      write (115, *) "nnodey = ", nnodey
-c      write (115, *) "rwleft = ", rwleft
-c      write (115, *) "rwright = ", rwright
-c      write (115, *) "ytop = ", ytop
-c      write (115, *) "ybottom = ", ybottom
-
       i_psi = 5
 
 
@@ -964,28 +762,9 @@ c      write (115, *) "ybottom = ", ybottom
       end do
 
 
-c      write(6, 309) nxeqd, nyeqd
-c      write(6, 310) (rg(i), i = 1, nxeqd)
-c      write(6, 310) (zg(j), j = 1, nyeqd)
-
-
-
-c      do i = 1, nxeqd
-c         write(6, 1312)i, rg(i), psig(i, nyeqd/2),
-c     &        psirg(i, nyeqd/2), psizg(i, nyeqd/2), psirzg(i, nyeqd/2)
-c      end do
-
-
-c      write(6, 310)rmin, rmax, zmin, zmax
-c      write(6, 310)psimag, psisep, psio
-
-
-
-c      write(6, 1312)nxeqd
       do i = 1, nxeqd
          call deriv_x_eq(fpsi, agrid, nxeqdmax, i, nxeqd, dfpsida(i))
          call deriv_x_eq(qpsi, agrid, nxeqdmax, i, nxeqd, dqpsida(i))
-c         write(6, 1312)i, agrid(i), fpsi(i), dfpsida(i)
       end do
 
 *----------------------------------
@@ -1271,23 +1050,6 @@ c         write(6, 1312)n, rhon(n)
      &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
      
      
-c      if (myid .eq. 0)then
-         
-c         write(15, *)
-c         write(15, *) "     n        bmod_midavg"
-
-c         write(6, *)
-c         write(6, *)  "     n        bmod_midavg"
-
-
-c         do n = 1, nnoderho
-c            write(6,  1312)n, bmod_midavg(n)
-c            write(15, 1312)n, bmod_midavg(n)
-c         end do
-         
-c      end if
-     
-     
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -1299,38 +1061,6 @@ c     &         write(6, *)i, j, bratio(i,j),rho(i,j)
       end do
 
 
-
-c      write(115, *)
-c      write(115, *) "      n  capr_bpol_mid   bmod_mid"
-
-c      write(6, *)
-c      write(6, *)  "      n  capr_bpol_mid   bmod_mid"
-
-
-c      do n = 1, nnoderho
-c         write(6,  1312)n, capr_bpol_mid(n), bmod_midavg(n)
-c         write(115, 1312)n, capr_bpol_mid(n), bmod_midavg(n)
-c      end do
-
-
-c      write(115, *)
-c      write(115, *) "bmod_mid ="
-
-
-
-
-c      write(6, *)
-c      write(115, *)
-
-c      do i = 1, nnodex
-c         do j = 1, nnodey
-c            if(j .eq. jequat) then
-c               write(6,  1312)i, x(i), bmod(i, j), bmod_mid(i, j)
-c               write(115, 1312)i, x(i), bmod(i, j), bmod_mid(i, j)
-c            end if
-c         end do
-c      end do
-
       bxn_eq = bxn
       byn_eq = byn
       bzn_eq = bzn
@@ -1341,19 +1071,10 @@ c      end do
       if(myid .eq. 0) then
 
          write(18, 309) nnodex, nnodey
-c         write(18, 310) rwleft, rwright, ytop, ybottom
-c         write(18, 310) rmaxis, zmaxis, b0, psio, psimag, psi_tor_max      
          write(18, 310) ((bxn(i,j), i = 1, nnodex), j = 1, nnodey)
          write(18, 310) ((byn(i,j), i = 1, nnodex), j = 1, nnodey)
          write(18, 310) ((bzn(i,j), i = 1, nnodex), j = 1, nnodey)
          write(18, 310) ((bmod(i,j),i = 1, nnodex), j = 1, nnodey)
-c         write(18, 310) ((psi(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(18, 310) ((rho(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(18, 310) ((qsafety(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(18, 310) ((bmod_mid(i, j), i = 1, nnodex), j = 1, nnodey)
-c         write(18, 310) ((capr_bpol_mid2(i, j), i = 1,nnodex),j = 1,nnodey)
-c         write(18, 310) (capr_bpol_mid(n), n = 1, nnoderho)
-c         write(18, 310) ((rho_tor2d(i, j), i = 1,nnodex),j = 1,nnodey)
 
       close (18)
       
@@ -1605,16 +1326,6 @@ c           write(6, 1314) i, j, psix, psilim_
                end if
 
 
-c               write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     &            capr_x(n_phi), len_x(n_phi),
-c     &            zprimex, bratio_phi, icell, jcell, fcount
-
-c               write(115,1213)n_phi, ncell, phin_x(n_phi),
-c     &            capr_x(n_phi), len_x(n_phi),
-c     &            zprimex, bratio_phi, icell, jcell, fcount
-
-
-
 c               h0 = twopi / 720.
                 h0 = twopi / 360.
                 
@@ -1692,29 +1403,15 @@ c               h0 = twopi / 720.
                  end if
 
 
-
-c                  write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
-c                  write(115,1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
                   ncell = 0
 
                   nphi_exit = n_phi
-
-c                  write(6, *)"nphi_enter = ", nphi_enter
-c                  write(6, *)"nphi_exit = ",  nphi_exit
-                  
-c                 write(115, *)"nphi_enter = ", nphi_enter
-c                  write(115, *)"nphi_exit = ",  nphi_exit
 
 
 *                 ------------------------
 *                 Analytic dtau integral:
 *                 ------------------------
+                  
                   call fdtau(dtau, nxmx, nymx, len_x, modb_x,
      &               n_theta_max, n_psi_max, norb_dim, sinth2_init, 
      &               modb_init, n_theta_,
@@ -1742,26 +1439,8 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_exit)
                   
                   
-c                  do nphii = nphi_enter, nphi_exit
-c                     write(6, 1312)nphii, dl_vprl(nphii)
-c                  end do                 
-
-
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
                   
-
-c                  write(6, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
-c                  write(115, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
- 
                   i_box = i_box + 1
 
                   go to 200
@@ -1837,23 +1516,9 @@ c     &                i_box
                   end if
 
 
-c                  write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
-c                  write(115, 1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
                   ncell = 0
 
                   nphi_exit = n_phi
-
-c                  write(6, *)"nphi_enter = ", nphi_enter
-c                  write(6, *)"nphi_exit = ",  nphi_exit
-                  
-c                  write(115, *)"nphi_enter = ", nphi_enter
-c                  write(115, *)"nphi_exit = ",  nphi_exit
 
 *                 ----------------------
 *                 Analytic dtau integral:
@@ -1888,19 +1553,7 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
                   
 
-c                  write(6, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
-c                  write(115, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
-                   i_box = i_box + 1
+                  i_box = i_box + 1
 
                   go to 200
 
@@ -1939,26 +1592,7 @@ c     &                i_box
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_enter)
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_exit)
 
-                  
-c                  do nphii = nphi_enter, nphi_exit
-c                     write(6, 1312)nphii, dl_vprl(nphii)
-c                  end do                 
-
-
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
-
-c                  write(6, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
-
-c                  write(115, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
 
            dldb_tot_sum = 0.0
            
@@ -2000,8 +1634,6 @@ c             tau_bounce(i, j, n_theta) = dtau_tot12
            
            dldb_tot12(i,j) = dldb_tot1 + dldb_tot2
            
-c          write(6, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
-c          write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
            
            i_sav = i
            j_sav = j
@@ -2252,39 +1884,7 @@ c      write(115, 2846) tmin
 c
 c***************************************************************************
 c
-
-
-c      real function second1_old(dummy)
-
-c      implicit none
       
-c      integer :: v(8)
-c      integer mtime, mclock
-c      real dummy
-
-c*****Fortran 90 standard for wall clock time
-c      call date_and_time(values=v)
-c      second1_old=(v(5)*3600)+(v(6)*60)+v(7)+0.001d0*v(8)
-
-c*****FALCON:
-c      double precision mpi_wtime
-c      external mpi_wtime
-c      second1_old = MPI_WTIME()
-
-
-c*****EAGLE:
-c      mtime = mclock()
-c      second1_old  = 0.01 * mtime
-
-c      return
-c      end
-      
-c
-c***************************************************************************
-c
-      
-
-
       subroutine aorsa_grid(nnodex, nnodey, capr, capz, nxmx, nymx,
      &   psisep, psimag, bx0, by0, bz0, bxn, byn, bzn, bmod,
      &   psi, rho, rg, zg, psig, psirg, psizg, psirzg,
@@ -2338,21 +1938,6 @@ c
 
       jequat = nnodey / 2
       ihalf = nnodex / 2
-
-c      write(6, 310) (rg(ir), ir = 1, mr)
-c      write(6, 310) (zg(iz), iz = 1, mz)
-
-c      do ir = 1, mr
-c         write(6, 1312)ir, rg(ir), psig(ir, mz/2)
-c      end do
-
-c      write(6, 310) psihigh, psilow, psio
-c      write(6, 310) psisep, psimag
-
-c      do ipsi = 0, ma
-c         write(6, 1312) ipsi, psis(ipsi), fs(ipsi), fs1(ipsi)
-c      end do
-
 
 
 c       ----------------------------------
@@ -2454,10 +2039,6 @@ c            bz = 1.0e-07
             bxn(i, j) = br / bmod(i, j)
             byn(i, j) = bz / bmod(i, j)
             bzn(i, j) = bphi / bmod(i, j)
-
-
-
-c            if(j .eq. jequat)write(6, 1312) i, r, br, bz, bphi, f
 
          end do
       end do
@@ -3606,7 +3187,6 @@ c--set default values of input data:
 
       if (myid .eq. 0) then
         open(unit=138,file='out138',status='unknown',form='formatted')
-c        open(unit=115,file='out115',status='unknown',form='formatted')
       end if
       
 
@@ -3614,156 +3194,6 @@ c        open(unit=115,file='out115',status='unknown',form='formatted')
       nrhs = 1
       nmaxe=1
 
-
-c-----nmodesx=number of modes used in the x direction
-c-----nmodesy=number of modes used in the y direction
-c-----nwdot=number of radial modes used in wdot and flow (fy) calculation
-c-----nnodecx = number of radial mesh points used for wdot calculation
-c-----nnodecy = number of vertical mesh points used for wdot calculation
-
-c-----ibessel=flag determining whether or not to expand ion Bessel functions
-c           if(ibessel.eq.1) Full Bessel functions and exponential are used
-c           if(ibessel.eq.2) Exact 2nd order expansion from finite difference
-c                            code is used
-c           if(ibessel.eq.3) 2nd order Larmor radius expansion of Bessel
-c                            functions is used with exponential = 1.0
-
-c-----lmax = highest order Bessel function kept in plasma conductivity
-c-----ti0=central value of ion temperature in eV
-c-----nuead=ad hoc collision frequency for electron in sec-1
-c-----nu1ad=ad hoc collision frequency for majority ions in sec-1
-c-----nu2ad=ad hoc collision frequency for minority ions in sec-1
-c-----rant = major radius of antenna in meters
-
-c-----yant = half height of antenna in meters
-c-----te0=central value of eletron temperature in eV
-
-c-----inu:   if(inu.eq.0)real collisions are left out
-c-----iprint:  output is printed every iprint grid points
-c-----iexact:  if (iexact.eq.1) full sixth order equation is solved
-c-----         if (iexact.eq.0) approximate second order equation is solved
-c-----delta0=numerical damping for Bernstein wave:  about 1.e-04 (dimensionless)
-c-----xwall = not used
-
-c-----iroot: decides which of the two fast wave roots to follow
-c-----iequat:  if(iequat.eq.1) complete equations are solved
-c-----         if(iequat.eq.2) Fukayama's equations are solved
-
-c-----igeom: if(igeom.eq.1)not used
-c-----       if(igeom.eq.2)Solovev flux surfaces
-c-----       if(igeom.eq.5) GA - EQDSK surfaces are used.
-c-----       if(igeom.eq.6) ORNL - EQDSK surfaces are used.
-c
-c-----nboundary: if(nboundary .eq. 1)flux surface boundary (default)
-c-----           if(nboundary .eq. 0)square boundary
-c
-c-----epszet=error criterion for Z function calculation if disp is used
-
-c-----iqx:  if(iqx.eq.1) Vaclavik's  kinetic flux is used
-c-----      if(iqx.eq.2) Romero's  kinetic flux is used
-c-----      if(iqx.eq.3) Jaeger's  kinetic flux is used
-c-----      if(iqx.eq.4) Batchelor's  kinetic flux is used (reduces to WKB)
-c-----iqprof: if(iqprof.eq.1) q profile is proportional to density (default)
-c-----        if(iqprof.eq.2) q profile is proportional to sqrt(density)
-c-----iez:  if(iez.eq.0) Ez is calculated from complete equation
-c-----      if(iez.eq.1) Ez is set to zero
-
-c-----icurve: if(icurve .eq. 0)antenna is straight in poloidal direction
-c.                and located at rant
-c-----        if(icurve .eq. 2)antenna follows flux surface and is
-c                located at psiant
-
-c-----nphi = toroidal mode number (integer)
-c-----amu1= ratio of majority ion to hydrogen ion mass
-c-----amu2= ratio of minority ion to hydrogen ion mass
-c-----z1=ratio of majority ion charge to hydrogen ion charge
-c-----z2=ratio of minority ion charge to hydrogen ion charge
-c-----eta=ratio of minority ion density to electron density
-
-
-c-----b0=value of magnetic field at x=0 in Tesla
-c-----q0=value of inverse rotational transform on axis
-c-----rt= major radius of torus
-c-----ekappa = elongation
-c-----rwleft = major radius of the left conducting boundary
-c-----rwright = major radius of the right conducting boundary
-c-----ytop = y value for top boundary
-c-----ytop = y value for bottom boundary
-c-----ymax = radius in vertical (y) direction- in default it is set to awallx
-c-----xnurf= rf frequency in Hertz
-c-----aplasm= location of the plasma-scrape-off interface
-c-----alim = location of limiter
-c-----grad = 0.0 ignors gradients in Wdot (default)
-c-----grad = 1.0 includes gradients in Wdot
-c-----xnlim=electron density in scrape-off region (x>aplasm)
-
-c-----xn0=electron density at x=0
-c-----flat=0.0 gives parabolic profiles
-c-----flat=1.0 gives flat profiles
-c-----b1rat= low field value in step function magnetic field
-c-----b2rat=high field value in step function magnetic field
-c-----curdnx=Amps/meter of toroidal length of antenna in the x direction
-c-----curdny=Amps/meter of toroidal length of antenna in the y direction
-c-----curdnz=Amps/meter of toroidal length of antenna in the z direction
-c-----prinf = total applied RF power
-
-
-c-----nstep: determines steepness of step function magnetic field in option
-c-----nabs=polynomial coefficient which determines slope of the absorber
-c-----xnuabs=magnitude of absorber used to stop wall reflections in benchmark case.
-c-----xbnch:  abs(x)>xbnch is the artificial absorber region to stop wall reflections
-c        in benchmark case.
-c-----if (xbnch.eq.0.0) it is ignored.
-c-----xleft=left boundary for energy integrals and outgoing energy flux
-c-----xright=right boundary for energy integrals and incoming energy flux
-
-c-----if(iabsorb.eq.1)electron absorption from simple Landau formula
-c-----if(iabsorb.eq.2)electron absorption from  .5 * real(J* dot E) i.e. ECH
-
-c-----if(isigma.eq.0) cold plasma conductivity is used.
-c-----if(isigma.eq.1) hot  plasma conductivity is used (default).
-
-c-----nzfun:  if(nzfun.eq.0) Simple Z function is used from ZFUN
-c-----        if(nzfun.ge.1) Generalized Z function of Brambilla is used (default).
-
-c-----qavg0 is the rotational transform on axis
-c-----xnuomg is the collison rate used in hot and cold plasma dielectrics
-
-c-----if(itemp.eq.0)use Gaussian temperature-finite at edge-use with nlim=0 at edge
-c-----if(itemp.eq.1)use Fukuyama's profile for temperature with c=-2 and d=1 -use
-c          with nlim=finite at edge
-c-----if(itemp.eq.2)use Gaussian times 1-r**2/xant**2
-c-----telim=electron temperature in scrape-off region (x>aplasm)
-c-----tilim=ion temperature in scrape-off region (x>aplasm)
-
-c-----nfreqm=number of frequencies run
-c-----dfreq=frequency increment
-c-----nkzm=number of kz's run
-c-----dkz=kz increment
-
-c-----if(idens.eq.0)use parabolic density profile
-c-----if(idens.eq.1)use D'Ippolito density profile
-c-----r0 is parameter r0 in D'Ippolito density profile
-c-----xnudip is parameter nu in D'Ippolito density profile
-c-----adip is parameter nu in D'Ippolito density profile
-c-----efold is the number of e-foldings in density between
-c          plasma edge and awall = awallx
-
-c-----amu3=ratio of third ion mass to hydrogen ion mass
-c-----z3=ratio of third ion charge to hydrogen ion charge
-c-----eta3=ratio of third ion density to electron density
-c-----xnu3ad=ad hoc collision frequency for 3rd ion species
-
-c-----xdelta=center of Gaussian for numerical damping of IBW
-c-----wdelta=width of Gaussian for numerical damping of IBW
-c-----xdelt2=second center of Gaussian for numerical damping of IBW
-c-----wdelt2=second width of Gaussian for numerical damping of IBW
-c-----zeffcd=Zeff for Ehst-Karney current drive calculation
-c-----rzoom1 = R on left side of zoomed plot
-c-----rzoom2 = R on right side of zoomed plot
-c-----ibackground controls color of plotting window and labels
-c-----    For white background set ibackground = 0 (box is black)
-c-----    For black background set ibackground = 1 (box is red)
 
       nkx2 = nmodesx / 2
       nkx1 = - nmodesx / 2 + 1
@@ -3864,23 +3294,6 @@ c      write(29,1000)nkzm
 
       allocate(rho_ij(nnodex,nnodey))     
 
-c      write (6, *) "eqdsk = ", eqdsk
-c      write (6, *) "nnodex = ", nnodex
-c      write (6, *) "nnodey = ", nnodey
-c      write (6, *) "rwleft = ", rwleft
-c      write (6, *) "rwright = ", rwright
-c      write (6, *) "ytop = ", ytop
-c      write (6, *) "ybottom = ", ybottom
-      
-c      write (115, *) "eqdsk = ", eqdsk
-c      write (115, *) "nnodex = ", nnodex
-c      write (115, *) "nnodey = ", nnodey
-c      write (115, *) "rwleft = ", rwleft
-c      write (115, *) "rwright = ", rwright
-c      write (115, *) "ytop = ", ytop
-c      write (115, *) "ybottom = ", ybottom
-
-
       i_psi = 5
 
 
@@ -3972,33 +3385,9 @@ c      write (115, *) "ybottom = ", ybottom
       end do
 
 
-c      write(6, 309) nxeqd, nyeqd
-c      write(6, 310) (rg(i), i = 1, nxeqd)
-c      write(6, 310) (zg(j), j = 1, nyeqd)
-      
-c      write(6, *) "rwright = ", rwright
-c      write(6, *) "rwleft = ", rwleft 
-c      write(6, *) "ytop = ", ytop
-c      write(6, *) "ybottom = ", ybottom      
-      
-
-
-c      do i = 1, nxeqd
-c         write(6, 1312)i, rg(i), psig(i, nyeqd/2),
-c     &        psirg(i, nyeqd/2), psizg(i, nyeqd/2), psirzg(i, nyeqd/2)
-c      end do
-
-
-c      write(6, 310)rmin, rmax, zmin, zmax
-c      write(6, 310)psimag, psisep, psio
-
-
-
-c      write(6, 1312)nxeqd
       do i = 1, nrhoeqd
          call deriv_x_eq(fpsi, agrid, nxeqdmax, i, nrhoeqd, dfpsida(i))
          call deriv_x_eq(qpsi, agrid, nxeqdmax, i, nrhoeqd, dqpsida(i))
-c         write(6, 1312)i, agrid(i), fpsi(i), dfpsida(i)
       end do
 
 
@@ -4192,22 +3581,6 @@ c         write(6, 1312)n, rhon(n)
       
       rholim = .99
 
-c      write (6, *)
-c      write (6, *) "r0 = ", r0, "m"
-c      write (6, *) "b0 = ", b0, "Tesla"
-c      write (6, *) "psio = ", psio, "Webers/rad"
-c      write (6, *) "psimag = ", psimag, "Webers/rad"
-c      write (6, *) "psisep = ", psisep, "Webers/rad"
-c      write (6, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
-
-c      write (115, *)
-c      write (115, *) "r0 = ", r0, "m"
-c      write (115, *) "b0 = ", b0, "Tesla"
-c      write (115, *) "psio = ", psio, "Webers/rad" 
-c      write (115, *) "psimag = ", psimag, "Webers/rad"
-c      write (115, *) "psisep = ", psisep, "Webers/rad"   
-c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"      
-
       do i = 1, nnodex
          do j = 1, nnodey
             btau(i,j) = sqrt(bxn(i,j)**2 + byn(i,j)**2)
@@ -4292,91 +3665,17 @@ c      write (115, *) "psi_tor_max = ", psi_tor_max, "Webers/rad"
      &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, rt, dvol, fvol)
      
      
-c      if (myid .eq. 0)then
-         
-c         write(15, *)
-c         write(15, *) "     n        bmod_midavg"
-
-c         write(6, *)
-c         write(6, *)  "     n        bmod_midavg"
-
-
-c         do n = 1, nnoderho
-c            write(6,  1312)n, bmod_midavg(n)
-c            write(15, 1312)n, bmod_midavg(n)
-c         end do
-         
-c      end if
-     
-     
-
       do i = 1, nnodex
          do j = 1, nnodey
             bratio(i,j) = bmod_mid(i,j) / bmod(i,j)
-c            if(bratio(i,j) .gt. 1.0)
-c            if(bratio(i,j) .lt. 0.0)
-c     &         write(6, *)i, j, bratio(i,j),rho(i,j)
          end do
       end do
-
-
-
-c      write(115, *)
-c      write(115, *) "      n  capr_bpol_mid   bmod_mid"
-
-c      write(6, *)
-c      write(6, *)  "      n  capr_bpol_mid   bmod_mid"
-
-
-c      do n = 1, nnoderho
-c         write(6,  1312)n, capr_bpol_mid(n), bmod_midavg(n)
-c         write(115, 1312)n, capr_bpol_mid(n), bmod_midavg(n)
-c      end do
-
-
-c      write(115, *)
-c      write(115, *) "bmod_mid ="
-
-
-
-
-c      write(6, *)
-c      write(115, *)
-
-c      do i = 1, nnodex
-c         do j = 1, nnodey
-c            if(j .eq. jequat) then
-c               write(6,  1312)i, x(i), bmod(i, j), bmod_mid(i, j)
-c               write(115, 1312)i, x(i), bmod(i, j), bmod_mid(i, j)
-c            end if
-c         end do
-c      end do
 
       bxn_eq = bxn
       byn_eq = byn
       bzn_eq = bzn
       bmod_eq = bmod
       
-
-
-c      if(myid .eq. 0) then
-
-c         write(40, 309) nnodex, nnodey
-c         write(40, 310) rwleft, rwright, ytop, ybottom
-c         write(40, 310) rmaxis, zmaxis, b0, psio, psimag, psi_tor_max      
-c         write(40, 310) ((bxn(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((byn(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((bzn(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((bmod(i,j),i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((psi(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((rho(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((qsafety(i,j), i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((bmod_mid(i, j), i = 1, nnodex), j = 1, nnodey)
-c         write(40, 310) ((capr_bpol_mid2(i, j), i = 1,nnodex),j = 1,nnodey)
-c         write(40, 310) (capr_bpol_mid(n), n = 1, nnoderho)
-c         write(40, 310) ((rho_tor2d(i, j), i = 1,nnodex),j = 1,nnodey)
-      
-c      end if
 
 
       do i = 1, nnodex
@@ -4418,12 +3717,12 @@ c      end if
       end do
 
 
-*       --------------------------------------------------------
+*     ----------------------------------------------------------
 *     Set spline parameters and calculate spline coefficients:
 *       sigma = 0.0 for tensor product cubic splines
 *       sigma = 50 for bi-linear interpolation
 *       documentation recommend sigma=1.0 as standard value
-*       --------------------------------------------------------
+*     ----------------------------------------------------------
         sigma = 1.0
       islpsw = 255
       islpsw1 = 3
@@ -4713,25 +4012,9 @@ c               h0 = twopi / 720.
                  end if
 
 
-
-c                  write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
-c                  write(115,1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
                   ncell = 0
 
                   nphi_exit = n_phi
-
-c                  write(6, *)"nphi_enter = ", nphi_enter
-c                  write(6, *)"nphi_exit = ",  nphi_exit
-                  
-c                 write(115, *)"nphi_enter = ", nphi_enter
-c                  write(115, *)"nphi_exit = ",  nphi_exit
-
 
 *                 ------------------------
 *                 Analytic dtau integral:
@@ -4763,26 +4046,8 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_exit)
                   
                   
-c                  do nphii = nphi_enter, nphi_exit
-c                     write(6, 1312)nphii, dl_vprl(nphii)
-c                  end do                 
-
-
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
                   
-
-c                  write(6, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
-c                  write(115, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
- 
                   i_box = i_box + 1
 
                   go to 200
@@ -4858,23 +4123,10 @@ c     &                i_box
                   end if
 
 
-c                  write(6, 1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
-c                  write(115, 1213)n_phi, ncell, phin_x(n_phi),
-c     &               capr_x(n_phi), len_x(n_phi),
-c     &               zprimex, bratio_phi, icell, jcell, fcount
-
                   ncell = 0
 
                   nphi_exit = n_phi
 
-c                  write(6, *)"nphi_enter = ", nphi_enter
-c                  write(6, *)"nphi_exit = ",  nphi_exit
-                  
-c                  write(115, *)"nphi_enter = ", nphi_enter
-c                  write(115, *)"nphi_exit = ",  nphi_exit
 
 *                 ----------------------
 *                 Analytic dtau integral:
@@ -4908,19 +4160,6 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
 
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
                   
-
-c                  write(6, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
-c                  write(115, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
                    i_box = i_box + 1
 
                   go to 200
@@ -4947,12 +4186,6 @@ c     &                i_box
   201      continue
                   nphi_exit = n_phi
 
-c                  write(6, *)"nphi_enter = ", nphi_enter
-c                  write(6, *)"nphi_exit = ",  nphi_exit
-                  
-c                  write(115, *)"nphi_enter = ", nphi_enter
-c                  write(115, *)"nphi_exit = ",  nphi_exit
-  
 *                 -----------------------
 *                 Numerical dtau integral:
 *                 -----------------------
@@ -4966,24 +4199,7 @@ c                  write(115, *)"nphi_exit = ",  nphi_exit
                   dtau_sum = dtau_sum + 0.5 * dl_vprl(nphi_exit)
 
                   
-c                  do nphii = nphi_enter, nphi_exit
-c                     write(6, 1312)nphii, dl_vprl(nphii)
-c                  end do                 
-
-
                   dtau_tot_sum = dtau_tot_sum + dtau_sum
-
-c                  write(6, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
-
-c                  write(115, 1414) n_theta_check,
-c     &                theta_(n_theta_check, i_psi),
-c     &                dtau_sum, dtau_tot_sum,
-c     &                dldb_sum, dldb_tot_sum, 
-c     &                i_box
 
            dldb_tot_sum = 0.0
            
@@ -5024,9 +4240,6 @@ c             tau_bounce(i, j, n_theta) = dtau_tot12
            end do
            
            dldb_tot12(i,j) = dldb_tot1 + dldb_tot2
-           
-c          write(6, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
-c          write(115, *)"dldb_tot12(i,j) = ",dldb_tot12(i,j)
            
            i_sav = i
            j_sav = j
