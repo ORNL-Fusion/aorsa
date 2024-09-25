@@ -15,10 +15,9 @@ c
 
       external f, error
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     &   dx, dy,
-     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     &   dxdphi, dydphi, caprx
+      common/fcom/ bxn, byn, bzn, bmod, bratio, 
+     &   dx, dy, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, caprx, nxdim, nydim,fcount, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      &   xprime, yprime
@@ -151,8 +150,8 @@ c     &                  + lipwr * (lxdata + 1) + 2 * ndim)
 
 c*** ceez.f arrays:
 
-        real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
-        real zxy11, zxym1, zxy1n, zxymn
+      real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
+      real zxy11, zxym1, zxy1n, zxymn
       real zbxn(nxmx, nymx, 3)
       real zbyn(nxmx, nymx, 3)
       real zbzn(nxmx, nymx, 3)
@@ -691,7 +690,7 @@ c      write(29,1000)nkzm
       drg = rg(2) - rg(1)
       dzg = zg(2) - zg(1)
       
-      drg32 = (rg(nxeqd) - rg(1)) / 32.
+      drg32 = (rg(nxeqd) - rg(1)) / 32.  !jcw magic number
       dzg32 = (zg(nyeqd) - zg(1)) / 32.
       
       imaxis = (rmaxis - rg(1)) / (drg) + 1  
@@ -736,9 +735,9 @@ c      write(29,1000)nkzm
 *     -------------------------
 *     adjust boundaries outward
 *     -------------------------                                  
-      ytop_auto    = ytop_auto    + dzg32           
-      ybottom_auto = ybottom_auto - dzg32                                                       
-      rwright_auto = rwright_auto + drg32 * 2.0     
+      ytop_auto    = ytop_auto    + dzg32
+      ybottom_auto = ybottom_auto - dzg32
+      rwright_auto = rwright_auto + drg32 * 2.0
       rwleft_auto  = rwleft_auto  - drg32 * 2.0
       
       if(ytop .eq. 0.0)    ytop = ytop_auto
@@ -794,7 +793,7 @@ c      write(29,1000)nkzm
 
       xwleft = rwleft - rt
       xwright = rwright - rt
-
+      write(*,*) 'xwleft',xwleft,rwleft,rt,rwright
 
 *--------------------------------------------
 *--   Define x mesh: x(i), xprime(i), capr(i)
@@ -803,7 +802,7 @@ c--   xprime: 0 to xmax
 c--   x(i) : -xmax / 2.0   to   xmax / 2.0
       dx = xmax / nnodex
       
-      diffmin = 1.0e+05
+      diffmin = 1.0e+05  !start with large value and reduce at each step
 
       do i = 1, nnodex
          xprime(i) = (i - 1) * dx
@@ -814,13 +813,13 @@ c--   Note: the code gives slightly smoother results with dx/2.0 added
 
          xkphi(i) = nphi / capr(i)
          
-         diff = abs(capr(i) - r0)        
-         if(diff .lt. diffmin) then
+         diff = abs(capr(i) - r0)
+         if(diff .lt. diffmin) then  !find smallest diff at i0
             diffmin = diff
             i0 = i
          end if
 
-c         write(6, 1314)i, i0, xprime(i), x(i), capr(i), diff
+         write(6, 1314)i, i0, xprime(i), x(i), capr(i), diff
 
       end do
 
@@ -874,7 +873,7 @@ c         write(6, 1312)n, rhon(n)
       rplasm = rt + aplasm
       rlim   = rt + alim
 
-
+!JCW rwleft has min of 1e-3
 
 
 *------------------------------
@@ -1917,7 +1916,7 @@ c
       real rho_tor2d(nxmx, nymx)
       real psihigh, psilow
       real bmod(nxmx, nymx)
-      real ps, psr, psz, psrr, psrz, pszz
+      real ps, psr, psz, psrr, psrz, pszz, psz2, psr2
       real f_psi, f_psi_psi, f_3psi
       real f, f_a, f_a_a, f_3a, a
       real q, q_a, q_a_a, q_3a
@@ -1960,10 +1959,11 @@ c       ----------------------------------
      &            islpsw, zpr, temp,
      &            sigma, ierr)
 
+      zx1 = 0.0
       call surf1 (mr, mz, rg, zg, psizg, nxeqdmax,
      &            zx1, zxm, zy1, zyn,
      &            zxy11, zxym1, zxy1n, zxymn,
-     &            islpsw, zpz, temp,
+     &            254, zpz, temp,
      &            sigma, ierr)
 
       call curv1 (ma, psis, fs, slp1, slpn, islpsw1,
@@ -1977,9 +1977,8 @@ c       ----------------------------------
 
       do i = 1, nnodex
          do j = 1, nnodey
-            r = capr(i)  !JCW watch out for r=0
+            r = capr(i)
             z = capz(j)
-
 
 
 c           calculate fields:
@@ -2013,9 +2012,24 @@ c           calculate fields:
 *           -------------------------------------------------
 *           Minus sign because psig(i,j) = psilim - psig(i,j)
 *           -------------------------------------------------
-            br =  1./r * psz
-            bz = -1./r * psr
+            if ( (r < 2.e-2) ) then
+               psr2 = surf2(2.e-2, z, mr, mz, rg, zg, psirg, nxeqdmax,
+     &           zpr, sigma)
 
+               psz2 = surf2(capr(2), z, mr, mz, rg, zg, psizg, nxeqdmax,
+     &              zpz, sigma)
+               !r=0 not on mesh , capr(1)=delta r. dpsi/dr(0)=0
+               br =  1./r * psz
+               !bz = -(psr2-psr)/(capr(2)-capr(1))
+               bz = -1./2.e-2 * psr2
+
+#ifdef DEBUG               
+               write(*,*) 'br,bz,axis',br,bz,r,psz,psr,ps,a
+#endif
+            else
+               br =  1./r * psz
+               bz = -1./r * psr
+            end if
 
 *           -----------------------------
 *           To set poloidal field to zero
@@ -2034,7 +2048,7 @@ c            bz = 1.0e-07
             by0(i, j) = bz
             bz0(i, j) = bphi
 
-            bmod(i, j) = sqrt(br**2 + bz**2 + bphi**2)
+            bmod(i, j) = sqrt(br**2 + bz**2 + bphi**2) !JCW bmod defined here
 
             bxn(i, j) = br / bmod(i, j)
             byn(i, j) = bz / bmod(i, j)
@@ -2049,12 +2063,15 @@ c            bz = 1.0e-07
 ! JCW define b0 to be consistent with F=R*BPHI on axis regardless of what eqdsk
 ! head said. Rely on it for mirrors though, eventually replace with 
 ! d/dR grad psi
-      if (r0>=1e-4) then !not mirror careful of magic number
-         a = 1.e-04 !look close to magnetic axis
+      if (r0>=1e-2) then !not mirror careful of magic number
+         a = 1.e-03 !look close to magnetic axis
          f = curv2(a, ma, psis, fs, ypf, sigma)
          b0 = f / r0
       else
          b0 = bmod(1,jequat)    ! get |B| at R=0, Z=0 assuming a mirror JCW review
+#ifdef DEBUG
+         write(*,*) 'b0 for mirror', r0,b0
+#endif         
       end if
 
          
@@ -2573,16 +2590,15 @@ c
      &   bmod_mid, capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
      &   i_psi, dldb_tot12, dldbavg, n_prof_flux, rhomax)
      
-      use size_mod            
+      use size_mod
       
       implicit none
 
       external f, error
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     &   dx, dy,
-     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     &   dxdphi, dydphi, caprx
+      common/fcom/ bxn, byn, bzn, bmod, bratio, 
+     &   dx, dy, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, caprx, nxdim, nydim,fcount, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      &   xprime, yprime
@@ -2715,8 +2731,8 @@ c     &                  + lipwr * (lxdata + 1) + 2 * ndim)
 
 c*** ceez.f arrays:
 
-        real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
-        real zxy11, zxym1, zxy1n, zxymn
+      real zx1(nymx), zxm(nymx), zy1(nxmx), zyn(nxmx)
+      real zxy11, zxym1, zxy1n, zxymn
       real zbxn(nxmx, nymx, 3)
       real zbyn(nxmx, nymx, 3)
       real zbzn(nxmx, nymx, 3)

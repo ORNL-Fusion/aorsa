@@ -1034,32 +1034,32 @@ c
       titx = '1 / zeta'
       tity = 'dK/dL'
 
-      title = 'Real z0_table1'
+      title = 'Real z0 table1'
       call ezconc(zetai_table, dKdL_table, real(z0_table1),
      &     ff, nmax, mmax, numb, ntable, mtable, nlevmax,
      &     title, titx, tity, iflag,1.0)
 
-      title = 'Imag z0_table1'
+      title = 'Imag z0 table1'
       call ezconc(zetai_table, dKdL_table, aimag(z0_table1),
      &    ff, nmax, mmax,
      &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
-      title = 'Real z1_table1'
+      title = 'Real z1 table1'
       call ezconc(zetai_table, dKdL_table, real(z1_table1),
      &   ff, nmax, mmax,
      &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
-      title = 'Imag z1_table1'
+      title = 'Imag z1 table1'
       call ezconc(zetai_table, dKdL_table, aimag(z1_table1),
      &    ff, nmax, mmax,
      &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
-      title = 'Real z2_table1'
+      title = 'Real z2 table1'
       call ezconc(zetai_table, dKdL_table, real(z2_table1),
      &   ff, nmax, mmax,
      &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
 
-      title = 'Imag z2_table1'
+      title = 'Imag z2 table1'
       call ezconc(zetai_table, dKdL_table, aimag(z2_table1),
      &    ff, nmax, mmax,
      &   numb, ntable, mtable, nlevmax, title, titx, tity, iflag,1.0)
@@ -1112,9 +1112,9 @@ c
      &    nnoderho_half, nrhomax)
 
       title= 'parallel gradient of B'
-      titll= 'gradprlb_avg (T/m)'
+      titll= 'gradprlb avg (T/m)'
       titlr='       '
-
+!JCW note this avg~0 for mirrors, maybe vs Z instead?
       call ezplot0(title, titll, titlr, rhon_half, gradprlb2_avg,
      &    nnoderho_half, nrhomax)
 
@@ -1234,7 +1234,7 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
          xkti3avg(n) = xkti3avg(n) / q
       end do
 
-      title= 'Flux average electron temperature'
+      title= '<electron temperature>'
       titll= 'kTe (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xkteavg,
@@ -1640,15 +1640,15 @@ c      end do
      &    nnoderho_half, nrhomax)
       end if
       
-      title= 'normalized viscosity <mu_hat>'
-      titll= 'mu_hat (kg/m**3/s-1)'
+      title= 'normalized viscosity <mu hat>'
+      titll= 'mu hat (kg/m**3/s-1)'
       titlr='       '
       call ezplot0(title, titll, titlr, rhon_half, muhat_avg,
      &    nnoderho_half, nrhomax)
 
 
-      title= 'collisionality (nu_star)'
-      titll= 'nu_star'
+      title= 'collisionality (nu^{*})'
+      titll= 'nu*'
       titlr='       '
       call ezplot0(title, titll, titlr, rhon_half, nu_star_avg,
      &    nnoderho_half, nrhomax)
@@ -1890,14 +1890,14 @@ c--   Plot xkperp_cold:
       end do
 
 
-      title = 'Re xkperp_cold'
+      title = 'Re xkperp cold'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, 1, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
-      title = 'Im xkperp_cold'
+      title = 'Im xkperp cold'
       call ezconc(capr, y, fimag, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
@@ -1913,7 +1913,7 @@ c--   Plot xkperp_cold:
          fmidim(i) = aimag(xkperp_cold(i,jmid))
       end do
 
-      title = 'Midplane xkperp_cold'
+      title = 'Midplane xkperp cold'
       titll = 'Re xkperp (1/m)'
       titlr = 'Im xkperp (1/m)'
       titlb = 'R (m)'
@@ -1929,9 +1929,9 @@ c--   Plot xkperp_cold:
          fmidim(i) = aimag(xkperp_cold2(i,jmid))
       end do
 
-      title = 'Midplane xkperp_cold2'
-      titll = 'Re xkperp2 (1/m)'
-      titlr = 'Im xkperp2 (1/m)'
+      title = 'Midplane xkperp cold2'
+      titll = 'Re xkperp^{2} (1/m)'
+      titlr = 'Im xkperp^{2} (1/m)'
       titlb = 'R (m)'
 
       call ezplot2(title, titll, titlr, titlb, capr, fmidre, fmidim,
@@ -1947,7 +1947,7 @@ c--   Plot xkperp_cold2 in 2D:
       end do
 
 
-      title = 'Re xkperp_cold2'
+      title = 'Re xkperp cold2'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
@@ -2245,7 +2245,7 @@ c
             fimag(i,j) = aimag(xjpxe(i,j))
          end do
       end do
-      title = 'Real Je_alpha'
+      title = 'Real Je_{alpha}'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -2259,7 +2259,7 @@ c
             fimag(i,j) = aimag(xjpye(i,j))
          end do
       end do
-      title = 'Real Je_beta'
+      title = 'Real Je_{beta}'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -2273,7 +2273,7 @@ c
             fimag(i,j) = aimag(xjpze(i,j))
          end do
       end do
-      title = 'Real Je_b'
+      title = 'Real Je_{b}'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -2365,7 +2365,7 @@ c
          mod_Eminus_mid(i) = mod_Eminus(i,jmid)
       end do
 
-      title = 'Eminus'
+      title = 'E_{-}'
       titll = 'Re Eminus (V/m)'
       titlr = 'Im Eminus (V/m)'
       titlb = 'R (m)'
@@ -3126,7 +3126,7 @@ c            end if
          end do
       end do
 
-      title = ' Mod(E_minus)'
+      title = ' Mod(Eminus)'
       call ezconc(capr, y, mod_Eminus, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -4603,7 +4603,7 @@ c      end do
       titx = 'R (m)'
       tity = 'Z (m)'
 
-      title = 'Real Bx_wave'
+      title = 'Real Bx wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -4620,7 +4620,7 @@ c      end do
       end do
 
 
-      title = 'Real Bz_wave'
+      title = 'Real Bz wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -4724,9 +4724,9 @@ c
          fmidim(i) = aimag(bxwave(i,jmid))
       end do
 
-      title = 'Bx_wave'
-      titll = 'Re Bx_wave (T)'
-      titlr = 'Im Bx_wave (T)'
+      title = 'Bx wave'
+      titll = 'Re Bx wave (T)'
+      titlr = 'Im Bx wave (T)'
       titlb = 'R (m)'
 
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim,
@@ -4741,9 +4741,9 @@ c
          fmidim(i) = aimag(bzwave(i,jmid))
       end do
 
-      title = 'Bz_wave'
-      titll = 'Re Bz_wave (T)'
-      titlr = 'Im Bz_wave (T)'
+      title = 'Bz wave'
+      titll = 'Re Bz wave (T)'
+      titlr = 'Im Bz wave (T)'
       titlb = 'R (m)'
 
       call ezplot2q(title, titll, titlr, titlb, capr, fmidre, fmidim,
@@ -4811,7 +4811,7 @@ c
       end do
 
 
-      title = 'E_minus_flux_plot'
+      title = 'E_{-} flux plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -4847,7 +4847,7 @@ c
          fmidim(i) = aimag(eplus_flux_plot(i,jmid))
       end do
 
-      title = 'eplus_flux_plot'
+      title = 'Eplus flux plot'
       titll = 'Re Eplus (V/m)'
       titlr = 'Im Eplus (V/m)'
       titlb = 'R (m)'
@@ -4898,7 +4898,7 @@ c         bmod_plot(n) = bmod_flux(n, 1) / bmod_flux(1, 1)
       end do
 
       title= 'Mod B (theta = 0)'
-      titll= 'bmod_flux (T)'
+      titll= 'bmod flux (T)'
       titlr='       '
       call ezplot0(title, titll, titlr, rhon, bmod_plot,
      &    nnoderho, nrhomax)
@@ -4961,7 +4961,7 @@ c      end do
          end do
       end do
 
-      title = 'E_minus_flux'
+      title = 'E_{-} flux'
       titx   = 'rho'
       tity = 'theta'
       call ezconc(rhon, thetam, freal, ff, nnoderho, mnodetheta, numb,
@@ -6958,7 +6958,11 @@ c
       ymax = ymax * 1.1
       ymin = ymin
 #ifdef DEBUG
-      write(*,*) 'title: ', title, rhomin,rhomax,ymin,ymax
+      write(*,*) 'DEBUG ranges ezplot2q: ', rhomin,rhomax,ymin,ymax
+      if (ymax < 1e-20) then
+         write(*,*) 'ymax too small',y1,y2
+         return
+      end if
 #endif
       CALL PGPAGE
       CALL PGSVP (0.15,0.85,0.15,0.85)
@@ -7220,8 +7224,10 @@ c
 #ifdef DEBUG
       write(*,*) 'ezplot1:  title: ', title, y1min,y1max
 #endif
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
-
+      if(y1max .eq. 0.0 .and. y1min .eq. 0.0) then
+         return
+      end if
+      
       ymax = y1max
       ymin = y1min
 
@@ -7510,14 +7516,14 @@ c
       if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 
 #ifdef DEBUG
-      write(*,*) 'title: ', title
+      write(*,*) 'ezplot1q title: ', title
       write(6, *)"ymax = ", ymax, "   ymin = ", ymin
 #endif
 
       iflag = 0
       if(ymax == 0.0 .and. ymin == 0.0) then
+         ymax = 1.0
          iflag = 1
-         return
       end if
       
 c Advance plotter to a new page, define coordinate range of graph and draw axes

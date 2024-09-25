@@ -866,9 +866,9 @@ c     &         itable,jtable,ntable,mtable
         real :: rho_thresh
 
 
-        complex :: aij, beta
+!        complex :: aij, beta
         real,    dimension(:,:), allocatable :: work
-        complex, dimension(:,:), allocatable :: workc
+!        complex, dimension(:,:), allocatable :: workc
 
         complex, dimension(ndfmax) :: row,rowk
 
@@ -911,7 +911,7 @@ c     &         itable,jtable,ntable,mtable
      &           yy(mkdim1 : mkdim2, 1 : nymx) )
 
       allocate (work(nxmx, nymx))
-      allocate (workc(nxmx, nymx))
+!      allocate (workc(nxmx, nymx))
 
       allocate ( psi(nxmx, nymx),  rho(nxmx, nymx), theta(nxmx, nymx),
      &   rhohatx(nxmx, nymx), rhohaty(nxmx, nymx), theta0(nxmx, nymx),
@@ -2255,6 +2255,13 @@ c     1             bzeta(i,j)
                uzy(i, j) =   byn(i, j)
                uzz(i, j) =   bzn(i, j)
 
+!     Rotation matrix
+!                      
+!       1-bxn^2   
+!   U = 
+!        bxn         byn         bzn
+!
+               
                dxuxx(i,j)  = dxsqx
                dxxuxx(i,j) = dxxsqx
                dyuxx(i,j)  = dysqx
@@ -3321,7 +3328,8 @@ c                  antlc = pi / (xk0 * antlen)
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
 
                if (myid==0) then               
-               write(*,*) "gausspsi", i,j,gausspsi,xjz(i,j)
+                  write(*,*) "gausspsi", i,j,gausspsi,xjz(i,j),psiant,
+     &               psi(i,j), dpsiant,xjantz,shapey,Iz,deltay,yant_max
                end if
             end if
 
@@ -3376,7 +3384,7 @@ c                  antlc = pi / (xk0 * antlen)
       end if      
         
 ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
-      write(*,*) 'current location',i_cur_max,j_cur_max,capr(i_cur_max),
+      write(*,*) 'current location',i_cur_max,j_cur_max,
      &   cur_mod_max,capr(i_cur_max),y(j_cur_max)
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
@@ -6568,7 +6576,7 @@ c              if (myid==0) then
                   p_amat(ipos + 1) = fgk
                   p_amat(ipos + 2) = frk
 
-                  if (icnc1 .eq. 1) then
+                  if (icnc1 .eq. 1) then  !if first global row
                      p_brhs(ipos)     = xb(i,j)  !xb,c,d = current source
                      p_brhs(ipos + 1) = xc(i,j)
                      p_brhs(ipos + 2) = xd(i,j)
@@ -7263,6 +7271,7 @@ c           if(myid==0)write(6,*)n, m, eplus_flux(n,m)
          end do
       end do
 
+      !JCW Why is this being done, just for plots/ doesnt work for mirror?
 *---------------------------------------------------
 *     Interpolate back onto (R, Z) grid for plotting
 *---------------------------------------------------
@@ -11702,7 +11711,7 @@ c      write(6,*) "finished plots; starting deallocation"
       deallocate (xkperp2_slow, xkperp2_fast)
       deallocate (xkprl_a, P_a)
       deallocate (work)
-      deallocate (workc)
+!      deallocate (workc)
 !if not static
       deallocate (workn)
       deallocate (rwork)
