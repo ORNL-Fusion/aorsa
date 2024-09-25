@@ -18,10 +18,9 @@ c
 
       external f2, error
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     .   dx, dy,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, caprx
+      common/fcom/ bxn, byn, bzn, bmod, bratio, 
+     &   dx, dy, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, caprx, nxdim, nydim,fcount, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      .   xprime, yprime
@@ -382,10 +381,9 @@ c
       real zbratio(nmodesmax, mmodesmax, 3)
       real xprimea(nmodesmax), yprimea(mmodesmax)
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxmx, nymx, 
-     &   dr, dz,
-     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     &   dxdphi, dydphi, capr
+      common/fcom/ bxn, byn, bzn, bmod, bratio, 
+     &   dr, dz, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, capr, nxmx, nymx,fcount, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      &   xprimea, yprimea
@@ -454,10 +452,9 @@ c     integer, parameter:: nmodesmax = 450, mmodesmax = 450
       real zbratio(nmodesmax, mmodesmax, 3)
       real xprimea(nmodesmax), yprimea(mmodesmax)
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxmx, nymx, 
-     &   dr, dz,
-     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     &   dxdphi, dydphi, capr
+      common/fcom/ bxn, byn, bzn, bmod, bratio, 
+     &   dr, dz, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     &   dxdphi, dydphi, capr, nxmx, nymx,fcount, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      &   xprimea, yprimea

@@ -784,14 +784,14 @@
          nxmx, nymx, nlevmax, title, titx, tity, scalex)
 
 
-      title = 'bmod_mid surfaces'
+      title = 'bmod_{mid} surfaces'
       call ezconc(capr, y, bmod_mid, ff, nnodex, nnodey, numb, &
          nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,scalex)
 
 
-      title = 'capr_{bpol-mid2} surfaces'
+      title = '(R*Bpol)_{mid2} surfaces'
       call ezconc(capr, y, capr_bpol_mid2, ff, nnodex, nnodey, numb, &
          nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
@@ -838,15 +838,15 @@
          nnodex, nxmx)
 
 
-      title= 'Flux average bmod_mid'
+      title= 'Flux average bmod_{mid}'
       titll= 'bmod_mid (T)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, bmod_midavg, &
           nnoderho_half, nrhomax)
 
 
-      title= 'Flux average capr_bpol'
-      titll= 'r*bpol (mT)'
+      title= 'Flux average R*B_{pol}'
+      titll= '<r*bpol> (m-T)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, capr_bpol_midavg, &
            nnoderho_half, nrhomax)
@@ -894,7 +894,7 @@
 
 
 
-      title = 'grad_parallel B'
+      title = 'grad_{||} B'
       call ezconc(capr, y, gradprlb, ff, nnodex, nnodey, numb, &
          nxmx, nymx, nlevmax, title, titx, tity,iflag, scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex, &

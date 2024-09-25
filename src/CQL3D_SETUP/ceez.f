@@ -239,7 +239,7 @@ c
       yp(1) = (dx1-slpp1)/diag1
       temp(1) = sdiag1/diag1
       if (n .eq. 2) go to 6
-      do 5 i = 2,nm1
+      do  i = 2,nm1
         delx2 = x(i+1)-x(i)
         if (delx2 .le. 0.) go to 9
         dx2 = (y(i+1)-y(i))/delx2
@@ -249,15 +249,17 @@ c
         temp(i) = sdiag2/diag
         dx1 = dx2
         diag1 = diag2
-    5   sdiag1 = sdiag2
+        sdiag1 = sdiag2
+      end do
     6 diag = diag1-sdiag1*temp(nm1)
       yp(n) = (slppn-dx1-sdiag1*yp(nm1))/diag
 c
 c perform back substitution
 c
-      do 7 i = 2,n
+      do i = 2,n
         ibak = np1-i
-    7   yp(ibak) = yp(ibak)-temp(ibak)*yp(ibak+1)
+        yp(ibak) = yp(ibak)-temp(ibak)*yp(ibak+1)
+      end do
       return
 c
 c too few points
@@ -681,7 +683,8 @@ c
       diag1 = diag2
       sdiag1 = sdiag2
       if (n .eq. 2) go to 2
-      do 1 i = 2,nm1
+      
+      do i = 2,nm1
         npi = n+i
         delx2 = x(i+1)-x(i)
         if (delx2 .le. 0.) go to 8
@@ -693,29 +696,35 @@ c
         temp(i) = sdiag2/diag
         dx1 = dx2
         diag1 = diag2
-    1   sdiag1 = sdiag2
+        sdiag1 = sdiag2
+      end do
+      
     2 delx2 = p-(x(n)-x(1))
       dx2 = (y(1)-y(n))/delx2
       call terms (diag2,sdiag2,sigmap,delx2)
       yp(n) = dx2-dx1
       temp(nm1) = temp(2*n-1)-temp(nm1)
+      
       if (n .eq. 2) go to 4
 c
 c perform first step of back substitution
 c
-      do 3 i = 3,n
+      do i = 3,n
         ibak = np1-i
         npibak =n+ibak
         yp(ibak) = yp(ibak)-temp(ibak)*yp(ibak+1)
-    3   temp(ibak) =temp(npibak)-temp(ibak)*temp(ibak+1)
+        temp(ibak) =temp(npibak)-temp(ibak)*temp(ibak+1)
+      end do
+      
     4 yp(n) = (yp(n)-sdiag2*yp(1)-sdiag1*yp(nm1))/
      *        (diag1+diag2+sdiag2*temp(1)+sdiag1*temp(nm1))
 c
 c perform second step of back substitution
 c
       ypn =   yp(n)
-      do 5 i = 1,nm1
-    5    yp(i) = yp(i)+temp(i)*ypn
+      do i = 1,nm1
+         yp(i) = yp(i)+temp(i)*ypn
+      end do
       return
 c
 c too few points
@@ -733,6 +742,8 @@ c
     8 ierr = 3
       return
       end
+
+!--------------------------------------------------------------------------------      
       function curvp2 (t,n,x,y,p,yp,sigma)
 c
       integer:: n
@@ -3199,6 +3210,9 @@ c
       if (isw .eq. 3) sinhm = (expx-1./expx)/(ax+ax)-1.
       return
       end
+
+
+!--------------------------------------------------------------------------------
       subroutine surf1 (m,n,x,y,z,iz,zx1,zxm,zy1,zyn,zxy11,
      *                  zxym1,zxy1n,zxymn,islpsw,zp,temp,
      *                  sigma,ierr)
@@ -3522,54 +3536,64 @@ c
       del1 = x(2)-x(1)
       if (del1 .le. 0.) go to 47
       deli = 1./del1
-      do 38 j = 1,n
+      do j = 1,n
         zp(2,j,2) = deli*(z(2,j)-z(1,j))
-   38   zp(2,j,3) = deli*(zp(2,j,1)-zp(1,j,1))
+        zp(2,j,3) = deli*(zp(2,j,1)-zp(1,j,1))
+      end do
       call terms (diag1,sdiag1,sigmax,del1)
       diagi = 1./diag1
-      do 39 j = 1,n
+      do j = 1,n
         zp(1,j,2) = diagi*(zp(2,j,2)-zp(1,j,2))
-   39   zp(1,j,3) = diagi*(zp(2,j,3)-zp(1,j,3))
+        zp(1,j,3) = diagi*(zp(2,j,3)-zp(1,j,3))
+      end do
+      
       temp(n+1) = diagi*sdiag1
       if (m  .eq. 2) go to 43
-      do 42 i = 2,mm1
+      do i = 2,mm1
         im1 = i-1
         ip1 = i+1
         npi = n+i
         del2 = x(ip1)-x(i)
         if (del2 .le. 0.) go to 47
         deli = 1./del2
-        do 40 j = 1,n
+        do j = 1,n
           zp(ip1,j,2) = deli*(z(ip1,j)-z(i,j))
-   40     zp(ip1,j,3) = deli*(zp(ip1,j,1)-zp(i,j,1))
+          zp(ip1,j,3) = deli*(zp(ip1,j,1)-zp(i,j,1))
+        end do
         call terms (diag2,sdiag2,sigmax,del2)
         diagin = 1./(diag1+diag2-sdiag1*temp(npi-1))
-        do 41 j = 1,n
+        do j = 1,n
           zp(i,j,2) = diagin*(zp(ip1,j,2)-zp(i,j,2)-
      *                        sdiag1*zp(im1,j,2))
-   41     zp(i,j,3) = diagin*(zp(ip1,j,3)-zp(i,j,3)-
-     *                        sdiag1*zp(im1,j,3))
+          zp(i,j,3) = diagin*(zp(ip1,j,3)-zp(i,j,3)-
+     *         sdiag1*zp(im1,j,3))
+        end do
         temp(npi) = diagin*sdiag2
         diag1 = diag2
-   42   sdiag1 = sdiag2
+        sdiag1 = sdiag2
+      end do
+      
    43 diagin = 1./(diag1-sdiag1*temp(npm-1))
-      do 44 j = 1,n
+      do j = 1,n
         npmpj = npm+j
         zp(m,j,2) = diagin*(temp(npmpj)-zp(m,j,2)-
      *                      sdiag1*zp(mm1,j,2))
-   44   zp(m,j,3) = diagin*(temp(j)-zp(m,j,3)-
-     *                      sdiag1*zp(mm1,j,3))
+        zp(m,j,3) = diagin*(temp(j)-zp(m,j,3)-
+     *       sdiag1*zp(mm1,j,3))
+      end do
 c
 c perform back substitution
 c
-      do 45 i = 2,m
+      do i = 2,m
         ibak = mp1-i
         ibakp1 = ibak+1
         npibak = n+ibak
         t = temp(npibak)
-        do 45 j = 1,n
+        do j = 1,n
           zp(ibak,j,2) = zp(ibak,j,2)-t*zp(ibakp1,j,2)
-   45     zp(ibak,j,3) = zp(ibak,j,3)-t*zp(ibakp1,j,3)
+          zp(ibak,j,3) = zp(ibak,j,3)-t*zp(ibakp1,j,3)
+        end do
+      end do 
       return
 c
 c too few points
@@ -3582,6 +3606,8 @@ c
    47 ierr = 2
       return
       end
+
+!--------------------------------------------------------------------------------      
       function surf2 (xx,yy,m,n,x,y,z,iz,zp,sigma)
 c
       integer:: m,n,iz
