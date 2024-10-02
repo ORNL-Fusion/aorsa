@@ -399,7 +399,7 @@ c
       implicit none
 
       integer i, j, nx1, nx2, ny1, ny2, nxmax, nymax
-      real f(nxmax, nxmax), x(nxmax), y(nymax), ans, dx, dy
+      real f(nxmax, nymax), x(nxmax), y(nymax), ans, dx, dy
       real capr(nxmax), r0
 
 
@@ -431,7 +431,7 @@ c
       implicit none
 
       integer i, j, nx1, nx2, ny1, ny2, nxmax, nymax
-      real f(nxmax, nxmax), x(nxmax), y(nymax), ans, dx, dy
+      real f(nxmax, nymax), x(nxmax), y(nymax), ans, dx, dy
       real capr(nxmax), r0, rho(nxmax, nymax)
 
 
@@ -465,7 +465,7 @@ c
       implicit none
 
       integer i, j, nx1, nx2, ny1, ny2, nxmax, nymax
-      real f(nxmax, nxmax), x(nxmax), y(nymax), ans, dx, dy
+      real f(nxmax, nymax), x(nxmax), y(nymax), ans, dx, dy
       real capr(nxmax), r0, rho(nxmax, nymax)
 
 
@@ -501,7 +501,7 @@ c
       implicit none
 
       integer i, j, nx1, nx2, ny1, ny2, nxmax, nymax
-      real f(nxmax, nxmax), x(nxmax), y(nymax), ans, dx, dy
+      real f(nxmax, nymax), x(nxmax), y(nymax), ans, dx, dy
       real capr(nxmax), r0
 
 

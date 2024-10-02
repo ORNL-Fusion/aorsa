@@ -2,8 +2,8 @@ include compileropts.intel
 #-ftrapuv #there are a LOT of unitialized vars in aorsa
 FC = mpiifort -cpp -g -O0 -traceback  -debug all -mkl=cluster -module mod
 PGPLOT_DIR := ${PKG_GIZA_ROOT}/lib
-LIBS = -L$(PGPLOT_DIR) -Wl,-rpath,$(PGPLOT_DIR) -lpgplot -lgiza -L$(NETCDF_LIB) -Wl,-rpath,$(NETCDF_LIB)  -L$(NETCDFF_LIB) -Wl,-rpath,$(NETCDFF_LIB)  -lnetcdff  -lnetcdf
+LIBS = -L$(PGPLOT_DIR) -Wl,-rpath,$(PGPLOT_DIR) -lpgplot -lgiza -L$(NETCDF_LIB) -Wl,-rpath,$(NETCDF_LIB)  -L$(NETCDFF_LIB) -Wl,-rpath,$(NETCDFF_LIB)  -lnetcdff  -lnetcdf -lsz
 #LIBS +=  -L /usr/lib64 -lX11
 INCLUDE_DIRS = -I$(NETCDF_INC)  -I$(NETCDFF_INC)
 
-DEFS+= -DGIZA
+DEFS+= -DGIZA -DDEBUG

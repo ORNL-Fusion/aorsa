@@ -3300,11 +3300,6 @@ c      end if
 
                   if (i_antenna .eq. 0) then
                      shapey = exp(- deltay**2 / yant_max**2)
-!                  if (myid==0) then
-!                     write(*,*) 'shapey-a', capr(i),y(j),deltay, shapey
-!                     write(*,*) 'shapey-a   ', dpsiant,gausspsi,rt
-!                  end if
-
                   end if
 
 
@@ -3327,10 +3322,6 @@ c                  antlc = pi / (xk0 * antlen)
                xjy(i,j) = xjanty * shapey  * gausspsi * Iy
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
 
-               if (myid==0) then               
-                  write(*,*) "gausspsi", i,j,gausspsi,xjz(i,j),psiant,
-     &               psi(i,j), dpsiant,xjantz,shapey,Iz,deltay,yant_max
-               end if
             end if
 
             if(i_antenna .eq. 2) then
