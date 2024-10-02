@@ -188,8 +188,8 @@ c
       parameter (nkdim1 = - nxmx / 2)
       parameter (nkdim2 =   nxmx / 2)
 
-      parameter (mkdim1 = - nxmx / 2)
-      parameter (mkdim2 =   nxmx / 2)
+      parameter (mkdim1 = - nymx / 2)
+      parameter (mkdim2 =   nymx / 2)
 
       parameter (nkpltdim = 2 * nkdim2)
       parameter (mkpltdim = 2 * mkdim2)
@@ -2750,14 +2750,14 @@ c        white background
      &     scalex)
 
 
-
+#ifdef skip
       title = 'Toroidal force'
       call ezconc(capr, y, fz0, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
-
+#endif
 
 
       write(140, 3857)
@@ -3195,7 +3195,7 @@ c            end if
          end do
       end do
 
-      title = 'Real(E_minus)'
+      title = 'Real(E_{minus})'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -5440,7 +5440,7 @@ c--set up contour levels
 !      fmax = MAXVAL(f) !(2:nrmax-1,:))
 
 #ifdef DEBUG
-      write(*,*) 'ezconc title: ', title,scale,scalex,
+      write(6,*) 'ezconc title: ', title,scale,scalex,
      & ymin,ymax,xmin,xmax
 #endif
       iflag = 0
@@ -6674,9 +6674,7 @@ c
       integer:: nblack,nred,nyellow, ngreen,naqua,npink,
      &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
      &     nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-#ifdef DEBUG
-      write(*,*) 'DEBUG ezplot70 ', title
-#endif
+
       nwhite = 0
       nblack = 1
       nred = 2
@@ -6697,6 +6695,13 @@ c
 
       ymax = max(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
       ymin = min(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
+#ifdef DEBUG
+      write(6,*) 'DEBUG ezplot70 ', title,scale,scalex,ymin,ymax
+      if (ymax /= ymax) then
+          write(6,*) 'Nan found in ymax'
+          return
+      end if
+#endif
       ymin=0.0
 
       rhomax=x1(nr)

@@ -197,8 +197,8 @@ c      parameter (mmodesmax = 450)
       real betan, betan2, betan3, betate, betati, betati2,
      &    betati3, taue
 
-      real yprimec(nxmx), ycourse(nxmx),
-     &     yprime(nxmx), y(nxmx), dy, dyc
+      real yprimec(nymx), ycourse(nymx),
+     &     yprime(nymx), y(nymx), dy, dyc
 
 
 !------------------end of declarations----------------------------------
