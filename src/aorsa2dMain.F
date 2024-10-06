@@ -10471,11 +10471,11 @@ c     &                   + pi4_ql +pi5_ql + pi6_ql
          write(38, 310) ((bcold(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((ccold(i, j), i = 1, nnodex), j = 1, nnodey)
 
-         write (38, 310) ((reomg1a(i, j), i = 1, nnodex), j = 1, nnodey)
-         write (38, 310) ((reomg2a(i, j), i = 1, nnodex), j = 1, nnodey)
-         write (38, 310) ((reomg3a(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((reomg1a(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((reomg2a(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((reomg3a(i, j), i = 1, nnodex), j = 1, nnodey)
 
-         write (38, 310) ((reomglha(i, j), i = 1, nnodex),j = 1, nnodey)
+         write(38, 310) ((reomglha(i, j), i = 1, nnodex),j = 1, nnodey)
 
          write(38, 310) ((xjx(i, j),  i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((xjy(i, j),  i = 1, nnodex), j = 1, nnodey)
@@ -10485,9 +10485,9 @@ c     &                   + pi4_ql +pi5_ql + pi6_ql
          write(38, 310) ((ey(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((ez(i, j), i = 1, nnodex), j = 1, nnodey)
 
-         write (38, 310) ((xjpxe(i,j), i = 1, nnodex), j = 1, nnodey)
-         write (38, 310) ((xjpye(i,j), i = 1, nnodex), j = 1, nnodey)
-         write (38, 310) ((xjpze(i,j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((xjpxe(i,j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((xjpye(i,j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((xjpze(i,j), i = 1, nnodex), j = 1, nnodey)
 
          write(38, 309) nkx1, nkx2
          write(38, 309) nky1, nky2
@@ -10515,7 +10515,7 @@ c     &                   + pi4_ql +pi5_ql + pi6_ql
          write(38, 310) ((ebeta(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((eb(i, j), i = 1, nnodex), j = 1, nnodey)
 
-         !JCW btau in 1.0 bzeta is 0. for mirror
+         !JCW btau is 1.0 bzeta is 0. for mirror
          write(38, 310) ((btau(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((bzeta(i, j), i = 1, nnodex), j = 1, nnodey)
 
@@ -10532,9 +10532,9 @@ c     &                   + pi4_ql +pi5_ql + pi6_ql
          write(38, 310) ((wdoti2(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((wdot(i, j), i = 1, nnodex), j = 1, nnodey)
 
-         write (38, 310) ((divq(i, j), i = 1, nnodex), j = 1, nnodey)
-         write (38, 310) ((capd(i, n), i = 1, nnodex), n = nkx1, nkx2)
-         write (38, 310) ((xkb(i, n), i = 1, nnodex), n = nkx1, nkx2)
+         write(38, 310) ((divq(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((capd(i, n), i = 1, nnodex), n = nkx1, nkx2)
+         write(38, 310) ((xkb(i, n), i = 1, nnodex), n = nkx1, nkx2)
 
 
          do n = nkx1, nkx2 !JCW magic numbers fix

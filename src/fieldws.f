@@ -2060,8 +2060,8 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity)
       end do
 
       title = 'Lower hybrid resonant surface'
-      call ezconc1(capr, y, fmod, ff, nnodex, nnodey, 1,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+      call ezconc(capr, y, fmod, ff, nnodex, nnodey, 1,
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
        if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
@@ -5440,7 +5440,7 @@ c--set up contour levels
 !      fmax = MAXVAL(f) !(2:nrmax-1,:))
 
 #ifdef DEBUG
-      write(6,*) 'ezconc title: ', title,scale,scalex,
+      write(6,*) 'ezconc title: ', title,
      & ymin,ymax,xmin,xmax
 #endif
       iflag = 0
@@ -5559,12 +5559,13 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 c
 c*********************************************************************
 c
-
+!JCW only used by LH plot
       subroutine ezconc1(r, theta, f, flevel, nr, nth, nlevel,
-     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag)
+     &   nrmax, nthmax, nlevmax, title, titx, tity, iflag,scale)
 
       implicit none
 
+      real:: scale      
       integer:: nxmx, ncolln10, imark, ncolln9, nwheat, ngrey, naqua,
      &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
      &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
@@ -5589,6 +5590,9 @@ c
       character(32):: titx
       character(32):: tity
 
+      real:: scalex
+      scalex=scale
+            
       nwhite = 0
       nblack = 1
       nred = 2
@@ -5599,10 +5603,10 @@ c
       nyellow = 7
       norange = 8
 
-      dx = r(2) - r(1)
+      dx = (r(2) - r(1))*scalex
       dy = theta(2) - theta(1)
 
-      tr(1) = r(1) - dx
+      tr(1) = r(1)*scalex - dx
       tr(2) = dx
       tr(3) = 0.0
       tr(4) = theta(1) - dy
@@ -5610,7 +5614,7 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
+      call a1mnmx(r*scalex, nrmax, nr, xmin, xmax)
       call a1mnmx(theta, nthmax, nth, ymin, ymax)
 !      xmin = MINVAL(r)
 !      xmax = MAXVAL(r)
@@ -6696,7 +6700,7 @@ c
       ymax = max(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
       ymin = min(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
 #ifdef DEBUG
-      write(6,*) 'DEBUG ezplot70 ', title,scale,scalex,ymin,ymax
+      write(6,*) 'DEBUG ezplot70 ', title,ymin,ymax
       if (ymax /= ymax) then
           write(6,*) 'Nan found in ymax'
           return
@@ -6983,7 +6987,7 @@ c
       CALL PGSCI(nblue)
       call pgline(nr, x1, y1)
 
-      CALL PGSCI(ngreen)
+      CALL PGSCI(nmagenta)
       call pgline(nr, x1, y2)
 
       CALL PGSCI(nblack)
