@@ -1239,6 +1239,7 @@ c           write(6, 1314) i, j, psix, psilim_
             call f(phi, y_phi, dy_phi)
             modb_init = modb
 
+            !check this - jcw
             do n_theta = 1, n_theta_(i_psi)
                dtau_tot(n_theta) = 0.0
                sinth2_init(n_theta, i_psi)=sin(theta_(n_theta,i_psi))**2
@@ -2012,7 +2013,7 @@ c           calculate fields:
 *           -------------------------------------------------
 *           Minus sign because psig(i,j) = psilim - psig(i,j)
 *           -------------------------------------------------
-            if ( (r < 2.e-2) ) then
+            if ( (r < 2.e-2) ) then !JCW
                psr2 = surf2(2.e-2, z, mr, mz, rg, zg, psirg, nxeqdmax,
      &           zpr, sigma)
 

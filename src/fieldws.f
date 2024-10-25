@@ -8242,7 +8242,7 @@ c--Advance graphics frame and get ready to plot
 
       call pgsci(nblack)
       call pgenv(xmin, xmax, ymin, ymax, 1, 0)
-
+      CALL PGSVP (0.15,0.85,0.85,0.95)
       call pgscir(1, nlevel)
       call palett(2, 1., 0.5)
       call pgimag(f, nrmax, nthmax, 1, nr, 1, nth, fmin, fmax, tr)

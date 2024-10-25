@@ -861,7 +861,7 @@ c     &         itable,jtable,ntable,mtable
         integer :: num_inside, mm, ni, nn, iia, jja, niu, miu
 
         logical, dimension(:,:), allocatable :: is_inside
-        integer, dimension(DLEN_) :: descBtmp, descbrhs
+        integer, dimension(DLEN_) :: descbrhs
 
         real :: rho_thresh
 
@@ -5177,16 +5177,16 @@ c           call flush
 !        stop '** error ** '
       endif
 
-!if not static
+
       call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond,
      &          sworkn, -1, srwork, -1, info)
-!      write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
+
       lwork = int(sworkn(1))
       lrwork = int(srwork(1)) !jcw temp
 
       allocate (workn(lwork))
       allocate (rwork(lrwork))
-!fi
+
       do irnc=1,nrow_local*ncol_local
         p_amat(irnc) = cmplx(0., 0.)
       enddo
@@ -6880,18 +6880,19 @@ c--   Operations for complex matrix factor and solve:
         do i=1,nrow
           l2norm_res = l2norm_res + abs(p_brhs_copy(i)-brhs_tmp(i))**2
           l2norm_rhs = l2norm_rhs + abs(p_brhs_copy(i))**2
-*          write(*,*) 'error : ', p_brhs_copy(i)-brhs_tmp(i)
         enddo
+       
         l2norm_res = sqrt(l2norm_res)
+
+#ifdef DEBUG        
         write(*,*) 'l2norm_res : ', l2norm_res
         write(*,*) 'l2norm_rhs : ', l2norm_rhs
-
+#enddef
         deallocate(p_amat_copy)
         deallocate(p_brhs_copy)
       end if
 
       deallocate(p_amat)
-c      deallocate(Btmp)
 
       do n = nkx1, nkx2
          do m = nky1, nky2
@@ -6908,8 +6909,7 @@ c      deallocate(Btmp)
          end do
       end do
 
-
-      end if
+   end if
 
  6000 continue
 

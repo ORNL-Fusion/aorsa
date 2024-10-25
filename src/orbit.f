@@ -485,21 +485,19 @@ c     integer, parameter:: nmodesmax = 450, mmodesmax = 450
       capr = x_extint + rt         != xprime + rwleft
 
 
-      if (bphi <= 1.0e-4) then !find dX/dell
-         dy(1) = sgn_vprl * br / modb
-         dy(2) = sgn_vprl * bz / modb
+      if (bphi/modb <= 1.0e-2) then !find dX/dell if b_{\phi} < 1\% |B|
+         dxdphi = sgn_vprl * br / modb
+         dydphi = sgn_vprl * bz / modb
       else 
          dxdphi = sgn_vprl * capr * br / bphi
          dydphi = sgn_vprl * capr * bz / bphi
-
-
-         dy(1) = dxdphi
-         dy(2) = dydphi
       end if
 
-      fcount = fcount + 1
 
- 1312 format(1p,8e12.4)
+      dy(1) = dxdphi
+      dy(2) = dydphi
+
+      fcount = fcount + 1
 
       return
       end
