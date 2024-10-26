@@ -718,7 +718,7 @@ c      write(29,1000)nkzm
 *     Find ytop and ybottom
 *     ---------------------          
       
-      i = imaxis * .7
+      i = imaxis * .7 !jcw magic number
       
       ytop_auto = 0.0                             
       do j = nyeqd/2, nyeqd
@@ -1125,7 +1125,7 @@ c     &         write(6, *)i, j, bratio(i,j),rho(i,j)
 *       sigma = 50 for bi-linear interpolation
 *       documentation recommend sigma=1.0 as standard value
 *       --------------------------------------------------------
-        sigma = 1.0
+      sigma = 1.0
       islpsw = 255
       islpsw1 = 3
 
@@ -1167,12 +1167,8 @@ c     &         write(6, *)i, j, bratio(i,j),rho(i,j)
       n_theta_check = 75
      
 
-c      do i = 2, nnodex - 1
-        do i = i0, nnodex - 1
-      
-c        do j = 1, nnodey - 1
-          do j = j0, j0  !search only midplane
-
+      do i = i0, nnodex - 1     !i0 is location of smallest diff
+         do j = j0, j0          !search only midplane
 
             capr_x0 = capr(i) + dx / 2.0
             capz_x0 = y(j) + dy / 2.0
@@ -1187,16 +1183,16 @@ c        do j = 1, nnodey - 1
             !check that this is working JCW
             psix =surf2(xprimex0, yprimex0, nnodex, nnodey, 
      &         xprime, yprime,
-     &         psi, nxmx, zpsi, sigma)
+     &           psi, nxmx, zpsi, sigma)
+            
             !outside
-            if(psix .gt. psilim_ .and. psix_prev .le. psilim_)i_max =i-1     
+            if(psix .gt. psilim_ .and. psix_prev .le. psilim_)i_max =i-1
+            
             !inside
             if(psix .le. psilim_)then
             
-c           write(6, 1314) i, j, psix, psilim_
 
             i_psi = 1
-         
         
             do i_sgn_vprl = 1, 2
             
@@ -1209,7 +1205,7 @@ c           write(6, 1314) i, j, psix, psilim_
 *           ---------------------
             
             h0 = 1.0e-04
-            nmax = 2
+            nmax = 2 !could be a parameter 
       
             mmax = 4
             eps = 1.0e-06
@@ -1239,7 +1235,7 @@ c           write(6, 1314) i, j, psix, psilim_
             call f(phi, y_phi, dy_phi)
             modb_init = modb
 
-            !check this - jcw
+            !check this - jcw, doesnt look its used, theta_ not initialized
             do n_theta = 1, n_theta_(i_psi)
                dtau_tot(n_theta) = 0.0
                sinth2_init(n_theta, i_psi)=sin(theta_(n_theta,i_psi))**2
