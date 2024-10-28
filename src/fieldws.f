@@ -6695,7 +6695,7 @@ c
       ymax = max(y1max, y2max, y3max, y4max, y5max, y6max, yemax)
       ymin = min(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
 #ifdef DEBUG
-      write(6,*) 'DEBUG ezplot70 ', title,scale,scalex,ymin,ymax
+      write(6,*) 'DEBUG ezplot70 ', title,ymin,ymax
       if (ymax /= ymax) then
           write(6,*) 'Nan found in ymax'
           return
