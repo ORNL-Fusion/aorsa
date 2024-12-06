@@ -1535,6 +1535,7 @@
 *     No rotation is made.  Result is in the Stix frame.
 *     ---------------------------------------------------------
 !      use zfun_hilbert  
+      use aorsa2din_mod, only:eqtype
       
       implicit none
       
@@ -1624,9 +1625,9 @@
       real :: DFDUPER(NUPER,NUPAR),DFDUPAR(NUPER,NUPAR)
       real :: W,K1(3),K2(3),KPER1,KPER2,ENORM,ZSPEC,ASPEC,BMAG,DensSPEC
       integer :: NSBESSJ,IFAIL
-      COMPLEX WSPEC(3,3)
+      complex :: WSPEC(3,3)
       complex :: factor
-        real :: UminPara,UmaxPara
+      real :: UminPara,UmaxPara
       real :: XI1(NUPER),JNXI1(NUPER, NBESSJ)
       real :: XI2(NUPER),JNXI2(NUPER, NBESSJ)
 
@@ -1674,7 +1675,11 @@ c      end if
          labs = abs(l)
 
          reson = (omgrf - l * real(omgc)) / omgrf
-c         if (abs(reson) .lt. 0.02)then
+c     if (abs(reson) .lt. 0.02)then
+         if (eqtype=='mirror') then
+            zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+            dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
+         else
          if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
@@ -1682,7 +1687,8 @@ c         if (abs(reson) .lt. 0.02)then
             zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
             dzetal(l) = 0.0
          end if
-         
+         end if
+
 c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
