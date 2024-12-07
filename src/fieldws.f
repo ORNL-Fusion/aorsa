@@ -338,7 +338,8 @@ c
 
       real:: fmidre(nxmx), fmidim(nxmx), fmid1(nxmx),
      &     fmid2(nxmx), fmid3(nxmx), fmid4(nxmx), fmid5(nxmx),
-     &     fmids(nxmx), fmidt(nxmx), fmid6(nxmx)
+     &     fmids(nxmx), fmidt(nxmx), fmid6(nxmx), 
+     &     faxre(nymx), faxim(nymx)
       real:: x(nxmx), capr(nxmx), y(nymx), xkphi(nxmx)
       real:: mod_Eplus_mid(nxmx),  mod_Eminus_mid(nxmx),
      &   mod_Eb_mid(nxmx), mod_e_mid(nxmx)
@@ -1920,6 +1921,20 @@ c--   Plot xkperp_cold:
 
       call ezplot2(title, titll, titlr, titlb, capr, fmidre, fmidim,
      &   nnodex, nxmx)
+
+      do i = 1, nnodey
+         faxre(i) = real(xkperp_cold2(1,i))
+         faxim(i) = aimag(xkperp_cold2(1,i))
+      end do
+
+      title = 'Axis xkperp cold2'
+      titll = 'Re xkperp^{2} (1/m)'
+      titlr = 'Im xkperp^{2} (1/m)'
+      titlb = 'R (m)'
+
+      call ezplot2(title, titll, titlr, titlb, capr, faxre, faxim,
+     &   nnodey, nymx)
+
 
 *     --------------------------------------
 *     plot xkperp_cold2(i,j) in midplane
