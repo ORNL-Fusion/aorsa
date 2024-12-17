@@ -44,27 +44,27 @@
                                       !  short out noise in E_parallel 
       
       real :: taue = 50.0e-03         ! energy diffusion time used in flow drive calculation
-      real :: theta_ant = 0.0
+      real :: theta_ant = 0.0         ! not used
       real :: eslowev = 3.5e+06
       real :: amu_slo = 4.0
       real :: z_slo = 2.0
       real :: eta_slo = 0.0
       real :: xnuomi = 0.0            !-----xnuomi is the ion collison rate used in hot and cold plasma dielectrics
       real :: xnuome = 0.0            !-----xnuome is the electron collison rate used in hot and cold plasma dielectrics
-      real :: xnuead = 0.0000E+00     !-----xnuead = ad hoc collision frequency for electron in sec-1
-      real :: xnu1ad = 0.0000E+00     !-----nu1ad=ad hoc collision frequency for majority ions in sec-1                                      
-      real :: xnu2ad = 0.0000E+00     !-----nu2ad=ad hoc collision frequency for minority ions in sec-1
+      real :: xnuead = 0.0000E+00     !-----xnuead = ad hoc collision frequency for      electron in sec-1
+      real :: xnu1ad = 0.0000E+00     !-----nu1ad =  ad hoc collision frequency for majority ions in sec-1
+      real :: xnu2ad = 0.0000E+00     !-----nu2ad =  ad hoc collision frequency for minority ions in sec-1
       real :: rant = 0.0              !-----rant = major radius of antenna in meters (default is 0.0 in which case, psiant = .95)
       real :: antang = 0.0            !-----antang = angle that the antenna straps make with the vertical 
                                       !-----in degrees (default is 0 deg. - vertical straps)
 
-      real :: dthetant0 = 40.
+      real :: dthetant0 = 40.         !-----antenna width in degrees
       real :: dpsiant0 = .05
       real :: antlen = 1.0
       real :: antlc = .0001           !-----antlc = propagation constant along the antenna = c / vphase
       real :: psilim = .99
       real :: psimask = 1.05
-      real :: psiant = 0.95
+      real :: psiant = 0.95           !----- location of antenna center in Z (m) for curved antenna
       real :: psimol = 1.00           !-----psimol: if (psimol .eq. 1.0) molifier is NOT used for plasma profiles (default)
                                       !-----        if (psimol .ne. 1.0) molifier is used for profiles, centered at psimol
       real :: psipne = 0.50
@@ -75,7 +75,7 @@
       real :: psipti4 = .30
       real :: psipti5 = .30
       real :: psipti6 = .30
-      real :: yant = 0.0              !-----yant = location of antenna center in Z (m)
+      real :: yant = 0.0              !-----yant = location of antenna center in Z (m) , current shapey
       real :: te0  = 4.2900E+03       !-----te0=central value of eletron temperature in eV
       real :: ti0  = 7.0700E+03       !-----ti0=central value of ion temperature in eV
       real :: ti02 = 7.0700E+03
@@ -237,7 +237,7 @@
       logical :: nphi_sum_only = .false.!-----if (nphi_sum_only .eq. .true.) skip aorsa and just sum the modes for nphi_number > 1
                                         !-----if (nphi_sum_only .eq. .false.) run aorsa and sum modes if nphi_number > 1 (default)
 
-      logical :: anti_alias = .false.   !-----if (anti_alias .eq. .false.) no filter:  keep all modes (default)                                 
+      logical :: anti_alias = .false.   !-----if (anti_alias .eq. .false.) no filter:  keep all modes (default)
                                         !-----if (anti_alias .eq. .true. ) anti-aliasing filter (two-thirds rule)
                                           
       logical :: use_new_wdot = .false. !-----if (use_new_wdot .eq. .false.) use original wdote - resonant terms only (default)
