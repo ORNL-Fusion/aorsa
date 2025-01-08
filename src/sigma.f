@@ -28,7 +28,7 @@
 *     with the appropriate sign changes for k_parallel < 0.0
 *     No rotation is made.  Result is in the Stix frame.
 *     ---------------------------------------------------------
-!      use zfun_hilbert  
+c      use zfun_hilbert  
 
       implicit none
       
@@ -155,7 +155,7 @@
 *     Optional: leave out upshift in xkprl
 *     --------------------------------- --          
       if (upshift .eq. 0)  xkprl = uzz * xkphi
-!      if (upshift .eq. 0)   xkprl = nphi / rt
+c      if (upshift .eq. 0)   xkprl = nphi / rt
       
       if (upshift .eq. -1) then      
          if (xkperp  .gt. xk_cutoff) xkprl = uzz * xkphi
@@ -192,7 +192,7 @@
          labs = abs(l)
 
          reson = (omgrf - l * real(omgc)) / omgrf
-!        if (abs(reson) .lt. 0.02)then
+c        if (abs(reson) .lt. 0.02)then
          if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
@@ -201,8 +201,8 @@
             dzetal(l) = 0.0
          end if
          
-!        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
-!         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          gammab(l) = abs(l * omgc / (2.0 * alpha * xkprl**2)
@@ -211,7 +211,7 @@
 
 
          if(xm .eq. xme)gammab(l) = 0.0
-!         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
+c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
          if(abs(gammab(l)) .lt. .01)gammab(l) = .01
 
 
@@ -260,20 +260,12 @@
 *     Maxwellian distribution
 *     -----------------------
 
-!      if(ndist .eq. 0)then
+c      if(ndist .eq. 0)then
 
          gamma = 0.5 * xkperp**2 * rhol**2
          rgamma = real(gamma)
 
          call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-         if (.false.) then
-         if(rgamma .ge. 1.0e-08)
-     .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-
-         if(rgamma .lt. 1.0e-08)
-     .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
-     .                                                      exilovergam)
-         end if
 
          dkwxx = 0.0
          dkwxy = 0.0
@@ -356,7 +348,7 @@
 
          
 
-!      end if
+c      end if
       
       go to 5600      
 
@@ -477,8 +469,8 @@
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-!                          dfdth = upara(mi) * dfduper(ni, mi)
-!     .                           - uperp(ni) * dfdupar(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
+c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
@@ -642,9 +634,9 @@
       end
 
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
       subroutine delta_(i, j, n, m, rho, rho_a,
      .   delta_x, delta_y, delta_z,
@@ -674,7 +666,7 @@
 *     with the appropriate sign changes for k_parallel < 0.0
 *     No rotation is made.  Result is in the Stix frame.
 *     ---------------------------------------------------------
-!      use zfun_hilbert  
+c      use zfun_hilbert  
       
       implicit none
       
@@ -794,7 +786,7 @@
          labs = abs(l)
 
          reson = (omgrf - l * real(omgc)) / omgrf
-!         if (abs(reson) .lt. 0.02)then
+c         if (abs(reson) .lt. 0.02)then
          if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
@@ -803,8 +795,8 @@
             dzetal(l) = 0.0
          end if
          
-!        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
-!         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          gammab(l) = abs(l * omgc / (2.0 * alpha * xkprl**2)
@@ -813,7 +805,7 @@
 
 
          if(xm .eq. xme)gammab(l) = 0.0
-!         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
+c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
          if(abs(gammab(l)) .lt. .01)gammab(l) = .01
 
 
@@ -866,14 +858,6 @@
          rgamma = real(gamma)
 
          call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-         if (.false.) then
-         if(rgamma .ge. 1.0e-08)
-     .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-
-         if(rgamma .lt. 1.0e-08)
-     .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
-     .                                                      exilovergam)
-         end if
 
          delta_x = 0.0 
          delta_y = 0.0 
@@ -930,9 +914,9 @@
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
       subroutine sigmad_cql3d(i, j, n, m, rho, rho_a,
      .   gradprlb, bmod, bmod0,
@@ -961,7 +945,7 @@
 *     with the appropriate sign changes for k_parallel < 0.0
 *     No rotation is made.  Result is in the Stix frame.
 *     ---------------------------------------------------------
-!      use zfun_hilbert  
+c      use zfun_hilbert  
       
       implicit none
       
@@ -985,7 +969,7 @@
       real dzetal(lmin:lmax), descrim
       real dakbdkb, xnuomg, gradprlb, bmod, bmod0, nu_coll
       real akprl,  rho, alpha, eps0, omgrf, v0i, emax, akprl_min
-      real gammab(lmin:lmax), gamma_coll(lmin:lmax)  !automatic arrays
+      real gammab(lmin:lmax), gamma_coll(lmin:lmax)
       real a, b, xnurf, pi, delta0, rhol
       real bx, by, bz, bratio, denom
       real dfdth, dfdupar_check, dfduper_check, dfdth_check
@@ -1064,7 +1048,6 @@
       xme = 9.11e-31
       zieps0 = zi * eps0
       alpha = sqrt(2. * xkt / xm)
-
       rhol = alpha / omgc
       xkphi = nphi / capr
       omgrfc = omgrf * (1. + zi * xnuomg)
@@ -1074,10 +1057,10 @@
       akprl = abs(xkprl)              
 
 
-!      xkalp = uxx * xkxsav + uxy * xkysav + uxz * xkphi
-!      xkbet = uyx * xkxsav + uyy * xkysav + uyz * xkphi
-!      xkprl = uzx * xkxsav + uzy * xkysav + uzz * xkphi
-!      xkperp = sqrt(xkalp**2 + xkbet**2)
+c      xkalp = uxx * xkxsav + uxy * xkysav + uxz * xkphi
+c      xkbet = uyx * xkxsav + uyy * xkysav + uyz * xkphi
+c      xkprl = uzx * xkxsav + uzy * xkysav + uzz * xkphi
+c      xkperp = sqrt(xkalp**2 + xkbet**2)
       
 
       
@@ -1089,17 +1072,17 @@
          labs = abs(l)
 
          reson = (omgrf - l * real(omgc)) / omgrf
-!         if (abs(reson) .lt. 0.02)then
-         if (rho .gt. 1.0) then
+c         if (abs(reson) .lt. 0.02)then
+      !   if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
-         else
-            zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
-            dzetal(l) = 0.0
-         end if
+      !   else
+      !      zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
+      !      dzetal(l) = 0.0
+      !   end if
          
-!        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
-!         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          gammab(l) = abs(l * omgc / (2.0 * alpha * xkprl**2)
@@ -1108,7 +1091,7 @@
 
 
          if(xm .eq. xme)gammab(l) = 0.0
-!         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
+c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
          if(abs(gammab(l)) .lt. .01)gammab(l) = .01
 
 
@@ -1161,15 +1144,8 @@
 
          gamma = 0.5 * xkperp**2 * rhol**2
          rgamma = real(gamma)
-         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-         if (.false.) then
-         if(rgamma .ge. 1.0e-08)
-     .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
-         if(rgamma .lt. 1.0e-08)
-     .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
-     .                                                      exilovergam)
-         end if
+         call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
 
          sig0 = 0.0
          sig1 = 0.0
@@ -1181,7 +1157,7 @@
 
 
          do l = lmin, lmax
-!         do l = 0, 0
+c         do l = 0, 0
             labs = abs(l)
 
            if(nzfun .eq. 0) call z_approx(sgn_kprl, zetal(l), 0.0,
@@ -1337,8 +1313,8 @@
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-!                          dfdth = upara(mi) * dfduper(ni, mi)
-!     .                           - uperp(ni) * dfdupar(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
+c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
@@ -1526,7 +1502,6 @@
      .   z0_table, z1_table, z2_table, zetai_table, dKdL_table, 
      .   dKdL_giv, nmax, mmax,  use_new_z2, ntable, mtable, sige3_new)
 
-     
 
 
 *     ---------------------------------------------------------
@@ -1534,8 +1509,8 @@
 *     with the appropriate sign changes for k_parallel < 0.0
 *     No rotation is made.  Result is in the Stix frame.
 *     ---------------------------------------------------------
-!      use zfun_hilbert  
-      
+c      use zfun_hilbert  
+
       implicit none
       
       real, dimension(:,:), allocatable :: DFDUPER0, DFDUPAR0
@@ -1648,7 +1623,7 @@
       zieps0 = zi * eps0
       alpha = sqrt(2. * xkt / xm)
       rhol = alpha / omgc
-      xkphi = nphi / capr   !could be inf for mirror
+      xkphi = nphi / capr
       omgrfc = omgrf * (1. + zi * xnuomg)
 
       sgn_kprl = sign(1.0, xkprl)
@@ -1666,35 +1641,35 @@ c        dkdL_giv = 0.1 * sgn_dKdL
 c      end if                 
             
       
-!     ---------------------------------
-!     Calculate zetal(l) and gammab(l)= (omegarf/ 2 kpar**2 * R vth)*|sin theta|| Bpol/B|
-!     ---------------------------------       zetal is arg of z-fn
+*     ---------------------------------
+*     Calculate zetal(l) and gammab(l)
+*     ---------------------------------      
       
-      do l = lmin, lmax !cyclotron harmonic number. '0' for electrons in ICRF
+      do l = lmin, lmax
          labs = abs(l)
 
          reson = (omgrf - l * real(omgc)) / omgrf
 c         if (abs(reson) .lt. 0.02)then
-         if (rho .gt. 1.0) then
+      !  if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
-         else
-            zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
-            dzetal(l) = 0.0
-         end if
+      !  else
+      !     zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
+      !     dzetal(l) = 0.0
+      !  end if
          
 c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
 c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          gammab(l) = abs(l * omgc / (2.0 * alpha * xkprl**2)
-     &                                           * gradprlb / bmod)
+     .                                           * gradprlb / bmod)
          gamma_coll(l) = nu_coll / (akprl * alpha)
 
 
          if(xm .eq. xme)gammab(l) = 0.0
-!         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
-!         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
+c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
+c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
 
 
       enddo
@@ -1707,11 +1682,11 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       y0 = 1.5
       y = y0
       
-      !JCW error accessing gammab, only 0 index
+
       if(sgn_kprl .ge. 0.0)then
          fgam = 1.0
 
-         if(gammab(0) .gt. 1.0e-05)then
+         if(gammab(1) .gt. 1.0e-05)then
             y = y0
             fgam = (sqrt(1. +  4. * gammab(1) * y) - 1.)
      .         / (2. * gammab(1) * y)
@@ -1725,12 +1700,12 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       if(sgn_kprl .lt. 0.0)then
          fgam = 1.0
 
-         if(gammab(0) .gt. 1.0e-05)then
-            descrim = 1. - 4. * gammab(0) * y0
+         if(gammab(1) .gt. 1.0e-05)then
+            descrim = 1. - 4. * gammab(1) * y0
             if (descrim .ge. 0.0) y =   y0
             if (descrim .lt. 0.0) y = - y0
-            fgam = (1. - sqrt(1. -  4. * gammab(0) * y) )
-     .         / (2. * gammab(0) * y)
+            fgam = (1. - sqrt(1. -  4. * gammab(1) * y) )
+     .         / (2. * gammab(1) * y)
          endif
 
          xkprl_eff = xkprl / fgam 
@@ -1748,14 +1723,6 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          rgamma = real(gamma)
 
          call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-         if (.false.) then
-         if(rgamma .ge. 1.0e-08)
-     .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-
-         if(rgamma .lt. 1.0e-08)
-     .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
-     .                                                      exilovergam)
-         end if
 
          sig0 = 0.0
          sig1 = 0.0
@@ -1939,8 +1906,8 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-!                          dfdth = upara(mi) * dfduper(ni, mi)
-!     .                           - uperp(ni) * dfdupar(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
+c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
@@ -2101,9 +2068,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       end
 
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
       subroutine sigmad_cql3d_1(i, j, n, m, rho, rho_a,
      .   gradprlb, bmod, bmod0,
@@ -2136,7 +2103,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 *     with the appropriate sign changes for k_parallel < 0.0
 *     No rotation is made.  Result is in the Stix frame.
 *     ---------------------------------------------------------
-!      use zfun_hilbert  
+c      use zfun_hilbert  
       
       implicit none
       
@@ -2252,40 +2219,40 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       sgn_kprl = sign(1.0, xkprl)
       akprl = abs(xkprl) 
 
-!      xkalp = uxx * xkxsav + uxy * xkysav + uxz * xkphi
-!      xkbet = uyx * xkxsav + uyy * xkysav + uyz * xkphi
-!      xkprl = uzx * xkxsav + uzy * xkysav + uzz * xkphi
-!      xkperp = sqrt(xkalp**2 + xkbet**2)      
+c      xkalp = uxx * xkxsav + uxy * xkysav + uxz * xkphi
+c      xkbet = uyx * xkxsav + uyy * xkysav + uyz * xkphi
+c      xkprl = uzx * xkxsav + uzy * xkysav + uzz * xkphi
+c      xkperp = sqrt(xkalp**2 + xkbet**2)      
 
       
 *     ------------------------------------
 *     Optional: leave out upshift in xkprl
 *     --------------------------------- --          
-!      if (upshift .eq. 0)  xkprl = uzz * xkphi
+c      if (upshift .eq. 0)  xkprl = uzz * xkphi
       
-!      if (upshift .eq. -1) then      
-!         if (xkperp  .gt. xk_cutoff) xkprl = uzz * xkphi
-!      end if
+c      if (upshift .eq. -1) then      
+c         if (xkperp  .gt. xk_cutoff) xkprl = uzz * xkphi
+c      end if
       
-!      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
-!      if (xkperp .eq. 0.0) xkperp = 1.0e-08
+c      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
+c      if (xkperp .eq. 0.0) xkperp = 1.0e-08
                         
                       
                      
 !     ----------------------------------------------
 !     Optional: Don't allow xkprl to be 0 (upshift = -2)
 !     ----------------------------------------------        
-!      if (upshift .eq. -2) then
-!         if (akprl .lt. akprl_min) then
-!            xkprl = akprl_min* sgn_kprl
-!         end if 
-!      end if   
+c      if (upshift .eq. -2) then
+c         if (akprl .lt. akprl_min) then
+c            xkprl = akprl_min* sgn_kprl
+c         end if 
+c      end if   
             
       
-!      if(xkperp .gt. kperp_max)then
-!         write (6, *)"xkperp is gt kperp_max"
-!         write (15, *)"xkperp is gt kperp_max"
-!      end if
+c      if(xkperp .gt. kperp_max)then
+c         write (6, *)"xkperp is gt kperp_max"
+c         write (15, *)"xkperp is gt kperp_max"
+c      end if
             
       
 *     ---------------------------------
@@ -2296,17 +2263,17 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          labs = abs(l)
 
          reson = (omgrf - l * real(omgc)) / omgrf
-!         if (abs(reson) .lt. 0.02)then
-         if (rho .gt. 1.0) then
+c         if (abs(reson) .lt. 0.02)then
+      !  if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
-         else
-            zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
-            dzetal(l) = 0.0
-         end if
+      !  else
+      !     zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
+      !     dzetal(l) = 0.0
+      !  end if
          
-!        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
-!         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          gammab(l) = abs(l * omgc / (2.0 * alpha * xkprl**2)
@@ -2314,8 +2281,8 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          gamma_coll(l) = nu_coll / (akprl * alpha)
 
 
-!         if(xm .eq. xme)gammab(l) = 0.0
-!         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
+c         if(xm .eq. xme)gammab(l) = 0.0
+c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
          if(abs(gammab(l)) .lt. .01)gammab(l) = .01
 
 
@@ -2371,14 +2338,6 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-         if (.false.) then
-         if(rgamma .ge. 1.0e-08)
-     .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-
-         if(rgamma .lt. 1.0e-08)
-     .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
-     .                                                      exilovergam)
-         end if
 
          sig0 = 0.0
          sig1 = 0.0
@@ -2396,15 +2355,15 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
            if(nzfun .eq. 1) then
               call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
      
-!              if(use_new_z2 .eq. .true. ) then       
-!                 call z_approx_i(sgn_kprl, zetal(l), gammab(l),
-!     .              z0_new, z1_new, z2_new, zetai_table, 
-!     .              dKdL_table, z0_table, z1_table, z2_table, 
-!     .              dKdL_giv, nmax, mmax, ntable, mtable)
-!                 z0 = z0_new
-!                 z1 = z1_new
-!                 z2 = z2_new            
-!              end if
+c              if(use_new_z2 .eq. .true. ) then       
+c                 call z_approx_i(sgn_kprl, zetal(l), gammab(l),
+c     .              z0_new, z1_new, z2_new, zetai_table, 
+c     .              dKdL_table, z0_table, z1_table, z2_table, 
+c     .              dKdL_giv, nmax, mmax, ntable, mtable)
+c                 z0 = z0_new
+c                 z1 = z1_new
+c                 z2 = z2_new            
+c              end if
 
            end if                
                  
@@ -2558,8 +2517,8 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-!                          dfdth = upara(mi) * dfduper(ni, mi)
-!     .                           - uperp(ni) * dfdupar(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
+c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
@@ -2717,9 +2676,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       end
 
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
 
       subroutine sigmad_cql3d_2(i, j, n, m, rho, rho_a,
@@ -2749,7 +2708,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 *     with the appropriate sign changes for k_parallel < 0.0
 *     No rotation is made.  Result is in the Stix frame.
 *     ---------------------------------------------------------
-!      use zfun_hilbert  
+c      use zfun_hilbert  
       
       implicit none
       
@@ -2858,40 +2817,40 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       akprl = abs(xkprl)   
 
 
-!      xkalp = uxx * xkxsav + uxy * xkysav + uxz * xkphi
-!      xkbet = uyx * xkxsav + uyy * xkysav + uyz * xkphi
-!      xkprl = uzx * xkxsav + uzy * xkysav + uzz * xkphi
-!      xkperp = sqrt(xkalp**2 + xkbet**2)      
+c      xkalp = uxx * xkxsav + uxy * xkysav + uxz * xkphi
+c      xkbet = uyx * xkxsav + uyy * xkysav + uyz * xkphi
+c      xkprl = uzx * xkxsav + uzy * xkysav + uzz * xkphi
+c      xkperp = sqrt(xkalp**2 + xkbet**2)      
    
       
 *     ------------------------------------
 *     Optional: leave out upshift in xkprl
 *     --------------------------------- --          
-!      if (upshift .eq. 0)  xkprl = uzz * xkphi
+c      if (upshift .eq. 0)  xkprl = uzz * xkphi
       
-!      if (upshift .eq. -1) then      
-!         if (xkperp  .gt. xk_cutoff) xkprl = uzz * xkphi
-!      end if
+c      if (upshift .eq. -1) then      
+c         if (xkperp  .gt. xk_cutoff) xkprl = uzz * xkphi
+c      end if
       
-!      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
-!      if (xkperp .eq. 0.0) xkperp = 1.0e-08
+c      if (xkprl  .eq. 0.0) xkprl  = 1.0e-08
+c      if (xkperp .eq. 0.0) xkperp = 1.0e-08
                         
                       
                      
 !     ----------------------------------------------
 !     Optional: Don't allow xkprl to be 0 (upshift = -2)
 !     ----------------------------------------------        
-!      if (upshift .eq. -2) then
-!         if (akprl .lt. akprl_min) then
-!            xkprl = akprl_min* sgn_kprl
-!         end if 
-!      end if   
+c      if (upshift .eq. -2) then
+c         if (akprl .lt. akprl_min) then
+c            xkprl = akprl_min* sgn_kprl
+c         end if 
+c      end if   
             
       
-!      if(xkperp .gt. kperp_max)then
-!         write (6, *)"xkperp is gt kperp_max"
-!         write (15, *)"xkperp is gt kperp_max"
-!      end if
+c      if(xkperp .gt. kperp_max)then
+c         write (6, *)"xkperp is gt kperp_max"
+c         write (15, *)"xkperp is gt kperp_max"
+c      end if
             
       
 *     ---------------------------------
@@ -2902,17 +2861,17 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          labs = abs(l)
 
          reson = (omgrf - l * real(omgc)) / omgrf
-!         if (abs(reson) .lt. 0.02)then
-         if (rho .gt. 1.0) then
+c         if (abs(reson) .lt. 0.02)then
+      !   if (rho .gt. 1.0) then
             zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
             dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
-         else
-            zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
-            dzetal(l) = 0.0
-         end if
+      !   else
+      !      zetal(l) = (omgrf  - l * omgc) / (xkprl * alpha)
+      !      dzetal(l) = 0.0
+      !   end if
          
-!        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
-!         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
+c        zetal(l) = (omgrfc - l * omgc) / (xkprl * alpha)
+c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          gammab(l) = abs(l * omgc / (2.0 * alpha * xkprl**2)
@@ -2921,7 +2880,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          if(xm .eq. xme)gammab(l) = 0.0
-!         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
+c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
          if(abs(gammab(l)) .lt. .01)gammab(l) = .01
 
 
@@ -2977,14 +2936,6 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
          call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-         if (.false.) then
-         if(rgamma .ge. 1.0e-08)
-     .      call besiexp(gamma, lmax, exil, exilp, lmaxdim, exilovergam)
-
-         if(rgamma .lt. 1.0e-08)
-     .      call bes_expand(gamma, lmax, exil, exilp, lmaxdim,
-     .                                                      exilovergam)
-         end if
 
          sig0 = 0.0
          sig1 = 0.0
@@ -3151,8 +3102,8 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
      .                        sqrt(bratio) + dfdupar0_intplt * 
      .                        uperp(ni) / upara0 * (1.0 - bratio)
      
-!                          dfdth = upara(mi) * dfduper(ni, mi)
-!     .                           - uperp(ni) * dfdupar(ni, mi)
+c                          dfdth = upara(mi) * dfduper(ni, mi)
+c     .                           - uperp(ni) * dfdupar(ni, mi)
 
 
                         end if
@@ -3309,9 +3260,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       end
 
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
 
 
@@ -3386,9 +3337,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       return
       end subroutine cql3d_dist
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
       subroutine midplane(igiven, jgiven, f, fmid, rho,
      .   nxdim, nydim, nnodex, nnodey, capr, r0, f0, jmid)
@@ -3406,11 +3357,11 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       fmid =  0.0
       if (rhoij .gt. 1.0) return
 
-!      jmid  = nnodey / 2
+c      jmid  = nnodey / 2
 
-!      write(6, *)"jmid = ", jmid
+c      write(6, *)"jmid = ", jmid
 
-!     DLG: find the first R coord past the axis R=r0
+c     DLG: find the first R coord past the axis R=r0
       do i = 1, nnodex
          if(capr(i) .ge. r0)then
             istart = i
@@ -3422,12 +3373,13 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
   200 continue
 
-!     DLG: for the z slice on the magnetic axis (jmid)
+c     DLG: for the z slice on the magnetic axis (jmid)
       if(rhoij .ge. rho(istart, jmid)) then
 
          if(rhoij .lt. rho(istart,jmid)) i0 = istart
          if(rhoij .ge. rho(nnodex,jmid)) then
             write(*,*) 'WARNING (sigma.f) : rhoij > rho(nnodex,jmid)'
+            write(*,*) rhoij, rho(nnodex,jmid)
             i0 = nnodex-1
          endif
 
@@ -3454,9 +3406,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       return
       end
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
        subroutine dummy_dist(NUPAR, NUPER,
      .                       UminPara, UmaxPara,
      &                       UPERP, UPARA, DFDUPER, DFDUPAR)
@@ -3497,9 +3449,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
        return
        end subroutine dummy_dist
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
 
        subroutine dummy_dist2(NUPAR,NUPER,UminPara,UmaxPara,
@@ -3542,9 +3494,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
 
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
       subroutine sigmah_slow(i, j, n, m,
      .   xm, q, xn, xnuomg,
@@ -3667,9 +3619,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       end
 
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
       subroutine sigmac_stix(i, j, n, m,
      .   xm, q, xn, xnuomg,
      .   xkt, omgc, omgp2,
@@ -3773,9 +3725,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
   100 format('ier = ', i5, ' besic failed')
       end
 
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
 
       subroutine besiexp(gamma, lmax, expbes, expbesp, lmaxdim,
@@ -3789,29 +3741,35 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
 
       implicit none
 
-      integer, intent(in):: lmax, lmaxdim
-      complex, intent(in):: gamma
-      complex, intent(out):: expbes(0: lmaxdim), expbesp(0: lmaxdim),
-     &     expbesovergam(0: lmaxdim)
+      integer lmax, nmax, ier, l, lmaxdim, nz
+      real gammod
+      complex gamma, expbes(0: lmaxdim), expbesp(0: lmaxdim),
+     &   expbesovergam(0: lmaxdim),
+     &   xil(0: lmaxdim), xilp(0: lmaxdim), exgam
 
+      complex b(100) !jcw magic number
 
-      integer:: nmax, ier, l, nz
-      complex:: b(100), xil(0: lmaxdim), xilp(0: lmaxdim)
+      exgam = exp(-gamma)
+      gammod = cabs(gamma)
 
-      nmax = lmax + 1
-      call cbesi(gamma, 0.0, 2, nmax, b, nz, ier) !jcw using bessel module now, with kode=2 scales bt exp(-gamma) implicitly
-      if(ier .ne. 0) write(6,100) ier
+ !     if(gammod .le. 700.)then
+         nmax = lmax + 1
+ !        call besic(gamma, nmax, b, ier)
+         call cbesi(gamma, 0.0, 2, nmax+1, b,nz, ier)
+        if(ier .ne. 0)write(6,100) ier
 
-      do l = 0, lmax
-         xil(l) = b(l+1)
-      end do
+         do l = 0, lmax
+            xil(l) = b(l+1)
+         end do
 
-      do l = 0, lmax
-         if(l .eq. 0) xilp(0) = xil(1)
-         if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l) !derivative by recurrence
-         expbes(l) =  xil(l)
-         expbesp(l) = xilp(l)
-      end do
+         do l = 0, lmax
+           if(l .eq. 0) xilp(0) = xil(1)
+           if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l)  !derivative by recurrence
+           expbes(l) =  xil(l)  !*exgam JCW bad way to do this
+           expbesp(l) = xilp(l) !*exgam
+         end do
+!      end if
+
 
       do l = 0, lmax
          expbesovergam(l) = expbes(l) / gamma
@@ -3822,98 +3780,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       end
 
 
-!
-!***************************************************************************
-!
-
-
-      subroutine bes_expand(gamma, lmax, expbes, expbesp, lmaxdim,
-     .   expbesovergam)
-
-*-------------------------------------------------------------------
-*     Calculates exp(-gamma) times the modified bessel functions
-*     (and derivatives) of order up to lmax using second order
-*     expansion for small argument
-*-------------------------------------------------------------------
-
-      implicit none
-
-      integer lmax, nmax, ier, l, lmaxdim
-      real factrl, factl, infinity_check
-      complex gamma, expbes(0:lmaxdim), expbesp(0:lmaxdim),
-     .   expbesovergam(0:lmaxdim), xilovergam,
-     .   xil(0:lmaxdim), xilp(0:lmaxdim), exgam
-
-      complex b(100)
-
-      exgam = 1.0 - gamma + gamma**2 / 2.0
-
-      do l = 0, lmax
-         factl = factrl(l)
-
-         infinity_check = 1/(2**l * factl)
-         if ( infinity_check .gt. 1e30 ) then
-
-          xil(l) = 0;
-          xilp(l) = 0;
-          xilovergam = 0;
-
-         else
-
-         xil(l) = gamma**l / (2**l * factl) *
-     .                                 ( 1. + gamma**2 / (4. * (l+1)))
-         xilp(l) = gamma**(l-1) / (2**l * factl) *
-     .                     (l + (l+2) * gamma**2 / (4. * (l+1)))
-
-         xilovergam = gamma**(l-1) / (2**l * factl) *
-     .                                 ( 1. + gamma**2 / (4. * (l+1)))
-
-         endif 
-
-         expbes(l) = exgam * xil(l)
-         expbesp(l) = exgam * xilp(l)
-         expbesovergam(l) = exgam * xilovergam
-
-!         write(6, 100)l, expbes(l), expbesp(l)
-      end do
-
-  100 format(i10, 1p8e12.4)
-
-      return
-      end
-
-
-!
-!***************************************************************************
-!
-
-      subroutine bes_asym(z, n, exil, exilp)
-
-      implicit none
-
-      integer mu, n
-      real pi
-      complex z, exil, exilp
-      data pi/3.141592654/
-
-      mu = 4 * n**2
-      exil =  1.0 / csqrt(2.0 * pi * z)
-     1   * (1.0
-     1   - (mu - 1)/(8.0 * z)
-     1   + (mu - 1) * (mu - 9) / (2.0 * (8.0 * z)**2)
-     1   - (mu - 1) * (mu - 9) * (mu - 25) / (6.0 * (8.0 * z)**3)  )
-      exilp = 1.0 / csqrt(2.0 * pi * z)
-     1   * (1.0
-     1   - (mu + 3)/(8.0 * z)
-     1   + (mu - 1) * (mu + 15) / (2.0 * (8.0 * z)**2)
-     1   - (mu - 1) * (mu - 9) * (mu + 35) / (6.0 * (8.0 * z)**3)  )
-
-      return
-      end
-
-!
-!***************************************************************************
-!
+c
+c***************************************************************************
+c
 
 
       function fzeta (arg)
@@ -3928,11 +3797,11 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       data d4/0.33333333333333/
       data eps/1.0E-07/
 
-!     data d4/0.33333333333333/
+c     data d4/0.33333333333333/
 
-!ray  code analysis
-!ray  optimize
-!
+cray  code analysis
+cray  optimize
+c
       i = 0
       z = arg
       zz = z*z
@@ -3943,9 +3812,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       d3 = cmplx(d3r,d3i)
       ymag = abs(y)
       if (ymag - 1.0 .ge. 0.) then
-!
-!     continued fraction method: abs(y).ge.1.0
-!
+c
+c     continued fraction method: abs(y).ge.1.0
+c
          y0 = y
          y = ymag
          aux1 = 1.5 - z*z
@@ -3956,7 +3825,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          b1 = 1.0
          b2 = aux1
          c1 = a2/b2
-!
+c
   100    continue
          aux1 = aux1 + 2.0
          aux2 = aux2 - del
@@ -3981,9 +3850,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          endif
          aux0 = -(0.5*c2 + 1.0)/z
       else
-!
-!     asymptotic series method: abs(x).ge.4.0 and abs(y).lt.1.0
-!
+c
+c     asymptotic series method: abs(x).ge.4.0 and abs(y).lt.1.0
+c
          xmag = abs(x)
          if (xmag - 4.0 .lt. 0.) go to 130
          term = 1.0/z
@@ -4003,12 +3872,12 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          p = p + 2.0
          termr = real(term)
          termi = aimag(term)
-!     if(abs(termr)+abs(termi).lt.eps)30,18
+c     if(abs(termr)+abs(termi).lt.eps)30,18
          if (abs(termr) + abs(termi) .lt. eps) go to 160
          go to 120
-!
-!     power series method: abs(x).lt.4.0 and abs(y).lt.1.0
-!
+c
+c     power series method: abs(x).lt.4.0 and abs(y).lt.1.0
+c
   130    continue
          aux0 = 1.0
          aux1 = -(zz + zz)
@@ -4019,7 +3888,7 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
          aux0 = aux0 + term
          termr = real(term)
          termi = aimag(term)
-!     if(abs(termr)+abs(termi).lt.aux2)26,24
+c     if(abs(termr)+abs(termi).lt.aux2)26,24
          if (abs(termr) + abs(termi) .lt. aux2) go to 150
          p = p + 2.0
          term = aux1*term/p
@@ -4033,9 +3902,9 @@ c         dzetal(l) = omgrf * xnuomg / (xkprl * alpha)
       fzeta = -2.0*(1.0 + arg*aux0)
       return
       end
-!
-!***********************************************************************
-!
+c
+c***********************************************************************
+c
 
 
 
