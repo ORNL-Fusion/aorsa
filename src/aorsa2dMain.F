@@ -415,6 +415,7 @@
      &   omgci10, omgrf, xmax, qi2, qi3, xlnlam, 
      &   costh, sinth, radius, rnx,  rny, rnphi
       real :: ymaxp, yminp, xminp, xmaxp
+      complex ::  omgrfc
       real :: rhoi20, vthi20, omgci20
       real :: rhoi30, vthi30, omgci30
       real :: rhoi40, vthi40, omgci40
@@ -1433,6 +1434,7 @@ c      jequat  = nnodey / 2
       xnurf = freqcy
 
       omgrf = twopi * xnurf
+      omgrfc = omgrf*(1.+zi*xnuome)
 
 
       if (plot_only .eqv. .true.)go to 9002
@@ -4130,6 +4132,8 @@ c                    xnuomia(i,j) = xnuomi * exp(+ drho1/ scrape)
          if (nboundary .eq. 1) then
             do i = 1, nnodex
                do j = 1, nnodey
+                  xnuomea(i,j) = xnuome !JCW can modify for internal resonances
+                  xnuomia(i,j) = xnuomi
                   if(rho(i,j) .gt. rholim) then
                      xnea(i,j) = 1.0e-10
                      zeff(i,j) = 1.0e-10
@@ -4535,25 +4539,25 @@ c     &                             + pressi4 pressi5 + pressi6
             omglh(i,j) =  sqrt(1.0 / omglh2i)
 
 !XJrf = -zi/(omgrf*eps0)*XJ ; RHS of matrix equation ~ Jrf
-            xb(i,j) = -zi / omgrf / eps0 * xjx(i,j)
-            xc(i,j) = -zi / omgrf / eps0 * xjy(i,j)
-            xd(i,j) = -zi / omgrf / eps0 * xjz(i,j)
+            xb(i,j) = -zi / omgrfc / eps0 * xjx(i,j)
+            xc(i,j) = -zi / omgrfc / eps0 * xjy(i,j)
+            xd(i,j) = -zi / omgrfc / eps0 * xjz(i,j)
 
-            capk_perp = 1.0 - omgpe2(i,j) / (omgrf**2 - omgce(i,j)**2)
-     &                      - omgp12(i,j) / (omgrf**2 - omgci1(i,j)**2)
-     &                      - omgp22(i,j) / (omgrf**2 - omgci2(i,j)**2)
-     &                      - omgp32(i,j) / (omgrf**2 - omgci3(i,j)**2)
-     &                      - omgp42(i,j) / (omgrf**2 - omgci4(i,j)**2)
-     &                      - omgp52(i,j) / (omgrf**2 - omgci5(i,j)**2)
-     &                      - omgp62(i,j) / (omgrf**2 - omgci6(i,j)**2)
+            capk_perp = 1.0 - omgpe2(i,j) / (omgrfc**2 - omgce(i,j)**2)
+     &                      - omgp12(i,j) / (omgrfc**2 - omgci1(i,j)**2)
+     &                      - omgp22(i,j) / (omgrfc**2 - omgci2(i,j)**2)
+     &                      - omgp32(i,j) / (omgrfc**2 - omgci3(i,j)**2)
+     &                      - omgp42(i,j) / (omgrfc**2 - omgci4(i,j)**2)
+     &                      - omgp52(i,j) / (omgrfc**2 - omgci5(i,j)**2)
+     &                      - omgp62(i,j) / (omgrfc**2 - omgci6(i,j)**2)
 
-            capk_x =(omgce(i,j) * omgpe2(i,j)/(omgrf**2-omgce(i,j)**2)
-     &            + omgci1(i,j) * omgp12(i,j)/(omgrf**2-omgci1(i,j)**2)
-     &            + omgci2(i,j) * omgp22(i,j)/(omgrf**2-omgci2(i,j)**2)
-     &            + omgci3(i,j) * omgp32(i,j)/(omgrf**2-omgci3(i,j)**2)
-     &            + omgci4(i,j) * omgp42(i,j)/(omgrf**2-omgci4(i,j)**2)
-     &            + omgci5(i,j) * omgp52(i,j)/(omgrf**2-omgci5(i,j)**2)
-     &            + omgci6(i,j) * omgp62(i,j)/(omgrf**2-omgci6(i,j)**2))
+            capk_x =(omgce(i,j) * omgpe2(i,j)/(omgrfc**2-omgce(i,j)**2)
+     &            + omgci1(i,j) * omgp12(i,j)/(omgrfc**2-omgci1(i,j)**2)
+     &            + omgci2(i,j) * omgp22(i,j)/(omgrfc**2-omgci2(i,j)**2)
+     &            + omgci3(i,j) * omgp32(i,j)/(omgrfc**2-omgci3(i,j)**2)
+     &            + omgci4(i,j) * omgp42(i,j)/(omgrfc**2-omgci4(i,j)**2)
+     &            + omgci5(i,j) * omgp52(i,j)/(omgrfc**2-omgci5(i,j)**2)
+     &           + omgci6(i,j) * omgp62(i,j)/(omgrfc**2-omgci6(i,j)**2))
      &             / omgrf
 
            left  = capk_perp - capk_x
@@ -6887,7 +6891,7 @@ c--   Operations for complex matrix factor and solve:
 #ifdef DEBUG        
         write(*,*) 'l2norm_res : ', l2norm_res
         write(*,*) 'l2norm_rhs : ', l2norm_rhs
-#enddef
+#endif
         deallocate(p_amat_copy)
         deallocate(p_brhs_copy)
       end if
@@ -6909,7 +6913,7 @@ c--   Operations for complex matrix factor and solve:
          end do
       end do
 
-   end if
+      end if
 
  6000 continue
 
