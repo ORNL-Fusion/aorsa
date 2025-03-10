@@ -2875,10 +2875,10 @@ c--   Note: the code gives slightly smoother results with dx/2.0 added
       end do
 
 !     JCW if rt is 0 or nearly zero, set min kpar to 1/4 (1/rmax)
-      write(*,*) "rt :", rt,capr  !capr seems to be zero as well? capr defined later
       if (rt > 1.e-3) then !1mm
          akprl_min = 0.25 * abs(nphi / rt)
       else 
+         write(*,*) "rt small :", rt,capr !capr seems to be zero as well? capr defined later
          akprl_min = 0.25 / capr(nnodex-1)
 c      akprl_min = abs(nphi / rt)
       end if
@@ -3018,7 +3018,7 @@ c--   thetam: 0 to 2pi
             call invert(rho_in, theta_in, capr_out, capz_out,
      &         nnodex, nnodey, nxmx, nymx, rho, theta, capr, y, myid,
      &         drhodr, drhodz, dthedr, dthedz, xj)
-
+            print *,'invert rho theta',rho_in,theta_in,capr_out,capz_out
 
             capr_flux(n,m) = capr_out
             capz_flux(n,m) = capz_out
@@ -3037,7 +3037,7 @@ c           if(myid==0)write(6,*)n, m, capr_flux(n,m), xj
 
       iant=int((rant - rwleft) / dx) + 1
       if(rant .ne. 0.0)psiant = psi(iant, jequat)
-
+      print *,'rant',rant,psiant,rwleft,dx
 
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
       xjantx = curdnx / dx
@@ -3278,14 +3278,14 @@ c      end if
 *           ------------------------
 *           Curved antenna (default)
 *           ------------------------
-            if(curved_ant .eqv. .true.) then
+            if(curved_ant) then
                gausspsi = exp(-( psi(i,j) - psiant)**2 / dpsiant**2)
             end if
 
 *           ----------------
 *           Straight antenna
 *           -----------------
-            if(curved_ant .neqv. .true.) then
+            if(.not.curved_ant) then
                gausspsi   = exp(-(capr(i) -   rant)**2 / dpsiant**2)
             end if
 
@@ -7353,16 +7353,16 @@ c           if(myid==0)write(6,*)i, j, eplus_flux_plot(i, j)
       zetai_max = 0.0
       zetai_min = 0.0
 
-      xjx_max = 0.0
-      xjy_max = 0.0
-      xjz_max = 0.0
-
+      xjx_max = maxval(xjx)
+      xjy_max = maxval(xjy)
+      xjz_max = maxval(xjz)
+      print *,'xjz_max',nnodex,nnodey,maxval(xjz),maxloc(xjz)
       do i = 1, nnodex
          do j = 1, nnodey
 
-            if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
-            if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
-            if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)
+           ! if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
+           ! if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
+           ! if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)
 
 
             if(psi(i,j) .le. psilim .and. nboundary .eq. 1

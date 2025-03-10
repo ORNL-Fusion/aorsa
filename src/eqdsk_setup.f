@@ -2021,7 +2021,7 @@ c           calculate fields:
                bz = -1./2.e-2 * psr2
 
 #ifdef DEBUG               
-               write(*,*) 'br,bz,axis',br,bz,r,psz,psr,ps,a
+!               write(*,*) 'br,bz,axis',br,bz,r,psz,psr,ps,a
 #endif
             else
                br =  1./r * psz

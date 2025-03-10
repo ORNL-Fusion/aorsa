@@ -628,7 +628,6 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -910,7 +909,6 @@ c         if(abs(gammab(l)) .gt. 1000.0) gammab(l) = 1000.0
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -1468,7 +1466,6 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -2067,7 +2064,6 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -2675,7 +2671,6 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -3259,7 +3254,6 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, ' besic failed')
   102 format(2i10, 1p8e12.4)
   103 format(4i10, 1p8e12.4)
       end
@@ -3727,13 +3721,11 @@ c
   101 format(i10, 1p8e12.4)
  1314 format(4i10, 1p9e12.4)
  1312 format(1p9e12.4)
-  100 format('ier = ', i5, ' besic failed')
       end
 
 c
 c***************************************************************************
 c
-
 
       subroutine besiexp(gamma, lmax, expbes, expbesp, lmaxdim,
      &   expbesovergam)
@@ -3757,30 +3749,27 @@ c
       exgam = exp(-gamma)
       gammod = cabs(gamma)
 
- !     if(gammod .le. 700.)then
-         nmax = lmax + 1
- !        call besic(gamma, nmax, b, ier)
-         call cbesi(gamma, 0.0, 2, nmax+1, b,nz, ier)
-        if(ier .ne. 0)write(6,100) ier
+      nmax = lmax + 1
+      call cbesi(gamma, 0.0, 2, nmax+1, b,nz, ier)
+      if(ier .ne. 0)write(6,100) ier
 
-         do l = 0, lmax
-            xil(l) = b(l+1)
-         end do
+      do l = 0, lmax
+         xil(l) = b(l+1)
+      end do
 
-         do l = 0, lmax
-           if(l .eq. 0) xilp(0) = xil(1)
-           if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l)  !derivative by recurrence
-           expbes(l) =  xil(l)  !*exgam JCW bad way to do this
-           expbesp(l) = xilp(l) !*exgam
-         end do
-!      end if
+      do l = 0, lmax
+        if(l .eq. 0) xilp(0) = xil(1)
+        if(l .ne. 0) xilp(l) = xil(l-1) - l / gamma * xil(l)  !derivative by recurrence
+        expbes(l) =  xil(l)  !*exgam JCW bad way to do this
+        expbesp(l) = xilp(l) !*exgam
+      end do
 
 
       do l = 0, lmax
          expbesovergam(l) = expbes(l) / gamma
       end do
 
-  100 format('ier = ', i5, 'besic failed')
+  100 format('ier = ', i5, 'cbesi failed')
       return
       end
 
