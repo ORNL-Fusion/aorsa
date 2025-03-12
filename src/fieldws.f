@@ -6716,11 +6716,15 @@ c
       ymin = min(y1min, y2min, y3min, y4min, y5min, y6min, yemin)
 #ifdef DEBUG
       write(6,*) 'DEBUG ezplot70 ', title,ymin,ymax
-      if (ymax /= ymax) then
-          write(6,*) 'Nan found in ymax'
-          return
-      end if
 #endif
+      if (ymax /= ymax) then
+         write(6,*) 'Nan found in ymax'
+         return
+      end if
+      if (ymin==0. .and. ymax==0.) then
+         write(*,*) 'ezplot7 no yrange: ',title,ymin,ymax
+         return
+      end if       
       ymin=0.0
 
       rhomax=x1(nr)
@@ -6810,7 +6814,10 @@ c
       norange = 8
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      if(y1max .eq. 0.0 .and. y1min .eq. 0.0) then
+         write(*,*) 'ezplot2', title,y1min,y1max
+         return
+      end if
       call a1mnmx(y2, nrmax, nr, y2min, y2max)
       y2min = y2min * 1.1
       y2max = y2max * 1.1      
@@ -6828,7 +6835,7 @@ c
       if (ymin .le. 0.0) ymin = ymin * 1.1
       if (abs(ymin-ymax) .lt. 1e-3) ymax=ymin+1.e-3
 #ifdef DEBUG
-      write(*,*) 'ezplot2:  title: ', title, ymin,ymax
+      write(*,*) 'ezplot2:  title: ', title, ymin,ymax,rhomin,rhomax
 #endif
       CALL PGPAGE
       CALL PGSVP (0.15,0.85,0.15,0.85)
@@ -7260,9 +7267,10 @@ c
       rhomax = x1(nr)
       rhomin = x1(1)
 
-c      write(6, *) "rhomin = ", rhomin
-c      write(6, *) "rhomax = ", rhomax
-
+#ifdef DEBUG
+      write(*, *) "rhomin = ", rhomin, "rhomax = ", rhomax
+#endif
+      
       ymax = ymax * 1.1
       ymin = ymin
 

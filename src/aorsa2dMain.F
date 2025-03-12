@@ -116,7 +116,7 @@
       integer :: mkdim1, mkdim2
 
       integer :: nkdim1, nkdim2, nkx1, nkx2, nldim, nldim3,
-     &   nky1, nky2, iant
+     &   nky1, nky2, iant, jant
 
       real :: kperp_max, valfven, kalfven, xky_ant
       real ::  kperp_max_actual
@@ -3018,7 +3018,6 @@ c--   thetam: 0 to 2pi
             call invert(rho_in, theta_in, capr_out, capz_out,
      &         nnodex, nnodey, nxmx, nymx, rho, theta, capr, y, myid,
      &         drhodr, drhodz, dthedr, dthedz, xj)
-            print *,'invert rho theta',rho_in,theta_in,capr_out,capz_out
 
             capr_flux(n,m) = capr_out
             capz_flux(n,m) = capz_out
@@ -3029,22 +3028,22 @@ c           if(myid==0)write(6,*)n, m, capr_flux(n,m), xj
 
       delta = sqrt(dx**2 + dy**2)
 
-      xant = rant - rt
+      xant = rant - rt !not used
 
       antang_rad = antang / 180. * pi
       sin_antang = sin(antang_rad)
       cos_antang = cos(antang_rad)
 
       iant=int((rant - rwleft) / dx) + 1
-      if(rant .ne. 0.0)psiant = psi(iant, jequat)
-      print *,'rant',rant,psiant,rwleft,dx
+      jant=int((yant - ybottom) / dy) + 1
+      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
 
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
       xjantx = curdnx / dx
       xjanty = curdny / dx
       xjantz = curdnz / dx
 
-      xjant=sqrt(xjantx**2 + xjanty**2 + xjantz**2)
+      xjant=sqrt(xjantx**2 + xjanty**2 + xjantz**2) !not used
 
       rlim   = rt + alim
 
@@ -3323,7 +3322,6 @@ c                  antlc = pi / (xk0 * antlen)
                xjx(i,j) = xjantx * shapey  * gausspsi * Ix
                xjy(i,j) = xjanty * shapey  * gausspsi * Iy
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
-
             end if
 
             if(i_antenna .eq. 2) then
@@ -7356,7 +7354,7 @@ c           if(myid==0)write(6,*)i, j, eplus_flux_plot(i, j)
       xjx_max = maxval(xjx)
       xjy_max = maxval(xjy)
       xjz_max = maxval(xjz)
-      print *,'xjz_max',nnodex,nnodey,maxval(xjz),maxloc(xjz)
+
       do i = 1, nnodex
          do j = 1, nnodey
 

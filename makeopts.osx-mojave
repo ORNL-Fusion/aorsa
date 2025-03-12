@@ -1,6 +1,6 @@
 include compileropts.gnu
 
-FC = mpif90 -cpp -O2 # -fno-range-check  -fno-check=bounds #-O2 #-g
+FC = mpif90 -g -cpp 
 WARNING_FLAGS+=-fallow-argument-mismatch
 NETCDF_DIR := $(shell brew --prefix netcdf)
 NETCDFF_DIR := $(shell brew --prefix netcdf-fortran)

@@ -803,7 +803,6 @@ c--   x(i) : -xmax / 2.0   to   xmax / 2.0
       dx = xmax / nnodex
       
       diffmin = 1.0e+05  !start with large value and reduce at each step
-
       do i = 1, nnodex
          xprime(i) = (i - 1) * dx
      &      + dx / 2.0
@@ -949,8 +948,8 @@ c         write(6, 1312)n, rhon(n)
          write(6,*)  'jcw capr rho'
          write(15,*) 'jcw capr rho'         
          do i = 1, nnodex
-            write(6,  1312)i, capr(i), rho(i,16) 
-            write(15, 1312)i, capr(i), rho(i,16)
+            write(6,  1312)i, capr(i), rho(i,int(nnodey/2))
+            write(15, 1312)i, capr(i), rho(i,int(nnodey/2))
          end do         
       end if
       
@@ -3586,8 +3585,8 @@ c         write(6, 1312)n, rhon(n)
          write(15, *) "psi_tor_max = ", psi_tor_max
                
          do i = 1, nnodex
-            write(6,  1312)i, capr(i), rho(i,16) 
-            write(15, 1312)i, capr(i), rho(i,16)
+            write(6,  1312)i, capr(i), rho(i,int(nnodey/2))
+            write(15, 1312)i, capr(i), rho(i,int(nnodey/2))
          end do         
       end if
       
