@@ -1,15 +1,11 @@
 include compileropts.gnu
 
 FC = ftn
-LIBS = ../pgplot/pgplotlib/libpgplot.a
-# /global/cfs/projectdirs/m77/pgplot-perlmutter
-NETCDF_INCLUDE_DIR =/opt/cray/pe/netcdf/4.9.0.3/gnu/9.1/include
-#${CRAY_PARALLEL_NETCDF_DIR}/include
+PGPLOT_PATH = /global/cfs/cdirs/m77/pgplot
+LIBS = -L $(PGPLOT_PATH) -lpgplot
+NETCDF_INCLUDE_DIR = ${NETCDF_DIR}/include
+LIBS += -L $(NETCDF_DIR) -lnetcdff -lnetcdf
 
-NETCDF_DIR =/opt/cray/pe/netcdf/4.9.0.3/gnu/9.1/lib
-#${CRAY_PARALLEL_NETCDF_DIR}/lib
-
-LIBS += $(NETCDF_DIR)/libnetcdff.a -L $(NETCDF_DIR) -lnetcdf
 INCLUDE_DIRS +=  -I ${NETCDF_INCLUDE_DIR}
 #presently only works without -O2 below
-F90FLAGS += -Ofast -std=f2003 
+F90FLAGS += -Ofast -std=f2003
