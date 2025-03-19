@@ -116,7 +116,7 @@
       integer :: mkdim1, mkdim2
 
       integer :: nkdim1, nkdim2, nkx1, nkx2, nldim, nldim3,
-     &   nky1, nky2, iant
+     &   nky1, nky2, iant, jant
 
       real :: kperp_max, valfven, kalfven, xky_ant
       real ::  kperp_max_actual
@@ -3036,7 +3036,8 @@ c           if(myid==0)write(6,*)n, m, capr_flux(n,m), xj
       cos_antang = cos(antang_rad)
 
       iant=int((rant - rwleft) / dx) + 1
-      if(rant .ne. 0.0)psiant = psi(iant, jequat)
+      jant=int((yant - ybottom) / dy) + 1
+      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
 
 
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
@@ -3323,7 +3324,6 @@ c                  antlc = pi / (xk0 * antlen)
                xjx(i,j) = xjantx * shapey  * gausspsi * Ix
                xjy(i,j) = xjanty * shapey  * gausspsi * Iy
                xjz(i,j) = xjantz * shapey  * gausspsi * Iz
-
             end if
 
             if(i_antenna .eq. 2) then
@@ -4130,10 +4130,12 @@ c                    xnuomia(i,j) = xnuomi * exp(+ drho1/ scrape)
          end if
 
          if (nboundary .eq. 1) then
+            if (eqtype .ne. 'tokamak') then !maybe another switch later
+               xnuomea = xnuome !JCW can modify for internal resonances
+               xnuomia = xnuomi
+            end if
             do i = 1, nnodex
                do j = 1, nnodey
-                  xnuomea(i,j) = xnuome !JCW can modify for internal resonances
-                  xnuomia(i,j) = xnuomi
                   if(rho(i,j) .gt. rholim) then
                      xnea(i,j) = 1.0e-10
                      zeff(i,j) = 1.0e-10
