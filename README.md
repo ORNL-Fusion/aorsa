@@ -10,7 +10,7 @@
 * pgplot and X11
 * cmake > 3.15
 
-## Cori
+## Perlmutter
 ### Build
 ```
 git clone https://github.com/ORNL-Fusion/aorsa.git
