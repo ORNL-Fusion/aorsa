@@ -247,7 +247,8 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
       !     -------------------------------------------------
-      kspeci = 2 !reversed from normal order for reasons...
+      kspeci = 1 !reversed from normal order for reasons... 
+      !JVDL: switched this ^ back to 1, looks like SF had order reversed in cql?
       CALL netcdfr3d_multigen(netCDF_file,kspeci)
 
       vc_mks = vc * 1.0e-02
@@ -1290,7 +1291,7 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
 !     -------------------------------------------------
-      kspeci=1
+      kspeci=2 ! JVDL: switched this from SF version being 1
       CALL netcdfr3d_multigen(netCDF_file,kspeci)
 
       vc_mks = vc * 1.0e-02
