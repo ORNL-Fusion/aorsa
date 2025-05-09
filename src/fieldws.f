@@ -1580,11 +1580,6 @@ c      end do
 
 
 
-
-
-
-
-
 *     -------------------
 *     plot omgexb in 2-D
 *     -------------------
@@ -1620,7 +1615,7 @@ c      end do
       call ezplot1(title, titll, titlr, rhon_half, xjhat,
      &    nnoderho_half, nrhomax)
 
-      if (.false.) then !these are NaN for mirror, check
+      if (eqtype=='tokamak') then !these are NaN for mirror, check
       title= 'xkhat(rho)'
       titll= 'xkhat (kg m-2 s-1)'
       titlr='       '
@@ -1930,9 +1925,9 @@ c--   Plot xkperp_cold:
       title = 'Axis xkperp cold2'
       titll = 'Re xkperp^{2} (1/m)'
       titlr = 'Im xkperp^{2} (1/m)'
-      titlb = 'R (m)'
+      titlb = 'Z (m)'
 
-      call ezplot2(title, titll, titlr, titlb, capr, faxre, faxim,
+      call ezplot2(title, titll, titlr, titlb, y, faxre, faxim,
      &   nnodey, nymx)
 
 
@@ -2787,7 +2782,7 @@ c        white background
       title = 'Mod E alpha(kx, ky)'
       call ezconc(xkxsav, xkysav, exkmod, ff, nkxplt, nkyplt, numb,
      &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
-     &     iflag, 1.0)
+     &     iflag, 0.25)
 
       title='3-D plot of Mod E alpha(kx,ky)'
       titz='Mod E alpha(kx,ky)'
@@ -2835,12 +2830,12 @@ c
 
 c--   plot log of E alpha
 
-      titx = 'kx (m-1)'
-      tity = 'ky (m-1)'
+      titx = 'kx (m^{-1})'
+      tity = 'ky (m^{-1})'
       title = 'log E alpha(kx, ky)'
       call ezconc(xkxsav, xkysav, exklog, ff, nkxplt, nkyplt, numb,
      &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
-     &     iflag, scalex)
+     &     iflag, 0.25)
 
       title='3-D plot of log E alpha(kx,ky)'
       titz='log E alpha(kx,ky)'
@@ -2852,7 +2847,7 @@ c--   plot log of E alpha
       title = 'Mod E beta(kx, ky)'
       call ezconc(xkxsav, xkysav, eykmod, ff, nkxplt, nkyplt, numb,
      &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
-     &     iflag, scalex)
+     &     iflag, 0.25)
 
       title='3-D plot of Mod E beta(kx,ky)'
       titz='Mod E beta(kx,ky)'
@@ -2897,7 +2892,7 @@ c--   plot log of E beta
       title = 'log E beta(kx, ky)'
       call ezconc(xkxsav, xkysav, eyklog, ff, nkxplt, nkyplt, numb,
      &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
-     &     iflag, scalex)
+     &     iflag, 0.25)
 
       title='3-D plot of log E beta(kx,ky)'
       titz='log E beta(kx,ky)'
@@ -2909,7 +2904,7 @@ c--   plot log of E beta
       title = 'Mod E b(kx, ky)'
       call ezconc(xkxsav, xkysav, ezkmod, ff, nkxplt, nkyplt, numb,
      &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
-     &     iflag, scalex)
+     &     iflag, 0.25)
 
 
 !        ---------------------------------------------
@@ -2988,7 +2983,7 @@ c--   plot log of Eb
       title = 'log E b(kx, ky)'
       call ezconc(xkxsav, xkysav, ezklog, ff, nkxplt, nkyplt, numb,
      &     nkpltdim, mkpltdim, nlevmax, title, titx, tity,
-     &     iflag, scalex)
+     &     iflag, 1./scalex)
 
       title='3-D plot of log E b(kx,ky)'
       titz='Mod E b(kx,ky)'
@@ -3180,7 +3175,7 @@ c            end if
          end do
       end do
 
-      title = 'real(E_{+})'
+      title = 'Real(E_{+})'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -3731,7 +3726,7 @@ c      end do
      &     nnoderho2, nrhomax)
 
 *     --------------------------------------
-*     Reset rhon back to it's original value
+*     Reset rhon back to its original value
 *     --------------------------------------
       do n = 1, nnoderho
          rhon(n) = rhon_save(n)
@@ -3897,7 +3892,7 @@ c      end do
 
 
 !       ---------------------------------
-!       &D plots of f(u, theta = const)
+!       2D plots of f(u, theta = const)
 !       ---------------------------------
         titll = 'log f(u)'
         titlr = '    '
@@ -4879,7 +4874,7 @@ c
          fmidim(i) = aimag(eminus_flux_plot(i,jmid))
       end do
 
-      title = 'E_{-] flux plot'
+      title = 'E_{-} flux plot'
       titll = 'Re Eminus (V/m)'
       titlr = 'Im Eminus (V/m)'
       titlb = 'R (m)'
@@ -5102,6 +5097,7 @@ c      end do
       write(245, 2847)
       write(245, 2841) nnodex,  nnodey, 1
       write(245, 2842) capr(1), y(1), 0
+      number_points = nnodex*nnodey
       dx = capr(2) - capr(1)
       dy = y(2) - y(1)
       write(245, 2843) dx, dy, 1
@@ -5129,6 +5125,17 @@ c      end do
       write(245, 3412) ((spx(i,j), spy(i,j), spz(i,j),
      &                                    i = 1, nnodex), j = 1, nnodey)
 
+      write(245, '(A)') 'SCALARS abs_jantx float 1'
+      write(245, 2849)
+      write(245, 3411) ( (abs(xjx(i,j)), i = 1, nnodex),  j = 1, nnodey)
+      
+      write(245, '(A)') 'SCALARS abs_janty float 1'
+      write(245, 2849)
+      write(245, 3411) ( (abs(xjy(i,j)), i = 1, nnodex),  j = 1, nnodey)
+      
+      write(245, '(A)' ) 'SCALARS abs_jantz float 1'
+      write(245, 2849)
+      write(245, 3411) ( (abs(xjz(i,j)), i = 1, nnodex),  j = 1, nnodey)      
       close (245)
 
 
@@ -5411,13 +5418,17 @@ c
       character(8):: xopt,yopt
       character(32):: title
       character(32):: titx
+      character(32):: titx_mod
       character(32):: tity
 
       real:: scalex
 
       scalex=scale
 !      if (present(scale)) scalex=scale
-      
+      if (scalex/=1.0) then
+         write(titx_mod,'(A25,"*",F6.2 )') trim(adjustl(titx)), scalex
+         write(*,*) 'title adjusted', titx_mod
+      end if
       
       nwhite = 0
       nblack = 1
@@ -5563,7 +5574,11 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       endif
 
       call pgsci(nblack)
-      call pglab(titx, tity, title)
+      if (scalex/=1.0) then      
+         call pglab(titx_mod, tity, title)
+      else
+         call pglab(titx, tity, title)
+      end if
 
   310 format(1p,6e12.4)
   312 format(i10, 1p,6e12.4)
@@ -7880,22 +7895,11 @@ c
       character(32):: titlr
       character(32):: titlb
 
-      integer:: nplot1,ncollab, ncolion,ncolbox, ncyan,
+      integer:: nplot1,ncollab, ncolion,ncolbox, 
      &    ncolelec, ncolln2, ncollin, ncolbrd
 
-      integer:: nblack,nred,nyellow, ngreen,naqua,npink,
-     &   nwheat,ngrey,nbrown,nblue,nblueviolet,ncyan1,
-     &   nturquoise,nmagenta,nsalmon,nwhite,ncolln3, norange
-
-      nwhite = 0
-      nblack = 1
-      nred = 2
-      ngreen = 3
-      nblue = 4
-      ncyan = 5
-      nmagenta = 6
-      nyellow = 7
-      norange = 8
+      integer, parameter:: nwhite = 0, nblack = 1, nred = 2, ngreen = 3,
+     &     nblue = 4, ncyan = 5, nmagenta = 6, nyellow = 7, norange = 8
 
       rhomax=x1(nr)
       rhomin=x1(1)
