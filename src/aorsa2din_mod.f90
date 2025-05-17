@@ -266,7 +266,7 @@
                                         !-----         if (i_write .ne. 0) 4-D ORBIT_RF file IS written
 
       integer :: n_bin = 2
-      integer :: iql = 1
+      integer :: iql = 1                ! unused
       integer :: i_antenna = 1          ! i_antenna = flag determining which antenna model is used
                                         ! if(i_antenna .eq. 0) antenna current is Gaussian 
                                         ! if(i_antenna .eq. 1) antenna current is cos(ky * y)  (default)

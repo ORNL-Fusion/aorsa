@@ -173,7 +173,7 @@
      &    nnode_overlap, iprofile, isolve,
      &    ndiste, ndisti1, ndisti2, ndisti3,
      &    ndisti4, ndisti5, ndisti6, nkperp, nzeta_wdot, n_bin,
-     &    iql, i_antenna, n_prof_flux, i_write, idens
+     &    i_antenna, n_prof_flux, i_write, idens
 
       CHARACTER(128) :: eqdsk
       CHARACTER(128) :: netCDF_file1

@@ -46,7 +46,7 @@
       integer :: pgopen, pgbeg, ier, np
       integer :: npoints, nlen_exitp, nlen_exitm, nlen_exit, n_len
 
-      integer :: nphi1 = -50
+      integer :: nphi1 =   0 !should be namelist JCW
       integer :: nphi2 =  50
 
       complex xjpxh, xjpyh, xjpzh
@@ -505,26 +505,26 @@
       real :: xjprl_int(nrhomax), fyp_int(nrhomax), fz0_int(nrhomax)
 
       real :: wdote_ql_int(nrhomax), wdoti1_ql_int(nrhomax),
-     &                            wdoti2_ql_int(nrhomax),
-     &                            wdoti3_ql_int(nrhomax),
-     &                            wdoti4_ql_int(nrhomax),
-     &                            wdoti5_ql_int(nrhomax),
-     &                            wdoti6_ql_int(nrhomax)
+     &                               wdoti2_ql_int(nrhomax),
+     &                               wdoti3_ql_int(nrhomax),
+     &                               wdoti4_ql_int(nrhomax),
+     &                               wdoti5_ql_int(nrhomax),
+     &                               wdoti6_ql_int(nrhomax)
 
       real :: wdoteavg_int(nrhomax), wdoti1avg_int(nrhomax),
-     &                            wdoti2avg_int(nrhomax),
-     &                            wdoti3avg_int(nrhomax),
-     &                            wdoti4avg_int(nrhomax),
-     &                            wdoti5avg_int(nrhomax),
-     &                            wdoti6avg_int(nrhomax)
+     &                               wdoti2avg_int(nrhomax),
+     &                               wdoti3avg_int(nrhomax),
+     &                               wdoti4avg_int(nrhomax),
+     &                               wdoti5avg_int(nrhomax),
+     &                               wdoti6avg_int(nrhomax)
 
 
       real :: redotjeavg_int(nrhomax), redotj1avg_int(nrhomax),
-     &                              redotj2avg_int(nrhomax),
-     &                              redotj3avg_int(nrhomax),
-     &                              redotj4avg_int(nrhomax),
-     &                              redotj5avg_int(nrhomax),
-     &                              redotj6avg_int(nrhomax)
+     &                                 redotj2avg_int(nrhomax),
+     &                                 redotj3avg_int(nrhomax),
+     &                                 redotj4avg_int(nrhomax),
+     &                                 redotj5avg_int(nrhomax),
+     &                                 redotj6avg_int(nrhomax)
 
       real :: fypavg(nrhomax), fypi1avg(nrhomax), fypi2avg(nrhomax),
      &     fypeavg(nrhomax), fypi3avg(nrhomax)
@@ -1186,8 +1186,9 @@ c     &         itable,jtable,ntable,mtable
          stop '** nproc is not equal to nprow*npcol '
       endif
 
-      write(*,*) 'myid', myid !JCW temp
-
+#ifdef DEBUG
+      write(*,*) 'myid', myid
+#endif
       if (myid==0) then
          open(unit=53, file='out_fields', status='unknown',
      &      form='formatted')
@@ -1464,7 +1465,7 @@ c      jequat  = nnodey / 2
          write(15, *) "use_fourier_Z2 = ", use_fourier_Z2
 
          write(15, *) "nphi_number = ", nphi_number
-         write(15, *) "nphi_array = ", nphi_array
+         write(15, *) "nphi_array = ", nphi_array(1:nphi_number)
 
 
          write(6, *) "AORSA2D: version_number = ", version_number
@@ -2877,8 +2878,10 @@ c--   Note: the code gives slightly smoother results with dx/2.0 added
 !     JCW if rt is 0 or nearly zero, set min kpar to 1/4 (1/rmax)
       if (rt > 1.e-3) then !1mm
          akprl_min = 0.25 * abs(nphi / rt)
-      else 
-         write(*,*) "rt small :", rt,capr !capr seems to be zero as well? capr defined later
+      else
+#ifdef DEBUG         
+         write(*,*) "rt small :", rt(1:nxmx),capr(a1:nxmx) !capr seems to be zero as well? capr defined later
+#endif         
          akprl_min = 0.25 / capr(nnodex-1)
 c      akprl_min = abs(nphi / rt)
       end if
@@ -8800,6 +8803,7 @@ c                 c_ehst = 1.0
 !*     Integrate Wdot_ql:
 !*     -----------------
 
+
       call rhograte(rhon, wdote_ql,  1, nnoderho, wdote_ql_int,
      &   nrhomax, dvol)
       call rhograte(rhon, wdoti1_ql, 1, nnoderho, wdoti1_ql_int,
@@ -9749,22 +9753,6 @@ c           if(nnode_local .le. 0)xjprl(i,j) = redotj_ehst(i,j)
      &   nrhomax, dvol)
 
 
-c      call rhograte(rhon, wdote_ql,  1, nnoderho, wdote_ql_int,
-c     &   nrhomax, dvol)
-c      call rhograte(rhon, wdoti1_ql, 1, nnoderho, wdoti1_ql_int,
-c     &   nrhomax, dvol)
-c      call rhograte(rhon, wdoti2_ql, 1, nnoderho, wdoti2_ql_int,
-c     &   nrhomax, dvol)
-c      call rhograte(rhon, wdoti3_ql, 1, nnoderho, wdoti3_ql_int,
-c     &   nrhomax, dvol)
-c      call rhograte(rhon, wdoti4_ql, 1, nnoderho, wdoti4_ql_int,
-c     &   nrhomax, dvol)
-c      call rhograte(rhon, wdoti5_ql, 1, nnoderho, wdoti5_ql_int,
-c     &   nrhomax, dvol)
-c      call rhograte(rhon, wdoti6_ql, 1, nnoderho, wdoti6_ql_int,
-c     &   nrhomax, dvol)
-
-
       call rhograte(rhon, redotjeavg, 1, nnoderho, redotjeavg_int,
      &   nrhomax, dvol)
       call rhograte(rhon, redotj1avg, 1, nnoderho, redotj1avg_int,
@@ -10364,17 +10352,6 @@ c--      Calculate species fractions from Wdot:
 
 
 81668 format('Species absorption from quasilinear Wdot:')
-
-c         pe_ql  =  wdote_ql_int(nnoderho)
-c        pi1_ql = wdoti1_ql_int(nnoderho)
-c        pi2_ql = wdoti2_ql_int(nnoderho)
-c        pi3_ql = wdoti3_ql_int(nnoderho)
-c        pi4_ql = wdoti4_ql_int(nnoderho)
-c        pi5_ql = wdoti5_ql_int(nnoderho)
-c        pi6_ql = wdoti6_ql_int(nnoderho)
-
-c        pt_ql  = pe_ql + pi1_ql + pi2_ql + pi3_ql
-c     &                   + pi4_ql +pi5_ql + pi6_ql
 
 
          if (pt_ql >= 100.*epsilon(eta1)) then

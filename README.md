@@ -79,7 +79,9 @@ ctest
     - `Bfield_2D.vtk` - magnetic equilibrium or RF?
     - `Efield_2D.vtk`  - electric field from RF 
     - `capd.vtk` - contour plots of dispersion relation D(k,x)
-  - Postscript output (from pgplot)
+  - misc text files
+    - `fpm` power profiles and quasilinear coefficients for each nphi
+  - Postscript output (from pgplot). When using the giza library these are pdf files.
     - `aorsa2d.ps` - main output. 1D and 2D field and power plots
     
       Colors for curves for species specific profiles are electrons: red, ions: cyan (majority), blue, green, magenta, orange, yellow 

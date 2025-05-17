@@ -43,10 +43,6 @@ c
       integer splitrank, nloops, partition, start, finish
       integer pstart, pfinish, status(MPI_STATUS_SIZE), ierr
       integer recv_size, remainder
-c      real, allocatable :: bql_store(:,:,:)
-c      real, allocatable :: cql_store(:,:,:)
-c      real, allocatable :: eql_store(:,:,:)
-c      real, allocatable :: fql_store(:,:,:)
       logical iam_root
       integer left_neighbor, right_neighbor
       real token
@@ -98,7 +94,7 @@ c      real, allocatable :: fql_store(:,:,:)
      
       complex wdoti, fx0i, fy0i
       
-      integer  :: n_psi_dim, nuper, nupar, n_psi, mi, ni
+      integer:: n_psi_dim, nuper, nupar, n_psi, mi, ni
 
       real bqlavg(nuper, nupar, nnoderho)
       real cqlavg(nuper, nupar, nnoderho)
@@ -115,21 +111,12 @@ c      real, allocatable :: fql_store(:,:,:)
       real fy0(nnodex, nnodey)      
       real fz0(nnodex, nnodey)
       
-!      real count(0 : 10000, 1), sum_count
-
       real vol(nrhodim), dldbavg(nrhodim)
         
 
-
-      complex sigxx, sigxy, sigxz,
-     1        sigyx, sigyy, sigyz,
-     1        sigzx, sigzy, sigzz
-
-
-      complex cexpkxky
       complex exk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-     1        eyk(nkdim1 : nkdim2, mkdim1 : mkdim2),
-     1        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2)
+     &        eyk(nkdim1 : nkdim2, mkdim1 : mkdim2),
+     &        ezk(nkdim1 : nkdim2, mkdim1 : mkdim2)
 
       real xkxsav(nkdim1 : nkdim2), xkysav(mkdim1 : mkdim2)
       real q, xn(nxdim, nydim), xkt(nxdim, nydim)
@@ -142,10 +129,10 @@ c      real, allocatable :: fql_store(:,:,:)
       real rho(nxdim, nydim)
 
 
-      real :: UPERP(NUPER), UPARA(NUPAR)
-      real :: UPERP_cql(NUPER), UPARA_cql(NUPAR)
-      real :: DFDUPER(NUPER,NUPAR),DFDUPAR(NUPER,NUPAR)
-      real :: FPERP(NUPER)
+      real:: UPERP(NUPER), UPARA(NUPAR)
+      real:: UPERP_cql(NUPER), UPARA_cql(NUPAR)
+      real:: DFDUPER(NUPER,NUPAR),DFDUPAR(NUPER,NUPAR)
+      real:: FPERP(NUPER)
 
       real bql, cql, eql, fql
 
@@ -158,9 +145,6 @@ c      real, allocatable :: fql_store(:,:,:)
       complex, dimension(:),  allocatable :: sum_fx0
       complex, dimension(:),  allocatable :: sum_fy0
       
-c      real, dimension(:,:,:), allocatable :: factvol
-c      real, dimension(:,:), allocatable :: factvol2d
-
       real, dimension(:,:,:), allocatable :: bqlvol
       real, dimension(:,:), allocatable :: bqlvol2d
 
@@ -201,9 +185,6 @@ c      real, dimension(:,:), allocatable :: factvol2d
       allocate(sum_fx0(NUPER) )
       allocate(sum_fy0(NUPER) )      
       
-c      allocate(factvol(nuper, nupar, nnoderho) )
-c      allocate(factvol2d(nuper, nupar) )
-
       allocate(bqlvol(nuper, nupar, nnoderho) )
       allocate(bqlvol2d(nuper, nupar) )
 
@@ -235,19 +216,20 @@ c      allocate(factvol2d(nuper, nupar) )
 
 !      count = 0.0
       
-c      factvol = 0.0
-c      factvol2d = 0.0      
-
       bqlvol = 0.0
+      bqlavg = 0.0
       bqlvol2d = 0.0
 
       cqlvol = 0.0
+      cqlavg = 0.0      
       cqlvol2d = 0.0
 
       eqlvol = 0.0
+      eqlavg = 0.0
       eqlvol2d = 0.0
 
       fqlvol = 0.0
+      fqlavg = 0.0
       fqlvol2d = 0.0
 
 
@@ -286,29 +268,6 @@ c      factvol2d = 0.0
       end if
 
 
-      do n = 1, nnoderho
-
-         do mi = 1, nupar
-            do ni = 1, nuper
-            
-
-               bqlvol(ni, mi, n) = 0.0
-               cqlvol(ni, mi, n) = 0.0
-               eqlvol(ni, mi, n) = 0.0
-               fqlvol(ni, mi, n) = 0.0
-
-
-               bqlavg(ni, mi, n) = 0.0
-               cqlavg(ni, mi, n) = 0.0
-               eqlavg(ni, mi, n) = 0.0
-               fqlavg(ni, mi, n) = 0.0
-
-            end do
-         end do
-      end do
-
-
-
       nwork = 0
       do j=1,nnodey
          do i=1,nnodex
@@ -339,14 +298,6 @@ c      factvol2d = 0.0
          finish=start+partition
       endif
       
-c      if(ndist.eq.1) then
-c             allocate(bql_store(start:finish,1:nuper,1:nupar),
-c     &         cql_store(start:finish,1:nuper,1:nupar),
-c     &         eql_store(start:finish,1:nuper,1:nupar),
-c     &         fql_store(start:finish,1:nuper,1:nupar))
-c      else
-c      endif
-
 
       do ip = start,finish
       
@@ -375,6 +326,7 @@ c      endif
             BMAG = omgc(i,j) * (xm / q)
                
             bratio = bmod_mid(i,j) / bmod(i,j)
+
             if (bratio .gt. 1.0) bratio = 1.0
             
             duperp = (uperp(nuper) - uperp(1)) / (nuper - 1)
@@ -593,9 +545,9 @@ c     &                             - uperp(ni) * dfdupar(ni, mi)
                      ni0 = int((uperp0 - uperp(1)) / duperp) + 1
                      mi0 = int((upara0 - upara(1)) / dupara) + 1
 
-*                    --------------------------------------
-*                    bounce average and map to midplane u's
-*                    --------------------------------------
+!                    --------------------------------------
+!                    bounce average and map to midplane u's
+!                    --------------------------------------
                      if(ni0 .ge. 1 .and. ni0 .le. nuper .and. 
      &                     mi0 .ge. 1 .and. mi0 .le. nupar)then
      
@@ -616,22 +568,19 @@ c                        factor = abs(sqrt(psic))
                         factor = 1.0
  
                         
-c                        factvol(ni0, mi0, n) = factvol(ni0, mi0, n)
-c     &                      + dx * dy * capr(i) / r0 * factor                  
-
                         bqlvol(ni0, mi0, n) = bqlvol(ni0, mi0, n)
-     &                      + dx * dy * capr(i) / r0 * bql * factor 
+     &                      + dx * dy * bql * factor !capr(i)/r0 !jcw is this darea or dvol?
 
                         cqlvol(ni0, mi0, n) = cqlvol(ni0, mi0, n)
-     &                      + dx * dy * capr(i) / r0 * cql * factor
+     &                      + dx * dy * cql * factor !capr(i)/r0
      &                      * costh / costh0 / sqrt(psic)  
 
                         eqlvol(ni0, mi0, n) = eqlvol(ni0, mi0, n)
-     &                      + dx * dy * capr(i) / r0 * eql * factor 
+     &                      + dx * dy * eql * factor !/capr(i)r0
      &                      * costh / costh0 / psic
 
                         fqlvol(ni0, mi0, n) = fqlvol(ni0, mi0, n)
-     &                      + dx * dy * capr(i) / r0 * fql * factor 
+     &                      + dx * dy * fql * factor !capr(i)/r0
      &                      * (costh / costh0)**2 / psic**1.5
 
                      end if
@@ -828,10 +777,11 @@ c              factvol(ni, mi, n) = factvol2d(ni, mi)
 *           --------------
 *           bounce average
 *           --------------
-            if (vol(n) .ne. 0.0)then
-            bqlavg(ni, mi, n) = bqlvol(ni, mi, n) / vol(n) * dldbavg(n) 
-            cqlavg(ni, mi, n) = cqlvol(ni, mi, n) / vol(n) * dldbavg(n) 
-            eqlavg(ni, mi, n) = eqlvol(ni, mi, n) / vol(n) * dldbavg(n) 
+            if (vol(n) .ne. 0.0) then !jcw check this, esp for mirror
+                  !check dx*dx*capr(n)/r0 / vol(n), but vol(n)=\int_psi dx dy 2pi capr(i)
+            bqlavg(ni, mi, n) = bqlvol(ni, mi, n) / vol(n) * dldbavg(n)
+            cqlavg(ni, mi, n) = cqlvol(ni, mi, n) / vol(n) * dldbavg(n)
+            eqlavg(ni, mi, n) = eqlvol(ni, mi, n) / vol(n) * dldbavg(n)
             fqlavg(ni, mi, n) = fqlvol(ni, mi, n) / vol(n) * dldbavg(n)
             end if
             
@@ -953,14 +903,12 @@ c
       parameter (eps0 = 8.85e-12)
       parameter (PI = 3.141592653597932384)
 
-      allocate(wdot_int(nuper, nupar) )
-
 !     ------------------------------------
 !efd  initialize allocatable array to zero
 !     ------------------------------------
-
-
+      allocate(wdot_int(nuper, nupar) )
       wdot_int = 0.0
+
 
       e = 1.6e-19
       W = omgrf
@@ -1006,7 +954,7 @@ c
          u0 = vc_mks / alpha
 
          Emax = 0.5 * xm * vc_mks**2
-         Enorm = Emax / 1.6e-19
+         Enorm = Emax / e
 
 !        ------------------------------------------------
 !        get CQL3D distribution function on the midplane
@@ -1049,7 +997,7 @@ c
                
                wdot_int(ni0, mi0) = (bqlavg(ni0, mi0, n) * dfdu0
      &                             + cqlavg(ni0, mi0, n) * dfdth0) / u_0 
-
+               if(n==2) write(*,*) 'ql',ni0,mi0,bqlavg(ni0, mi0, n) 
             end do
 
          end do
@@ -1091,7 +1039,6 @@ c***************************************************************************
 c
 
 
-
       subroutine ugrate(f, uperp, upara, nuper, nupar, fint, myid, xm)
 
       implicit none
@@ -1112,16 +1059,8 @@ c
      &            + f(ni, mi+1) + f(ni+1, mi+1)) / 4.0
 
             fint = fint + favg * uperp(ni) * duperp * dupara
-
-c            if (myid.eq.0 .and. ni .eq. 32 .and. mi .eq. 95) then
-c                write(6 ,1313)ni, mi, xm, favg, fint
-c                write(15,1313)ni, mi, xm, favg, fint
-c           end if
-
          end do
       end do
-
- 1313 format(2i10, 1p,9e12.4)
 
       return
       end subroutine  ugrate
