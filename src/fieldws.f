@@ -562,8 +562,6 @@ c--set default values of input data:
       open(unit=144,file='Eb_spectrum.vtk',status='unknown',
      &                                       form='formatted')
 
-      open(unit=51,file='rho',status='unknown',form='formatted')
-
       open(unit=66,file='bharvey',status='unknown',form='formatted')
       open(unit=57,file='swain',status='unknown',form='formatted')
       open(unit=62,file='murakami',status='unknown', form='formatted')
@@ -639,13 +637,6 @@ c--set default values of input data:
       read (38, 310) ((xjpxe(i,j), i = 1, nnodex), j = 1, nnodey)
       read (38, 310) ((xjpye(i,j), i = 1, nnodex), j = 1, nnodey)
       read (38, 310) ((xjpze(i,j), i = 1, nnodex), j = 1, nnodey)
-
-
-
-      write(51,309) nnodex, nnodey
-      write(51,310) rhoplasm
-      write(51,310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
-
 
 
       read(38, 309) nkx1, nkx2
@@ -5188,7 +5179,6 @@ c     &      nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       close (143)
       close (144)
 
-      close (51)
 c      close (61)
       close (66)
       close (68)
