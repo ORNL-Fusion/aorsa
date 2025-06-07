@@ -3344,6 +3344,8 @@ c                  antlc = pi / (xk0 * antlen)
          end do
       end do
 
+      write(*,*) 'current location',i_cur_max,j_cur_max,
+     &   cur_mod_max,capr(i_cur_max),y(j_cur_max)      
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
 
@@ -4547,6 +4549,8 @@ c            acold(i,j) = xnphi**2 - capk_perp
       end do
 
       call dgrate(xprime, kimag_cold, 1, nnodex, ans, nxmx)
+      write(*,*) 'spa', xprime(1:nnodex), kimag_cold(1:nnodex), 1,
+     &   nnodex, ans, nxmx
       spa_cold = 1.0 - exp(-2.0 * ans)
 
       if (myid .eq. 0) then
