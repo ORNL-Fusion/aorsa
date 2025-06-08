@@ -119,7 +119,7 @@ c      CHARACTER(128) :: root
       integer :: mkdim1, mkdim2
 
       integer :: nkdim1, nkdim2, nkx1, nkx2, nldim, nldim3,
-     &   nky1, nky2, iant
+     &   nky1, nky2, iant, jant
 
       real :: kperp_max, valfven, kalfven, xky_ant
       real ::  kperp_max_actual
@@ -3043,9 +3043,9 @@ c--   thetam: 0 to 2pi
       sin_antang = sin(antang_rad)
       cos_antang = cos(antang_rad)
 
-      iant=int((rant - rwleft) / dx) + 1
-      if(rant .ne. 0.0)psiant = psi(iant, jequat)
-
+      iant=int((rant - rwleft) / dx + 0.5)+1
+      jant=int((yant - ybottom) / dy + 0.5)+1
+      if(rant .ne. 0.0)psiant = psi(iant, jant)
 
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
       xjantx = curdnx / dx
