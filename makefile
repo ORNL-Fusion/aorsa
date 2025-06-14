@@ -147,6 +147,13 @@ ifeq ($(LSB_IS),Ubuntu)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
+ifeq ($(LSB_IS),Ubuntu)
+  ifeq ($(LSB_RS),22.04)
+    include makeopts.ubuntu20.04
+    $(info System identified as Ubuntu20.04)
+    SYSTEM_IDENTIFIED = 1
+  endif
+endif
 ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
   ifdef MKLROOT
   include makeopts.eofe7.intel
