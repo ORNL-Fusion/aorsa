@@ -2683,6 +2683,10 @@ c      akprl_min = abs(nphi / rt)
      &                                xmi1, enorm_factor, vc1_mks_cql3d)
             vc1_cgs_cql3d = vc1_mks_cql3d * 100.
 
+            call blacs_barrier(icontxt, 'All')
+
+            open(unit=50,file='cql3d1.out', status='unknown',
+     &                                                 form='formatted')
 !           ---------------------------------------------
 !           Read data from CQL3D in u_perp and u_parallel
 !           ---------------------------------------------
