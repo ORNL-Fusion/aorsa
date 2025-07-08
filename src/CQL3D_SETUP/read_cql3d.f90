@@ -654,11 +654,11 @@
        character(len=*), intent(in) :: netcdfnm
 
        ! ─── Outputs ───
-       real(8), allocatable, intent(out) :: R_binCenters(:)
-       real(8), allocatable, intent(out) :: z_binCenters(:)
-       real(8), allocatable, intent(out) :: vPer_binCenters(:)
-       real(8), allocatable, intent(out) :: vPar_binCenters(:)
-       real(8), allocatable, intent(out) :: f_rzvv(:,:,:,:)  ! f(R, Z, vPer, vPar)
+       real, allocatable, intent(out) :: R_binCenters(:)
+       real, allocatable, intent(out) :: z_binCenters(:)
+       real, allocatable, intent(out) :: vPer_binCenters(:)
+       real, allocatable, intent(out) :: vPar_binCenters(:)
+       real, allocatable, intent(out) :: f_rzvv(:,:,:,:)  ! f(R, Z, vPer, vPar)
 
        ! ─── Local variables ───
        integer :: ncid, vid, istatus
