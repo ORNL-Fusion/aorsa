@@ -22,7 +22,10 @@
       integer, parameter :: n_u_dim = 600 !SF why the fuck is this hardcoded... who did this? I've just made it bigger for now, deal with later
       integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
-
+      
+      real, allocatable :: R_rzvv(:), Z_rzvv(:)   ! TODO delete this section 
+      real, allocatable :: vPer_rzvv(:), vPar_rzvv(:)
+      real, allocatable :: f_rzvv(:,:,:,:)
 !     ----------------
 !     450 x 450 modes:
 !     ----------------
@@ -247,6 +250,22 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
       !     -------------------------------------------------
+
+      ! Temporary test TODO: delete this section, just for testing distribution read-in.
+
+      call netcdfr4d_single_gen(f4d_file1, R_rzvv, Z_rzvv,
+     &      vPer_rzvv, vPar_rzvv, f_rzvv)
+
+      print *, "Loaded f_rzvv with shape: ", 
+     &      size(f_rzvv,1), size(f_rzvv,2), 
+     &      size(f_rzvv,3), size(f_rzvv,4)
+
+            call blacs_barrier(icontxt, 'All')
+
+            open(unit=50, file='cql3d1.out', status='unknown',
+     &                                                 form='formatted')
+!     end read in test delete me 
+
       kspeci = 1 !reversed from normal order for reasons... 
       !JVDL: switched this ^ back to 1, looks like SF had order reversed in cql?
       CALL netcdfr3d_multigen(netCDF_file,kspeci)
