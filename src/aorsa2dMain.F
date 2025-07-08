@@ -919,6 +919,10 @@ c       complex, dimension(:,:), allocatable :: Btmp
       integer :: ierr
       external indxg2p,indxg2l,indxl2g
 
+      real(8), allocatable :: R_rzvv(:), Z_rzvv(:)   ! TODO delete this section 
+      real(8), allocatable :: vPer_rzvv(:), vPar_rzvv(:)
+      real(8), allocatable :: f_rzvv(:,:,:,:)
+
 *     ---------------
 *     allocate arrays
 *     ---------------
@@ -2682,11 +2686,20 @@ c      akprl_min = abs(nphi / rt)
      &                                xmi1, enorm_factor, vc1_mks_cql3d)
             vc1_cgs_cql3d = vc1_mks_cql3d * 100.
 
+      ! Temporary test TODO: delete this section, just for testing distribution read-in.
+
+      call netcdfr4d_single_gen(f4d_file1, R_rzvv, Z_rzvv,
+     &      vPer_rzvv, vPar_rzvv, f_rzvv)
+
+      print *, "Loaded f_rzvv with shape: ", 
+     &      size(f_rzvv,1), size(f_rzvv,2), 
+     &      size(f_rzvv,3), size(f_rzvv,4)
+
             call blacs_barrier(icontxt, 'All')
 
             open(unit=50, file='cql3d1.out', status='unknown',
      &                                                 form='formatted')
-
+!     end read in test delete me 
 !           ---------------------------------------------
 !           Read data from CQL3D in u_perp and u_parallel
 !           ---------------------------------------------

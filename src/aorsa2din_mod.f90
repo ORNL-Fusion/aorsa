@@ -14,6 +14,8 @@
       CHARACTER(128) :: eqtype = 'tokamak'                      ! eq type. tokamak, mirror
       CHARACTER(128) :: netCDF_file1 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 1
       CHARACTER(128) :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
+      CHARACTER(128) :: f4d_file1 = 'f4d_file.nc'               !4d f(x, y, vperp, vpar) netcdf file name 1
+      logical :: use_4df1 = .false. !-----if (use_4df .eq. .true.) turn on handling of 4d f for ion species 1. 
       
       CHARACTER(128) :: root = 'none' ! if (root = 'none') sum all modes
                                       ! if (root = 'fast') sum only modes within 20% of fast wave 
