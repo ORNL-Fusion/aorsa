@@ -253,18 +253,15 @@
 
       ! Temporary test TODO: delete this section, just for testing distribution read-in.
 
-      call netcdfr4d_single_gen(f4d_file1, R_rzvv, Z_rzvv,
-     &      vPer_rzvv, vPar_rzvv, f_rzvv)
 
-      print *, "Loaded f_rzvv with shape: ", 
-     &      size(f_rzvv,1), size(f_rzvv,2), 
-     &      size(f_rzvv,3), size(f_rzvv,4)
+      call netcdfr4d_single_gen(netcdf_file, R_rzvv, Z_rzvv, &
+           vPer_rzvv, vPar_rzvv, f_rzvv)
+
+      print *, "Loaded f_rzvv with shape: ", &
+           size(f_rzvv,1), size(f_rzvv,2), &
+           size(f_rzvv,3), size(f_rzvv,4)
 
 !     end read in test delete me 
-      call blacs_barrier(icontxt, 'All')
-
-      open(unit=50, file='cql3d1.out', status='unknown',
-     &                                                 form='formatted')
 
 
       kspeci = 1 !reversed from normal order for reasons... 
