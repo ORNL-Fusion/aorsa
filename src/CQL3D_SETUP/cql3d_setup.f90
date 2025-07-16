@@ -1300,20 +1300,18 @@
 !     Write some data
 !     ---------------
 
-        WRITE(6,*)
-        WRITE (6,*) "n_theta_max = ", n_theta_max
-        WRITE (6,*) "n_u = ", n_u
-        WRITE (6,*) "n_psi = ", n_psi
-        WRITE (6,*) "n_theta_(i) = ", n_theta_
-        WRITE (6,*) "vc_cql3d_cgs = ", vc, "cm/sec"
-        WRITE (6,*) "vc_cql3d_mks = ", vc_mks_cql3d, "m/sec"
-        WRITE (6,*) "n_t = ", n_t
-
-
+      WRITE(6,*)
+      WRITE(6,*) "n_theta_max = ", n_theta_max
+      WRITE(6,*) "n_u = ", n_u
+      WRITE(6,*) "n_psi = ", n_psi
+      WRITE(6,*) "n_theta_(i) = ", n_theta_
+      WRITE(6,*) "vc_cql3d_cgs = ", vc, "cm/sec"
+      WRITE(6,*) "vc_cql3d_mks = ", vc_mks_cql3d, "m/sec"
+      WRITE(6,*) "n_t = ", n_t
 
       WRITE(6,*)
+      WRITE(6,*)
 
-      write(6, *)
       write(6, *) "rho/a(i_psi)"
       write(6, 310) (rho_a(i_psi), i_psi = 1, n_psi)
       

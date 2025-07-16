@@ -11,7 +11,7 @@
 
        integer, allocatable :: n_theta_(:) ! number of pitch angles for flux surface
        real(kind=real_kind), allocatable :: u(:) ! normalized velocity
-       real(kind=real_kind), allocatable ::  theta(:,:) ! pitch angles theta(i_theta, i_psi)
+       real(kind=real_kind), allocatable :: theta(:,:) ! pitch angles theta(i_theta, i_psi)
        real(kind=real_kind), allocatable :: rho_a(:)    !normalized small radius
        real(kind=real_kind), allocatable :: f_CQL(:,:,:) ! f(i_theta, i_u, i_psi)
        real(kind=real_kind), allocatable :: f_cql_2d(:,:) ! f(i_u, i_theta)
@@ -121,7 +121,6 @@
 !.......................................................................
 
        write(*,*)'before ncopn netcdfnm=',netcdfnm
-       !       ncid = ncopn(TRIM(netcdfnm),NCNOWRIT,istatus)
        istatus=nf90_open(TRIM(netcdfnm),NF90_NOWRITE,ncid)
        write(*,*)'after ncopn ncid=',ncid,'istatus',istatus
        
@@ -138,7 +137,7 @@
 !       ydim = ncdid(ncid,'ydim',istatus)
        write(*,*)'after inq_dimid ydim=',ydim,'istatus',istatus
 
-       istatus = nf90_inq_dimid(ncid,'rdim',istatus)
+       istatus = nf90_inq_dimid(ncid,'rdim',rdim)
 !       rdim = ncdid(ncid,'rdim',istatus)
        write(*,*)'after inq_dimid rdim=',rdim,'istatus',istatus
 
@@ -160,116 +159,71 @@
 !c     which is the same as the maximum record number
 
        istatus = nf90_inquire_dimension(ncid, ydim, len = iy)
-!       call ncdinq(ncid,ydim,name,iy,istatus)
        istatus = nf90_inquire_dimension(ncid, xdim, len = jx)
-!       call ncdinq(ncid,xdim,name,jx,istatus)
        istatus = nf90_inquire_dimension(ncid, rdim, len = lrz)
-!       call ncdinq(ncid,rdim,name,lrz,istatus)
        istatus = nf90_inquire_dimension(ncid, kdim, len = ntotal)
-!       call ncdinq(ncid,kdim,name,ntotal,istatus)
-
-       write(*,*)'iy,jx,lrz,ntotal',iy,jx,lrz,ntotal
-!c      write(*,*)'netcdfr3d 2 iya,jxa,lrza',iya,jxa,lrza
-
-!c********** Skip dimension checking since are allocating arrays DBB 8/27/03
-!c-----check the dimensions
-
-!c      if (lrz.ne.lrza) then
-!c      if (lrz.gt.lrza) then
-!c         write(*,*)'netcdfrw2 lrz.ne.lrza'
-!c         write(*,*)'netcdfr3d lrz.gt.lrza'
-!c         write(*,*)'lrz from netcdfnm.nc file =',lrz
-!c         write(*,*)'lrza from param.i file =',lrza
-!c         write(*,*)'Attention!!! It should be lrz=lrza'
-!c         write(*,*)'Please change lrza in param.i and recomplile codes'
-!c         stop
-!c      endif
-
-!c      write(*,*)'netcdfr3d 3 iya,jxa,lrza',iya,jxa,lrza
-!c      write(*,*)'netcdfr3d 3 iy,jx,lrz',iy,jx,lrz
-
-!c      if (jx.ne.jxa) then
-!c       if (jx.gt.jxa) then
-!c         write(*,*)'netcdfr3d jx.ne.jxa'
-!c         write(*,*)'netcdfr3d jx.gt.jxa'
-!c         write(*,*)'jx from netcdfnm.nc file =',jx
-!c         write(*,*)'jxa from param.i file =',jxa
-!c         write(*,*)'Please change jxa in param.i'
-!c         stop
-!c      endif
-
-!c      if (iy.ne.iya) then
-!c      if (iy.gt.iya) then
-!c         write(*,*)'netcdfr3d iy.ne.iya'
-!c         write(*,*)'netcdfr3d iy.gt.iya'
-!c         write(*,*)'iy from netcdfnm.nc file =',iy
-!c         write(*,*)'iya from param.i file =',iya
-!c         write(*,*)'Please change iya in param.i'
-!c         stop
-!c      endif
-!c ***************end dimension checking ***************************
 
 !c ************* Allocate arrays
 
 !c ************* Allocate space for Harvey arrays.
 
-        ALLOCATE( iy_(lrz), stat=istat )
+       ALLOCATE( iy_(lrz), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for iy_")')
+          WRITE (*,'("read_CQL3D: allocate failed for iy_")')
        END IF
 
-        ALLOCATE( y(iy, lrz), stat=istat )
+       ALLOCATE( y(iy, lrz), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for y")')
+          WRITE (*,'("read_CQL3D: allocate failed for y")')
        END IF
 
-        ALLOCATE( x(jx), stat=istat )
+       ALLOCATE( x(jx), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for x")')
+          WRITE (*,'("read_CQL3D: allocate failed for x")')
        END IF
 
-        ALLOCATE( rya(lrz), stat=istat )
+       ALLOCATE( rya(lrz), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for rya")')
+          WRITE (*,'("read_CQL3D: allocate failed for rya")')
        END IF
 
-        ALLOCATE( f(iy, jx, lrz), stat=istat )
+       ALLOCATE( f(iy, jx, lrz), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for f")')
+          WRITE (*,'("read_CQL3D: allocate failed for f")')
        END IF
        
-        ALLOCATE( wperp(lrz, nt), stat=istat )
+       ALLOCATE( wperp(lrz, nt), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for wperp")')
+          WRITE (*,'("read_CQL3D: allocate failed for wperp")')
        END IF 
        
-        ALLOCATE( wpar(lrz, nt), stat=istat )
+       ALLOCATE( wpar(lrz, nt), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for wpar")')
+          WRITE (*,'("read_CQL3D: allocate failed for wpar")')
        END IF               
-       
        
 
        count(1)=iy
        count(2)=jx
        count(3)=lrz
-
+       
+  310  format(1p,6e12.4)
+  311  format(1p,6i6)       
 !c-----normalized momentum x (momentum/mass/vnorm) variables
 
 !c     vnorm - character velocity (momentum-per-mass)[cms/sec]
        !       vid = ncvid(ncid,'vnorm',istatus)
-       istatus = nf90_inq_varid(ncid,'vnorm', vid)
-       
        !       call ncvgt(ncid,vid,1,1,vnorm,istatus)
-      istatus = nf90_get_var(ncid, vid, vnorm)
+       istatus = nf90_inq_varid(ncid,'vnorm', vid)
+       istatus = nf90_get_var(ncid, vid, vnorm)
        write(*,*)'after ncvgp vnorm=',vnorm
 
        !       vid = ncvid(ncid,'x',istatus)
        ! call ncvgt(ncid,vid,1,jx,x,istatus)
        istatus = nf90_inq_varid(ncid, 'x', vid)
        istatus = nf90_get_var(ncid, vid, x) !, start=1, count=jx)
-       
-!c      write(*,*)'x',(x(j),j=1,jx)
+       write(*,*) 'x status',istatus
+       write(*,310)(x(j),j=1,jx)
 
 !c      vid = ncvid(ncid,'dx',istatus)
 !c      call ncvgt(ncid,vid,1,jx,dx,istatus)
@@ -279,21 +233,20 @@
 !c      call ncvgt(ncid,vid,1,jx,cint2,istatus)
 !c      write(*,*)'cint2',(cint2(j),j=1,jx)
 
-!c-----pitch angle variavles y
-
+!c-----pitch angle variables y
 !       vid = ncvid(ncid,'iy_',istatus)
 !       call ncvgt(ncid,vid,1,lrz,iy_,istatus)
        istatus = nf90_inq_varid(ncid, 'iy_', vid)
        istatus = nf90_get_var(ncid, vid, iy_)!, 1, lrz)
-       
-!c      write(*,*)'iy_',(iy_(ll),ll=1,lrz)
+       write(*,*)'iy_',istatus
+       write(*,311)(iy_(ll),ll=1,lrz)
 
        count_y(1)=iy
        count_y(2)=lrz
 !       vid = ncvid(ncid,'y',istatus)
 !       call ncvgt(ncid,vid,start,count_y,y,istatus)
        istatus = nf90_inq_varid(ncid, 'y', vid)
-       istatus = nf90_get_var(ncid, vid, y)!, start, count_y)
+       istatus = nf90_get_var(ncid, vid, y)
        
 !c      do ll=1,lrza
 !c         write(*,*)'ll=',ll,'iy_(ll)=',iy_(ll)
@@ -318,9 +271,9 @@
 !       vid = ncvid(ncid,'rya',istatus)
 !       call ncvgt(ncid,vid,1,lrz,rya,istatus)
        istatus = nf90_inq_varid(ncid, 'rya', vid)
-       istatus = nf90_get_var(ncid, vid, rya)!, 1,lrz)
-       
-!c      write(*,*)'rya',(rya(ll),ll=1,lrz)
+       istatus = nf90_get_var(ncid, vid, rya)
+       write(*,*)'rya',istatus, shape(rya)
+       write(*,310) (rya(ll),ll=1,lrz)
 
 
 !c-----distribution function f(i,j,ll) [vnorm**3/(cm**3*(cm/sec)**3)]
@@ -366,50 +319,51 @@
 !c ************* Allocate space for module arrays.
 !c **************If previously allocated, release space first.
 
-        n_theta_max = iy
-        n_u = jx
-        n_psi = lrz
-        n_t = nt
+       n_theta_max = iy
+       n_u = jx
+       n_psi = lrz
+       n_t = nt
 
-        IF ( ALLOCATED(n_theta_) ) DEALLOCATE (n_theta_, u, theta, rho_a, f_CQL, f_cql_2d, wperp_cql, wpar_cql)
-
-
-        ALLOCATE( n_theta_(n_psi), stat=istat )
-       IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for n_theta_")')
+       IF ( ALLOCATED(n_theta_) ) THEN
+          DEALLOCATE (n_theta_, u, theta, rho_a, f_CQL, f_cql_2d, &
+       &  wperp_cql, wpar_cql)
        END IF
 
-        ALLOCATE( theta(n_theta_max, n_psi), stat=istat )
+       ALLOCATE( n_theta_(n_psi), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for theta")')
+          WRITE (*,'("read_CQL3D: allocate failed for n_theta_")')
        END IF
 
-        ALLOCATE( u(n_u), stat=istat )
+       ALLOCATE( theta(n_theta_max, n_psi), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for u")')
+          WRITE (*,'("read_CQL3D: allocate failed for theta")')
        END IF
 
-        ALLOCATE( rho_a(n_psi), stat=istat )
+       ALLOCATE( u(n_u), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for rho_a")')
+          WRITE (*,'("read_CQL3D: allocate failed for u")')
        END IF
 
-        ALLOCATE( f_CQL(n_theta_max, n_u, n_psi), stat=istat )
-      ALLOCATE( f_cql_2d(n_u, n_theta_max),     stat=istat )
+       ALLOCATE( rho_a(n_psi), stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for f_CQL")')
+          WRITE (*,'("read_CQL3D: allocate failed for rho_a")')
        END IF
-       
+
+       ALLOCATE( f_CQL(n_theta_max, n_u, n_psi), stat=istat )
+       ALLOCATE( f_cql_2d(n_u, n_theta_max),     stat=istat )
+       IF (istat /= 0 ) THEN
+          WRITE (*,'("read_CQL3D: allocate failed for f_CQL")')
+       END IF
        
 
        ALLOCATE( wperp_cql(n_psi, n_t),    stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for wperp_CQL")')
+          WRITE (*,'("read_CQL3D: allocate failed for wperp_CQL")')
        END IF  
        
        ALLOCATE( wpar_cql(n_psi, n_t),    stat=istat )
        IF (istat /= 0 ) THEN
-       WRITE (*,'("read_CQL3D: allocate failed for wpar_CQL")')
+          WRITE (*,'("read_CQL3D: allocate failed for wpar_CQL")')
        END IF              
        
 
