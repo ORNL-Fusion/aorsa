@@ -159,10 +159,15 @@
 !c     Note: for unlimited dimension, returned_dim_size=current maximum
 !c     which is the same as the maximum record number
 
-       call ncdinq(ncid,ydim,name,iy,istatus)
-       call ncdinq(ncid,xdim,name,jx,istatus)
-       call ncdinq(ncid,rdim,name,lrz,istatus)
-       call ncdinq(ncid,kdim,name,ntotal,istatus)
+       istatus = nf90_inquire_dimension(ncid, ydim, len = iy)
+!       call ncdinq(ncid,ydim,name,iy,istatus)
+       istatus = nf90_inquire_dimension(ncid, xdim, len = jx)
+!       call ncdinq(ncid,xdim,name,jx,istatus)
+       istatus = nf90_inquire_dimension(ncid, rdim, len = lrz)
+!       call ncdinq(ncid,rdim,name,lrz,istatus)
+       istatus = nf90_inquire_dimension(ncid, kdim, len = ntotal)
+!       call ncdinq(ncid,kdim,name,ntotal,istatus)
+
        write(*,*)'iy,jx,lrz,ntotal',iy,jx,lrz,ntotal
 !c      write(*,*)'netcdfr3d 2 iya,jxa,lrza',iya,jxa,lrza
 

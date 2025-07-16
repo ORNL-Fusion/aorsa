@@ -1,6 +1,6 @@
 #load these for gcc build and execution
 module use /nfs/psfclab001/software/modulefiles/
-module load gcc
+module load gcc/6.2.0
 module load openmpi/4.0.4 #used by scalapack
 #module load psfc/pgplot/gcc6.2.0/5.2.2 
 module load netcdf/4.6.3
