@@ -313,7 +313,7 @@
                                         !-----           if (iprofile .eq. 3) fits of form (1 - rho**beta)**alpha (default)
                                         !-----           if (iprofile .eq. 5) numerical profiles from namelist
                                         !-----               iprofile = 6: numerical profiles for both core and SOL
-      integer :: nboundary = 1          !-----nboundary: if(nboundary .eq. 1)flux surface boundary (default)
+      integer :: nboundary = 1          !-----nboundary: if(nboundary .eq. 1)flux surface boundary (default) but sq boundary still sets how domain
                                         !-----           if(nboundary .eq. 0)square boundary
       integer :: nprow = 8
       integer :: npcol = 8

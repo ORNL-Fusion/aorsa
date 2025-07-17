@@ -195,7 +195,7 @@ c
 !dir$ vector
         
       else
-
+!seems more like an area average
       do i = 1, nnodex
          do j = 1, nnodey
             n = int(rho(i,j) / drho) + 1

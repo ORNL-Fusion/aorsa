@@ -3774,7 +3774,7 @@ c         write(6, 1312)n, rhon(n)
      
 
 
-      n_theta_check = 75
+      n_theta_check = 2
       
 
 c      do i = 2, nnodex - 1

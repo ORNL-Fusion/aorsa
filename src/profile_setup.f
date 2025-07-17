@@ -2,16 +2,20 @@ C subroutine added by LAB to convert from flux to rz for numerical profiles.
 c
 c***************************************************************************
 c
-      subroutine flux_to_rz(nnodex, nnodey, profile_in, 
-     &   profile_out, rho, nrho, rho_ij)
+      subroutine flux_to_rz(profile_in, profile_out, rho, rho_ij)
      
       implicit none
 
-      integer,intent(in) :: nnodex, nnodey, nrho
-      real,intent(in) :: profile_in(nrho)
-      real,intent(out) :: profile_out(nnodex,nnodey)      
-      real,intent(in) :: rho(nrho), rho_ij(nnodex,nnodey)
+      integer :: nnodex, nnodey, nrho
+      real,dimension(:),   intent(in)  :: profile_in
+      real,dimension(:),   intent(in)  :: rho
+      real,dimension(:,:), intent(in)  :: rho_ij
+      real,dimension(:,:), intent(out) :: profile_out
       integer :: i, j, k
+
+      nnodex = SIZE(rho_ij, 1)
+      nnodey = SIZE(rho_ij, 2)
+      nrho   = SIZE(rho, 1)      
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -75,8 +79,8 @@ c
          do j = 1, nnodey
             n = int(rho(i,j) / drho) + 1
             if(n .le. nnoderho)then
-               fvol(n) = fvol(n) + dx * dy * capr(i) / r0 * f(i,j)
-               vol(n) =  vol(n) + dx * dy * capr(i) / r0
+               fvol(n) = fvol(n) + dx * dy * capr(i)  * f(i,j)
+               vol(n) =  vol(n) + dx * dy * capr(i) 
             end if
          end do
       end do

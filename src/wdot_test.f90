@@ -101,16 +101,9 @@
 
       
       real wdot_inout(nxdim, nydim)
-
-      
       real wdot(nnodex, nnodey)
 
-      
-!      real count(0 : 10000, 1), sum_count
-
       real vol(nrhodim), dldbavg(nrhodim)
-        
-
 
       complex sigxx, sigxy, sigxz,    &
      &        sigyx, sigyy, sigyz,    &

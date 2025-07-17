@@ -270,7 +270,7 @@ c
 
       nwork = 0
       do j=1,nnodey
-         do i=1,nnodex
+         do i=1,nnodex !JCW place where boundary needs to be consistent, eg psifcf
            has_work = (psi(i,j) .le. psilim .and. nboundary .eq. 1
      &                                      .or. nboundary .eq. 0)
            if (has_work) then
@@ -283,7 +283,7 @@ c
       
 
 *     -----------------------
-*     Loop over spatial mesh:
+*     Loop over spatial mesh with parallel partition:
 *     -----------------------
 
       nloops = nwork
@@ -346,9 +346,9 @@ c
      &              UPERP, UPARA, DFDUPER, DFDUPAR, FPERP)
 
             else   !--non-Maxwellian--!
-        
+               !JCW doesnt this get called again for each i,j on same rho
                call cql3d_dist(nupar, nuper, n_psi,
-     &              n_psi_dim, rho_a, rho(i,j),
+     &              n_psi_dim, rho_a, rho(i,j),      !F(u) on fluxsurface rho(i,j)
      &              UminPara,UmaxPara,
      &              df_cql_uprp, df_cql_uprl,
      &              UPERP, UPARA, DFDUPER0, DFDUPAR0)
@@ -431,7 +431,7 @@ c     &                             - uperp(ni) * dfdupar(ni, mi)
                         
                         go to 5000                      
 !                       ----------------------------
-!                       optional analytic Maxwellian
+!                       optional analytic Maxwellian not used
 !                       ----------------------------
                                         
                         alpha = sqrt(2.0 * xkt(i, j) / xm)
@@ -495,19 +495,19 @@ c     &                             - uperp(ni) * dfdupar(ni, mi)
 !              Loop over parallel velocities
 !              -----------------------------
 
-               upara_test = sqrt(1.0 - (UPERP(ni))**2)
-               mi_max = ceiling(upara_test*(nupar-1)/2 + (nupar+1)/2)
-               mi_min = floor(-1.0*upara_test*(nupar-1)/2
-     &                        + (nupar+1)/2)
+            upara_test = sqrt(1.0 - (UPERP(ni))**2)
+            mi_max = ceiling(upara_test*(nupar-1)/2 + (nupar+1)/2)
+            mi_min = floor(-1.0*upara_test*(nupar-1)/2
+     &           + (nupar+1)/2)
 
-               do mi = 1, nupar
+            do mi = 1, nupar
                
-                  bql = 0.0 
-                  cql = 0.0
-                  eql = 0.0
-                  fql = 0.0
+               bql = 0.0 
+               cql = 0.0
+               eql = 0.0
+               fql = 0.0
 
-                  if(mi.ge.mi_min .and. mi.le.mi_max)then
+               if(mi.ge.mi_min .and. mi.le.mi_max)then
 
                   bql = 1.0 / (8. * emax * dupara)
      &                  * eps0 * omgp2(i,j) / omgrf * real(b_sum(mi))
@@ -569,28 +569,26 @@ c                        factor = abs(sqrt(psic))
  
                         
                         bqlvol(ni0, mi0, n) = bqlvol(ni0, mi0, n)
-     &                      + dx * dy * bql * factor !capr(i)/r0 !jcw is this darea or dvol?
+     &                      + dx * dy * bql * factor *capr(i)  !/r0 !jcw is this darea or dvol? check derivation
 
                         cqlvol(ni0, mi0, n) = cqlvol(ni0, mi0, n)
-     &                      + dx * dy * cql * factor !capr(i)/r0
+     &                      + dx * dy * cql * factor *capr(i) !/r0
      &                      * costh / costh0 / sqrt(psic)  
 
                         eqlvol(ni0, mi0, n) = eqlvol(ni0, mi0, n)
-     &                      + dx * dy * eql * factor !/capr(i)r0
+     &                      + dx * dy * eql * factor *capr(i) !/r0
      &                      * costh / costh0 / psic
 
                         fqlvol(ni0, mi0, n) = fqlvol(ni0, mi0, n)
-     &                      + dx * dy * fql * factor !capr(i)/r0
+     &                      + dx * dy * fql * factor *capr(i) !/r0
      &                      * (costh / costh0)**2 / psic**1.5
 
                      end if
                         
+                  end if !n < nnoderho
 
-
-                  end if
-
-                  else
-                  endif
+               else
+               end if           !mi<mi_max
 
 c                  if(ndist.eq.1)then
                   
@@ -601,9 +599,9 @@ c                   fql_store(ip,ni,mi) = fql
 c                 endif
 
    
-               end do
+            end do  !upar
 
-            end do
+            end do  !uperp
 
                
             wdoti = 0.0
@@ -778,7 +776,8 @@ c              factvol(ni, mi, n) = factvol2d(ni, mi)
 *           bounce average
 *           --------------
             if (vol(n) .ne. 0.0) then !jcw check this, esp for mirror
-                  !check dx*dx*capr(n)/r0 / vol(n), but vol(n)=\int_psi dx dy 2pi capr(i)
+!check dx*dx*capr(n)/r0 / vol(n), but vol(n)=\int_psi dx dy 2pi capr(n)
+!check value of dldbavg/vol
             bqlavg(ni, mi, n) = bqlvol(ni, mi, n) / vol(n) * dldbavg(n)
             cqlavg(ni, mi, n) = cqlvol(ni, mi, n) / vol(n) * dldbavg(n)
             eqlavg(ni, mi, n) = eqlvol(ni, mi, n) / vol(n) * dldbavg(n)

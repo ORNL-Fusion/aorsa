@@ -2880,7 +2880,7 @@ c--   Note: the code gives slightly smoother results with dx/2.0 added
          akprl_min = 0.25 * abs(nphi / rt)
       else
 #ifdef DEBUG         
-         write(*,*) "rt small :", rt(1:nxmx),capr(a1:nxmx) !capr seems to be zero as well? capr defined later
+         write(*,*) "rt small :", rt,capr(1:nxmx) !capr seems to be zero as well? capr defined later
 #endif         
          akprl_min = 0.25 / capr(nnodex-1)
 c      akprl_min = abs(nphi / rt)
@@ -4329,7 +4329,7 @@ c     write (6, *) "xmi1 = ", xmi1
             n = int(rho(i,j) / drho) + 1
             if(n .le. nnoderho)then
                dvol(n)  =  dvol(n) + dx * dy * twopi * capr(i)
-               darea(n) = darea(n) + dx * dy  !JCW wrong  * capr(i) / rt
+               darea(n) = darea(n) + dx * dy  !JCW wrong  * capr(i) / rt !also called 'vol' in ql_myra_write
             end if
          end do
       end do

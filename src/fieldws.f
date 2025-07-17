@@ -1398,10 +1398,10 @@ c      end do
      &   wdoti1avg, wdoti2avg, wdoti3avg, wdoti4avg, wdoti5avg,
      &   wdoti6avg, wdoteavg, nnoderho_half, nrhomax)
 
-      title= 'Flux surface average wdote'
-      titll= 'wdote (W/cm3/MW)'
-      titlr= '       '
-      titlb= 'rho'
+!      title= 'Flux surface average wdote'
+!      titll= 'wdote (W/cm3/MW)'
+!      titlr= '       '
+!      titlb= 'rho'
 
 !      wdoteavg = 0.0  !JCW why?
 
@@ -1411,10 +1411,10 @@ c      end do
 !      call ezplot1_red(title, titll, titlr, rhon_half, wdoteavg,
 !     &    nnoderho_half, nrhomax)
 
-!      title= 'Integrated wdot'
-!      titll= 'P (Watts)'
-!      titlr= '       '
-!      titlb= 'rho'
+      title= 'Integrated wdot'
+      titll= 'P (Watts)'
+      titlr= '       '
+      titlb= 'rho'
 
       call ezplot7(title, titll, titlr, titlb, rhon,
      &   wdoti1avg_int, wdoti2avg_int, wdoti3avg_int, wdoti4avg_int,
