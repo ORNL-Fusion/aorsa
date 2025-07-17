@@ -163,11 +163,6 @@
          istatus = nf90_inquire_dimension(ncid, rdim, len = lrz)
          istatus = nf90_inquire_dimension(ncid, kdim, len = ntotal)
 
-         write(*,*)'iy,jx,lrz,ntotal',iy,jx,lrz,ntotal
-
-
-!c ************* Allocate arrays
-
 !c ************* Allocate space for Harvey arrays.
 
          ALLOCATE( iy_(lrz), stat=istat )

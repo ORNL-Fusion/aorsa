@@ -996,7 +996,7 @@ c
                
                wdot_int(ni0, mi0) = (bqlavg(ni0, mi0, n) * dfdu0
      &                             + cqlavg(ni0, mi0, n) * dfdth0) / u_0 
-               if(n==2) write(*,*) 'ql',ni0,mi0,bqlavg(ni0, mi0, n) 
+!               if(n==2) write(*,*) 'ql',ni0,mi0,bqlavg(ni0, mi0, n) 
             end do
 
          end do
