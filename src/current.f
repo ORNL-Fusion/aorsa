@@ -44,6 +44,7 @@ c
 *     This subroutine calculates the plasma current for a single species
 *-----------------------------------------------------------------------
 
+      use aorsa2din_mod, only:eqtype
       implicit none
 
       logical:: ismine
@@ -379,7 +380,9 @@ c     &                    + uzz(i, j) * xkphi(i)
                         wphase = vphase / vth
 
                         if (wphase .lt. 10.0 .and. wphase .gt. 0.1)then
-
+                           if (eqtype == 'mirror') then
+                              c_ehst = 0.0
+                           else
 *                          -----------------------------
 *                          Assume circular flux surfaces
 *                          -----------------------------
@@ -421,7 +424,7 @@ c     &                    + uzz(i, j) * xkphi(i)
      &                        / abs(q))/ xn(i, j) *
      &                        xjtild * signkz
 c                          c_ehst = 1.0
-
+                          end if 
                         end if   !  end if wphase .lt. 10.0  
                      end if    ! end if xkt(i,j) .ne. 0.0 
 
@@ -1442,7 +1445,6 @@ c
 *-----------------------------------------------------------------------
 *     This subroutine calculates the plasma current for a single species
 *-----------------------------------------------------------------------
-
       implicit none
 
       logical:: ismine

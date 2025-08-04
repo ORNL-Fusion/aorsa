@@ -1,134 +1,3 @@
-      subroutine plotws()
-      !> Not called
-      use size_mod
-
-      implicit none
-
-      character(32):: title
-      character(32):: titll
-      character(32):: titlr
-      character(32):: titlb
-      character(32):: titx
-      character(32):: tity
-      character(32):: titz
-
-      integer:: ncolln10, ncolln9, nwheat, ngrey, naqua,
-     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     &   ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     &   ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion,
-     &   ncolelec, norange
-
-      integer:: nlmx, n, ibackground
-
-      parameter (nlmx = 256)
-
-      integer:: npoints, nnodelb, lnwidth
-      integer:: pgopen, pgbeg, ier, np, nl
-      real:: xklsavp(nlmx), Elnp(nlmx)
-      real:: lb(nlmx), lbprime(nlmx)
-      complex El(nlmx)
-
-
-      open(unit=938,file='out938',status='old',form='formatted')
-
-      read(938, 309) nnodelb
-      read(938, 310) (lb(nl), nl = 1, nnodelb)
-      read(938, 310) (lbprime(nl), nl = 1, nnodelb)
-      read(938, 310) (El(nl), nl = 1, nnodelb)
-
-      read(938, 309) npoints
-      read(938, 310) (xklsavp(np), np = 1, npoints)
-      read(938, 310) (Elnp(np), np = 1, npoints)
-
-      lnwidth = 2
-
-
-      nwhite = 0
-      nblack = 1
-      nred = 2
-      ngreen = 3
-      nblue = 4
-      ncyan = 5
-      nmagenta = 6
-      nyellow = 7
-      norange = 8
-
-
-      ncollin=ncyan
-      ncolln2=nblueviolet
-      ncolln3=ngreen
-      ncolln4=naqua
-      ncolln5=nyellow
-      ncolbrd=nwheat
-      ncollab=ncyan
-
-      ncolbox=nred
-      ncolbrd=nwheat
-      ncolion=naqua
-      ncolelec=nyellow
-
-      if (ibackground.eq.1)then
-         ncolbox=nred
-         ncolbrd=nwheat
-      end if
-
-      if (ibackground.eq.0)then
-         ncolbox=nblack
-         ncolbrd=nblack
-      end if
-
-c Open graphics device
-
-
-#ifdef GIZA      
-      IER = PGBEG(0, 'scale.pdf', 1, 1)
-#else
-      IER = PGBEG(0, 'scale.ps/vcps', 1, 1)
-#endif
-
-      IF (IER.NE.1) STOP
-
-      call PGSCH (1.5)
-      CALL PGSCI(1)
-      CALL PGSLW(lnwidth)
-
-c
-c--plot El along field line
-c
-      title= 'E(l) along B'
-      titll= 'Mod El (V/m)'
-      titlr='       '
-      titlb='l(m)'
-
-      call ezplot1q(title, titll, titlr, titlb, lb, real(El),
-     &    nnodelb, nlmx)
-
-c
-c--plot El spectrum
-c
-      title= 'Spectrum of E(k) along B'
-      titll= 'Mod E(k) (V/m)'
-      titlr='       '
-      titlb='kl (m-1)'
-
-      call ezplot1q(title, titll, titlr, titlb, xklsavp, Elnp,
-     &    npoints, nlmx)
-
-      call pgclos
-
-
-  310 format(1p,6e12.4)
-  309 format(10i10)
-
-      close (938)
-
-      return
-      end
-c
-c********************************************************************
-c
-
       subroutine fieldws(dfquotient, rmin_zoom, rmax_zoom)
 
       use size_mod
@@ -143,6 +12,7 @@ c
       character(32):: titx
       character(32):: tity
       character(32):: titz
+      character(32):: errio
 
       real:: dfquotient
 
@@ -150,7 +20,7 @@ c
      &   vpara_mks, vperp_cgs, uperp_1kev, duperp, dz, dx
       real:: exkmin, exkmax, prfin, rmin_zoom, rmax_zoom
 
-      integer:: pgopen, pgbeg, ier, nmid, mmid, it, mmax, nmax
+      integer:: pgopen, ier, nmid, mmid, it, mmax, nmax
       integer:: n_theta_max, n_u_max, n_psi_max, idiag, jdiag
 
       integer:: ndisti1, ndisti2, ndisti3, number_points, k, nnodez
@@ -960,7 +830,11 @@ c      jmid = 135
          xktemid(i) = xkte(i, jmid) / q
          xktimid(i) = xkti(i, jmid) / q
          qmid(i) = qsafety(i, jmid)
-         xiotamid(i) = 1.0 / qmid(i)
+         if (qmid(i) > epsilon(1.0) ) then
+            xiotamid(i) = 1.0 / qmid(i)
+         else
+            xiotamid(i) = 1.0 
+         end if
          bpmid(i) = btau(i, jmid)
          xjxmid(i) = xjx(i, jmid)
          xjymid(i) = xjy(i, jmid)
@@ -1013,12 +887,17 @@ c     ncolelec=nred
 c Open graphics device
 
 #ifdef GIZA
-      IER = PGBEG(0, 'aorsa2d.pdf', 1, 1)
+      ier = pgopen('aorsa2d.pdf/pdf')
 #else
-      IER = PGBEG(0, 'aorsa2d.ps/vcps', 1, 1)
+      ier = pgopen('aorsa2d.ps/vcps')
 #endif
 
-      IF (IER.NE.1) STOP
+      if (ier<1) then
+         print*,ier,'PGOPEN failed to open aorsa2d.pdf'
+         stop
+      else
+         print*,'pgopen aorsa2d.pdf dev #: ',ierr
+      end if
 
 
 c
@@ -1241,7 +1120,7 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       call ezplot1(title, titll, titlr, rhon_half, xkteavg,
      &    nnoderho_half, nrhomax)
 
-      title= 'Flux average ion temperature'
+      title= '<ion temperature>'
       titll= 'kTi (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xktiavg,
@@ -1274,7 +1153,7 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       call ezplot1(title, titll, titlr, rhon_half, xn1avg,
      &   nnoderho_half, nrhomax)
 
-      title= 'Flux average minority temperature'
+      title= '<minority temperature>'
       titll= 'kT2 (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xkti2avg,
@@ -2334,7 +2213,7 @@ c
          do j = 1, nnodey
             eplus(i,j)  = isq2 * (ealpha(i,j) + zi * ebeta(i,j))
 
-            fmod(i,j)   = conjg(eplus(i,j)) * eplus(i,j)
+            fmod(i,j)   = real(conjg(eplus(i,j)) * eplus(i,j))
             mod_Eplus(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -2364,7 +2243,7 @@ c
          do j = 1, nnodey
             eminus(i,j) = isq2 * (ealpha(i,j) - zi * ebeta(i,j))
 
-            fmod(i,j)   = conjg(eminus(i,j)) * eminus(i,j)
+            fmod(i,j)   = real(conjg(eminus(i,j)) * eminus(i,j))
             mod_Eminus(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -2390,7 +2269,7 @@ c
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j)   = conjg(eb(i,j)) * eb(i,j)
+            fmod(i,j)   = real(conjg(eb(i,j)) * eb(i,j))
             mod_Eb(i,j) = sqrt(fmod(i,j))
 c            if(i .eq. 70 .and. j .eq. 64)then
 c               write(6, *) 'R(70) = ', capr(i)
@@ -2998,7 +2877,7 @@ c--   plot log of Eb
       tity = 'Z (m)'
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j) = conjg(ealpha(i,j)) * ealpha(i,j)
+            fmod(i,j) = real(conjg(ealpha(i,j)) * ealpha(i,j))
             mod_Ealpha(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -3018,7 +2897,7 @@ c--   plot log of Eb
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j) = conjg(ebeta(i,j)) * ebeta(i,j)
+            fmod(i,j) = real(conjg(ebeta(i,j)) * ebeta(i,j))
             mod_Ebeta(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -3042,7 +2921,7 @@ c--   plot log of Eb
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j)   = conjg(eb(i,j)) * eb(i,j)
+            fmod(i,j)   = real(conjg(eb(i,j)) * eb(i,j))
             mod_Eb(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -3091,13 +2970,8 @@ c--   plot log of Eb
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j)   = conjg(eplus(i,j)) * eplus(i,j)
+            fmod(i,j)   = real(conjg(eplus(i,j)) * eplus(i,j))
             mod_Eplus(i,j) = sqrt(fmod(i,j))
-c            if(i .eq. 70 .and. j .eq. 64)then
-c               write(6, *) 'R(70) = ', capr(i)
-c               write(6, *) 'Z(64) = ', y(j)
-c               write(6, *) 'mod_Eplus(70, 64) = ', mod_Eplus(i,j)
-c            end if
          end do
       end do
 
@@ -3126,7 +3000,7 @@ c            end if
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j)   = conjg(eminus(i,j)) * eminus(i,j)
+            fmod(i,j)   = real(conjg(eminus(i,j)) * eminus(i,j))
             mod_Eminus(i,j) = sqrt(fmod(i,j))
 c            if(i .eq. 70 .and. j .eq. 64)then
 c               write(6, *) 'R(70) = ', capr(i)
@@ -3454,6 +3328,20 @@ c      read(38, 310) (gradprlb2_avg(n), n = 1, nnoderho2)
 
 
 
+      call pgclos()
+
+#ifdef GIZA
+      ier = pgopen('aorsa_wdot.pdf/pdf')
+#else
+      ier = pgopen('aorsa_wdot.ps/vcps')
+#endif
+      
+      if (ier<1) then
+         print*,ier,'PGOPEN failed to open aorsa_wdot.pdf'
+         stop
+      else
+         print*,'pgopen aorsa_wdot.pdf dev #: ',ierr
+      end if
 
       title= 'Integral dl/B'
       titll= 'Integral dl/B (m)'
@@ -3751,27 +3639,29 @@ c      end do
          read (42, 309) nuper
          read (42, 309) nupar
          read (42, 309) nnoderho
-
          allocate( UPERP(nuper) )
          allocate( UPARA(nupar) )
-         allocate( f_cql_cart(nuper, nupar, nnoderho) )
 
          allocate( wperp1_cql(nnoderho) )
          allocate( wpar1_cql(nnoderho) )
+         wperp1_cql = 0.; wpar1_cql = 0.;
 
-         allocate( wperp2_cql(nnoderho) )
-         allocate( wpar2_cql(nnoderho) )
+         if (ndisti2==1) then
+            allocate( wperp2_cql(nnoderho) )
+            allocate( wpar2_cql(nnoderho) )
+         wperp2_cql = 0.; wpar2_cql = 0.;
+         end if
 
          allocate( bqlavg_i1(nuper, nupar, nnoderho) )
          allocate( cqlavg_i1(nuper, nupar, nnoderho) )
          allocate( eqlavg_i1(nuper, nupar, nnoderho) )
          allocate( fqlavg_i1(nuper, nupar, nnoderho) )
+         bqlavg_i1 = 0. ;cqlavg_i1 = 0. ;eqlavg_i1 = 0. ;fqlavg_i1 = 0.
 
          allocate( bqlavg_i1_2d(nupar, nuper) )
          allocate( cqlavg_i1_2d(nupar, nuper) )
 
          allocate( E_kick_2d (nupar, nnoderho) )
-         allocate( f_cql_cart_2d (nupar, nuper) )
 
 
          read (42, 3310) vc_cgs
@@ -3781,9 +3671,13 @@ c      end do
          read (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
 
-         read (42, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
-     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
-
+         read (42, 3310,iostat=ierr,iomsg=errio) bqlavg_i1
+!     &     (((
+!     &     bqlavg_i1(i_uperp, i_upara, n),
+!     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+         if (ierr/=0) then
+            print *, ierr," end-of-file encountered during read: ",errio
+         end if 
          read (42, 3310) (((cqlavg_i1(i_uperp, i_upara, n),
      &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
@@ -3802,7 +3696,11 @@ c      end do
 !        --------------------------------------------
 
          if (ndisti1 .eq. 1) then
-         open(unit=237,file='out237',status='old',form='formatted')
+         open(unit=237,file='out237',iostat=ierr,iomsg=errio,
+     &       status='old',form='formatted')
+         if (ierr/=0) then
+            print *, ierr," out237 open error: ",errio
+         end if 
 
          read  (237, 309) n_u
          read  (237, 309) n_psi
@@ -3821,6 +3719,8 @@ c      end do
          read (237, 309) nuper
          read (237, 309) nupar
          read (237, 309) nnoderho
+         allocate( f_cql_cart_2d (nupar, nuper) )
+         allocate( f_cql_cart(nuper, nupar, nnoderho) )
 
          read (237, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (237, 310)  (upara(i_upara), i_upara = 1, nupar)
@@ -3832,9 +3732,11 @@ c      end do
          read (237, 310) (wperp1_cql(i_psi), i_psi = 1, nnoderho)
          read (237, 310) (wpar1_cql(i_psi),  i_psi = 1, nnoderho)
 
-         close (237)
+         close(unit=237,iostat=ierr,iomsg=errio)
+         if (ierr/=0) then
+            print *, ierr," out237 close error: ",errio
          end if
-
+         end if
 
 
          if (ndisti2 .eq. 1) then
@@ -3858,6 +3760,9 @@ c      end do
          read (238, 309) nupar
          read (238, 309) nnoderho
 
+         allocate( f_cql_cart_2d (nupar, nuper) )
+         allocate( f_cql_cart(nuper, nupar, nnoderho) )
+
          read (238, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (238, 310)  (upara(i_upara), i_upara = 1, nupar)
 
@@ -3873,15 +3778,21 @@ c      end do
 
  4319    format(i10, 1p,1e16.8)
 
+         if (ndisti1 == -1) then
          title= 'Wperp1 and Wpar1 (keV)'
          titll= 'W (keV)'
          titlr='       '
          titlb = 'rho'
-
-         call ezplot2q(title, titll, titlr, titlb, rhon_half,
+         write(*,*) 'Wperp',
+     &      rhon_half(1:nnoderho_half),
+     &      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax
+         call ezplot2q(title, titll, titlr, titlb, 
+     &      rhon_half(1:nnoderho_half),
      &      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax)
+         end if
 
 
+         if (ndisti2 == 1) then
          title= 'Wperp2 and Wpar2 (keV)'
          titll= 'W (keV)'
          titlr='       '
@@ -3889,8 +3800,16 @@ c      end do
 
          call ezplot2q(title, titll, titlr, titlb, rhon_half,
      &      wperp2_cql, wpar2_cql, nnoderho_half, nrhomax)
+         end if
 
 
+        i_psi_array = (/ (i, i=2,n_psi,nint(n_psi/6.)) /)
+        i_psi1 = i_psi_array(1)
+        i_psi2 = i_psi_array(2)
+        i_psi3 = i_psi_array(3)
+        i_psi4 = i_psi_array(4)
+        i_psi5 = i_psi_array(5)
+        i_psi6 = i_psi_array(6)
 !       ---------------------------------
 !       2D plots of f(u, theta = const)
 !       ---------------------------------
@@ -3910,11 +3829,11 @@ c      end do
            i_psi = i_psi_array(i_psi_index)
 
            i_theta1 = 1
-           i_theta2 = int(1./6. * n_theta_(i_psi))
-           i_theta3 = int(2./6. * n_theta_(i_psi))
-           i_theta4 = int(3./6. * n_theta_(i_psi))
-           i_theta5 = int(4./6. * n_theta_(i_psi))
-           i_theta6 = int(5./6. * n_theta_(i_psi))
+           i_theta2 = nint(1./6. * n_theta_(i_psi))
+           i_theta3 = nint(2./6. * n_theta_(i_psi))
+           i_theta4 = nint(3./6. * n_theta_(i_psi))
+           i_theta5 = nint(4./6. * n_theta_(i_psi))
+           i_theta6 = nint(5./6. * n_theta_(i_psi))
            i_theta7 = n_theta_(i_psi)
 
            do i_u = 1, n_u
@@ -3927,7 +3846,7 @@ c      end do
               f_cql_1d_7(i_u) = -40.0
 
               if (f_cql(i_theta1, i_u, i_psi) .gt. 0.0)
-     &        f_cql_1d_1(i_u) = alog10(f_cql(i_theta1, i_u, i_psi))
+     &         f_cql_1d_1(i_u) = alog10(f_cql(i_theta1, i_u, i_psi))
               if (f_cql(i_theta2, i_u, i_psi) .gt. 0.0)
      &         f_cql_1d_2(i_u) = alog10(f_cql(i_theta2, i_u, i_psi))
               if (f_cql(i_theta3, i_u, i_psi) .gt. 0.0)
@@ -4205,28 +4124,6 @@ c      end do
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 !        --------------------------------------
 !        2D plots of cqlavg(u_perp, u_parallel)
 !        --------------------------------------
@@ -4374,29 +4271,6 @@ c      end do
          write(242, 2849)
          write(242, 3411) ((cqlavg_i1_2d(i,j), i = 1, nupar),
      &                                         j = 1, nuper)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -5135,7 +5009,7 @@ c      end do
       
       write(245, '(A)' ) 'SCALARS abs_jantz float 1'
       write(245, 2849)
-      write(245, 3411) ( (abs(xjz(i,j)), i = 1, nnodex),  j = 1, nnodey)      
+      write(245, 3411) ( (abs(xjz(i,j)), i = 1, nnodex),  j = 1, nnodey)
       close (245)
 
 
@@ -5143,18 +5017,23 @@ c      end do
 
 c Close the graphics device.
 
-      call pgclos
+      call pgclos()
 
 c Open new graphics device
 
 
 #ifdef GIZA      
-      IER = PGBEG(0, 'movie.pdf', 1, 1)
+      ier = pgopen('movie.pdf/pdf')
 #else
-      IER = PGBEG(0, 'movie.ps/vcps', 1, 1)
+      ier = pgopen('movie.ps/vcps')
 #endif
       
-      IF (IER.NE.1) STOP
+      if (ier<1) then
+         print*,ier,'PGOPEN failed to open movie.pdf'
+         stop
+      else
+         print*,'pgopen amovie.pdf dev #: ',ierr
+      end if
 
       call PGSCH (1.5)
 
@@ -5194,7 +5073,7 @@ c     &      nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 
       end do
 
-      call pgclos
+      call pgclos()
 
       close (140)
 
@@ -5217,6 +5096,7 @@ c      close (61)
       close (67)
       close (64)
 
+
       if (ndisti2 .eq. 1 .or. ndisti1 .eq. 1) then
          deallocate( UPERP )
          deallocate( UPARA )
@@ -5236,6 +5116,8 @@ c      close (61)
          deallocate (wperp1_cql)
          deallocate (Wpar1_cql)
 
+      end if
+      if (ndisti2==1) then
          deallocate (wperp2_cql)
          deallocate (Wpar2_cql)
       end if
@@ -5562,7 +5444,7 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
       if(nlevgt .gt. 0) then
          CALL PGSFS(1)
          DO I=1, Nlevel-1
-            RCOL = 0.5+0.5*REAL(I-1)/REAL(NLEVEL-1)
+            RCOL = int(0.5+0.5*REAL(I-1)/REAL(NLEVEL-1))
             CALL PGSCR(I+10, RCOL, RCOL, RCOL)
             CALL PGSCI(I+10)
             CALL PGCONF(f, nrmax, nthmax, 1, nr, 1, nth,
@@ -6964,7 +6846,7 @@ c
       integer:: nr, nrmax, n
 
       real:: xzmax,xzmin,xnmin,xnmax,rhomin,rhomax
-      real:: x1(nrmax),y1(nrmax), y2(nrmax)
+      real:: x1(nr),y1(nr), y2(nr)
       real:: y1max,y2max,y3max,y1min,y2min,y3min
       real:: ymin,ymax
 
@@ -6989,14 +6871,20 @@ c
       nyellow = 7
       norange = 8
 
-      call a1mnmx(y1, nrmax, nr, y1min, y1max)
-      call a1mnmx(y2, nrmax, nr, y2min, y2max)
 
+      !call a1mnmx(y1, nr, nr, y1min, y1max)
+      !call a1mnmx(y2, nr, nr, y2min, y2max)
+      y1min= minval(y1)
+      y2min= minval(y2)
+      y1max= maxval(y1)
+      y2max= maxval(y2)
       ymax = max(y1max, y2max)
       ymin = min(y1min, y2min)
       
 #ifdef DEBUG
       write(*,*) 'DEBUG ezplot2q:  title: ', title, ymin,ymax
+      write(*,*) 'Ezplot2q inputs', x1, y1, y2, nr, nrmax,size(y2)
+      write(*,*) 'Ezplot2q inputs', y1min,y2min,y1max,y2max,ymax,ymin
 #endif
       if(ymax .eq. 0.0 .and. ymin .eq. 0.0) return
 
@@ -7024,7 +6912,7 @@ c
       CALL PGSCI(nblue)
       call pgline(nr, x1, y1)
 
-      CALL PGSCI(nmagenta)
+      CALL PGSCI(nred)
       call pgline(nr, x1, y2)
 
       CALL PGSCI(nblack)
@@ -7631,7 +7519,7 @@ c
 
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
-      if(y1max .eq. 0.0 .and. y2min .eq. 0.0)return
+      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7741,7 +7629,7 @@ c--set up contour levels
       write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
-       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
+      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
 c         write(6, *)"fmax = ", fmax
 c         write(6, *)"fmin = ", fmin
          iflag = 1
@@ -7846,7 +7734,9 @@ c--Make a bit larger so the boundary doesn't get clipped
 c--Advance graphics frame and get ready to plot
 
       call pgsci(nblack)
-      call pgenv(xmin, xmax, ymin, ymax, 1, 0)
+      !call pgenv(xmin, xmax, ymin, ymax, 1, 0)
+      call pgswin(xmin, xmax, ymin, ymax)
+      CALL PGBOX  ('BCNST', 0.0, 0, 'BCNST', 0.0, 0)   
 
 c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
@@ -7977,6 +7867,14 @@ c
       rhomin=x1(1)
 
       call a1mnmx(y1, nrmax, nr, ymin, ymax)
+
+#ifdef DEBUG
+      write(*,*) 'ezlog1_f:  title: ', title, ymin,ymax
+#endif
+      if(ymax .eq. 0.0 .and. ymin .eq. 0.0) then
+         write(6, *) 'skipping ezlog1_f plot of ',title
+         return
+      end if
 
       ymin = -10.0
 
@@ -8766,7 +8664,7 @@ C
       DATA GG /0.0, 1.0/
       DATA GB /0.0, 1.0/
 C
-      DATA RL /-0.5, 0.0, 0.17, 0.33, 0.50, 0.67, 0.83, 1.0, 1.7/
+      DATA RL / 0.0, 0.0, 0.17, 0.33, 0.50, 0.67, 0.83, 1.0, 1.0/
       DATA RR / 0.0, 0.0,  0.0,  0.0,  0.6,  1.0,  1.0, 1.0, 1.0/
       DATA RG / 0.0, 0.0,  0.0,  1.0,  1.0,  1.0,  0.6, 0.0, 1.0/
       DATA RB / 0.0, 0.3,  0.8,  1.0,  0.3,  0.0,  0.0, 0.0, 1.0/

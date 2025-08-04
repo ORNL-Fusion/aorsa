@@ -60,7 +60,7 @@
     real, parameter:: pi=3.141592653597932384
     real :: ga_33(nupar)
     real :: w2,wp2,wpfact,wcw,rrp,rrm,rr,irr, du_3, g_33j, xkprl0
-    real, save :: g_33, n_save, b_save
+    real, save :: g_33, n_save=0., b_save=0.
     real :: mut0,sqmut0,kpara1, kpara0, npara1, npara0, verp_norm
     real :: isq2,cupar,cuper,nwcw,dfactpar,dfactper, dfactper0, lf0,lnf0uper
     real :: dfactperi, a1, a2, a3, a4, a5,beta1,beta2
@@ -115,7 +115,7 @@
           nkperp_l = 0  !need to have at least one slot in the nk dimension
        end if !end if set nkperp_1
     
-!  allcate storate arrays for interpolation/integration
+!  allocate storate arrays for interpolation/integration
 !  fpint group stores values for interpolation
 !  three are needed:  one each for sig_11, sig_f33, and sig_31
 !  pint stores the values of the perpendicular integral for the actual k_perp*vperp/omega_c
@@ -774,7 +774,7 @@
     real, parameter:: pi=3.141592653597932384
     real :: ga_33(nupar)
     real :: w2,wp2,wpfact,wcw,rrp,rrm,rr,irr, du_3, g_33j, xkprl0
-    real, save :: g_33, n_save, b_save
+    real, save :: g_33, n_save=0., b_save=0.
     real :: mut0,sqmut0,kpara1, kpara0, npara1, npara0, verp_norm
     real :: isq2,cupar,cuper,nwcw,dfactpar,dfactper, dfactper0, lf0,lnf0uper
     real :: dfactperi, a1, a2, a3, a4, a5,beta1,beta2

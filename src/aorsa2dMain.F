@@ -14,12 +14,11 @@
 
       use size_mod
 
+      use mpi
+
       use ql_myra_mod
 
       use wdot_mod
-      use wdot_sum_mod
-
-
 
       use profile_mod
 
@@ -1971,7 +1970,7 @@ c            write(6, 1022)rnz
                btau(i,j) = sqrt(bxn(i,j)**2 + byn(i,j)**2)
                bpol(i,j) = btau(i,j) * bmod(i,j)
                bzeta(i,j) = bzn(i,j)
-               if (eqtype=='mirror') then !JCW mirror
+               if (eqtype=='mirror' .or. eqtype=='dipole') then !JCW mirror
                   pitch(i,j) = bxn(i,j)/byn(i,j) !1.e10 ! ~ inf JCW
                else
                   pitch(i,j) = btau(i,j) / bzeta(i,j) 
@@ -3126,7 +3125,11 @@ c         if (myid==0)write(6, 1312)n, rh(n), dh(n)
       do i = 1, nnodex
          do j = 1, nnodey
             capr_bpol(i,j) = capr(i) * bpol(i,j)
-            ipsi(i,j)= capr(i) * bzeta(i,j) * bmod(i,j)
+            if (eqtype=='mirror' .or. capr(i).lt.1.e-3) then
+               ipsi(i,j)= capr_bpol(i,j) ! the same makes the most sense
+            else
+               ipsi(i,j)= capr(i) * bzeta(i,j) * bmod(i,j) !because bmod to added from eqdsk setup for some reason
+            end if
          end do
       end do
 
@@ -5220,24 +5223,33 @@ c           call flush
       dKdL_max = 0.0
       dKdL_min = 0.0
 
-      xjx_max = 0.0
-      xjy_max = 0.0
-      xjz_max = 0.0
+!      xjx_max = 0.0
+!      xjy_max = 0.0
+!      xjz_max = 0.0
 
-      xjx_min = 0.0
-      xjy_min = 0.0
-      xjz_min = 0.0
+!      xjx_min = 0.0
+!      xjy_min = 0.0
+!      xjz_min = 0.0
+
+      xjx_max = maxval(xjx)
+      xjy_max = maxval(xjy)
+      xjz_max = maxval(xjz)
+
+
+      xjx_min = minval(xjx)
+      xjy_min = minval(xjy)
+      xjz_min = minval(xjz)
 
       do i = 1, nnodex
          do j = 1, nnodey
 
-            if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
-            if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
-            if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)
+!            if(xjx(i,j) .gt. xjx_max) xjx_max = xjx(i,j)
+!            if(xjy(i,j) .gt. xjy_max) xjy_max = xjy(i,j)
+!            if(xjz(i,j) .gt. xjz_max) xjz_max = xjz(i,j)
 
-            if(xjx(i,j) .lt. xjx_min) xjx_min = xjx(i,j)
-            if(xjy(i,j) .lt. xjy_min) xjy_min = xjy(i,j)
-            if(xjz(i,j) .lt. xjz_min) xjz_min = xjz(i,j)
+!            if(xjx(i,j) .lt. xjx_min) xjx_min = xjx(i,j)
+!            if(xjy(i,j) .lt. xjy_min) xjy_min = xjy(i,j)
+!            if(xjz(i,j) .lt. xjz_min) xjz_min = xjz(i,j)
 
             if(psi(i,j) .le. psilim .and. nboundary .eq. 1
      &                               .or. nboundary .eq. 0)then
@@ -5363,6 +5375,10 @@ c           call flush
          write(15, *) "xjx_max = ", xjx_max
          write(15, *) "xjy_max = ", xjy_max
          write(15, *) "xjz_max = ", xjz_max
+
+         write( 6, *) "xjx_max = ", xjx_max
+         write( 6, *) "xjy_max = ", xjy_max
+         write( 6, *) "xjz_max = ", xjz_max
 
          write(15, *) "xjx_min = ", xjx_min
          write(15, *) "xjy_min = ", xjy_min
@@ -7094,8 +7110,8 @@ c     &   myid, nproc, icontxt)
 
 
       do i = 1, nnodex
-         kimag_slow(i) = aimag(csqrt(xkperp2_slow(i,jmid)))
-         kimag_fast(i) = aimag(csqrt(xkperp2_fast(i,jmid)))
+         kimag_slow(i) = aimag(sqrt(xkperp2_slow(i,jmid)))
+         kimag_fast(i) = aimag(sqrt(xkperp2_fast(i,jmid)))
       end do
 
       call dgrate(xprime, kimag_slow, 1, nnodex, ans, nxmx)
@@ -7145,9 +7161,12 @@ c     &   myid, nproc, icontxt)
       do n = nkx1, nkx2
          do m = nky1, nky2
 
-            ealphakmod(n, m) = sqrt(conjg(ealphak(n, m))* ealphak(n, m))
-            ebetakmod(n, m) = sqrt(conjg(ebetak(n, m)) * ebetak(n, m))
-            ebkmod(n, m) = sqrt(conjg(ebk(n, m)) * ebk(n, m))
+            ealphakmod(n, m) = sqrt(
+     &                    real(conjg(ealphak(n, m))* ealphak(n, m)))
+            ebetakmod(n, m) = sqrt(
+     &                    real(conjg(ebetak(n, m)) *  ebetak(n, m)))
+            ebkmod(n, m) = sqrt(
+     &                    real(conjg(ebk(n, m)) * ebk(n, m)))
 
          end do
       end do
@@ -7354,9 +7373,9 @@ c           if(myid==0)write(6,*)i, j, eplus_flux_plot(i, j)
       zetai_max = 0.0
       zetai_min = 0.0
 
-      xjx_max = maxval(xjx)
-      xjy_max = maxval(xjy)
-      xjz_max = maxval(xjz)
+!      xjx_max = maxval(xjx)
+!      xjy_max = maxval(xjy)
+!      xjz_max = maxval(xjz)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -7477,18 +7496,18 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
 
       if (myid==0) then
 
-         write(15, *) "xjx_max = ", xjx_max
-         write(15, *) "xjy_max = ", xjy_max
-         write(15, *) "xjz_max = ", xjz_max
+!         write(15, *) "xjx_max = ", xjx_max
+!         write(15, *) "xjy_max = ", xjy_max
+!         write(15, *) "xjz_max = ", xjz_max
 
          write(15, *) "xkprl_max = ", xkprl_max
          write(15, *) "xkprl_pos_min = ", xkprl_pos_min
          write(15, *) "xkprl_neg_max = ", xkprl_neg_max
          write(15, *) "xkprl_min = ", xkprl_min
 
-         write(6, *) "xjx_max = ", xjx_max
-         write(6, *) "xjy_max = ", xjy_max
-         write(6, *) "xjz_max = ", xjz_max
+!         write(6, *) "xjx_max = ", xjx_max
+!         write(6, *) "xjy_max = ", xjy_max
+!         write(6, *) "xjz_max = ", xjz_max
 
          write(6, *) "xkprl_max = ", xkprl_max
          write(6, *) "xkprl_pos_min = ", xkprl_pos_min
@@ -10016,7 +10035,7 @@ c      go to 9945
       an(1) = 0.0
       bn(1) = - 4.0 * dn(1) / dr**2
       cn(1) = - bn(1)
-      yn(1) = - capr_fzeta_avg(1) ! / rt
+      yn(1) = - capr_fzeta_avg(1) ! / rt  !keep for tokamak, review JCW
 
       do n = 2, nnoderho - 1
          an(n) = rh(n-1) * dh(n-1) / (rn(n) * dr**2)
@@ -10049,7 +10068,7 @@ c      go to 9945
          if (rhom1avg(n) .gt. 1.0e-10)then
 
             gpsi_avg(n) = (xjhat(n) - rhom1avg(n) * kpsi_avg(n) * b0)
-     &         / (rhom1avg(n) * rt * (1. + 1.5 * epsn(n)**2))
+     &         / (rhom1avg(n) * (1. + 1.5 * epsn(n)**2)) !/ rt
 
             term2 = rhom1avg(n) * kpsi_avg(n) * b0
 
@@ -11720,7 +11739,7 @@ c      write(6,*) "finished plots; starting deallocation"
       call blacs_gridexit( icontxt )
       call blacs_exit(0)
 
-
+      call mpi_finalize( ier )
       end
 
 !

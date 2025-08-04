@@ -719,6 +719,7 @@ c      write(29,1000)nkzm
 *     ---------------------          
       
       i = imaxis * .7 !jcw magic number
+      if (i==0) i=1
       
       ytop_auto = 0.0                             
       do j = nyeqd/2, nyeqd
@@ -1574,6 +1575,10 @@ c               h0 = twopi / 720.
 
   201      continue
            nphi_exit = n_phi
+           if (n_phi > norb_dim) then
+             write(6,*) 'warning n_phi too big', n_phi
+             nphi_exit=norb_dim
+           end if
   
 *                 -----------------------
 *                 Numerical dtau integral:
@@ -1640,11 +1645,11 @@ c             tau_bounce(i, j, n_theta) = dtau_tot12
       
       !JCW nrho is 0 here . FIXME
       nrho = i_max - i0 + 1
-      
+      if (nrho==0) write(*,*) 'WARNING: nrho =0',i0,j0 
       rho_ij = rho(1:nnodex, 1:nnodey)
       allocate (rho_in(nrho), profile_in(nrho),
      &                                   profile_out(nnodex, nnodey))
-     
+      profile_out = 0.0 
       profile_in = dldb_tot12(i0:i_max, j0)
       rho_in =            rho(i0:i_max, j0)
       
@@ -1887,6 +1892,8 @@ c
      &   qs, qs1, qsafety, r0, b0, 
      &   rho_tors, rho_tor2d)
 
+      use aorsa2din_mod ,only: eqtype
+
       implicit none
 
 
@@ -2000,7 +2007,12 @@ c           calculate fields:
             rhot = curv2(a, ma, psis, rho_tors, yprho, sigma)
 
 
-            bphi = f / r  !jcw div r
+
+            if (eqtype=='mirror') then
+               bphi = 0
+            else
+               bphi = f / r     !jcw div r
+            end if
             bpsi0 = 0.0
 
 
