@@ -1574,6 +1574,10 @@ c               h0 = twopi / 720.
 
   201      continue
            nphi_exit = n_phi
+           if (n_phi > norb_dim) then
+             write(6,*) 'warning n_phi too big', n_phi
+             nphi_exit=norb_dim
+           end if
   
 *                 -----------------------
 *                 Numerical dtau integral:
@@ -1640,11 +1644,11 @@ c             tau_bounce(i, j, n_theta) = dtau_tot12
       
       !JCW nrho is 0 here . FIXME
       nrho = i_max - i0 + 1
-      
+      if (nrho==0) write(*,*) 'WARNING: nrho =0',i0,j0 
       rho_ij = rho(1:nnodex, 1:nnodey)
       allocate (rho_in(nrho), profile_in(nrho),
      &                                   profile_out(nnodex, nnodey))
-     
+      profile_out = 0.0 
       profile_in = dldb_tot12(i0:i_max, j0)
       rho_in =            rho(i0:i_max, j0)
       

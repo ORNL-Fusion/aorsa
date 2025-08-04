@@ -44,6 +44,7 @@ c
 *     This subroutine calculates the plasma current for a single species
 *-----------------------------------------------------------------------
 
+      use aorsa2din_mod, only:eqtype
       implicit none
 
       logical:: ismine

@@ -2,20 +2,29 @@ C subroutine added by LAB to convert from flux to rz for numerical profiles.
 c
 c***************************************************************************
 c
-      subroutine flux_to_rz(profile_in, profile_out, rho, rho_ij)
+      subroutine flux_to_rz(nnodex,nnodey,profile_in, profile_out, rho, 
+     &         nrho, rho_ij)
      
       implicit none
 
-      integer :: nnodex, nnodey, nrho
-      real,dimension(:),   intent(in)  :: profile_in
-      real,dimension(:),   intent(in)  :: rho
-      real,dimension(:,:), intent(in)  :: rho_ij
-      real,dimension(:,:), intent(out) :: profile_out
+!      integer :: nnodex, nnodey, nrho
+!      real,dimension(:),   intent(in)  :: profile_in
+!      real,dimension(:),   intent(in)  :: rho
+!      real,dimension(:,:), intent(in)  :: rho_ij
+!      real,dimension(:,:), intent(out) :: profile_out
       integer :: i, j, k
 
-      nnodex = SIZE(rho_ij, 1)
-      nnodey = SIZE(rho_ij, 2)
-      nrho   = SIZE(rho, 1)      
+
+
+!      nnodex = SIZE(rho_ij, 1)
+!      nnodey = SIZE(rho_ij, 2)
+!      nrho   = SIZE(rho, 1)      
+
+
+      integer,intent(in) :: nnodex, nnodey, nrho
+      real,intent(in) :: profile_in(nrho)
+      real,intent(out) :: profile_out(nnodex,nnodey)
+      real,intent(in) :: rho(nrho), rho_ij(nnodex,nnodey)
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -35,17 +44,16 @@ c     &            (rho(nrho) - rho(nrho-1)) * (rho_ij(i,j) - rho(nrho))
 
                   profile_out(i,j) = profile_in(nrho)     
       
-               else if ( rho_ij(i,j) - rho(k)  >= 0.0 .and.
-     &                   rho_ij(i,j) - rho(k+1) < 0.0 ) then
-
+               elseif( rho_ij(i,j) >= rho(k)     .and.
+     &                 rho_ij(i,j) <  rho(k+1) ) then
+                 
                   profile_out(i,j) = profile_in(k)  +
-     &            (profile_in(k+1) - profile_in(k))/
-     &            (rho(k+1) - rho(k)) * (rho_ij(i,j) - rho(k))
+     &               (profile_in(k+1) - profile_in(k))/
+     &               (rho(k+1) - rho(k)) * (rho_ij(i,j) - rho(k))
                end if
                
-               if (profile_out(i,j) < 0.0) profile_out(i,j) = 1.0e-10
-         
             enddo
+            if (profile_out(i,j) <= 0.0) profile_out(i,j) = 1.0e-10
          end do
       end do
          

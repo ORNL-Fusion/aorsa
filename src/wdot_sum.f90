@@ -775,7 +775,7 @@ contains
         enddo
 
         return
-        end subroutine 
+        end subroutine zpow 
         
 !
 !*************************************************************************
@@ -814,7 +814,7 @@ contains
         endif
 
         return
-        end subroutine
+        end subroutine zdiv
         
 
 
@@ -823,5 +823,5 @@ contains
 !       
 
 
-         end module wdot_sum_mod         
-         
+end module wdot_sum_mod         
+

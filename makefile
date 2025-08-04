@@ -121,18 +121,7 @@ ifeq ($(LMOD_SYSHOST),perlmutter)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
-ifeq ($(NERSC_HOST),cori)
-  ifeq ($(PE_ENV),GNU)
-    include makeopts.cori.gnu
-    $(info System identified as Cori GNU)
-    SYSTEM_IDENTIFIED = 1
-  endif      
-  ifeq ($(PE_ENV),INTEL)
-    include makeopts.cori.intel
-    $(info System identified as Cori Intel)
-    SYSTEM_IDENTIFIED = 1
-  endif
-endif
+
 ifeq ($(UNAME_S),Darwin) # OSX
   #ifeq ($(UNAME_R),18.7.0)
     include makeopts.osx-mojave
@@ -140,6 +129,7 @@ ifeq ($(UNAME_S),Darwin) # OSX
     SYSTEM_IDENTIFIED = 1
   #endif
 endif
+
 ifeq ($(LSB_IS),Ubuntu)
   ifeq ($(LSB_RS),20.04)
     include makeopts.ubuntu20.04
@@ -154,7 +144,12 @@ ifeq ($(LSB_IS),Ubuntu)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
+
 ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
+ifeq ($(LSB_IS),Rocky)
+  include makeopts.engagingr8.gnu
+  SYSTEM_IDENTIFIED = 1
+else
   ifdef MKLROOT
   include makeopts.eofe7.intel
   $(info "Intel found" )
@@ -163,6 +158,7 @@ ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
   $(info "gcc assumed" )
   endif
   SYSTEM_IDENTIFIED = 1
+endif
 endif
 ifeq ($(HOSTNAME),eofe7.mit.edu)  #building on host
   include makeopts.eofe7

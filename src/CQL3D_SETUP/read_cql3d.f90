@@ -81,9 +81,17 @@
          real, allocatable :: y(:,:)
          real, allocatable :: rya(:)                  !normalized small radius
          real, allocatable :: f(:,:,:,:)
+<<<<<<< HEAD
          real, allocatable, dimension(:,:,:) :: wperp, wpar   !perp, par energy/particle
                                                       !tdim, rdim
 
+=======
+         real, allocatable, dimension(:,:,:) :: wperp   !perp energy/particle
+                                                      !tdim, rdim
+         real, allocatable, dimension(:,:,:) :: wpar    !par energy/particle
+                                                      !tdim, rdim
+       
+>>>>>>> 21ae4f5a82ef03cf7b8a688c0c0d92a8e8036282
 
 !c     y is pitch angle (radians).  It varies from one flux surface to
 !c       the next, for example, due to increased resolution near the
@@ -107,7 +115,7 @@
 !c --- some stuff for netCDF file ---
          character(nf90_max_name):: name
          integer ncid,istatus
-         integer xdim,ydim,rdim,kdim,vid
+         integer xdim,ydim,rdim,kdim,vid,gkdim
          integer ngen,ntotal
          integer ll,j,i
          integer start(3),count(3),start_y(2),count_y(2)
@@ -143,6 +151,12 @@
 !       kdim=ncdid(ncid,'species_dim',istatus)
          write(*,*)'after inq_dimid kdim=',kdim,'istatus',istatus
 
+<<<<<<< HEAD
+=======
+         istatus = nf90_inq_dimid(ncid,'gen_species_dim',gkdim)
+         write(*,*)'proc_cql3d_op: after nf90_inq_dimid ngen_id = ',gkdim,'istatus = ',istatus
+       
+>>>>>>> 21ae4f5a82ef03cf7b8a688c0c0d92a8e8036282
          istatus = nf90_inq_dimid(ncid,'tdim',nt_id)
          write(*,*)'proc_cql3d_op: after nf90_inq_dimid nt_id = ',nt_id,'istatus = ',istatus
 
@@ -164,6 +178,7 @@
          istatus = nf90_inquire_dimension(ncid, rdim, len = lrz)
          istatus = nf90_inquire_dimension(ncid, gkdim, len = ngen)
          istatus = nf90_inquire_dimension(ncid, kdim, len = ntotal)
+         istatus = nf90_inquire_dimension(ncid, gkdim, len = ngen)
 
 !c ************* Allocate space for Harvey arrays.
 
@@ -284,15 +299,6 @@
          istatus = nf90_inq_varid(ncid, 'f', vid)
          istatus = nf90_get_var(ncid, vid, f)!, start, count)
 
-!c      do ll=1,lrz
-!c         write(*,*)' netcdfr3d ll=',ll
-!c         do j=1,jx
-!c            write(*,*)'ll=',ll,'j=',j,'f(i=1,...,iy_(ll))'
-!c            write(*,*)(f(i,j,ll),i=1,iy_(ll))
-!c         enddo
-!c      enddo
-
-
       ! the energies wperp--wpar
          write(*,*)'shape of wperp ', shape(wperp)
          istatus = nf90_inq_varid(ncid, 'wperp', vid)
@@ -304,14 +310,6 @@
          istatus = nf90_get_var(ncid, vid, wpar)
          write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:,1,nt)
 
-
-!c      do ll=1,lrz
-!c         write(*,*)' netcdfr3d ll=',ll
-!c         do j=1,jx
-!c            write(*,*)'ll=',ll,'j=',j,'f(i=1,...,iy_(ll))'
-!c            write(*,*)(f(i,j,ll),i=1,iy_(ll))
-!c         enddo
-!c      enddo
 
 !c-----Close netCDF file
       !       call ncclos(ncid,istatus)
@@ -376,10 +374,10 @@
          theta = y
          u = x
          rho_a = rya
-         f_CQL = f
+         f_CQL = f(:,:,:,1) 
 
-         wperp_cql = wperp(:,1,:)
-         wpar_cql = wpar(:,1,:)
+         wperp_cql = wperp(:,1,:) !first gen species
+         wpar_cql = wpar(:,1,:)   !first gen species
 
          DEALLOCATE (iy_, x, y, rya, f, wperp, wpar)
 

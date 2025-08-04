@@ -146,11 +146,11 @@ c     from the text file FILE_txt
       close (42)
                  
        
-       write (6, *) 'nuper = ', nuper
-       write (6, *) 'nupar = ', nupar
-       write (6, *) 'nnoderho = ', nnoderho                          
+       write(6,*) 'nuper = ', nuper
+       write(6,*) 'nupar = ', nupar
+       write(6,*) 'nnoderho = ', nnoderho                          
 
-       write (6, *) "bqlavg(4,4,4) = ", bqlavg(4,4,4)
+       write(6,*) "bqlavg(4,4,4) = ", bqlavg(4,4,4)
        write(6,*) 'xmi =', xmi                 
        write(6,*) 'vc_cgs =', vc_cgs
        write(6,*) 'UminPara =', UminPara 

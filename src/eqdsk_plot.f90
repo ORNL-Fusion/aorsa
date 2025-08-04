@@ -1317,6 +1317,10 @@
       ncolln3=ngreen
 
       call a1mnmx(y1,nrmax,nr,y1min,y1max)
+
+#ifdef DEBUG
+      write(*,*) 'ezplot1_0:  title: ', title, y1min,y1max
+#endif
       if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
 
       ymax = y1max
