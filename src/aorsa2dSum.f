@@ -2724,23 +2724,18 @@ c
 c********************************************************************
 c
 
-
-
       complex function jfun(z)
 
       use aorsa2din_mod
 
       implicit none
 
+      complex:: jfun
       integer:: n
 
-      real:: zn, pi, z0, zdiff2, phin, zdiff, zdiff1,
-     &   z, dphi
+      real:: z, zn, z0, phin, zdiff, zdiff1, zdiff2, dphi
 
-      complex:: zi, fun1
-
-      pi = 3.141592654
-      zi = cmplx(0., 1.)
+      complex, parameter:: zi = cmplx(0., 1.) pi = 3.141592654
 
       z0 = -wd * (real(nstrap) - 1.) / 2.
 
@@ -2768,29 +2763,22 @@ c        write (6, *) "phin = ", phin
 
       end do
 
-c      call exit
-
       return
-      end
-c
-c***************************************************************************
-c
+      
+      contains
+      
       complex function fun1(z)
+      !>  Filter fn for z within strap width from namelist input
+         use aorsa2din_mod, only: xlt
+         real:: zabs, z
 
-      use aorsa2din_mod
-
-      implicit none
-
-      real:: zabs, z, dphi
-
-      zabs=abs(z)
-
-      fun1=cmplx(1.,0.)
-
-      if(zabs .gt. xlt/2.)fun1=cmplx(0.0, 0.0)
+         zabs=abs(z)
+         fun1=cmplx(1.,0.)
+         if(zabs .gt. xlt/2.)fun1=cmplx(0.0, 0.0)
 
       return
-      end
+      end function fun1
+      end function jfun
 
 
 c

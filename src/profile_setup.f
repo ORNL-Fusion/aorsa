@@ -19,18 +19,15 @@ c
 
       do i = 1, nnodex
          do j = 1, nnodey
-            do k = 1, nrho
+            do k = 1, nrho-1
 
-               if(rho_ij(i,j) .le. rho(1)) then
-               !  need one sided to the left
+               if (rho_ij(i,j) <= rho(1)) then !  need one sided to the left
 
-c                 call flush(6)
                   profile_out(i,j) = profile_in(1) + 
-     &            (profile_in(2) - profile_in(1)) /
-     &            (rho(2) - rho(1)) * (rho_ij(i,j) - rho(1))
+     &                      (profile_in(2) - profile_in(1)) /
+     &                      (rho(2) - rho(1)) * (rho_ij(i,j) - rho(1))
        
-               elseif(rho_ij(i,j) .ge.rho(nrho)) then
-               ! need one sidded to the right.
+               else if (rho_ij(i,j) >= rho(nrho)) then! need one sided to the right.
                    
 c                 profile_out(i,j) = profile_in(nrho) +
 c     &            (profile_in(nrho) - profile_in(nrho - 1)) /
@@ -38,15 +35,15 @@ c     &            (rho(nrho) - rho(nrho-1)) * (rho_ij(i,j) - rho(nrho))
 
                   profile_out(i,j) = profile_in(nrho)     
       
-               elseif(rho_ij(i,j) - rho(k) .ge. 0.0 .and.
-     &             rho_ij(i,j) -rho(k+1) .lt. 0.0 ) then
-                  ! standard  caseprint*, 'last if'
+               else if ( rho_ij(i,j) - rho(k)  >= 0.0 .and.
+     &                   rho_ij(i,j) - rho(k+1) < 0.0 ) then
+
                   profile_out(i,j) = profile_in(k)  +
      &            (profile_in(k+1) - profile_in(k))/
      &            (rho(k+1) - rho(k)) * (rho_ij(i,j) - rho(k))
-               endif
+               end if
                
-               if (profile_out(i,j) .lt. 0.0) profile_out(i,j) = 1.0e-10
+               if (profile_out(i,j) < 0.0) profile_out(i,j) = 1.0e-10
          
             enddo
          end do

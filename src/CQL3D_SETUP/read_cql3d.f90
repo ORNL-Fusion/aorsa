@@ -7,7 +7,7 @@
        integer :: n_theta_max  ! max number of pitch angles
        integer :: n_u          ! Number of normalized velocities
        integer :: n_psi        ! Number of flux surfaces
-       integer :: n_t          ! Number of cql3d time steps 
+       integer :: n_t          ! Number of cql3d time steps
 
        integer, allocatable :: n_theta_(:) ! number of pitch angles for flux surface
        real(kind=real_kind), allocatable :: u(:) ! normalized velocity
@@ -15,9 +15,9 @@
        real(kind=real_kind), allocatable :: rho_a(:)    !normalized small radius
        real(kind=real_kind), allocatable :: f_CQL(:,:,:) ! f(i_theta, i_u, i_psi)
        real(kind=real_kind), allocatable :: f_cql_2d(:,:) ! f(i_u, i_theta)
-       
-       real(kind=real_kind), allocatable :: wperp_cql(:,:) ! wperp(i_psi, n_t) 
-       real(kind=real_kind), allocatable :: wpar_cql(:,:)  ! wpar(i_psi, n_t)          
+
+       real(kind=real_kind), allocatable :: wperp_cql(:,:) ! wperp(i_psi, n_t)
+       real(kind=real_kind), allocatable :: wpar_cql(:,:)  ! wpar(i_psi, n_t)
 
 
        real(kind=real_kind) :: vc
@@ -39,7 +39,7 @@
 
 !      implicit integer (i-n), real*8 (a-h,o-z)
 !      save
-         
+
          character(*):: netcdfnm ! input filename
 
 !c --- include file for netCDF declarations
@@ -80,12 +80,10 @@
          real, allocatable :: x(:)
          real, allocatable :: y(:,:)
          real, allocatable :: rya(:)                  !normalized small radius
-         real, allocatable :: f(:,:,:)
-         real, allocatable, dimension(:,:) :: wperp   !perp energy/particle
+         real, allocatable :: f(:,:,:,:)
+         real, allocatable, dimension(:,:,:) :: wperp, wpar   !perp, par energy/particle
                                                       !tdim, rdim
-         real, allocatable, dimension(:,:) :: wpar    !par energy/particle
-                                                      !tdim, rdim
-       
+
 
 !c     y is pitch angle (radians).  It varies from one flux surface to
 !c       the next, for example, due to increased resolution near the
@@ -123,7 +121,7 @@
          write(*,*)'before ncopn netcdfnm=',netcdfnm
          istatus=nf90_open(TRIM(netcdfnm),NF90_NOWRITE,ncid)
          write(*,*)'after ncopn ncid=',ncid,'istatus',istatus
-       
+
 !c.......................................................................
 !c     read in dimension IDs and sizes
 
@@ -144,9 +142,12 @@
          istatus = nf90_inq_dimid(ncid,'species_dim',kdim)
 !       kdim=ncdid(ncid,'species_dim',istatus)
          write(*,*)'after inq_dimid kdim=',kdim,'istatus',istatus
-       
+
          istatus = nf90_inq_dimid(ncid,'tdim',nt_id)
          write(*,*)'proc_cql3d_op: after nf90_inq_dimid nt_id = ',nt_id,'istatus = ',istatus
+
+         istatus = nf90_inq_dimid(ncid,'gen_species_dim',gkdim_id)
+         write(*,*)'proc_cql3d_op: after nf90_inq_dimid ngen_id = ',gkdim_id,'istatus = ',istatus
 
          istatus = nf90_inquire_dimension(ncid, nt_id, len = nt)
        !call ncdinq(ncid, nt_id,'tdim', nt, istatus)
@@ -161,6 +162,7 @@
          istatus = nf90_inquire_dimension(ncid, ydim, len = iy)
          istatus = nf90_inquire_dimension(ncid, xdim, len = jx)
          istatus = nf90_inquire_dimension(ncid, rdim, len = lrz)
+         istatus = nf90_inquire_dimension(ncid, gkdim, len = ngen)
          istatus = nf90_inquire_dimension(ncid, kdim, len = ntotal)
 
 !c ************* Allocate space for Harvey arrays.
@@ -185,28 +187,28 @@
             WRITE (*,'("read_CQL3D: allocate failed for rya")')
          END IF
 
-         ALLOCATE( f(iy, jx, lrz), stat=istat )
+         ALLOCATE( f(iy, jx, lrz, ngen), stat=istat )
          IF (istat /= 0 ) THEN
             WRITE (*,'("read_CQL3D: allocate failed for f")')
          END IF
-       
-         ALLOCATE( wperp(lrz, nt), stat=istat )
+
+         ALLOCATE( wperp(lrz, ngen, nt), stat=istat )
          IF (istat /= 0 ) THEN
             WRITE (*,'("read_CQL3D: allocate failed for wperp")')
          END IF
-       
-         ALLOCATE( wpar(lrz, nt), stat=istat )
+
+         ALLOCATE( wpar(lrz, ngen, nt), stat=istat )
          IF (istat /= 0 ) THEN
             WRITE (*,'("read_CQL3D: allocate failed for wpar")')
          END IF
-       
+
 
          count(1)=iy
          count(2)=jx
          count(3)=lrz
-       
+
   310  format(1p,6e12.4)
-  311  format(1p,6i6)       
+  311  format(1p,6i6)
 !c-----normalized momentum x (momentum/mass/vnorm) variables
 
 !c     vnorm - character velocity (momentum-per-mass)[cms/sec]
@@ -245,7 +247,9 @@
 !       call ncvgt(ncid,vid,start,count_y,y,istatus)
          istatus = nf90_inq_varid(ncid, 'y', vid)
          istatus = nf90_get_var(ncid, vid, y)
-       
+         write(*,*)'y',istatus
+         write(*,311)(y(1,ll),ll=1,lrz)
+         
 !c      do ll=1,lrza
 !c         write(*,*)'ll=',ll,'iy_(ll)=',iy_(ll)
 !c         write(*,*)'y',(y(i,ll),i=1,iy_(ll))
@@ -279,7 +283,7 @@
 !       call ncvgt(ncid,vid,start,count,f,istatus)
          istatus = nf90_inq_varid(ncid, 'f', vid)
          istatus = nf90_get_var(ncid, vid, f)!, start, count)
-       
+
 !c      do ll=1,lrz
 !c         write(*,*)' netcdfr3d ll=',ll
 !c         do j=1,jx
@@ -290,17 +294,17 @@
 
 
       ! the energies wperp--wpar
-         write(*,*)'shape of wperp ', shape(wperp)  
+         write(*,*)'shape of wperp ', shape(wperp)
          istatus = nf90_inq_varid(ncid, 'wperp', vid)
-         istatus = nf90_get_var(ncid, vid, wperp)       
-         write(*,*)'proc_cql3d_op: after ncvgt, wperp = ', wperp(:, nt)
+         istatus = nf90_get_var(ncid, vid, wperp)
+         write(*,*)'proc_cql3d_op: after ncvgt, wperp = ', wperp(:,1,nt)
 
-         write(*,*)'shape of wpar ', shape(wpar)    
+         write(*,*)'shape of wpar ', shape(wpar)
          istatus = nf90_inq_varid(ncid, 'wpar', vid)
-         istatus = nf90_get_var(ncid, vid, wpar)            
-         write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:, nt)
-      
-       
+         istatus = nf90_get_var(ncid, vid, wpar)
+         write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:,1,nt)
+
+
 !c      do ll=1,lrz
 !c         write(*,*)' netcdfr3d ll=',ll
 !c         do j=1,jx
@@ -352,18 +356,18 @@
          IF (istat /= 0 ) THEN
             WRITE (*,'("read_CQL3D: allocate failed for f_CQL")')
          END IF
-       
+
 
          ALLOCATE( wperp_cql(n_psi, n_t),    stat=istat )
          IF (istat /= 0 ) THEN
             WRITE (*,'("read_CQL3D: allocate failed for wperp_CQL")')
          END IF
-       
+
          ALLOCATE( wpar_cql(n_psi, n_t),    stat=istat )
          IF (istat /= 0 ) THEN
             WRITE (*,'("read_CQL3D: allocate failed for wpar_CQL")')
          END IF
-       
+
 
 ! ********** load Harvey arrays into module arrays and deallocate harvey arrays
 
@@ -372,10 +376,10 @@
          theta = y
          u = x
          rho_a = rya
-         f_CQL = f       
+         f_CQL = f
 
-         wperp_cql = wperp
-         wpar_cql = wpar
+         wperp_cql = wperp(:,1,:)
+         wpar_cql = wpar(:,1,:)
 
          DEALLOCATE (iy_, x, y, rya, f, wperp, wpar)
 

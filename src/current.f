@@ -378,10 +378,13 @@ c     &                    + uzz(i, j) * xkphi(i)
                         vth = sqrt(xkt(i, j) / xm)
                         wphase = vphase / vth
 
-                        if (wphase .lt. 10.0 .and. wphase .gt. 0.1)then
-
+                        if (wphase .lt. 10.0 .and. wphase .gt. 0.1)then !JCW magic numbers
+                           if (eqtype == 'mirror') then
+                              c_ehst = 0.0
+                           else
+                           
 *                          -----------------------------
-*                          Assume circular flux surfaces
+*                          Assume circular flux surfaces  !these are all zero for a mirror
 *                          -----------------------------
                            a = sqrt(x(i)**2 + y(j)**2)
                            rmaxa = rt + a
@@ -395,7 +398,7 @@ c     &                    + uzz(i, j) * xkphi(i)
                            epsa = (rmaxa - rmina)/(rmaxa + rmina)
 
 
-                           xmut2 = 1. - bmod(i, j) / bmaxa
+                           xmut2 = 1. - bmod(i, j) / bmaxa !mirrorfactor 1-db
                            eta0 = 8. * wphase**2 / (5. + zeffcd) +
      &                     ceta / zeffcd**.707 + damp / wphase
                            r1 = 1. - epsa**.77 * sqrt(3.5**2 +wphase**2)
@@ -420,8 +423,8 @@ c     &                    + uzz(i, j) * xkphi(i)
      &                        (xkt(i, j)
      &                        / abs(q))/ xn(i, j) *
      &                        xjtild * signkz
-c                          c_ehst = 1.0
 
+                           end if !eqtype
                         end if   !  end if wphase .lt. 10.0  
                      end if    ! end if xkt(i,j) .ne. 0.0 
 
@@ -801,14 +804,14 @@ c                          c_ehst = 1.0
      &                           + sigzy * eyk(n,m)
      &                           + sigzz * ezk(n,m)) * cexpkxky * c_ehst
 
-                  end do
-               end do
+                  end do ! m loop for C_ehst
+               end do ! n loop for C_ehst
 
-            end if  !  end if interior plasma region:
+            end if  !  end if interior plasma region
 
             end if  !  if(id .eq. myid)
 
-         end do
+         end do  !x and y i,j index loops
       end do
 
       call blacs_barrier(icontxt, 'All')
@@ -1442,7 +1445,7 @@ c
 *-----------------------------------------------------------------------
 *     This subroutine calculates the plasma current for a single species
 *-----------------------------------------------------------------------
-
+      use aorsa2din_mod, only:eqtype
       implicit none
 
       logical:: ismine

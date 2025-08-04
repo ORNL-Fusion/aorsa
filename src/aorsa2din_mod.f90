@@ -104,7 +104,7 @@
       real :: freqcy = 3.2000E+07     !-----freqcy= rf frequency in Hertz
       real :: aplasm = 7.0000E-01     !-----aplasm = not used
       real :: alim = 100.0            !-----alim = location of limiter
-      real :: grad = 0.0              !-----grad = 0.0 ignors gradients in Wdot (default)
+      real :: grad = 0.0              !-----grad = 0.0 ignores gradients in Wdot (default)
                                       !-----grad = 1.0 includes gradients in Wdot      
       real :: signbz = 1.0000E+00
       real :: xn0 = 3.1100E+19        !-----xn0=electron density at x=0
@@ -176,7 +176,7 @@
       
       real :: dfquotient = 0.0        !-----dfquotient = divisor of df for which a single contour of D(x, kx) is drawn
                                       !     if (dfquotient .eq.  0.0) all 20 contours are drawn (default)
-                                      !     if (dfquotient .ne.  0.0) only one coutour is drawn with df/dfquotient
+                                      !     if (dfquotient .ne.  0.0) only one contour is drawn with df/dfquotient
                                         
       real :: rmin_zoom = 2.15        !-----R_min for edge density plot
       real :: rmax_zoom = 2.35        !-----R_max for edge density plot

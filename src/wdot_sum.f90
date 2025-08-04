@@ -1,18 +1,13 @@
-    module wdot_sum_mod
-    contains
-!module METS2AORSA_MYRA
-
-!  private
-!  public::  GET_WMAT_MYRA, intplt1d, WINTERP1D_3
-
-
-!contains
-
+module wdot_sum_mod
+  private
+  public:: wdot_new_maxwellian_sum
+  
+contains
 
 !
 !*************************************************************************
 !
-    subroutine wdot_new_maxwellian_sum(ip, jp, k_uper, b_sum, c_sum,  & 
+  subroutine wdot_new_maxwellian_sum(ip, jp, k_uper, b_sum, c_sum,  & 
        & e_sum, f_sum, &
        & sum_wdot, sum_fx0, sum_fy0, W, ZSPEC, ASPEC, BMAG, &
        & lmax, ENORM, UPARMIN, UPARMAX, &
@@ -65,8 +60,6 @@
     real:: time, t1, tmsec, second1, dummy, WI, uperpk, uperpk2
     real:: dzeta, dzetai, zetamax, zetamin, zeta0, zetamax1, zetamax2
     real:: A1, A2, A3, u
-    real:: temp1, temp2, temp3, factor
-    real:: temp1w, temp2w, temp3w
     
     real, dimension(:),     allocatable :: zetai
     real, dimension(:,:),   allocatable :: Jni
@@ -152,6 +145,7 @@
     real, parameter:: C = 2.99792458e8
     real, parameter:: PI = 3.141592653597932384
     real :: cosbeta_n_m, sinbeta_n_m
+
     common/upcom/akprl_min    
     
     allocate( zbeta(nkx1:nkx2,nky1:nky2) )
@@ -256,28 +250,27 @@
        do n = nkx1, nkx2
           do m = nky1, nky2
 
-             xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
-             xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
-             xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
+             xkrhon  = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
+             xketan  = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
+             xkprln  = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
              xkperpn = sqrt(xkrhon**2 + xketan**2)
              
             ! ------------------------------------
             ! Optional: leave out upshift in xkprl
             ! --------------------------------- --          
-              if (upshift .eq. 0)xkprln = uzz * xkphi
-!             if (upshift .eq. 0)xkprln = nphi /rt
-              
+             if (upshift .eq. 0) xkprln = uzz * xkphi
+
              if (upshift .eq. -1) then      
-                if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
+                if (xkperpn .gt. xk_cutoff) xkprln = uzz * xkphi
              end if           
-             
+
              
              sgn_kprl = sign(1.0, xkprln)
-             akprl = abs(xkprln)                      
+             akprl    = abs(xkprln)                      
                      
-!            ----------------------------------------------
-!            Optional: Don't allow xkprl to be 0 (upshift = -2)
-!            ----------------------------------------------        
+!            --------------------------------------------------- !
+!            Optional: Don't allow xkprl to be 0 (upshift = -2)- !
+!            --------------------------------------------------- !      
              if (upshift .eq. -2) then
                 if (akprl .lt. akprl_min) then
                     xkprln = akprl_min * sgn_kprl
@@ -318,8 +311,8 @@
 
                 if(gammab .gt. 1.0e-05)then
                    descrim = 1. - 4. * gammab * y0
-                   if (descrim .ge. 0.0) y =   y0
-                   if (descrim .lt. 0.0) y = - y0
+                   if (descrim >= 0.0) y =   y0
+                   if (descrim <  0.0) y = - y0
                    fgam = (1. - sqrt(1. -  4. * gammab * y) )  &
      &                / (2. * gammab * y)
                 endif
@@ -364,22 +357,21 @@
     
        do n = nkx1, nkx2
           do m = nky1, nky2
-
-             xkrhon = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
-             xketan = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
-             xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
+             xkrhon  = uxx * xkxsav(n) + uxy * xkysav(m) + uxz * xkphi
+             xketan  = uyx * xkxsav(n) + uyy * xkysav(m) + uyz * xkphi
+             xkprln  = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
 
              xkperpn = sqrt(xkrhon**2 + xketan**2) + 1.0e-08
         
-             zeta0 = xkperpn * uperpk * c * sqmut0i * wci
+             zeta0   = xkperpn * uperpk * c * sqmut0i * wci
           
-             if (zeta0 .gt. zetamax) zetamax = zeta0
-             if (zeta0 .lt. zetamin) zetamin = zeta0
+             if (zeta0 > zetamax) zetamax = zeta0
+             if (zeta0 < zetamin) zetamin = zeta0
           end do
        end do
     
 
-       if(zetamax .eq. zetamin)then
+       if (zetamax == zetamin) then
           zetamax =  1.0e-06
           zetamin = -1.0e-06
        end if
@@ -421,7 +413,6 @@
             ! Optional: leave out upshift in xkprl
             ! --------------------------------- --          
              if (upshift .eq. 0)xkprln = uzz * xkphi
-!             if (upshift .eq. 0)xkprln = nphi / rt
               
              if (upshift .eq. -1) then      
                 if (xkperpn  .gt. xk_cutoff) xkprln = uzz * xkphi
@@ -446,7 +437,7 @@
              
       
              l = 1
-             if(xkprln .eq. 0)xkprln = 1.0e-06
+             if(xkprln .eq. 0.)xkprln = 1.0e-06
              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
      &                                    * gradprlb / bmod)
 
@@ -568,6 +559,7 @@
 !            ---------------------------------            
 
              xkprln   = uzx * xkxsav(n) + uzy * xkysav(m) + uzz * xkphi
+             if(xkprln .eq. 0.)xkprln = 1.0e-06
              
              NPARA_sav(n, m) = xkprln * C * WI
                              
@@ -579,6 +571,7 @@
              
              dKdL_giv = (alpha / omgrf)**2 * dkprldl        
 
+
              if (rho .gt. 1.0) then
                 zetal = (omgrfc - l * omgc) / (xkprln * alpha)
              else
@@ -586,7 +579,6 @@
              end if     
 
              
-             if(xkprln .eq. 0)xkprln = 1.0e-06
              gammab = abs(l * omgc / (2.0 * alpha * xkprln**2)  &
      &                                    * gradprlb / bmod)    
 !             if(abs(gammab) .gt. 1000.0) gammab = 1000.0

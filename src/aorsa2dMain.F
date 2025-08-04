@@ -17,9 +17,6 @@
       use ql_myra_mod
 
       use wdot_mod
-      use wdot_sum_mod
-
-
 
       use profile_mod
 
@@ -33,8 +30,8 @@
       ! constants
       real, parameter ::  q = 1.6e-19, qe = -q
       complex, parameter :: zi = cmplx(0.0,1.0)
-      real, parameter :: eps0 = 8.85e-12, pi = 3.141592654, 
-     &       twopi = 2.0 * pi, 
+      real, parameter :: eps0 = 8.85e-12, pi = 3.141592654,
+     &       twopi = 2.0 * pi,
      &       xmu0 = 1.26e-06, clight = 1.0 / sqrt(eps0 * xmu0)
 
 
@@ -211,29 +208,29 @@
 
       real :: dens(n_psi_dim), rho_a(n_psi_dim)
 
-      real, dimension(:),   allocatable :: UPERP, UPARA
-      real, dimension(:),   allocatable :: VPERP, VPARA
-      real, dimension(:),   allocatable :: UPERP_work, UPARA_work
+      real, dimension(:),     allocatable :: UPERP, UPARA
+      real, dimension(:),     allocatable :: VPERP, VPARA
+      real, dimension(:),     allocatable :: UPERP_work, UPARA_work
 
-      real, dimension(:,:), allocatable :: DFDUPERe, DFDUPARe
+      real, dimension(:,:),   allocatable :: DFDUPERe, DFDUPARe
 
-      real, dimension(:,:), allocatable :: DFDUPER1, DFDUPAR1
-      real, dimension(:,:), allocatable :: DFDUPER2, DFDUPAR2
-      real, dimension(:,:), allocatable :: DFDUPER3, DFDUPAR3
-      real, dimension(:,:), allocatable :: DFDUPER4, DFDUPAR4
-      real, dimension(:,:), allocatable :: DFDUPER5, DFDUPAR5
-      real, dimension(:,:), allocatable :: DFDUPER6, DFDUPAR6
+      real, dimension(:,:),   allocatable :: DFDUPER1, DFDUPAR1
+      real, dimension(:,:),   allocatable :: DFDUPER2, DFDUPAR2
+      real, dimension(:,:),   allocatable :: DFDUPER3, DFDUPAR3
+      real, dimension(:,:),   allocatable :: DFDUPER4, DFDUPAR4
+      real, dimension(:,:),   allocatable :: DFDUPER5, DFDUPAR5
+      real, dimension(:,:),   allocatable :: DFDUPER6, DFDUPAR6
 
-      real, dimension(:),   allocatable :: FPERPe
-      real, dimension(:),   allocatable :: FPERP1
-      real, dimension(:),   allocatable :: FPERP2
-      real, dimension(:),   allocatable :: FPERP3
-      real, dimension(:),   allocatable :: FPERP4
-      real, dimension(:),   allocatable :: FPERP5
-      real, dimension(:),   allocatable :: FPERP6
+      real, dimension(:),     allocatable :: FPERPe
+      real, dimension(:),     allocatable :: FPERP1
+      real, dimension(:),     allocatable :: FPERP2
+      real, dimension(:),     allocatable :: FPERP3
+      real, dimension(:),     allocatable :: FPERP4
+      real, dimension(:),     allocatable :: FPERP5
+      real, dimension(:),     allocatable :: FPERP6
 
 
-      real, dimension(:,:), allocatable :: f
+      real, dimension(:,:),   allocatable :: f
 
       real, dimension(:,:,:), allocatable :: fe_cql_cart
       real, dimension(:,:,:), allocatable :: dfe_cql_uprp
@@ -411,8 +408,8 @@
       real :: xkthrho, wphase, vsound, domgk, xkthdx, omgestar, rhoi10,
      &   v0i, vthi10, vthe, vthi, vphase, rhoi1overl, rnz, eta2,
      &   xk0, shearedge, eta1, xn1, xmi1, xmh, xme, qi1, xmi2,
-     &   xmi3, t0i, t0i2, t0i3, t0e, teedge, 
-     &   omgci10, omgrf, xmax, qi2, qi3, xlnlam, 
+     &   xmi3, t0i, t0i2, t0i3, t0e, teedge,
+     &   omgci10, omgrf, xmax, qi2, qi3, xlnlam,
      &   costh, sinth, radius, rnx,  rny, rnphi
       real :: ymaxp, yminp, xminp, xmaxp
       complex ::  omgrfc
@@ -428,7 +425,7 @@
 
       real :: xprimec(nxmx), caprc(nxmx), xcourse(nxmx), capr(nxmx),
      &     xprime(nxmx), x(nxmx), dx, dxc, drdx(nxmx), d2rdx2(nxmx)
-      
+
       real :: dbxdx, dbxdy, dbydx, dbydy, dbphidx, dbphidy,
      &   d2bxdx2, d2bydx2, d2bzdx2,
      &   d2bxdxy, d2bydxy, d2bzdxy,
@@ -1107,6 +1104,100 @@ c     &         itable,jtable,ntable,mtable
 
 
 !     Initialize arrays
+       UPERP=0. ;, UPAR=0. ;  VPERP=0. ; VPAR=0. ; UPERP_work=0.
+
+       DFDUPERe=0. ; DFDUPARe=0.
+
+       DFDUPER1=0. ; DFDUPAR1=0.
+       DFDUPER2=0. ; DFDUPAR2=0.
+       DFDUPER3=0. ; DFDUPAR3=0.
+       DFDUPER4=0. ; DFDUPAR4=0.
+       DFDUPER5=0. ; DFDUPAR5=0.
+       DFDUPER6=0. ; DFDUPAR6=0.
+
+       FPERPe=0.
+       FPERP1=0.
+       FPERP2=0.
+       FPERP3=0.
+       FPERP4=0.
+       FPERP5=0.
+       FPERP6=0.
+
+
+       f=0.
+
+       fe_cql_cart=0.
+       dfe_cql_uprp=0.
+       dfe_cql_uprl=0.
+
+       f1_cql_cart=0.
+       df1_cql_uprp=0.
+       df1_cql_uprl=0.
+
+       f2_cql_cart=0.
+       df2_cql_uprp=0.
+       df2_cql_uprl=0.
+
+       f3_cql_cart=0.
+       df3_cql_uprp=0.
+       df3_cql_uprl=0.
+
+       f4_cql_cart=0.
+       df4_cql_uprp=0.
+       df4_cql_uprl=0.
+
+       f5_cql_cart=0.
+       df5_cql_uprp=0.
+       df5_cql_uprl=0.
+
+       f6_cql_cart=0.
+       df6_cql_uprp=0.
+       df6_cql_uprl=0.
+
+       bqlavg_e=0.
+       cqlavg_e=0.
+       eqlavg_e=0.
+       fqlavg_e=0.
+
+       bqlavg_i1=0.
+       cqlavg_i1=0.
+       eqlavg_i1=0.
+       fqlavg_i1=0.
+
+       bqlavg_i2=0.
+       cqlavg_i2=0.
+       eqlavg_i2=0.
+       fqlavg_i2=0.
+
+       bqlavg_i3=0.
+       cqlavg_i3=0.
+       eqlavg_i3=0.
+       fqlavg_i3=0.
+
+       bqlavg_i4=0.
+       cqlavg_i4=0.
+       eqlavg_i4=0.
+       fqlavg_i4=0.
+
+       bqlavg_i5=0.
+       cqlavg_i5=0.
+       eqlavg_i5=0.
+       fqlavg_i5=0.
+
+       bqlavg_i6=0.
+       cqlavg_i6=0.
+       eqlavg_i6=0.
+       fqlavg_i6=0.
+
+       bqlavg_work=0.
+       cqlavg_work=0.
+       eqlavg_work=0.
+       fqlavg_work=0.
+
+
+
+
+
 
       capr=0.0; xprime=0.0; x=0.0; drdx=0.0; d2rdx2=0.0
 
@@ -1974,7 +2065,7 @@ c            write(6, 1022)rnz
                if (eqtype=='mirror') then !JCW mirror
                   pitch(i,j) = bxn(i,j)/byn(i,j) !1.e10 ! ~ inf JCW
                else
-                  pitch(i,j) = btau(i,j) / bzeta(i,j) 
+                  pitch(i,j) = btau(i,j) / bzeta(i,j)
                end if
 
 *              ---------------------------
@@ -2259,12 +2350,12 @@ c     1             bzeta(i,j)
                uzz(i, j) =   bzn(i, j)
 
 !     Rotation matrix
-!                      
-!       1-bxn^2   
-!   U = 
+!
+!       1-bxn^2
+!   U =
 !        bxn         byn         bzn
 !
-               
+
                dxuxx(i,j)  = dxsqx
                dxxuxx(i,j) = dxxsqx
                dyuxx(i,j)  = dysqx
@@ -2870,7 +2961,7 @@ c--   Note: the code gives slightly smoother results with dx/2.0 added
          capr(i) = rt + x(i)
          if (eqtype=='mirror' .or. capr(i).lt.1.e-3) then
             xkphi(i) = nphi / 1.e-3  !JCW flag this, might be a better way to handle
-         else 
+         else
             xkphi(i) = nphi / capr(i)
          end if
       end do
@@ -2879,9 +2970,9 @@ c--   Note: the code gives slightly smoother results with dx/2.0 added
       if (rt > 1.e-3) then !1mm
          akprl_min = 0.25 * abs(nphi / rt)
       else
-#ifdef DEBUG         
+#ifdef DEBUG
          write(*,*) "rt small :", rt,capr(1:nxmx) !capr seems to be zero as well? capr defined later
-#endif         
+#endif
          akprl_min = 0.25 / capr(nnodex-1)
 c      akprl_min = abs(nphi / rt)
       end if
@@ -3126,7 +3217,11 @@ c         if (myid==0)write(6, 1312)n, rh(n), dh(n)
       do i = 1, nnodex
          do j = 1, nnodey
             capr_bpol(i,j) = capr(i) * bpol(i,j)
-            ipsi(i,j)= capr(i) * bzeta(i,j) * bmod(i,j)
+            if (eqtype=='mirror' .or. capr(i).lt.1.e-3) then
+               ipsi(i,j)= capr_bpol(i,j) ! the same makes the most sense
+            else
+               ipsi(i,j)= capr(i) * bzeta(i,j) * bmod(i,j) !because bmod to added from eqdsk setup for some reason
+            end if
          end do
       end do
 
@@ -3375,8 +3470,8 @@ c                  antlc = pi / (xk0 * antlen)
       if (j_cur_max==0) then
          write(*,*) 'warning check doesnt find max for j_cur_max'
          stop !j_cur_max=nnodex
-      end if      
-        
+      end if
+
 ! Set k_phi = n_phi/R_ant where Rant is the location of the current peak
       write(*,*) 'current location',i_cur_max,j_cur_max,
      &   cur_mod_max,capr(i_cur_max),y(j_cur_max)
@@ -5541,7 +5636,7 @@ c              if (myid==0) then
 
                   if (ismine1) then !each processor does its part of the matrix
 
-                  
+
                   cexpkxky = xx(n, i) * yy(m, j)
 
                   !plasma rf conductivity
@@ -6360,7 +6455,7 @@ c              if (myid==0) then
      &                           + sig4zz + sig5zz + sig6zz + sigslozz
 
 !     Sig = SigE + SigI(:)
-                     
+
                      xkxx = 1.0 + zi / (eps0 * omgrf) * sigxx
                      xkxy =       zi / (eps0 * omgrf) * sigxy
                      xkxz =       zi / (eps0 * omgrf) * sigxz
@@ -6374,12 +6469,12 @@ c              if (myid==0) then
                      xkzz = 1.0 + zi / (eps0 * omgrf) * sigzz
 
 !     Chik = I + zi/(eps0 * omgrf) * Sig
-                     
+
                      rnx   = xkxsav(n) / xk0
                      rny   = xkysav(m) / xk0
                      rnphi = xkphi(i)  / xk0
 
-                     
+
                      dxx = (xkxx - rny**2 - rnphi**2) * uxx(i,j)
      &                +  xkyx * uyx(i,j)
      &                +  xkzx * uzx(i,j)
@@ -6522,7 +6617,7 @@ c              if (myid==0) then
 *                 --------------------------
 
 !     JCW for regularity at R=0, current source should be continuous -> xb,xc,xd/=0
-                  
+
                   if(psi(i,j) .gt. psilim .and. nboundary .eq. 1
      &               .or. nboundary .eq. 0 .and. i .eq. 1
      &               .or. nboundary .eq. 0 .and. i .eq. nnodex
@@ -6886,10 +6981,10 @@ c--   Operations for complex matrix factor and solve:
           l2norm_res = l2norm_res + abs(p_brhs_copy(i)-brhs_tmp(i))**2
           l2norm_rhs = l2norm_rhs + abs(p_brhs_copy(i))**2
         enddo
-       
+
         l2norm_res = sqrt(l2norm_res)
 
-#ifdef DEBUG        
+#ifdef DEBUG
         write(*,*) 'l2norm_res : ', l2norm_res
         write(*,*) 'l2norm_rhs : ', l2norm_rhs
 #endif
@@ -7962,7 +8057,8 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
 
       if (use_new_wdot .eqv. .true.) then
          call wdot_new_maxwellian(z2_electron,
-     &   wdote, darea, nrhomax, nnoderho, drho,
+     &   wdote,
+     &   darea, nrhomax, nnoderho, drho,
      &   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
      &   nkx1, nkx2, nky1, nky2, nkdim1, nkdim2, mkdim1, mkdim2,
      &   xme, qe, xnea, xkte, omgce, omgpe2, lmaxe,
@@ -9443,7 +9539,7 @@ c                 c_ehst = 1.0
 *        ----------------------------------------------------------------
 *        Write quasilinear diffusion coefficients to file out_cql3d.coef2
 *        ----------------------------------------------------------------
-         if(eta2 >= 100.*epsilon(eta1) .and. ndisti2 .eq. 1)then
+         if(eta2 >= 100.*epsilon(eta2) .and. ndisti2 .eq. 1)then
 
             write (42, 309) nuper
             write (42, 309) nupar
@@ -9656,7 +9752,7 @@ c           if(nnode_local .le. 0)xjprl(i,j) = redotj_ehst(i,j)
          call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
      &        capr, rt, nxmx, nymx, j_cur_max)
       end if
-      
+
       call sgrator(x, y, xjprl, 1, nnodex, 1, nnodey, xjtot,
      &   capr, rt,  nxmx, nymx)
 
@@ -10000,7 +10096,7 @@ c      go to 9945
 
       do n = 1, nnoderho - 1
          angle = atan2(pitch_avg(n), 1.0)
-         angle = angle / pi * 180.0  !JCW some inf here 
+         angle = angle / pi * 180.0  !JCW some inf here
          if(myid==0)write(6, 1312)n, rhon(n), pitch_avg(n), angle,
      &                       beta_avg(n), qsafety_avg(n), epsn(n)
          if(myid==0)write(15,1312)n, rhon(n), pitch_avg(n), angle,
@@ -10009,7 +10105,7 @@ c      go to 9945
 
 
 
-
+!JCW review flow calc.
 *     --------------
 *     Solve for Jhat
 *     --------------
@@ -10049,9 +10145,9 @@ c      go to 9945
          if (rhom1avg(n) .gt. 1.0e-10)then
 
             gpsi_avg(n) = (xjhat(n) - rhom1avg(n) * kpsi_avg(n) * b0)
-     &         / (rhom1avg(n) * rt * (1. + 1.5 * epsn(n)**2))
+     &         / (rhom1avg(n)  * (1. + 1.5 * epsn(n)**2)) !/rt
 
-            term2 = rhom1avg(n) * kpsi_avg(n) * b0
+            !jcw not used ! term2 = rhom1avg(n) * kpsi_avg(n) * b0
 
             if(myid==0) then
                write(6,  1312)n, xjhat(n), yn(n)
@@ -10254,7 +10350,7 @@ c            uzeta(i,j) = jhat(i,j) / rhom1(i,j)
      &                    pedotj6, pcedotj6,
      &                    pedotjs, pcedotjs,
      &                    pedotjt, pcedotjt
- 
+
         z_load = pedotjt / (i_ant**2)
          write(15, 169)
          write(15, 1148) i_ant
@@ -11798,7 +11894,7 @@ c      write(6,*) "finished plots; starting deallocation"
   102 format (2i10)
       return
       end
-      
+
 
 !**************************************************************************
 

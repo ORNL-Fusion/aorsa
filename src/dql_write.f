@@ -150,7 +150,7 @@ c     from the text file FILE_txt
        write (6, *) 'nupar = ', nupar
        write (6, *) 'nnoderho = ', nnoderho                          
 
-       write (6, *) "bqlavg(32,70,10) = ", bqlavg(32,70,10)
+       write (6, *) "bqlavg(4,4,4) = ", bqlavg(4,4,4)
        write(6,*) 'xmi =', xmi                 
        write(6,*) 'vc_cgs =', vc_cgs
        write(6,*) 'UminPara =', UminPara 

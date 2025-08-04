@@ -9,7 +9,7 @@ c
      &   bmod_mid, capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
      &   i_psi, dldb_tot12, dldbavg, n_prof_flux, rhomax)
      
-      use size_mod            
+      use size_mod
       
       implicit none
 
@@ -718,7 +718,7 @@ c      write(29,1000)nkzm
 *     Find ytop and ybottom
 *     ---------------------          
       
-      i = imaxis * .7 !jcw magic number
+      i = imaxis * .7 !jcw magic number could be zero, revisit
       
       ytop_auto = 0.0                             
       do j = nyeqd/2, nyeqd
@@ -1887,6 +1887,7 @@ c
      &   qs, qs1, qsafety, r0, b0, 
      &   rho_tors, rho_tor2d)
 
+      use aorsa2din_mod, only:eqtype
       implicit none
 
 
@@ -1999,8 +2000,11 @@ c           calculate fields:
             q = curv2(a, ma, psis, qs, ypq, sigma)
             rhot = curv2(a, ma, psis, rho_tors, yprho, sigma)
 
-
-            bphi = f / r  !jcw div r
+            if (eqtype=='mirror') then
+               bphi = 0
+            else
+               bphi = f / r     !jcw div r
+            end if
             bpsi0 = 0.0
 
 

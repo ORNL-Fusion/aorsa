@@ -87,7 +87,6 @@ c
 
       subroutine isosig(alfa,beta,chrg,vm,rdx,rdz,nhmin,nhmax,sig)
 
-
 *     ------------------------------------------------------------------------
 *     calculates Hermitian part of dispersion tensor for arbitrary isotropic
 *     distribution function of a single plasma species
@@ -106,16 +105,15 @@ c
 *     however, nhmin and nhmax place limits on allowed values
 *------------------------------------------------------------------------
 
-
       dimension bk(3)
       complex rdx,rx,rx2
       complex sig(3,3),sv(6),v(6),vc(6)
       common /int/rx,rx2,b,bet,vmax,rz,rz2,u,n
-c
+
       external intz1
       data ncall/0/,pi/3.141592654/
-c
-c
+
+
       ncall=ncall+1
       vmax=vm
       bet=beta
@@ -124,62 +122,58 @@ c
       rx2=rx**2
       rz=abs(rdz)
       rz2=rz**2
-c
-      do 10 i=1,6
-10    sv(i)=cmplx(0.,0.)
-c
+
+      do i=1,6
+         sv(i)=cmplx(0.,0.)
+      end do
+
 c do special case nz=0
-c
-      if (rz .eq.0.) go to 300
-c
-c
-calculate contribution from each cyclotron harmonic
-c
-c
-c
-      do 200 n=nhmin,nhmax
-c
+
+      if (rz /= 0.) then
+
+! calculate contribution from each cyclotron harmonic
+
+      do n=nhmin,nhmax
+
 c determine if resonant particles exist for this harmonic.  If not
 c there is no contribution.
-c
-      if (abs(1.-n*b).ge. rz*vmax) go to 200
-c
-      x0=0.
-      x1=1.
-      np=30
-      ndim=6
-      call simpc (x0,x1,np,intz1,v,ndim)
-c
-calculate contribution from velocity cutoff
-c
 
-c
-calculate u resonant
-c
-      u=(1.-n*b)/vmax/rz
-c
+         if (abs(1.-n*b).ge. rz*vmax) cycle
+
+         x0=0.
+         x1=1.
+         np=30
+         ndim=6
+         call simpc (x0,x1,np,intz1,v,ndim)
+
+! calculate contribution from velocity cutoff
+
+! calculate u resonant
+         u=(1.-n*b)/vmax/rz
+
 c if u is too big there are no resonant particles, u-parallel integral is 0
-c
-      x=sqrt(1.-u**2)
-      call mofx (x,vc)
-      call dgdv2(x,dg,gcut)
-c
-c
 
-      do 100 i=1,6
-100   sv(i)=sv(i)+v(i)-gcut*vc(i)/rz/2.
+         x=sqrt(1.-u**2)
+         call mofx (x,vc)
+         call dgdv2(x,dg,gcut)
 
-200   continue
-c
-c
-calculate normalizaton
-c
-      anorm=-4.*pi**2*alfa
-c
-240   do 250 i=1,6
-250   sv(i)=anorm*cmplx(0.,1.)*sv(i)
-c
-300   continue
+         do i=1,6
+            sv(i)=sv(i)+v(i)-gcut*vc(i)/rz/2.
+         end do
+
+      end do
+
+
+! calculate normalizaton
+
+      anorm = -4.*pi**2*alfa
+
+      do i=1,6
+         sv(i)=anorm*cmplx(0.,1.)*sv(i)
+      end do
+
+      end if  ! rz/=0
+      
       sig(1,1)=sv(1)
       sig(1,2)=sv(2)
       sig(1,3)=sv(3)
@@ -189,11 +183,7 @@ c
       sig(3,1)=sig(1,3)
       sig(3,2)=-sig(2,3)
       sig(3,3)=sv(6)
-c
-c
-c
-c      call matout (sig,'ISOSIG',beta,'BETA',10)
-c
+
       return
       end
 

@@ -1274,7 +1274,7 @@ c     &    nnodex, nxmx, xnmin, xnmax, rmin_zoom, rmax_zoom)
       call ezplot1(title, titll, titlr, rhon_half, xn1avg,
      &   nnoderho_half, nrhomax)
 
-      title= 'Flux average minority temperature'
+      title= '<minority temperature>_{psi}'
       titll= 'kT2 (eV)'
       titlr='       '
       call ezplot1(title, titll, titlr, rhon_half, xkti2avg,
@@ -2998,7 +2998,7 @@ c--   plot log of Eb
       tity = 'Z (m)'
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j) = conjg(ealpha(i,j)) * ealpha(i,j)
+            fmod(i,j) = real(conjg(ealpha(i,j)) * ealpha(i,j))
             mod_Ealpha(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -3018,7 +3018,7 @@ c--   plot log of Eb
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j) = conjg(ebeta(i,j)) * ebeta(i,j)
+            fmod(i,j) = real(conjg(ebeta(i,j)) * ebeta(i,j))
             mod_Ebeta(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -3042,7 +3042,7 @@ c--   plot log of Eb
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j)   = conjg(eb(i,j)) * eb(i,j)
+            fmod(i,j)   = real(conjg(eb(i,j)) * eb(i,j))
             mod_Eb(i,j) = sqrt(fmod(i,j))
          end do
       end do
@@ -3091,7 +3091,7 @@ c--   plot log of Eb
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j)   = conjg(eplus(i,j)) * eplus(i,j)
+            fmod(i,j)   = real(conjg(eplus(i,j)) * eplus(i,j))
             mod_Eplus(i,j) = sqrt(fmod(i,j))
 c            if(i .eq. 70 .and. j .eq. 64)then
 c               write(6, *) 'R(70) = ', capr(i)
@@ -3126,7 +3126,7 @@ c            end if
 
       do i = 1, nnodex
          do j = 1, nnodey
-            fmod(i,j)   = conjg(eminus(i,j)) * eminus(i,j)
+            fmod(i,j)   = real(conjg(eminus(i,j)) * eminus(i,j))
             mod_Eminus(i,j) = sqrt(fmod(i,j))
 c            if(i .eq. 70 .and. j .eq. 64)then
 c               write(6, *) 'R(70) = ', capr(i)
@@ -3754,13 +3754,6 @@ c      end do
 
          allocate( UPERP(nuper) )
          allocate( UPARA(nupar) )
-         allocate( f_cql_cart(nuper, nupar, nnoderho) )
-
-         allocate( wperp1_cql(nnoderho) )
-         allocate( wpar1_cql(nnoderho) )
-
-         allocate( wperp2_cql(nnoderho) )
-         allocate( wpar2_cql(nnoderho) )
 
          allocate( bqlavg_i1(nuper, nupar, nnoderho) )
          allocate( cqlavg_i1(nuper, nupar, nnoderho) )
@@ -3772,7 +3765,7 @@ c      end do
 
          allocate( E_kick_2d (nupar, nnoderho) )
          allocate( f_cql_cart_2d (nupar, nuper) )
-
+         
 
          read (42, 3310) vc_cgs
          read (42, 3310) UminPara, UmaxPara
@@ -3800,6 +3793,15 @@ c      end do
 !        --------------------------------------------
 !        read data for plotting f(u_perp, u_parallel)
 !        --------------------------------------------
+         allocate( wperp1_cql(nnoderho) )
+         allocate( wpar1_cql(nnoderho) )
+         allocate( f_cql_cart(nuper, nupar, nnoderho) )
+         wperp1_cql = 0.; wparp1_cql = 0.;
+         
+         allocate( wperp2_cql(nnoderho) )
+         allocate( wpar2_cql(nnoderho) )
+         wperp2_cql = 0.; wparp2_cql = 0.;
+ 
 
          if (ndisti1 .eq. 1) then
          open(unit=237,file='out237',status='old',form='formatted')
@@ -3853,7 +3855,6 @@ c      end do
      &     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u),
      &     i_psi = 1, n_psi)
 
-
          read (238, 309) nuper
          read (238, 309) nupar
          read (238, 309) nnoderho
@@ -3871,8 +3872,10 @@ c      end do
          close (238)
          end if
 
- 4319    format(i10, 1p,1e16.8)
 
+ 4319    format(i10, 1p,1e16.8)
+         
+         if (ndisti1 .eq. 1) then
          title= 'Wperp1 and Wpar1 (keV)'
          titll= 'W (keV)'
          titlr='       '
@@ -3880,16 +3883,17 @@ c      end do
 
          call ezplot2q(title, titll, titlr, titlb, rhon_half,
      &      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax)
+         end if
+      
+         if (ndisti2 == 1) then
+            title= 'Wperp2 and Wpar2 (keV)'
+            titll= 'W (keV)'
+            titlr='       '
+            titlb = 'rho'
 
-
-         title= 'Wperp2 and Wpar2 (keV)'
-         titll= 'W (keV)'
-         titlr='       '
-         titlb = 'rho'
-
-         call ezplot2q(title, titll, titlr, titlb, rhon_half,
-     &      wperp2_cql, wpar2_cql, nnoderho_half, nrhomax)
-
+            call ezplot2q(title, titll, titlr, titlb, rhon_half,
+     &           wperp2_cql, wpar2_cql, nnoderho_half, nrhomax)
+         end if
 
 !       ---------------------------------
 !       2D plots of f(u, theta = const)
@@ -6830,7 +6834,7 @@ c
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
       if(y1max .eq. 0.0 .and. y1min .eq. 0.0) then
-         write(*,*) 'ezplot2', title,y1min,y1max
+         write(*,*) 'ezplot2: ', title,y1min,y1max
          return
       end if
       call a1mnmx(y2, nrmax, nr, y2min, y2max)
@@ -7631,7 +7635,7 @@ c
 
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
-      if(y1max .eq. 0.0 .and. y2min .eq. 0.0)return
+      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7736,14 +7740,12 @@ c--set up contour levels
 
 #ifdef DEBUG
       write(*,*) 'title: ', title
-#endif
       write(6, *)"fmax = ", fmax, "   fmin = ", fmin
       write(15,*)"fmax = ", fmax, "   fmin = ", fmin
+#endif
 
       iflag = 0
-       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
-c         write(6, *)"fmax = ", fmax
-c         write(6, *)"fmin = ", fmin
+      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
          iflag = 1
          return
       end if
@@ -7846,7 +7848,9 @@ c--Make a bit larger so the boundary doesn't get clipped
 c--Advance graphics frame and get ready to plot
 
       call pgsci(nblack)
-      call pgenv(xmin, xmax, ymin, ymax, 1, 0)
+!     call pgenv(xmin, xmax, ymin, ymax, 1, 0)
+      call pgswin(xmin, xmax, ymin, ymax)
+      CALL PGBOX  ('BCNST', 0.0, 0, 'BCNST', 0.0, 0)      
 
 c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
@@ -8766,7 +8770,7 @@ C
       DATA GG /0.0, 1.0/
       DATA GB /0.0, 1.0/
 C
-      DATA RL /-0.5, 0.0, 0.17, 0.33, 0.50, 0.67, 0.83, 1.0, 1.7/
+      DATA RL / 0.0, 0.0, 0.17, 0.33, 0.50, 0.67, 0.83, 1.0, 1.0/
       DATA RR / 0.0, 0.0,  0.0,  0.0,  0.6,  1.0,  1.0, 1.0, 1.0/
       DATA RG / 0.0, 0.0,  0.0,  1.0,  1.0,  1.0,  0.6, 0.0, 1.0/
       DATA RB / 0.0, 0.3,  0.8,  1.0,  0.3,  0.0,  0.0, 0.0, 1.0/
