@@ -286,7 +286,7 @@
       real:: bmod_plot(nrhomax)
 
 
-      real:: ff(101)
+      real:: ff(nlevmax)
       real:: q, omgrf, xk0, n0, clight, xmu0, eps0, rhoplasm
       real:: period, pi, time, dt
       real:: temax, temin, timin, tmin, tmax, timax, caprmaxp,
@@ -3694,16 +3694,10 @@ c      end do
 !        --------------------------------------------
 !        read data for plotting f(u_perp, u_parallel)
 !        --------------------------------------------
-         allocate( wperp1_cql(nnoderho) )
-         allocate( wpar1_cql(nnoderho) )
          allocate( f_cql_cart(nuper, nupar, nnoderho) )
-         wperp1_cql = 0.; wparp1_cql = 0.;
+         allocate( f_cql_cart_2d (nupar, nuper) )
+         f_cql_cart = 0.0 ; f_cql_cart_2d = 0.0
          
-         allocate( wperp2_cql(nnoderho) )
-         allocate( wpar2_cql(nnoderho) )
-         wperp2_cql = 0.; wparp2_cql = 0.;
- 
-
          if (ndisti1 .eq. 1) then
          open(unit=237,file='out237',iostat=ierr,iomsg=errio,
      &       status='old',form='formatted')
@@ -3728,8 +3722,6 @@ c      end do
          read (237, 309) nuper
          read (237, 309) nupar
          read (237, 309) nnoderho
-         allocate( f_cql_cart_2d (nupar, nuper) )
-         allocate( f_cql_cart(nuper, nupar, nnoderho) )
 
          read (237, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (237, 310)  (upara(i_upara), i_upara = 1, nupar)
@@ -3768,8 +3760,6 @@ c      end do
          read (238, 309) nupar
          read (238, 309) nnoderho
 
-         allocate( f_cql_cart_2d (nupar, nuper) )
-         allocate( f_cql_cart(nuper, nupar, nnoderho) )
 
          read (238, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (238, 310)  (upara(i_upara), i_upara = 1, nupar)
@@ -3785,7 +3775,7 @@ c      end do
          end if
 
 
-         if (ndisti1 == -1) then
+         if (ndisti1 == 1) then
          title= 'Wperp1 and Wpar1 (keV)'
          titll= 'W (keV)'
          titlr='       '
@@ -7916,8 +7906,6 @@ c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)
 c
 c***************************************************************************
 c
-
-
 
       subroutine ezconpx(r, theta, f, flevel, nr, nth, nlevel0,
      &   nrmax, nthmax, nlevmax, xg, yg, title, r0)

@@ -77,7 +77,7 @@
 
 
       complex:: work(nphmax), zi, csum, curent(nphmax),cn(ntmin : ntmax)
-      complex:: cur3d(nphimx), jfun, cursum(nphmax)
+      complex:: cur3d(nphimx), cursum(nphmax)
       complex:: cexpkz
 
       real:: rhon(nrhomax)

@@ -82,7 +82,7 @@
 
 
       complex:: work(nphmax), zi, csum, curent(nphmax),cn(ntmin : ntmax)
-      complex:: cur3d(nphimx), jfun, cursum(nphmax), cexpkz
+      complex:: cur3d(nphimx), cursum(nphmax), cexpkz
       complex:: div_x, div_y, div_z, div_j
 
 
@@ -117,7 +117,6 @@
 
       complex, dimension(:,:), allocatable :: ex, ey, ez,
      &   bxwave, bywave, bzwave
-
 
       real:: rhon(nrhomax)
       real:: ntilda_max
@@ -261,8 +260,6 @@
       real, dimension (:, :, :), allocatable :: rho_sum
 
       integer::  nsum
-
-      external jfun
 
       t1 = second1(dummy)
 
@@ -2718,24 +2715,23 @@ c     skip a line
 
 
       return
-      end
 
+      contains 
 c
 c********************************************************************
 c
 
       complex function jfun(z)
 
-      use aorsa2din_mod
+!      use aorsa2din_mod, only: nstrap,wd,zmax,zmin,amplt,phase_array
 
       implicit none
 
-      complex:: jfun
       integer:: n
 
-      real:: z, zn, z0, phin, zdiff, zdiff1, zdiff2, dphi
+      real:: z, zn, z0, phin, zdiff, zdiff1, zdiff2
 
-      complex, parameter:: zi = cmplx(0., 1.) pi = 3.141592654
+      complex, parameter:: zi = cmplx(0., 1.), pi = 3.141592654
 
       z0 = -wd * (real(nstrap) - 1.) / 2.
 
@@ -2764,12 +2760,12 @@ c        write (6, *) "phin = ", phin
       end do
 
       return
+      end function jfun
       
-      contains
       
       complex function fun1(z)
       !>  Filter fn for z within strap width from namelist input
-         use aorsa2din_mod, only: xlt
+!         use aorsa2din_mod, only: xlt
          real:: zabs, z
 
          zabs=abs(z)
@@ -2778,61 +2774,12 @@ c        write (6, *) "phin = ", phin
 
       return
       end function fun1
-      end function jfun
 
 
 c
 c***************************************************************************
 c
-      subroutine fftn2(ftheta, work, ntheta, nthmax, mpmin, mpmax, cn)
 
-      implicit none
-
-      integer:: nhalf, mpol, m, nthmax, ntheta, mpmin, mpmax
-
-      complex:: ftheta(nthmax), work(nthmax),  cn(mpmin : mpmax)
-
-      nhalf = ntheta / 2
-
-      do m = 1, ntheta
-         work(m) = ftheta(m)
-      end do
-
-      call four1(work, ntheta, -1)
-
-      do m = 1, ntheta
-         mpol = m - 1
-         if(mpol .gt. nhalf)mpol = mpol - ntheta
-         cn(mpol) = work(m) / ntheta
-      end do
-
-      return
-      end
-
-c
-c***************************************************************************
-c
-
-      subroutine dgrate(x, f, nx1, nx2, ans, nxmax)
-
-      implicit none
-
-      integer:: n, nx1, nx2, nxmax
-      real:: f(nxmax), x(nxmax), ans
-
-      ans=0.0
-
-      do n=nx1,nx2-1
-         ans=ans+(f(n)+f(n+1))/2.*(x(n+1)-x(n))
-      end do
-
-      return
-      end
-
-
-c
-c***************************************************************************
-c
       subroutine fftin2(ftheta, work, ntheta, nthmax, mpmin, mpmax, cn)
 
       implicit none
@@ -3008,222 +2955,42 @@ c
 c
 c***************************************************************************
 c
-      subroutine psigr3(f, npsi, ntheta, nphi, ans, psi, theta, phi,
-     1   rootg, r0, nrmax, nthmax, nphimx)
+      subroutine intplt_phi(xgiv, ygiv, fout, nx, ny, f, nxmax, nymax,
+     &     dx, dy)
 
-      data pi/3.141592654/
+      implicit none
+      
+      integer:: nx, ny, nxmax, nymax, n, m, mp1
+      real:: x, y, xgiv, ygiv, dx, dy, zeta, eta, a, b, c, d, fout
+      real:: f(nxmax, nymax)
 
-      dimension f(nrmax,nthmax,nphimx), psi(nrmax),
-     1   theta(nthmax), phi(nphimx),
-     1   rootg(nrmax,nthmax)
+      x = xgiv
+      y = ygiv
 
-      ans=0.0
+      fout = 0.0
 
-      do k=1,nphi
+      n = int(x / dx) + 1
+      m = int(y / dy) + 1
 
-         if(k.eq.2)ansz1=ansz
-         if(k.gt.1)anszm1=ansz
-         if(k.gt.1)dphi=phi(k)-phi(k-1)
+      if (n .ge. nx) return
 
-         ansz=0.0
+      if (m .eq. ny) mp1 = 1
+      if (m .lt. ny) mp1 = m + 1
 
-         do n=1,npsi-1
-            dpsi=psi(n+1)-psi(n)
+      zeta = (x - (n - 1) * dx) / dx
+      eta  = (y - (m - 1) * dy) / dy
 
-            do m=1,ntheta-1
-               dtheta=theta(m+1)-theta(m)
-               ansz=ansz+dpsi*dtheta
-     &            *(rootg(n,m)*f(n,m,k)
-     &            +rootg(n+1,m)*f(n+1,m,k)
-     &            +rootg(n,m+1)*f(n,m+1,k)
-     &            +rootg(n+1,m+1)*f(n+1,m+1,k))/4.
-            end do
-         end do
+      a = f(n, m)
+      b = f(n+1 ,m) - f(n, m)
+      c = f(n, mp1) - f(n, m)
+      d = f(n+1, mp1) + f(n, m) - f(n+1, m) - f(n, mp1)
 
-         m=ntheta
-         dtheta=2.0*pi-theta(m)
-
-         do n=1,npsi-1
-            dpsi=psi(n+1)-psi(n)
-            ansz = ansz + dpsi * dtheta
-     &        *(rootg(n,m) * f(n,m,k)
-     &         +rootg(n+1,m) * f(n+1,m,k)
-     &         +rootg(n,1) * f(n,1,k)
-     &         +rootg(n+1,1) * f(n+1,1,k))/4.0
-         end do
-
-         if(k.gt.1)ans=ans+(anszm1+ansz)/2.0*dphi
-
-      end do
-
-      k=nphi+1
-      dphi=2.*pi-phi(k-1)
-      ans=ans+(ansz+ansz1)/2.0*dphi
+      fout = a + b * zeta + c * eta + d * zeta * eta
 
       return
-      end
-c
-c***************************************************************************
-c
-      subroutine psig3c(f,npsi,ntheta,nphi,ans,psi,theta,phi,
-     &   rootg,r0,nrmax,nthmax,nphimx)
-      real, parameter:: pi=3.141592654
-      dimension f(nrmax,nthmax,nphimx),psi(nrmax),
-     &   theta(nthmax),phi(nphimx),
-     &   rootg(nrmax,nthmax)
-      complex:: f,ansz,ans,anszm1,ansz1
-      ans=0.0
-      do k=1,nphi
-      if(k.eq.2)ansz1=ansz
-      if(k.gt.1)anszm1=ansz
-      if(k.gt.1)dphi=phi(k)-phi(k-1)
-      ansz=0.0
-      do n=1,npsi-1
-        dpsi=psi(n+1)-psi(n)
-        do m=1,ntheta-1
-          dtheta=theta(m+1)-theta(m)
-          ansz=ansz+dpsi*dtheta
-     &      *(rootg(n,m)*f(n,m,k)
-     &      +rootg(n+1,m)*f(n+1,m,k)
-     &      +rootg(n,m+1)*f(n,m+1,k)
-     &      +rootg(n+1,m+1)*f(n+1,m+1,k))/4.
-        end do
-      end do
-      m=ntheta
-      dtheta=2.0*pi-theta(m)
-      do n=1,npsi-1
-        dpsi=psi(n+1)-psi(n)
-        ansz=ansz+dpsi*dtheta
-     &     *(rootg(n,m)*f(n,m,k)
-     &     +rootg(n+1,m)*f(n+1,m,k)
-     &     +rootg(n,1)*f(n,1,k)
-     &     +rootg(n+1,1)*f(n+1,1,k))/4.0
-      end do
-      if(k.gt.1)ans=ans+(anszm1+ansz)/2.0*dphi
-      end do
-      k=nphi+1
-      dphi=2.*pi-phi(k-1)
-      ans=ans+(ansz+ansz1)/2.0*dphi
-      return
-      end
-c
-c***************************************************************************
-c
-      subroutine intplc(rgiv,thegiv,fl,nr,nth,f,nrmax,nthmax,
-     &   dr,dtheta,rwall)
-      dimension f(nrmax,nthmax)
-      complex:: fl,f,a,b,c,d
-      if(rgiv.ge.rwall)return
-      r=abs(rgiv)
-      theta=abs(thegiv)
-      fl=0.0
-      n=int(r/dr)+1
-      m=int(theta/dtheta)+1
-      if(n.ge.nr)return
-      if(m.eq.nth)mp1=1
-      if(m.lt.nth)mp1=m+1
-      zeta=(r-(n-1)*dr)/dr
-      eta=(theta-(m-1)*dtheta)/dtheta
-      a=f(n,m)
-      b=f(n+1,m)-f(n,m)
-      c=f(n,mp1)-f(n,m)
-      d=f(n+1,mp1)+f(n,m)-f(n+1,m)-f(n,mp1)
-      fl=a+b*zeta+c*eta+d*zeta*eta
-  300 format(1p6e12.4)
- 1000 format(1p8e12.4)
-  301 format(2i10)
-c     call exit
-      return
-      end
-c
-c***************************************************************************
-c
-      subroutine intp3c(rgiv,thegiv,fl,nr,nth,f,nrmax,nthmax,
-     &   nphimx,k,dr,dtheta,rwall)
-      dimension f(nrmax,nthmax,nphimx)
-      complex:: fl,f,a,b,c,d
-      if(rgiv.ge.rwall)return
-      r=abs(rgiv)
-      theta=abs(thegiv)
-      fl=0.0
-      n=int(r/dr)+1
-      m=int(theta/dtheta)+1
-      if(n.ge.nr)return
-      if(m.eq.nth)mp1=1
-      if(m.lt.nth)mp1=m+1
-      zeta=(r-(n-1)*dr)/dr
-      eta=(theta-(m-1)*dtheta)/dtheta
-      a=f(n,m,k)
-      b=f(n+1,m,k)-f(n,m,k)
-      c=f(n,mp1,k)-f(n,m,k)
-      d=f(n+1,mp1,k)+f(n,m,k)-f(n+1,m,k)-f(n,mp1,k)
-      fl=a+b*zeta+c*eta+d*zeta*eta
-  300 format(1p6e12.4)
- 1000 format(1p8e12.4)
-  301 format(2i10)
-c     call exit
-      return
-      end
-c
-c***************************************************************************
-c
-      subroutine intp3d(rgiv,thegiv,fl,nr,nth,f,nrmax,nthmax,
-     &   nphimx,k,dr,dtheta,rwall)
-      dimension f(nrmax,nthmax,nphimx)
-      if(rgiv.ge.rwall)return
-      r=abs(rgiv)
-      theta=abs(thegiv)
-      fl=0.0
-      n=int(r/dr)+1
-      m=int(theta/dtheta)+1
-      if(n.ge.nr)return
-      if(m.eq.nth)mp1=1
-      if(m.lt.nth)mp1=m+1
-      zeta=(r-(n-1)*dr)/dr
-      eta=(theta-(m-1)*dtheta)/dtheta
-      a=f(n,m,k)
-      b=f(n+1,m,k)-f(n,m,k)
-      c=f(n,mp1,k)-f(n,m,k)
-      d=f(n+1,mp1,k)+f(n,m,k)-f(n+1,m,k)-f(n,mp1,k)
-      fl=a+b*zeta+c*eta+d*zeta*eta
-  300 format(1p6e12.4)
- 1000 format(1p8e12.4)
-  301 format(2i10)
-c     call exit
-      return
-      end
-c
-c***************************************************************************
-c
-      subroutine intp2d(rgiv,thegiv,fl,nr,nth,f,nrmax,nthmax,
-     &   nphimx,k,dr,dtheta,rwall)
-      dimension f(nrmax,nthmax)
-      if(rgiv.ge.rwall)return
-      r=abs(rgiv)
-      theta=abs(thegiv)
-      fl=0.0
-      n=int(r/dr)+1
-      m=int(theta/dtheta)+1
-      if(n.ge.nr)return
-      if(m.eq.nth)mp1=1
-      if(m.lt.nth)mp1=m+1
-      zeta=(r-(n-1)*dr)/dr
-      eta=(theta-(m-1)*dtheta)/dtheta
-      a=f(n,m)
-      b=f(n+1,m)-f(n,m)
-      c=f(n,mp1)-f(n,m)
-      d=f(n+1,mp1)+f(n,m)-f(n+1,m)-f(n,mp1)
-      fl=a+b*zeta+c*eta+d*zeta*eta
-  300 format(1p6e12.4)
- 1000 format(1p8e12.4)
-  301 format(2i10)
-c     call exit
-      return
-      end
-c
-c***************************************************************************
-c
+      end subroutine intplt_phi
 
+      
       subroutine intplt_real(xgiv, ygiv, fout, nx, ny, f, nxmax, nymax,
      &   dx, dy)
 
@@ -3263,75 +3030,6 @@ c
 
 
 
-c
-c***************************************************************************
-c
-
-      subroutine intplt_phi(xgiv, ygiv, fout, nx, ny, f, nxmax, nymax,
-     ,   dx, dy)
-
-      implicit none
-
-      integer:: nx, ny, nxmax, nymax, n, m, mp1
-      real:: x, y, xgiv, ygiv, dx, dy, zeta, eta, a, b, c, d, fout
-      real:: f(nxmax, nymax)
-
-      x = xgiv
-      y = ygiv
-
-      fout = 0.0
-
-      n = int(x / dx) + 1
-      m = int(y / dy) + 1
-
-      if (n .ge. nx) return
-
-      if (m .eq. ny) mp1 = 1
-      if (m .lt. ny) mp1 = m + 1
-
-      zeta = (x - (n - 1) * dx) / dx
-      eta  = (y - (m - 1) * dy) / dy
-
-      a = f(n, m)
-      b = f(n+1 ,m) - f(n, m)
-      c = f(n, mp1) - f(n, m)
-      d = f(n+1, mp1) + f(n, m) - f(n+1, m) - f(n, mp1)
-
-      fout = a + b * zeta + c * eta + d * zeta * eta
-
-      return
-
-  900 format(1p6e12.4)
-  910 format(1p8e12.4)
-  920 format(2i10)
-      end
-
-c
-c***************************************************************************
-c
-
-      subroutine intp1d(rgiv,fl,nr,f,nrmax,dr,rwall)
-      dimension f(nrmax)
-      if(rgiv.gt.rwall)return
-      r=abs(rgiv)
-      fl=0.0
-      n=int(r/dr)+1
-      if(n.ge.nr)return
-      zeta=(r-(n-1)*dr)/dr
-      a=f(n)
-      b=f(n+1)-f(n)
-      fl=a+b*zeta
-  300 format(1p6e12.4)
- 1000 format(1p8e12.4)
-  301 format(2i10)
-      return
-      end
-
-
-c
-c***************************************************************************
-c
-
 
 c Subroutine a1mnmx_dp
 c----------------------------------------------------------------------------!
@@ -3362,3 +3060,54 @@ c***************************************************************************
 c
 
 
+      end subroutine aorsa2dSum
+
+c
+c***************************************************************************
+c
+      subroutine fftn2(ftheta, work, ntheta, nthmax, mpmin, mpmax, cn)
+
+      implicit none
+
+      integer:: nhalf, mpol, m, nthmax, ntheta, mpmin, mpmax
+
+      complex:: ftheta(nthmax), work(nthmax),  cn(mpmin : mpmax)
+
+      nhalf = ntheta / 2
+
+      do m = 1, ntheta
+         work(m) = ftheta(m)
+      end do
+
+      call four1(work, ntheta, -1)
+
+      do m = 1, ntheta
+         mpol = m - 1
+         if(mpol .gt. nhalf)mpol = mpol - ntheta
+         cn(mpol) = work(m) / ntheta
+      end do
+
+      return
+      end
+
+
+      subroutine dgrate(x, f, nx1, nx2, ans, nxmax)
+
+      implicit none
+
+      integer:: n, nx1, nx2, nxmax
+      real:: f(nxmax), x(nxmax), ans
+
+      ans=0.0
+
+      do n=nx1,nx2-1
+         ans=ans+(f(n)+f(n+1))/2.*(x(n+1)-x(n))
+      end do
+
+      return
+      end
+
+
+c
+c***************************************************************************
+c

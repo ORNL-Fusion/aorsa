@@ -81,17 +81,9 @@
          real, allocatable :: y(:,:)
          real, allocatable :: rya(:)                  !normalized small radius
          real, allocatable :: f(:,:,:,:)
-<<<<<<< HEAD
          real, allocatable, dimension(:,:,:) :: wperp, wpar   !perp, par energy/particle
                                                       !tdim, rdim
 
-=======
-         real, allocatable, dimension(:,:,:) :: wperp   !perp energy/particle
-                                                      !tdim, rdim
-         real, allocatable, dimension(:,:,:) :: wpar    !par energy/particle
-                                                      !tdim, rdim
-       
->>>>>>> 21ae4f5a82ef03cf7b8a688c0c0d92a8e8036282
 
 !c     y is pitch angle (radians).  It varies from one flux surface to
 !c       the next, for example, due to increased resolution near the
@@ -151,17 +143,11 @@
 !       kdim=ncdid(ncid,'species_dim',istatus)
          write(*,*)'after inq_dimid kdim=',kdim,'istatus',istatus
 
-<<<<<<< HEAD
-=======
          istatus = nf90_inq_dimid(ncid,'gen_species_dim',gkdim)
          write(*,*)'proc_cql3d_op: after nf90_inq_dimid ngen_id = ',gkdim,'istatus = ',istatus
-       
->>>>>>> 21ae4f5a82ef03cf7b8a688c0c0d92a8e8036282
+
          istatus = nf90_inq_dimid(ncid,'tdim',nt_id)
          write(*,*)'proc_cql3d_op: after nf90_inq_dimid nt_id = ',nt_id,'istatus = ',istatus
-
-         istatus = nf90_inq_dimid(ncid,'gen_species_dim',gkdim_id)
-         write(*,*)'proc_cql3d_op: after nf90_inq_dimid ngen_id = ',gkdim_id,'istatus = ',istatus
 
          istatus = nf90_inquire_dimension(ncid, nt_id, len = nt)
        !call ncdinq(ncid, nt_id,'tdim', nt, istatus)
@@ -263,7 +249,7 @@
          istatus = nf90_inq_varid(ncid, 'y', vid)
          istatus = nf90_get_var(ncid, vid, y)
          write(*,*)'y',istatus
-         write(*,311)(y(1,ll),ll=1,lrz)
+         write(*,310)(y(1,ll),ll=1,lrz)
          
 !c      do ll=1,lrza
 !c         write(*,*)'ll=',ll,'iy_(ll)=',iy_(ll)
