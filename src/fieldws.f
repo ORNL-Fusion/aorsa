@@ -53,7 +53,7 @@
       parameter (nymx = mmodesmax)
 
       parameter (nrhomax = nxmx)
-      parameter (nthetamax = nymx)
+      parameter (nthetamax = nymx)!not to be confused wth n_theta_max!
 
       parameter (nkdim1 = - nxmx / 2)
       parameter (nkdim2 =   nxmx / 2)
@@ -64,12 +64,13 @@
       parameter (nkpltdim = 2 * nkdim2)
       parameter (mkpltdim = 2 * mkdim2)
 
-      parameter (n_theta_max = 150)
+      parameter (n_theta_max = 300)
       parameter (n_u_max = 150)
       parameter (n_psi_max = 150)
 
       real:: u(n_u_max), theta_u(n_theta_max)
       real:: f_cql(n_theta_max, n_u_max, n_psi_max)
+      real:: theta_f(n_theta_max, n_psi_max)
       real:: f_cql_2d(n_u_max, n_theta_max)
       real:: f_cql_1d_1(n_u_max), f_cql_1d_2(n_u_max)
       real:: f_cql_1d_3(n_u_max), f_cql_1d_4(n_u_max)
@@ -2948,9 +2949,9 @@ c--   plot log of Eb
 *     ----------------
       do i = 1, nnodex
          do j = 1, nnodey
-            mod_E(i,j)   = sqrt(conjg(ealpha(i,j)) * ealpha(i,j)
+            mod_E(i,j)   = sqrt(real(conjg(ealpha(i,j)) * ealpha(i,j)
      &                        + conjg(ebeta(i,j)) * ebeta(i,j)
-     &                        + conjg(eb(i,j)) * eb(i,j) )
+     &                        + conjg(eb(i,j)) * eb(i,j) ))
          end do
       end do
 
@@ -3638,13 +3639,10 @@ c      end do
 
          read (42, 309) nuper
          read (42, 309) nupar
-         read (42, 309) nnoderho
+         read (42, 309) nnoderho  !Caution may be different sizes below
          allocate( UPERP(nuper) )
          allocate( UPARA(nupar) )
 
-         allocate( wperp1_cql(nnoderho) )
-         allocate( wpar1_cql(nnoderho) )
-         wperp1_cql = 0.; wpar1_cql = 0.;
 
          if (ndisti2==1) then
             allocate( wperp2_cql(nnoderho) )
@@ -3694,9 +3692,6 @@ c      end do
 !        --------------------------------------------
 !        read data for plotting f(u_perp, u_parallel)
 !        --------------------------------------------
-         allocate( f_cql_cart(nuper, nupar, nnoderho) )
-         allocate( f_cql_cart_2d (nupar, nuper) )
-         f_cql_cart = 0.0 ; f_cql_cart_2d = 0.0
          
          if (ndisti1 .eq. 1) then
          open(unit=237,file='out237',iostat=ierr,iomsg=errio,
@@ -3711,7 +3706,8 @@ c      end do
 
          read  (237, 310) (u(i_u), i_u = 1, n_u)
          read  (237, 309) (n_theta_(i_psi), i_psi = 1, n_psi)
-         read  (237, 310) ((theta(i_theta, i_psi),
+
+         read  (237, 310) ((theta_f(i_theta, i_psi),
      &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
 
          read  (237, 310) (((f_cql(i_theta, i_u, i_psi),
@@ -3722,10 +3718,17 @@ c      end do
          read (237, 309) nuper
          read (237, 309) nupar
          read (237, 309) nnoderho
+         allocate( f_cql_cart(nuper, nupar, nnoderho) )
+         allocate( f_cql_cart_2d (nupar, nuper) )
+         f_cql_cart = 0.0 ; f_cql_cart_2d = 0.0
+         allocate( wperp1_cql(nnoderho) )
+         allocate( wpar1_cql(nnoderho) )
+         wperp1_cql = 0.; wpar1_cql = 0.;
 
          read (237, 310) (uperp(i_uperp), i_uperp = 1, nuper)
-         read (237, 310)  (upara(i_upara), i_upara = 1, nupar)
+         read (237, 310) (upara(i_upara), i_upara = 1, nupar)
 
+         print *,'f_cql shape',shape(f_cql_cart),nuper,nupar,nnoderho
          read (237, 310) (((f_cql_cart(i_uperp, i_upara, i_psi),
      &     i_uperp = 1, nuper), i_upara = 1, nupar),
      &     i_psi = 1, nnoderho)
@@ -3749,7 +3752,7 @@ c      end do
 
          read  (238, 310) (u(i_u), i_u = 1, n_u)
          read  (238, 309) (n_theta_(i_psi), i_psi = 1, n_psi)
-         read  (238, 310) ((theta(i_theta, i_psi),
+         read  (238, 310) ((theta_f(i_theta, i_psi),
      &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
 
          read  (238, 310) (((f_cql(i_theta, i_u, i_psi),
@@ -3799,7 +3802,7 @@ c      end do
      &      wperp2_cql, wpar2_cql, nnoderho_half, nrhomax)
          end if
 
-
+        n_psi = size(bqlavg_i1,3)        
         i_psi_array = (/ (i, i=2,n_psi,nint(n_psi/6.)) /)
         i_psi1 = i_psi_array(1)
         i_psi2 = i_psi_array(2)
@@ -3808,7 +3811,7 @@ c      end do
         i_psi5 = i_psi_array(5)
         i_psi6 = i_psi_array(6)
 !       ---------------------------------
-!       2D plots of f(u, theta = const)
+!       1D plots of f(u, theta = const)
 !       ---------------------------------
         titll = 'log f(u)'
         titlr = '    '
@@ -3816,12 +3819,12 @@ c      end do
 
         do i_psi_index = 1, 6
 
-           if(i_psi_index .eq. 1)title = 'log f_psi1(u, theta = const)'
-           if(i_psi_index .eq. 2)title = 'log f_psi2(u, theta = const)'
-           if(i_psi_index .eq. 3)title = 'log f_psi3(u, theta = const)'
-           if(i_psi_index .eq. 4)title = 'log f_psi4(u, theta = const)'
-           if(i_psi_index .eq. 5)title = 'log f_psi5(u, theta = const)'
-           if(i_psi_index .eq. 6)title = 'log f_psi6(u, theta = const)'
+           if(i_psi_index==1)title = 'log f_{psi1}(u, theta = const)'
+           if(i_psi_index==2)title = 'log f_{psi2}(u, theta = const)'
+           if(i_psi_index==3)title = 'log f_{psi3}(u, theta = const)'
+           if(i_psi_index==4)title = 'log f_{psi4}(u, theta = const)'
+           if(i_psi_index==5)title = 'log f_{psi5}(u, theta = const)'
+           if(i_psi_index==6)title = 'log f_{psi6}(u, theta = const)'
 
            i_psi = i_psi_array(i_psi_index)
 
@@ -3872,8 +3875,8 @@ c      end do
 !        ------------------------------------------
 !        2D plots of f_cql_cart(u_perp, u_parallel)
 !        ------------------------------------------
-         titx = 'u_parallel'
-         tity = 'u_perp'
+         titx = 'u_{para}'
+         tity = 'u_{perp}'
 
          write(6, *)"i_psi1 = ", i_psi1, "   rho1 = ", rhon(i_psi1)
          write(6, *)"i_psi2 = ", i_psi2, "   rho2 = ", rhon(i_psi2)
@@ -3900,7 +3903,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi1(u_perp, u_parallel)'
+         title = 'f_cql_psi1(u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3912,7 +3915,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi2(u_perp, u_parallel)'
+         title = 'f_cql_psi2(u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3924,7 +3927,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi3(u_perp, u_parallel)'
+         title = 'f_cql_psi3(u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3936,7 +3939,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi4(u_perp, u_parallel)'
+         title = 'f_cql_psi4(u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3948,7 +3951,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi5(u_perp, u_parallel)'
+         title = 'f_cql_psi5(u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3961,14 +3964,14 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi6(u_perp, u_parallel)'
+         title = 'f_cql_psi6(u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
 
 
 !        --------------------------------------
-!        2D plots of bqlavg(u_perp, u_parallel)
+!        2D plots of bqlavg(u_{perp}, u_{para})
 !        --------------------------------------
 
          i_psi = i_psi1
@@ -3979,7 +3982,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi1(u_perp, u_parallel)'
+         title = 'bqlavg_psi1(u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4016,7 +4019,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi2(u_perp, u_parallel)'
+         title = 'bqlavg_psi2(u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4039,7 +4042,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi3(u_perp, u_parallel)'
+         title = 'bqlavg_psi3(u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4061,7 +4064,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi4(u_perp, u_parallel)'
+         title = 'bqlavg_psi4(u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4084,7 +4087,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi5(u_perp, u_parallel)'
+         title = 'bqlavg_psi5(u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4105,7 +4108,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi6(u_perp, u_parallel)'
+         title = 'bqlavg_psi6(u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4122,7 +4125,7 @@ c      end do
 
 
 !        --------------------------------------
-!        2D plots of cqlavg(u_perp, u_parallel)
+!        2D plots of cqlavg(u_perp, u_{para})
 !        --------------------------------------
 
          i_psi = i_psi1
@@ -4133,7 +4136,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi1(u_perp, u_parallel)'
+         title = 'cqlavg_psi1(u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4170,7 +4173,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi2(u_perp, u_parallel)'
+         title = 'cqlavg_psi2(u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4193,7 +4196,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi3(u_perp, u_parallel)'
+         title = 'cqlavg_psi3(u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4215,7 +4218,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi4(u_perp, u_parallel)'
+         title = 'cqlavg_psi4(u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4238,7 +4241,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi5(u_perp, u_parallel)'
+         title = 'cqlavg_psi5(u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4259,7 +4262,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi6(u_perp, u_parallel)'
+         title = 'cqlavg_psi6(u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4405,7 +4408,7 @@ c      end do
          write(15, *) 'energy kicks for 1 keV ion (eV)'
 
          title = 'Energy kick for 1 keV ion (eV)'
-         titx = 'u_parallel'
+         titx = 'u_{para}'
          tity = 'rho'
          titz='Energy kick (eV)'
          numb = 15
@@ -4433,7 +4436,7 @@ c      end do
          do i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
             vpara_mks = vpara_cgs * 1.0e-02
-            do i_psi = 1, nnoderho
+            do i_psi = 1, size(bqlavg_i1,3)
                vperp_mks = uperp(i_uperp) * vc_cgs * 1.0e-02
                E_eV = 0.5 * xmi * (vperp_mks**2 + vpara_mks**2) / q
                E_kick_2d(i_upara, i_psi) = (xmi / q) *
@@ -4468,8 +4471,7 @@ c      end do
          write(141, 3848)
  3848    format('SCALARS E_kick_2d float 1')
          write(141, 2849)
-         write(141, 3411) ((E_kick_2d(i,j), i = 1, nupar),
-     &                                      j = 1, nnoderho)
+         write(141, 3411) E_kick_2d
 
 
       end if
@@ -4487,7 +4489,7 @@ c      end do
       title = 'Real Bx wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag, scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4504,7 +4506,7 @@ c      end do
       title = 'Real Bz wave'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4520,7 +4522,7 @@ c      end do
       title = 'dxxuyy'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4539,7 +4541,7 @@ c      end do
       title = 'dyyuzz'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4556,7 +4558,7 @@ c      end do
       title = 'gradprlb'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4574,7 +4576,7 @@ c      end do
       title = 'Real ntilda_e'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4638,21 +4640,21 @@ c
       title = 'Radial force (fpsi0)'
       call ezconc(capr, y, fpsi0, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
       title = 'Poloidal force (ftheta0)'
       call ezconc(capr, y, ftheta0, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
       title = 'pressure surfaces'
       call ezconc(capr, y, pressi, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4661,7 +4663,7 @@ c
       title = 'dl/B surfaces'
       call ezconc(capr, y, dldb_tot12, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary(capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4677,7 +4679,7 @@ c
       title = 'E_{+} flux plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4695,7 +4697,7 @@ c
       title = 'E_{-} flux plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -4714,7 +4716,7 @@ c
       title = 'xkperp flux plot'
       call ezconc(capr, y, freal, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+      if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &     nnodey, numb, nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -5064,7 +5066,7 @@ c        color movie:
 c         call pseudo(capr, y, freal, ff, nnodex, nnodey, numb,
 c     &      nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 
-         if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+         if (iflag==0) call boundary (capr, y, rho, ff, nnodex,
      &        nnodey, numb,    nxmx, nymx, nlevmax, title, titx, tity,
      &     scalex)
 
@@ -5094,7 +5096,7 @@ c      close (61)
       close (64)
 
 
-      if (ndisti2 .eq. 1 .or. ndisti1 .eq. 1) then
+      if (ndisti2==1 .or. ndisti1==1) then
          deallocate( UPERP )
          deallocate( UPARA )
 
@@ -5349,7 +5351,7 @@ c--set up contour levels
      & ymin,ymax,xmin,xmax
 #endif
       iflag = 0
-      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
+      if(fmax==0.0 .and. fmin==0.0)then
          write(6, *)"title = ", title
          write(6, *)"fmax = ", fmax
          write(6, *)"fmin = ", fmin
@@ -5538,7 +5540,7 @@ c      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
 c      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
-       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
+       if(fmax==0.0 .and. fmin==0.0)then
 c         write(6, *)"fmax = ", fmax
 c         write(6, *)"fmin = ", fmin
          iflag = 1
@@ -5551,7 +5553,7 @@ c        flevel(i) = fmin + (i - 0.5) * df / 1000.
          flevel(i) = fmin + (i - 0.5) * df
       end do
 
-      if (nlevel .eq. 1) flevel(1) = 1.0
+      if (nlevel==1) flevel(1) = 1.0
 
       if(nlevel.eq.4)then
          flevel(1)=1.0
@@ -5716,7 +5718,7 @@ c--set up contour levels
       write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
-       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
+       if(fmax==0.0 .and. fmin==0.0)then
 c         write(6, *)"fmax = ", fmax
 c         write(6, *)"fmin = ", fmin
          iflag = 1
@@ -5730,7 +5732,7 @@ c        flevel(i) = fmin + (i - 0.5) * df / 1000.
       end do
 
 
-      if(nlevel .eq. 1)then
+      if(nlevel==1)then
 c         flevel(1) = fmin + df / 100000.
 c         flevel(1) = fmin + df /  35000.
           flevel(1) = fmin + df /  dfquotient
@@ -5882,7 +5884,7 @@ c      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
          end do
       end do
 
-      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)return
+      if(fmax==0.0 .and. fmin==0.0)return
 
 
       df = abs(fmax - fmin) / float(nlevel)
@@ -5891,7 +5893,7 @@ c        flevel(i) = fmin + (i - 0.5) * df / 1000.
          flevel(i) = fmin + (i - 0.5) * df
       end do
 
-      if(nlevel .eq. 1)flevel(1) = 1.0e-03
+      if(nlevel==1)flevel(1) = 1.0e-03
 
       if(nlevel.eq.4)then
          flevel(1)=1.0
@@ -6017,7 +6019,7 @@ c
 c--set up contour levels
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
 
-      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)return
+      if(fmax==0.0 .and. fmin==0.0)return
       df = abs(fmax - fmin) / float(nlevel)
 
 c      write(6, 100)fmin, fmax
@@ -6221,7 +6223,7 @@ c
 c--set up contour levels
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
 
-      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)return
+      if(fmax==0.0 .and. fmin==0.0)return
       df = abs(fmax - fmin) / float(nlevel)
 
 c      write(6, 100)fmin, fmax
@@ -6708,7 +6710,7 @@ c
       norange = 8
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0) then
+      if(y1max==0.0 .and. y1min==0.0) then
          write(*,*) 'ezplot2: ', title,y1min,y1max
          return
       end if
@@ -6744,7 +6746,7 @@ c
 
       call pgline(nr, x1, y1)
 
-      if(y2max .eq. 0.0 .and. y2min .eq. 0.0)return
+      if(y2max==0.0 .and. y2min==0.0)return
       CALL PGSWIN (rhomin, rhomax, y2min, y2max)
       CALL PGSCI(nblack)
       CALL PGBOX  (' ', 0.0, 0, 'CMST', 0.0, 0)
@@ -6803,7 +6805,7 @@ c
       ymax = max(y1max, y2max)
       ymin = min(y1min, y2min)
 
-      if(ymax .eq. 0.0 .and. ymin .eq. 0.0)return
+      if(ymax==0.0 .and. ymin==0.0)return
 
       rhomax=x1(nr)
       rhomin=x1(1)
@@ -6883,7 +6885,7 @@ c
       write(*,*) 'Ezplot2q inputs', x1, y1, y2, nr, nrmax,size(y2)
       write(*,*) 'Ezplot2q inputs', y1min,y2min,y1max,y2max,ymax,ymin
 #endif
-      if(ymax .eq. 0.0 .and. ymin .eq. 0.0) return
+      if(ymax==0.0 .and. ymin==0.0) return
 
       rhomax=x1(nr)
       rhomin=x1(1)
@@ -7157,7 +7159,7 @@ c
 #ifdef DEBUG
       write(*,*) 'ezplot1:  title: ', title, y1min,y1max
 #endif
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0) then
+      if(y1max==0.0 .and. y1min==0.0) then
          return
       end if
       
@@ -7230,7 +7232,7 @@ c
       ncolln3=ngreen
 
       call a1mnmx(y1,nrmax,nr,y1min,y1max)
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      if(y1max==0.0 .and. y1min==0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7297,7 +7299,7 @@ c
       ncolln3=ngreen
 
       call a1mnmx(y1,nrmax,nr,y1min,y1max)
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      if(y1max==0.0 .and. y1min==0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7365,7 +7367,7 @@ c
       ncolln3=ngreen
 
       call a1mnmx(y1,nrmax,nr,y1min,y1max)
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      if(y1max==0.0 .and. y1min==0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7436,7 +7438,7 @@ c
       ncolln3=ngreen
 
       call a1mnmx(y1,nrmax,nr,y1min,y1max)
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      if(y1max==0.0 .and. y1min==0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7516,7 +7518,7 @@ c
 
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      if(y1max==0.0 .and. y1min==0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7626,7 +7628,7 @@ c--set up contour levels
 #endif
 
       iflag = 0
-      if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
+      if(fmax==0.0 .and. fmin==0.0)then
          iflag = 1
          return
       end if
@@ -7650,7 +7652,7 @@ c        flevel(i) = fmin + (i - 0.5) * df / 1000.
 
 
 
-      if (nlevel0 .eq. 21) then
+      if (nlevel0==21) then
 
 c         nlevel = nlevel0 * 2.0
 
@@ -7727,7 +7729,7 @@ c--Make a bit larger so the boundary doesn't get clipped
       nysub=0
 
 c--Advance graphics frame and get ready to plot
-
+      call pgpage
       call pgsci(nblack)
 !     call pgenv(xmin, xmax, ymin, ymax, 1, 0)
       call pgswin(xmin, xmax, ymin, ymax)
@@ -7866,7 +7868,7 @@ c
 #ifdef DEBUG
       write(*,*) 'ezlog1_f:  title: ', title, ymin,ymax
 #endif
-      if(ymax .eq. 0.0 .and. ymin .eq. 0.0) then
+      if(ymax==0.0 .and. ymin==0.0) then
          write(6, *) 'skipping ezlog1_f plot of ',title
          return
       end if
@@ -7964,7 +7966,7 @@ c--set up contour levels
 
 c        write (6, *) "df = ", df
 
-      if(df .eq. 0.0)return
+      if(df==0.0)return
 
       do i = 1, nlevel0
          flevel(i) = fmin + (i - 0.5) * df
@@ -7978,9 +7980,9 @@ c        write (6, *) "df = ", df
          flevel(4)=4.0
       endif
 
-      if (nlevel0 .eq. 20) then
+      if (nlevel0==20) then
 
-         nlevel = nlevel0 * 2.0
+         nlevel = nlevel0 * 2
 
          fact = 2.0
          i = 1
@@ -8072,7 +8074,7 @@ c      call plwid(1)
 
 c      call plcol(ncollab)
 c      call plcol(nblue)
-c      call pllab('u_parallel','u_perp', title)
+c      call pllab('u_{para}','u_{perp}', title)
 
 
   310 format(1p,6e12.4)
@@ -8148,7 +8150,7 @@ c      write(6, *)"fmax = ", fmax, "   fmin = ", fmin
 c      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
-       if(fmax .eq. 0.0 .and. fmin .eq. 0.0)then
+       if(fmax==0.0 .and. fmin==0.0)then
 c         write(6, *)"fmax = ", fmax
 c         write(6, *)"fmin = ", fmin
          iflag = 1

@@ -7252,9 +7252,9 @@ c     &   myid, nproc, icontxt)
          end do
       end do
 
-*-------------------------------------------------------
-*     Interpolate Eplus, Eminus and mod B onto (rho, theta) grid
-*-------------------------------------------------------
+*-----------------------------------------------------------------*
+*     Interpolate Eplus, Eminus and mod B onto (rho, theta) grid  *
+*-----------------------------------------------------------------*
       do n = 1, nnoderho
          do m = 1, mnodetheta
 
@@ -7277,14 +7277,9 @@ c     &   myid, nproc, icontxt)
      &         nxmx, nymx, dx, dy)
             bmod_flux(n, m) = fout
 
-
-
-c           if(myid==0)write(6,*)n, m, eplus_flux(n,m)
-
          end do
       end do
 
-      !JCW Why is this being done, just for plots/ doesnt work for mirror?
 *---------------------------------------------------
 *     Interpolate back onto (R, Z) grid for plotting
 *---------------------------------------------------
@@ -7305,8 +7300,6 @@ c           if(myid==0)write(6,*)n, m, eplus_flux(n,m)
             call intplt(rho_giv, the_giv, fout, nnoderho, mnodetheta,
      &         xkperp_flux, nrhomax, nthetamax, drho, dtheta)
             xkperp_flux_plot(i, j) = fout
-
-c           if(myid==0)write(6,*)i, j, eplus_flux_plot(i, j)
 
          end do
       end do
@@ -11737,8 +11730,6 @@ c      write(6,*) "finished plots; starting deallocation"
 
       call blacs_gridexit( icontxt )
       call blacs_exit(0)
-
-      call mpi_finalize( ier )
       end
 
 !

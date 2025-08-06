@@ -718,7 +718,7 @@ c      write(29,1000)nkzm
 *     Find ytop and ybottom
 *     ---------------------          
       
-      i = imaxis * .7 !jcw magic number could be zero, revisit
+      i = max(1,int(imaxis * .7))!for mirrors may be zero
       
       ytop_auto = 0.0                             
       do j = nyeqd/2, nyeqd
