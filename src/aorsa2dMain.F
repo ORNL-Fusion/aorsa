@@ -8629,7 +8629,8 @@ c      end if
 c            rhohatx(i,j) = 0.0
 c            rhohaty(i,j) = 0.0
 
-            if (i .ne. 1 .and. i .ne. nnodex) then
+
+            if (i .ne. 1 .and. i .ne. nnodex) then !assumes values at 1,1 are zero.
                if (j .ne. 1 .and. j .ne. nnodey) then
 
 c                   drhodx = (rho(i+1, j) - rho(i-1, j)) / (2.0 * dx)
@@ -8674,7 +8675,40 @@ c                  divsp(i) = dspxdx(i)
 c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
                end if
             end if
+            if (1==0) then !comment out for now
+            if (i==1 .and. j/=1 .and/ j/=nnodex) then
+                   dezdx = (ez(i+1, j) - ez(i-1, j)) / (2.0 * dx)
+                   dezdy = (ez(i, j+1) - ez(i, j-1)) / (2.0 * dy)
+                   deydx = 0.0 !(ey(i+1, j) - ey(i-1, j)) / (2.0 * dx) ! indep of R
+                   dexdy = 0.0 !(ex(i, j+1) - ex(i, j-1)) / (2.0 * dy) ! eR ->0
 
+                   bxwave(i, j) = 1. / (zi * omgrf)
+     &                * (zi * xkphi(i) * ey(i,j) - dezdy)
+                   bzwave(i, j) = 1. / (zi * omgrf)
+     &                * (dexdy - deydx) !Bphi->0 as R->0
+                   bywave(i, j) = 1. / (zi * omgrf) * (ez(i,j) / capr(i)
+     &                + dezdx - zi * xkphi(i) * ex(i,j))
+
+
+                   spx(i, j) = 1. / (2. * xmu0) * real(
+     &                         conjg(ez(i,j)) * bywave(i,j)
+     &                       - conjg(ey(i,j)) * bzwave(i,j)  )
+                   spz(i, j) = 1. / (2. * xmu0) * real(
+     &                         conjg(ey(i,j)) * bxwave(i,j)
+     &                       - conjg(ex(i,j)) * bywave(i,j)  )
+                   spy(i, j) = 1. / (2. * xmu0) * real(
+     &                         conjg(ex(i,j)) * bzwave(i,j)
+     &                       - conjg(ez(i,j)) * bxwave(i,j)  )
+               
+            end if
+                
+            if (j==1)      then
+            end if
+            if (i==nnodex) then
+            end if
+            if (j==nnodey) then
+            end if
+            end if
 !*           --------------------------------
 !*           Calculate radial and theta force:
 !*           --------------------------------
@@ -8760,8 +8794,8 @@ c                 c_ehst = 1.0
 
             xjprl(i,j) = c_ehst * wdote(i,j)
 
-         end do
-      end do
+         end do !nnodey
+      end do    !nnodex
 
       tmin = (second1(dummy) - t1) / 60.
       if (myid.eq.0) then

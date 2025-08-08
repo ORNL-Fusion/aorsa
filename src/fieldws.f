@@ -4774,7 +4774,7 @@ c
      &   nnodex, nxmx)
 
 
-
+      if (eqtype/='mirror') then
       do n = 1, nnoderho
 c         bmod_plot(n) = bmod_flux(n, 1) / bmod_flux(1, 1)
           bmod_plot(n) = bmod_flux(n, 1)
@@ -4785,7 +4785,7 @@ c         bmod_plot(n) = bmod_flux(n, 1) / bmod_flux(1, 1)
       titlr='       '
       call ezplot0(title, titll, titlr, rhon, bmod_plot,
      &    nnoderho, nrhomax)
-
+      end if
 
 
 
