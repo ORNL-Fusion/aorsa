@@ -432,7 +432,7 @@
      &    eqdsk_special, nsmooth, plot_only, ydisp, xkydisp, dfquotient, &
      &    anti_alias, scrape, nmin, rmin_zoom, rmax_zoom, root, rhomax, &
      &    xkx_ono, xky_ono, curved_ant, yplot, z2_electron, use_new_wdot,  &
-     &    use_no_damp, nzeta_wdoti, norm, antang, write_for_azzam               
+     &    use_no_damp, nzeta_wdoti, norm, antang, write_for_azzam, f4d_file1               
 
       end module aorsa2din_mod
 

@@ -27,6 +27,8 @@
       use profile_mod
 
       use aorsa2din_mod
+
+      use read_4df_mod
 c      use zfun_hilbert
 
       implicit none
@@ -395,6 +397,15 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
 
       real, dimension(:,:), allocatable :: xkb
       real, dimension(:,:), allocatable :: xkb2d
+
+*    TODO new section for 4df JVDL
+      real, dimension(:), allocatable :: R_rzvv, Z_rzvv    
+      real, dimension(:), allocatable :: vPer_rzvv, vPar_rzvv
+      real, dimension(:,:,:,:), allocatable :: f_rzvv
+      real, dimension(:,:,:,:), allocatable :: dfdvper_rzvv
+      real, dimension(:,:,:,:), allocatable :: dfdvpar_rzvv
+      integer :: n_r, n_z, n_vper, n_vpar
+*   end TODO new section 
 
       integer :: nnodex, nnodey, i, j,
      &    jequat, iflag, liw, lw, nrhs, icenter
@@ -2716,6 +2727,44 @@ c      akprl_min = abs(nphi / rt)
              close(50)
 
          end if
+
+!     TODO new snipit to read in the 4df, if provided for species 1 JVDL    
+         call blacs_barrier(icontxt, 'All')
+         if (ndisti1 .eq. 2) then
+            ! find dims and allocate arrays 
+            ! Peek at NetCDF to get sizes
+
+            call get_dims_from_file(f4d_file1, n_r, n_z, n_vper, n_vpar)
+
+            ! Allocate arrays
+            allocate(R_rzvv(n_r), Z_rzvv(n_z), 
+     &               vPer_rzvv(n_vper), vPar_rzvv(n_vpar))
+     
+            allocate(f_rzvv(n_r, n_z, n_vper, n_vpar))
+            allocate(dfdvper_rzvv(n_r, n_z, n_vper, n_vpar))
+            allocate(dfdvpar_rzvv(n_r, n_z, n_vper, n_vpar))
+
+            if(myid.eq.0) call netcdfr4d_single_gen(f4d_file1, R_rzvv,
+     &                            Z_rzvv, vPer_rzvv, vPar_rzvv, f_rzvv)
+
+         call blacs_barrier(icontxt, 'All')
+
+         ! print the contents for testing... 
+         print *, "Loaded f_rzvv has shape: ", 
+     &      size(f_rzvv,1), size(f_rzvv,2), 
+     &      size(f_rzvv,3), size(f_rzvv,4)
+
+         print *, "Loaded dfdvper_rzvv has shape: ", 
+     &      size(dfdvper_rzvv,1), size(dfdvper_rzvv,2), 
+     &      size(dfdvper_rzvv,3), size(dfdvper_rzvv,4)
+
+         print *, "Loaded dfdvpar_rzvv has shape: ", 
+     &      size(dfdvpar_rzvv,1), size(dfdvpar_rzvv,2), 
+     &      size(dfdvpar_rzvv,3), size(dfdvpar_rzvv,4)
+
+         end if
+
+!     TODO end new snipit to read in the 4df, if provided for species 1 JVDL      
 
          call blacs_barrier(icontxt, 'All')
 

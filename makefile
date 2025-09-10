@@ -9,7 +9,7 @@ CQL3D_SETUP_DIR = $(SRC_DIR)/CQL3D_SETUP
 MOD_DIR = mod
 OBJ_DIR = obj
 
-INCLUDE_DIRS = 
+INCLUDE_DIRS =
 LIBS = 
 F90FLAGS = 
 WARNING_FLAGS = 
@@ -56,6 +56,7 @@ OBJ_FILES = \
  $(OBJ_DIR)/scale.o \
  $(OBJ_DIR)/dql_write.o \
  $(OBJ_DIR)/dshell.o \
+ $(OBJ_DIR)/read_4df.o \
  $(OBJ_DIR)/aorsa2dMain.o \
  $(OBJ_DIR)/plot.o \
  $(OBJ_DIR)/aorsa2dSum.o 
@@ -193,9 +194,9 @@ LOAD = $(F90_LOAD) $(OPTIMIZATION)
 # remove the "SECONDARY" line and life will be very weird
 .SECONDARY:
 
-$(EXEC):  make_directories $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP)
+$(EXEC):  make_directories $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(OBJ_F4D_SETUP)
 	$(info LIBS are $(LIBS))
-	$(LOAD) -o $(EXEC) $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(LOADFLAGS) $(LIBS) 
+	$(LOAD) -o $(EXEC) $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(OBJ_F4D_SETUP) $(LOADFLAGS) $(LIBS) 
 
 # Dependencies
 

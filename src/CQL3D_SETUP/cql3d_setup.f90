@@ -23,9 +23,6 @@
       integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
       
-      real, dimension(:), allocatable :: R_rzvv, Z_rzvv   ! TODO delete this section 
-      real, dimension(:), allocatable :: vPer_rzvv, vPar_rzvv
-      real, dimension(:,:,:,:), allocatable :: f_rzvv
 !     ----------------
 !     450 x 450 modes:
 !     ----------------
@@ -251,17 +248,6 @@
 !     Read CQL3D distribution function from netcdf file
       !     -------------------------------------------------
 
-      ! Temporary test TODO: delete this section, just for testing distribution read-in.
-
-
-      call netcdfr4d_single_gen(netcdf_file, R_rzvv, Z_rzvv, &
-           vPer_rzvv, vPar_rzvv, f_rzvv)
-
-      print *, "Loaded f_rzvv with shape: ", &
-           size(f_rzvv,1), size(f_rzvv,2), &
-           size(f_rzvv,3), size(f_rzvv,4)
-
-!     end read in test delete me 
 
 
       kspeci = 1 !reversed from normal order for reasons... 
