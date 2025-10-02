@@ -405,6 +405,9 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real, dimension(:,:,:,:), allocatable :: dfdvper_rzvv
       real, dimension(:,:,:,:), allocatable :: dfdvpar_rzvv
       integer :: n_r, n_z, n_vper, n_vpar
+      double precision anorm11, work11(1)
+      logical, save :: first_time1 = .true.
+      real :: den_check
 *   end TODO new section 
 
       integer :: nnodex, nnodey, i, j,
@@ -2467,6 +2470,8 @@ c      akprl_min = abs(nphi / rt)
 !     -----------------
 !     allocate arrays
 !     -----------------
+      write(*,*) "main has first nuper =", nuper
+      write(*,*) "main has first nupar =", nupar
 
       if(ndisti1   .eq. 0 .and.
      &   ndisti2   .eq. 0 .and.
@@ -2728,15 +2733,75 @@ c      akprl_min = abs(nphi / rt)
 
          end if
 
+
+
 !     TODO new snipit to read in the 4df, if provided for species 1 JVDL    
          call blacs_barrier(icontxt, 'All')
+
+! before reading in 4df, check if ndisti1 is not equal to 2
+! in that case, just allocate the arrays with dummy sizes. 
+         if(ndisti1 .ne. 2) then
+            allocate(R_rzvv(1), Z_rzvv(1), 
+     &               vPer_rzvv(1), vPar_rzvv(1))
+            allocate(f_rzvv(1,1,1,1))
+            allocate(dfdvper_rzvv(1,1,1,1))
+            allocate(dfdvpar_rzvv(1,1,1,1))
+
+         ! 1D arrays
+         call mpi_bcast(R_rzvv, 1,    MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+         call mpi_bcast(Z_rzvv, 1,    MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+         call mpi_bcast(vPer_rzvv, 1, MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+         call mpi_bcast(vPar_rzvv, 1, MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+
+         ! 4D distribution function
+         call mpi_bcast(f_rzvv, 1, 
+     &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
+
+         call mpi_bcast(dfdvper_rzvv, 1, 
+     &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
+
+         call mpi_bcast(dfdvpar_rzvv, 1, 
+     &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
+
+         call blacs_barrier(icontxt, 'All')
+         n_z = 1
+         n_r = 1
+         n_vper = 1
+         n_vpar = 1
+         end if 
+
          if (ndisti1 .eq. 2) then
             ! find dims and allocate arrays 
+            
             ! Peek at NetCDF to get sizes
-
             call get_dims_from_file(f4d_file1, n_r, n_z, n_vper, n_vpar)
 
-            ! Allocate arrays
+            ! error handle -- enforce these are the same size as aorsa. 
+            if (n_r .ne. nnodex) then
+               print *, "n_r from 4df file not equal to nnodex"
+               stop
+            end if
+
+            if (n_z .ne. nnodey) then
+               print *, "n_z from 4df file not equal to nnodey"
+               stop
+            end if
+
+            if (n_vper .ne. nuper) then
+               print *, "n_vper from 4df file not equal to nuper"
+               stop
+            end if
+
+            if (n_vpar .ne. nupar) then
+               print *, "n_vpar from 4df file not equal to nupar"
+               stop
+            end if
+
+
             allocate(R_rzvv(n_r), Z_rzvv(n_z), 
      &               vPer_rzvv(n_vper), vPar_rzvv(n_vpar))
      
@@ -2744,8 +2809,46 @@ c      akprl_min = abs(nphi / rt)
             allocate(dfdvper_rzvv(n_r, n_z, n_vper, n_vpar))
             allocate(dfdvpar_rzvv(n_r, n_z, n_vper, n_vpar))
 
+   !          else if (ndisti1 .eq. 1 .or. ndisti1 .eq. 0) then
+   !          allocate(R_rzvv(1), Z_rzvv(1), 
+   !   &               vPer_rzvv(1), vPar_rzvv(1))
+     
+   !          allocate(f_rzvv(1,1,1,1))
+   !          allocate(dfdvper_rzvv(1,1,1,1))
+   !          allocate(dfdvpar_rzvv(1,1,1,1))
+
+
+
             if(myid.eq.0) call netcdfr4d_single_gen(f4d_file1, R_rzvv,
      &                            Z_rzvv, vPer_rzvv, vPar_rzvv, f_rzvv)
+
+         call blacs_barrier(icontxt, 'All')
+         
+         ! Broadcast arrays to all MPI ranks
+
+         ! Scalars (dimensions)
+         call mpi_bcast(n_r, 1, MPI_INTEGER, 0, 
+     &                  mpi_comm_world, ierr)
+         call mpi_bcast(n_z, 1, MPI_INTEGER, 0, 
+     &                  mpi_comm_world, ierr)
+         call mpi_bcast(n_vper, 1, MPI_INTEGER, 0, 
+     &                  mpi_comm_world, ierr)
+         call mpi_bcast(n_vpar, 1, MPI_INTEGER, 0, 
+     &                  mpi_comm_world, ierr)
+
+         ! 1D arrays
+         call mpi_bcast(R_rzvv, n_r,    MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+         call mpi_bcast(Z_rzvv, n_z,    MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+         call mpi_bcast(vPer_rzvv, n_vper, MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+         call mpi_bcast(vPar_rzvv, n_vpar, MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+
+         ! 4D distribution function
+         call mpi_bcast(f_rzvv, n_r*n_z*n_vper*n_vpar, 
+     &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
 
          call blacs_barrier(icontxt, 'All')
 
@@ -2754,16 +2857,71 @@ c      akprl_min = abs(nphi / rt)
      &      size(f_rzvv,1), size(f_rzvv,2), 
      &      size(f_rzvv,3), size(f_rzvv,4)
 
-         print *, "Loaded dfdvper_rzvv has shape: ", 
+         print *, "Unfilled dfdvper_rzvv has shape: ", 
      &      size(dfdvper_rzvv,1), size(dfdvper_rzvv,2), 
      &      size(dfdvper_rzvv,3), size(dfdvper_rzvv,4)
 
-         print *, "Loaded dfdvpar_rzvv has shape: ", 
+         print *, "Unfilled dfdvpar_rzvv has shape: ", 
      &      size(dfdvpar_rzvv,1), size(dfdvpar_rzvv,2), 
      &      size(dfdvpar_rzvv,3), size(dfdvpar_rzvv,4)
 
-         end if
+! assign values to required cql3d-like variables 
+         vc1_mks = maxval(abs(vPar_rzvv))
+         UminPara = minval(vPar_rzvv/vc1_mks) !TODO confirm min isnt min abs 
+         UmaxPara = maxval(vPar_rzvv/vc1_mks)
 
+! normalize the velocity 
+         uperp = vPer_rzvv / vc1_mks
+         upara = vPar_rzvv / vc1_mks
+
+!     Loop over R,Z and at each point, 
+!     normalize f and then calculate the normalized velocity space derivatives and load them up. 
+         do i = 1, nnodex
+               do j = 1, nnodey
+
+!                 Calculate density 
+                  call sgrate_cyl(vPer_rzvv, vPar_rzvv, f_rzvv(i,j,:,:),
+     &                  1, n_vper, 1, n_vpar, den_check, n_vper, n_vpar)
+
+!                 Normalize f_rzvv
+                  f_rzvv(i,j,:,:) = vc1_mks**3*f_rzvv(i,j,:,:)/den_check
+
+!                 Calculate giant 4d perp derivatives into memory  
+                  call deriv_dfdvperp(f_rzvv, dfdvper_rzvv, i, j, 
+     &                       uperp, n_r, n_z, n_vper, n_vpar)
+!                 Calculate giant 4d par derivatives into memory  
+                  call deriv_dfdvpar(f_rzvv, dfdvpar_rzvv, i, j, 
+     &                       upara, n_r, n_z, n_vper, n_vpar)
+               enddo
+            enddo
+
+         print *, "Finished calculating 4df derivatives."
+!        debugging: examples printed to screen. 
+         if (any(f_rzvv /= 0.0)) then
+               print *, "Found at least one nonzero element in f_rzvv"
+            else
+               print *, "All elements are zero in f_rzvv"
+         end if
+         print *, "dfdvper_rzvv(8,8,50,50) = ", dfdvper_rzvv(8,8,50,50)
+         print *, "dfdvper_rzvv(2,2,2,2) = ", dfdvper_rzvv(2,2,2,2)
+         write(*,*) "Max |dfdvper_rzvv| =", maxval(abs(dfdvper_rzvv))
+         write(*,*) "Max |dfdvpar_rzvv| =", maxval(abs(dfdvpar_rzvv))
+         write(*,*) "Number of NaNs in dfdvper_rzvv =", 
+     &              count(dfdvper_rzvv /= dfdvper_rzvv)
+
+         write(*,*) "Number of NaNs in dfdvpar_rzvv =", 
+     &              count(dfdvpar_rzvv /= dfdvpar_rzvv)
+
+!         print *, "dfdvpar_rzvv(8,8,:,:) = ", dfdvpar_rzvv(8,8,:,:)
+         print *, "dfdvpar_rzvv(2,2,2,2) = ", dfdvpar_rzvv(2,2,2,2)
+
+         ! now, broadcast derivatives to all ranks (might not be needed) 
+         call mpi_bcast(dfdvper_rzvv, n_r*n_z*n_vper*n_vpar, 
+     &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
+         call mpi_bcast(dfdvpar_rzvv, n_r*n_z*n_vper*n_vpar, 
+     &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
+         end if
+      
 !     TODO end new snipit to read in the 4df, if provided for species 1 JVDL      
 
          call blacs_barrier(icontxt, 'All')
@@ -3321,7 +3479,7 @@ c      end if
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
-               if (capr(i) .gt. rt) then
+               if (capr(i) .lt. rt) then
 
 *                 ------------------------------------------------
 *                 if(i_antenna .eq. 0) antenna current is Gaussian
@@ -5962,8 +6120,53 @@ c               end if
      &                     xkalp, xkbet, xkprl)
 
 
+   !                   if(ndisti1 .eq. 0 .or. ndisti1 .eq. 1)
+   !   &                  call sigmad_cql3d_1(i, j, n, m, rho(i,j), rho_a,
+   !   &                     gradprlb(i,j), bmod(i,j), bmod_mid(i,j),
+   !   &                     xmi1, qi1, xn1a(i,j), xnuomi,
+   !   &                     xkti(i,j), omgci1(i,j), omgp12(i,j),
+   !   &                     -lmax, lmax, nzfun, ibessel,
+   !   &                     xkxsav(n), xkysav(m), nphi, capr(i),
+   !   &                     bxn(i,j), byn(i,j), bzn(i,j),
+   !   &                     uxx(i,j), uxy(i,j), uxz(i,j),
+   !   &                     uyx(i,j), uyy(i,j), uyz(i,j),
+   !   &                     uzx(i,j), uzy(i,j), uzz(i,j),
+   !   &                     sig1xx, sig1xy, sig1xz,
+   !   &                     sig1yx, sig1yy, sig1yz,
+   !   &                     sig1zx, sig1zy, sig1zz,
+   !   &                     delta0, ndisti1, nupar, nuper, n_psi,
+   !   &                     n_psi_dim, dfduper1, dfdupar1,
+   !   &                     UminPara, UmaxPara, UPERP, UPARA,
+   !   &                     vc1_mks, df1_cql_uprp, df1_cql_uprl, nbessj,
+   !   &                     nkperp, zi, eps0, v0i, omgrf, xk0, kperp_max,
+   !   &                     i_sav1, j_sav1, upshift, damping, xk_cutoff,
+   !   &                     rt, nkx2, nky2, xkprl, xkperp, xkalp, xkbet,
+   !   &                     z0_table1, z1_table1,z2_table1, zetai_table,
+   !   &                     dKdL_table,
+   !   &                     dKdL_giv_1, nmax, mmax, use_new_z2, ntable,
+   !   &                     mtable)
 
-                        call sigmad_cql3d_1(i, j, n, m, rho(i,j), rho_a,
+! TODO new call with the optional 4d array for the 4df case. 
+                     ! if(ndisti1 .eq. 2) then
+            if (first_time1 .eqv. .true.) then
+               first_time1 = .false.
+            print *, "Loaded f_rzvv has shape: ", 
+     &      size(f_rzvv,1), size(f_rzvv,2), 
+     &      size(f_rzvv,3), size(f_rzvv,4)
+
+            print *, "filled dfdvper_rzvv has shape: ", 
+     &      size(dfdvper_rzvv,1), size(dfdvper_rzvv,2), 
+     &      size(dfdvper_rzvv,3), size(dfdvper_rzvv,4)
+
+            print *, "filled dfdvpar_rzvv has shape: ", 
+     &      size(dfdvpar_rzvv,1), size(dfdvpar_rzvv,2), 
+     &      size(dfdvpar_rzvv,3), size(dfdvpar_rzvv,4)
+
+            write(*,*) "main has nuper =", nuper
+            write(*,*) "main has nupar =", nupar
+            end if 
+
+                       call sigmad_cql3d_1(i, j, n, m, rho(i,j), rho_a,
      &                     gradprlb(i,j), bmod(i,j), bmod_mid(i,j),
      &                     xmi1, qi1, xn1a(i,j), xnuomi,
      &                     xkti(i,j), omgci1(i,j), omgp12(i,j),
@@ -5986,7 +6189,10 @@ c               end if
      &                     z0_table1, z1_table1,z2_table1, zetai_table,
      &                     dKdL_table,
      &                     dKdL_giv_1, nmax, mmax, use_new_z2, ntable,
-     &                     mtable)
+     &                     mtable, n_r, n_z, n_vper, n_vpar, f_rzvv, 
+     &                     dfdvper_rzvv,
+     &                     dfdvpar_rzvv, vPer_rzvv, vPar_rzvv) ! This is where the params are
+                     ! end if
 
                         if(odd_order .ne. 0)
      &                     call odd_order_derivs(i, j, n, m, nxmx, nymx,
@@ -6824,6 +7030,13 @@ c        call flush
 *       ---------------------
 *       Call scalapack solver
 *       ---------------------
+! TODO adding print statments to debug 
+      write(*,*) 'nrow = ', nrow, ' ncol = ', ncol
+      write(*,*) 'Descriptor (desc_amat):', desc_amat
+      anorm11 = pzlange('F', nrow, ncol, p_amat, 1, 1, 
+     &                   desc_amat, work11)
+      write(*,*) '||A||_F = ', anorm11
+
       call pzgetrf( nrow, ncol, p_amat, 1, 1, desc_amat, p_ipiv, info)
       if (info.ne.0) then
           write(6,*) 'pzgetrf returns info = ', info
@@ -7640,7 +7853,9 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
      &   z0_table1, z1_table1, z2_table1, zetai_table, dKdL_table,
      &   dKdL_giv, nmax, mmax, use_new_z2, ntable, mtable)
 
-
+      if (myid .eq. 0) then
+         write(*, *) "calling current_1..."
+      end if
 
       call current_1(xjpx1, xjpy1, xjpz1, nxmx, nymx, nnodex, nnodey,
      &   nkx1, nkx2, nky1, nky2, nkdim1, nkdim2, mkdim1, mkdim2,
@@ -7662,9 +7877,13 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
      &   zi, eps0, v0i, omgrf, xk0, kperp_max, i_sav1, j_sav1, upshift,
      &   damping, xk_cutoff, rt, odd_order, dx, dy, xkphi,
      &   z0_table1, z1_table1,z2_table1, zetai_table, dKdL_table,
-     &   dKdL_giv_1, nmax, mmax, use_new_z2, ntable, mtable)
+     &   dKdL_giv_1, nmax, mmax, use_new_z2, ntable, mtable,
+     &   n_r, n_z, n_vper, n_vpar, f_rzvv, 
+     &   dfdvper_rzvv, dfdvpar_rzvv, vPer_rzvv, vPar_rzvv)
 
-
+      if (myid .eq. 0) then
+         write(*, *) "current_1 was called"
+      end if
 
       if(eta2 >= 100.*epsilon(eta1)) then
 
@@ -8071,9 +8290,10 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       ! ------------------ !
       ! --Majority ions -- !
       ! ------------------ !
+      ! TODO only do this if ndisti1 .ne. 2
       t1i1 = second1(dummy)
-
-      call ql_myra_write(bqlavg_i1, cqlavg_i1, eqlavg_i1, fqlavg_i1,
+      if(ndisti1 .ne. 2)
+     & call ql_myra_write(bqlavg_i1, cqlavg_i1, eqlavg_i1, fqlavg_i1,
      &   wdoti1, fx0i1, fy0i1, fz0i1, darea, nrhomax, nnoderho, drho,
      &   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
      &   nkx1, nkx2, nky1, nky2, nkdim1, nkdim2, mkdim1, mkdim2,
@@ -8509,6 +8729,8 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       ! ------------------ !
       ! --Majority ions -- !
       ! ------------------ !
+      ! TODO skip if ndisti1 is equal to 2 
+      if (ndisti1 .ne. 2) then
 
       call wdot_qlcheck(wdoti1_ql,
      &   nnoderho, nrhomax,
@@ -8518,6 +8740,8 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   UminPara, UmaxPara, UPERP, UPARA, UPERP_work, UPARA_work,
      &   vc1_mks, df1_cql_uprp, df1_cql_uprl, rhon, rho_a, myid,
      &   dldbavg)
+
+      end if
 
 
 

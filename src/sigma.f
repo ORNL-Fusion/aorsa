@@ -2092,7 +2092,8 @@ c
      .   z0_table, z1_table, z2_table, zetai_table, 
      .   dKdL_table, 
      .   dKdL_giv, nmax, mmax, use_new_z2, ntable, 
-     .   mtable)     
+     .   mtable, n_r, n_z, n_vper, n_vpar, f_rzvv_local, 
+     .   dfdvper_local, dfdvpar_local, vPer_rzvv, vPar_rzvv)     
 
 
 *     ---------------------------------------------------------
@@ -2105,7 +2106,8 @@ c      use zfun_hilbert
 
       implicit none
       
-      integer :: ieer ! fft error flag     
+      integer :: ieer ! fft error flag  
+      integer :: n_r, n_z, n_vper, n_vpar
       
       real, dimension(:,:), allocatable :: DFDUPER0, DFDUPAR0
 
@@ -2200,11 +2202,57 @@ c      use zfun_hilbert
       real :: rho_a(n_psi_dim), vc_mks
 
       integer :: i_uperp, i_upara, i_psi
+
+      ! TODO added new optional variables for the ndisti=2 case. JVDL
+      ! These are slices at the current R,Z location 
+      real, intent(in) :: f_rzvv_local(n_r, n_z, n_vper, n_vpar)
+      real, intent(in) :: dfdvper_local(n_r, n_z, n_vper, n_vpar)
+      real, intent(in) :: dfdvpar_local(n_r, n_z, n_vper, n_vpar)
+      real, intent(in) :: vPar_rzvv(n_vpar)
+      real, intent(in) :: vPer_rzvv(n_vper)
+      logical, save :: first_time2 = .true.
+      logical, save :: first_time3 = .true.
+      ! end TODO 
       
       common/upcom/akprl_min     
       
       allocate( dfduper0(nuper, nupar) )
       allocate( dfdupar0(nuper, nupar) )
+
+      if (first_time3 .eqv. .true.) then
+               first_time3 = .false.
+
+      write(*,*) "ndist = ", ndist
+      !write(*,*) "present(f_rzvv_local) = ", present(f_rzvv_local)
+
+      !if(present(f_rzvv_local)) then
+            print *, "f_rzvv_local has shape: ", 
+     &      size(f_rzvv_local, 1), size(f_rzvv_local, 2), 
+     &      size(f_rzvv_local, 3), size(f_rzvv_local, 4)
+      !end if
+
+      !write(*,*) "present(dfdvper_local) = ", present(dfdvper_local)
+
+      !if(present(dfdvper_local)) then
+            print *, "dfdvper_local has shape: ", 
+     &      size(dfdvper_local, 1), size(dfdvper_local, 2), 
+     &      size(dfdvper_local, 3), size(dfdvper_local, 4)
+      !end if
+
+      !write(*,*) "present(dfdvpar_local) = ", present(dfdvpar_local)
+      !if(present(dfdvpar_local)) then
+            print *, "dfdvpar_local has shape: ", 
+     &      size(dfdvpar_local, 1), size(dfdvpar_local, 2), 
+     &      size(dfdvpar_local, 3), size(dfdvpar_local, 4)
+      !end if
+      write(*,*) "Max |dfdvper_local| =", maxval(abs(dfdvper_local))
+      write(*,*) "Max |dfdvpar_local| =", maxval(abs(dfdvpar_local))
+
+      if(ndist .eq. 1)then
+         write(*,*) "nditi1=1 UPARA", UPARA
+         write(*,*) "nditi1=1 UPERP", UPERP
+      end if
+      end if
 
       nu_coll =  .01 * omgrf
       xme = 9.11e-31
@@ -2617,6 +2665,320 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
      .                       xkphi)
          end if
 
+         if (first_time2 .eqv. .true.) then
+               first_time2 = .false.
+         write(*,*) "GETNONMAXSIGMA_AORSA_NEWi_1 with i/o"
+         write(*,*) "for ndisti1 = 1:"
+         write(*,*) "Max |dfdupar| =", maxval(abs(dfdupar))
+         write(*,*) "Max |dfduper| =", maxval(abs(dfduper))
+         write(*,*) "W        =", W
+         write(*,*) "ZSPEC    =", ZSPEC
+         write(*,*) "ASPEC    =", ASPEC
+         write(*,*) "DensSPEC =", DensSPEC
+         write(*,*) "BMAG     =", BMAG
+         write(*,*) "K1       =", K1
+         write(*,*) "XI1      =", XI1
+         write(*,*) "JNXI1    =", JNXI1
+         write(*,*) "NBESSJ   =", NBESSJ
+         write(*,*) "Enorm    =", Enorm
+         write(*,*) "UminPara =", UminPara
+         write(*,*) "UmaxPara =", UmaxPara
+         write(*,*) "NUPAR    =", NUPAR
+         write(*,*) "NUPER    =", NUPER
+         write(*,*) "UPARA    =", UPARA
+         write(*,*) "UPERP    =", UPERP
+         ! skip DFDUPER, DFDUPAR (big arrays)
+         write(*,*) "WSPEC    =", WSPEC
+         write(*,*) "IFAIL    =", IFAIL
+         write(*,*) "l_first  =", l_first
+         write(*,*) "l_interp =", l_interp
+         write(*,*) "kperp_max=", kperp_max
+         write(*,*) "nkperp   =", nkperp
+         write(*,*) "xkphi    =", xkphi
+         !stop ! TODO this is jsut for debugging 
+         end if 
+
+         factor = cmplx(0.,-omgrf * eps0)
+
+         sig1 = WSPEC(1,1) * factor
+         sig2 = WSPEC(1,2) * factor
+         sig3 = WSPEC(3,3) * factor
+         sig4 = 0.0
+         sig5 = 0.0
+         sig0 = 0.0
+         if (xkperp .gt. 0.01) then
+            sig4 = WSPEC(3,1) / xkperp * factor
+            sig5 = WSPEC(3,2) / xkperp * factor
+            sig0 = (WSPEC(2,2) * factor - sig1) / xkperp**2
+         endif
+
+      end if
+
+      ! TODO JVDL: adding in ndisti1 == 2 option for 4df. skips mapping and just indexes into the
+      ! 4d f array at the current R, Z, filling out the perp and parallel velocity space derivs. 
+      if (ndist .eq. 2) then
+      
+         if (upshift .ne. 0) xkprl = xkprl_eff
+         
+      
+         Emax = 0.5 * xm * vc_mks**2
+         Enorm = Emax / 1.6e-19
+
+         W = omgrf
+         K1(1) = xkperp
+         K1(2) = 0.0
+         K1(3) = xkprl
+         K2(1) = K1(1)
+         K2(2) = K1(2)
+         K2(3) = K1(3)
+         KPER1 = xkperp
+         KPER2 = xkperp
+
+
+         ZSPEC = q / 1.6e-19
+         ASPEC = xm / 1.67e-27
+         BMAG = omgc * (xm / q)
+         NSBESSJ = 2 * NBESSJ + 8
+         DensSPEC = xn
+         ! bratio = bmod0 / bmod
+         ! if(bratio .gt. 1.0) bratio = 1.0
+
+         ! duperp = uperp(nuper) / (nuper - 1)
+         ! dupara = 2.0 * upara(nupar) / (nupar - 1)
+
+         if(i .ne. i_sav .or. j .ne. j_sav)then
+         
+            ! dfduper0 = 0.0
+            ! dfdupar0 = 0.0
+
+            ! JVDL: in what follows, the mapping off the midplane
+!            is commented out, and we simply index into the derivative slice. 
+            !Note there is no interpolation, we assume the 4df has the correct r, z, vper, vpar points 
+            ! as AORSA.
+!           ------------------------------------------------
+!           get CQL3D distribution function on the midplane
+!           ------------------------------------------------
+   !          call cql3d_dist(nupar, nuper, n_psi,
+   !   .                 n_psi_dim, rho_a, rho,
+   !   .                 UminPara,UmaxPara,
+   !   .                 df_cql_uprp, df_cql_uprl,
+   !   .                 UPERP, UPARA, DFDUPER0, DFDUPAR0)
+     
+
+!           ------------------------------------------------
+!           replace map CQL3D distribution function off the midplane
+!           with direct indexing. 
+!           ------------------------------------------------
+
+            ! if(bratio .ge. 0.0)then
+            
+            dfduper = 0.0
+            dfdupar = 0.0
+   !          write(*,*) "nuper =", nuper
+   !          write(*,*) "nupar =", nupar
+   !          !if (present(dfdvpar_local)) then
+   !          write(*,*) "Loaded dfdvpar_local has shape: ", 
+   !   &      size(dfdvpar_local,1), size(dfdvpar_local,2), 
+   !   &      size(dfdvpar_local,3), size(dfdvpar_local,4)
+            !end if
+            do ni = 1, nuper
+               do mi = 1, nupar
+                  dfdupar(ni, mi) = dfdvpar_local(i, j, ni, mi)
+                  dfduper(ni, mi) = dfdvper_local(i, j, ni, mi)
+
+   !                   argd = uperp(ni)**2 * (1. - bratio) 
+   !   .                                               + upara(mi)**2
+   !                   if (argd .le. 0.0) argd = 1.0e-06
+                     
+   !                   uperp0 = uperp(ni) * sqrt(bratio)
+   !                   upara0 = sign(1.0, upara(mi)) * sqrt(argd)
+                     
+   !                   dfduper(ni, mi) = 0.0
+   !                   dfdupar(ni, mi) = 0.0
+                     
+   !                   if(upara0 .ge. upara(1) .and. 
+   !   .                                   upara0 .le. upara(nupar)) then
+     
+   !                      ni0 = int((uperp0 - uperp(1)) / duperp) + 1
+   !                      mi0 = int((upara0 - upara(1)) / dupara) + 1
+                        
+   !                      dfduper0_intplt = dfduper0(ni0, mi0)
+   !                      dfdupar0_intplt = dfdupar0(ni0, mi0)
+                        
+   !                      if (ni0 .lt. nuper .and. mi0 .lt. nupar) then
+                        
+   !                      uperp0_grid = uperp(1) + (ni0 - 1) * duperp
+   !                      upara0_grid = upara(1) + (mi0 - 1) * dupara
+                                                
+   !                      zeta = (uperp0 - uperp0_grid) / duperp
+   !                      eta  = (upara0 - upara0_grid) / dupara
+                        
+   !                      ai = dfduper0(ni0, mi0)
+   !                      bi = dfduper0(ni0+1 ,mi0) - dfduper0(ni0, mi0)
+   !                      ci = dfduper0(ni0, mi0+1) - dfduper0(ni0, mi0)
+   !                      di = dfduper0(ni0+1, mi0+1)+ dfduper0(ni0, mi0) 
+   !   .                     - dfduper0(ni0+1, mi0) - dfduper0(ni0, mi0+1) 
+                           
+   !                      dfduper0_intplt = ai + bi * zeta 
+   !   .                                     + ci * eta + di * zeta * eta                         
+
+   !                      ai = dfdupar0(ni0, mi0)
+   !                      bi = dfdupar0(ni0+1 ,mi0) - dfdupar0(ni0, mi0)
+   !                      ci = dfdupar0(ni0, mi0+1) - dfdupar0(ni0, mi0)
+   !                      di = dfdupar0(ni0+1, mi0+1)+ dfdupar0(ni0, mi0) 
+   !   .                     - dfdupar0(ni0+1, mi0) - dfdupar0(ni0, mi0+1) 
+                           
+   !                      dfdupar0_intplt = ai + bi * zeta 
+   !   .                                     + ci * eta + di * zeta * eta
+     
+   !                      end if                  
+
+                        
+   !                      if (upara0 .ne. 0.0)then
+                                             
+   !                         dfdupar(ni, mi) = dfdupar0_intplt * 
+   !   .                        upara(mi) / upara0
+     
+   !                         dfduper(ni, mi) = dfduper0_intplt * 
+   !   .                        sqrt(bratio) + dfdupar0_intplt * 
+   !   .                        uperp(ni) / upara0 * (1.0 - bratio)
+     
+c                          dfdth = upara(mi) * dfduper(ni, mi)
+c     .                           - uperp(ni) * dfdupar(ni, mi)
+
+
+                     !    end if
+                        
+                     ! end if
+                     
+                     
+                     ! go to 5000
+!                    ----------------------------
+!                    optional analytic Maxwellian
+!                    ----------------------------
+!                      pi = 3.141592654
+                     
+!                      alpha = sqrt(2.0 * xkt / xm)
+! !                     vc_mks = 3.5 * alpha
+!                      u0 = vc_mks / alpha
+                     
+!                      fnorm = u0**3 / pi**1.5 
+                           
+!                      u2 = uperp(ni)**2 + upara(mi)**2
+                     
+!                      f_cql = exp(-u2 * u0**2) * fnorm
+!                      dfduper(ni, mi) = -f_cql * 2. * uperp(ni) * u0**2
+!                      dfdupar(ni, mi) = -f_cql * 2. * upara(mi) * u0**2
+!  5000                continue                
+
+
+                  end do
+               end do
+               
+          !  end if
+            
+
+!           --------------------------------------
+!           Initialize the interpolation in k_perp:
+!           --------------------------------------
+
+            if (nkperp .ne. 0) then
+               l_first  = .true.
+               l_interp = .true.
+        
+               call GETNONMAXSIGMA_AORSA_NEWi_1(W,
+     .                          ZSPEC,ASPEC,DensSPEC,BMAG,
+     .                          K1,XI1,JNXI1,
+     .                          K1,XI1,JNXI1,NBESSJ,
+     .                          Enorm,UminPara,UmaxPara,
+     .                          NUPAR,NUPER,UPERP,UPARA,
+     .                          DFDUPER,DFDUPAR,
+     .                          WSPEC,IFAIL,
+     .                          l_first, l_interp, kperp_max, nkperp,
+     .                          xkphi)
+            end if
+
+
+
+            i_sav = i
+            j_sav = j
+
+         end if
+
+
+
+
+
+
+!        ------------------------------------
+!        Complete integrals; no interpolation
+!        ------------------------------------
+         if (nkperp .eq. 0)then
+
+            call WMATPRECALC_AORSA(ZSPEC,ASPEC,ENORM,BMAG,KPER1,
+     &                UPERP, NUPER,NBESSJ,NSBESSJ,XI1,JNXI1,IFAIL)
+
+            call GETNONMAX_SIGMA_AORSA_NEW(W,
+     .                          ZSPEC, ASPEC, DensSPEC, BMAG,
+     .                          K1, XI1, JNXI1,
+     .                          K1, XI1, JNXI1, NBESSJ,
+     .                          Enorm, UminPara, UmaxPara,
+     .                          NUPAR, NUPER, UPERP, UPARA,
+     .                          DFDUPER, DFDUPAR,
+     .                          WSPEC, IFAIL)
+
+         else
+!        -----------------
+!        Use interpolation
+!        -----------------
+
+            l_first = .false.
+
+              call GETNONMAXSIGMA_AORSA_NEWi_1(W,
+     .                       ZSPEC,ASPEC,DensSPEC,BMAG,
+     .                       K1, XI1, JNXI1,
+     .                       K1, XI1, JNXI1, NBESSJ,
+     .                       Enorm, UminPara, UmaxPara,
+     .                       NUPAR, NUPER, UPERP, UPARA, 
+     .                       DFDUPER, DFDUPAR,
+     .                       WSPEC, IFAIL,
+     .                       l_first, l_interp, kperp_max, nkperp,
+     .                       xkphi)
+         end if
+
+            if (first_time2 .eqv. .true.) then
+                first_time2 = .false.
+            write(*,*) "GETNONMAXSIGMA_AORSA_NEWi_1 with i/o:"
+            write(*,*) "for ndisti1 = 2:"
+            write(*,*) "Max |dfdupar| =", maxval(abs(dfdupar))
+            write(*,*) "Max |dfduper| =", maxval(abs(dfduper))
+            write(*,*) "W        =", W
+            write(*,*) "ZSPEC    =", ZSPEC
+            write(*,*) "ASPEC    =", ASPEC
+            write(*,*) "DensSPEC =", DensSPEC
+            write(*,*) "BMAG     =", BMAG
+            write(*,*) "K1       =", K1
+            write(*,*) "XI1      =", XI1
+            write(*,*) "JNXI1    =", JNXI1
+            write(*,*) "NBESSJ   =", NBESSJ
+            write(*,*) "Enorm    =", Enorm
+            write(*,*) "UminPara =", UminPara
+            write(*,*) "UmaxPara =", UmaxPara
+            write(*,*) "NUPAR    =", NUPAR
+            write(*,*) "NUPER    =", NUPER
+            write(*,*) "UPARA    =", UPARA
+            write(*,*) "UPERP    =", UPERP
+            ! skip DFDUPER, DFDUPAR (big arrays)
+            write(*,*) "WSPEC    =", WSPEC
+            write(*,*) "IFAIL    =", IFAIL
+            write(*,*) "l_first  =", l_first
+            write(*,*) "l_interp =", l_interp
+            write(*,*) "kperp_max=", kperp_max
+            write(*,*) "nkperp   =", nkperp
+            write(*,*) "xkphi    =", xkphi
+            !stop
+            end if 
+
 
 
          factor = cmplx(0.,-omgrf * eps0)
@@ -2634,6 +2996,7 @@ c     .                           - uperp(ni) * dfdupar(ni, mi)
          endif
 
       end if
+      ! END TODO adding new ndisti1 = 2 option. Below is what was here before. 
 
       sig1 = sig1 + delta0 * eps0 * omgrf * xkperp**2 / xk0**2
       sig3 = sig3 + delta0 * eps0 * omgrf * xkperp**2 / xk0**2

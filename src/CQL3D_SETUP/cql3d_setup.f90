@@ -323,6 +323,8 @@
       end if      
       
       vc_ratio = vc_mks_aorsa / vc_mks_cql3d
+
+      write(*,*)"vc_ratio: ", vc_ratio
       
       write(6, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"       
       write(6, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV" 

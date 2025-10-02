@@ -1718,7 +1718,9 @@ c
      &   zi, eps0, v0i, omgrf, xk0, kperp_max, i_sav, j_sav, upshift, 
      &   damping, xk_cutoff, rt, odd_order, dx, dy, xkphi,
      &   z0_table, z1_table, z2_table, zetai_table, dKdL_table, 
-     &   dKdL_giv, nmax, mmax, use_new_z2, ntable, mtable)
+     &   dKdL_giv, nmax, mmax, use_new_z2, ntable, mtable, 
+     &   n_r, n_z, n_vper, n_vpar, f_rzvv_local, 
+     &   dfdvper_local, dfdvpar_local, vPer_rzvv, vPar_rzvv)
 
 *-----------------------------------------------------------------------
 *     This subroutine calculates the plasma current for a single species
@@ -1800,6 +1802,16 @@ c
       real:: df_cql_uprp(NUPER, NUPAR, n_psi_dim)
       real:: df_cql_uprl(NUPER, NUPAR, n_psi_dim)
       real:: vc_mks, rho_a(n_psi_dim)
+
+      ! TODO added new optional variables for the ndisti=2 case. JVDL
+      ! These are slices at the current R,Z location 
+      integer :: n_r, n_z, n_vper, n_vpar
+      real, intent(in) :: f_rzvv_local(n_r, n_z, n_vper, n_vpar)
+      real, intent(in) :: dfdvper_local(n_r, n_z, n_vper, n_vpar)
+      real, intent(in) :: dfdvpar_local(n_r, n_z, n_vper, n_vpar)
+      real, intent(in) :: vPar_rzvv(n_vpar)
+      real, intent(in) :: vPer_rzvv(n_vper)
+      ! end TODO 
 
 
       xjpx(:,:) = 0.0
@@ -1923,7 +1935,10 @@ c                    if (upshift .eq. 0) xkprl = nphi / rt
      &                      z0_table, z1_table, z2_table, zetai_table, 
      &                      dKdL_table, 
      &                      dKdL_giv, nmax, mmax, use_new_z2, ntable, 
-     &                      mtable)
+     &                      mtable,
+     &                      n_r, n_z, n_vper, n_vpar, f_rzvv_local, 
+     &                      dfdvper_local, dfdvpar_local, 
+     &                      vPer_rzvv, vPar_rzvv)
      
                         if(odd_order .ne. 0) 
      &                     call odd_order_derivs(i, j, n, m, nxdim, 
