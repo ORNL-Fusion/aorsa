@@ -8292,8 +8292,8 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       ! ------------------ !
       ! TODO only do this if ndisti1 .ne. 2
       t1i1 = second1(dummy)
-      if(ndisti1 .ne. 2)
-     & call ql_myra_write(bqlavg_i1, cqlavg_i1, eqlavg_i1, fqlavg_i1,
+      if(ndisti1 .ne. 2) then
+      call ql_myra_write(bqlavg_i1, cqlavg_i1, eqlavg_i1, fqlavg_i1,
      &   wdoti1, fx0i1, fy0i1, fz0i1, darea, nrhomax, nnoderho, drho,
      &   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
      &   nkx1, nkx2, nky1, nky2, nkdim1, nkdim2, mkdim1, mkdim2,
@@ -8315,8 +8315,37 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   nkperp, lmaxdim, nzeta_wdoti, theta_,
      &   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      &   n_bin, upshift, i_write, xk_cutoff)
+      end if
+      !JVDL -  4df method only for wdot calc, 4d DQL calc left to the reader for future addition 
+      !write(*,*) "Calling wdot_4df.."
 
+       if(ndisti1 .eq. 2)
+     & call wdot_4df(bqlavg_i1, cqlavg_i1, eqlavg_i1, fqlavg_i1,
+     &   wdoti1, fx0i1, fy0i1, fz0i1, darea, nrhomax, nnoderho, drho,
+     &   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
+     &   nkx1, nkx2, nky1, nky2, nkdim1, nkdim2, mkdim1, mkdim2,
+     &   xmi1, qi1, xn1a, xkti, omgci1, omgp12, lmax,
+     &   xkxsav, xkysav, nzfun, ibessel,
+     &   ealphak, ebetak, ebk, nphi, capr,
+     &   bxn, byn, bzn,
+     &   uxx, uxy, uxz,
+     &   uyx, uyy, uyz,
+     &   uzx, uzy, uzz,
+     &   myrow, mycol, nprow, npcol, icontxt, desc_amat, dlen_,
+     &   xx, yy, isigma, xnuomia, psi, psilim, nboundary,
+     &   myid, nproc, delta0, gradprlb, bmod, ndisti1, bmod_mid,
+     &   nupar, nuper, n_psi,
+     &   n_psi_dim, dfduper1, dfdupar1, fperp1,
+     &   UminPara, UmaxPara, UPERP, UPARA,
+     &   vc1_mks, df1_cql_uprp, df1_cql_uprl, rho, rho_a, nbessj,
+     &   zeffcd, clight, x, y, rt, b0, ftrap, omgrf,
+     &   nkperp, lmaxdim, nzeta_wdoti, theta_,
+     &   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
+     &   n_bin, upshift, i_write, xk_cutoff, n_r, n_z, n_vper, 
+     &   n_vpar, f_rzvv, dfdvper_rzvv,
+     &   dfdvpar_rzvv, vPer_rzvv, vPar_rzvv)
 
+      write(*,*) "Finished wdot_4df."
       if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti1,
