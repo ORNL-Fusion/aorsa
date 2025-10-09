@@ -3152,26 +3152,26 @@ c     &   nxmx, nymx, nlevmax, title, titx, tity, titz)
 
 
 
-c      title = 'Spx'
-c      call ezconc(capr, y, spx, ff, nnodex, nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
-c     &     scalex)
+      title = 'Spx'
+      call ezconc(capr, y, spx, ff, nnodex, nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
+      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
-c      title = 'Spy'
-c      call ezconc(capr, y, spy, ff, nnodex, nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
-c     &     scalex)
+      title = 'Spy'
+      call ezconc(capr, y, spy, ff, nnodex, nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
+      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
-c      title = 'Spz'
-c      call ezconc(capr, y, spz, ff, nnodex, nnodey, numb,
-c     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
-c      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
-c     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
-c     &     scalex)
+      title = 'Spz'
+      call ezconc(capr, y, spz, ff, nnodex, nnodey, numb,
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
+      if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
+     &   nnodey, numb,  nxmx, nymx, nlevmax, title, titx, tity,
+     &     scalex)
 
 
 *     --------------
@@ -4992,11 +4992,11 @@ c      end do
       write(245, 2849)
       write (245, 3411) ((Spz(i,j), i = 1, nnodex),  j = 1, nnodey)
 
-       write(245, 2870)
- 2870 format('VECTORS Sp_vector float 1')
-      write(245, 2849)
-      write(245, 3412) ((spx(i,j), spy(i,j), spz(i,j),
-     &                                    i = 1, nnodex), j = 1, nnodey)
+!       write(245, 2870)
+! 2870 format('VECTORS Sp_vector float 1')
+!      write(245, 2849)
+!      write(245, 3412) ((spx(i,j), spy(i,j), spz(i,j),
+!     &                                    i = 1, nnodex), j = 1, nnodey)
 
       write(245, '(A)') 'SCALARS abs_jantx float 1'
       write(245, 2849)

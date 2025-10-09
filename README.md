@@ -81,6 +81,7 @@ ctest
     - `capd.vtk` - contour plots of dispersion relation D(k,x)
   - misc text files
     - `fpm` power profiles and quasilinear coefficients for each nphi
+    - `fpm2` bx,by,bz
   - Postscript output (from pgplot). When using the giza library these are pdf files.
     - `aorsa2d.ps` - main output. 1D and 2D field and power plots
     

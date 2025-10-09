@@ -1457,6 +1457,9 @@ c      jequat  = nnodey / 2
       if (myid==0) then
 
          write(15, *) "AORSA2D: version_number = ", version_number
+#ifdef GITHASH       
+         write(15, *) "AORSA2D: GIT hash  = "//GITHASH
+#endif         
          write(15, *) "z2_electron = ", z2_electron
          write(15, *) "use_new_Z2 = ", use_new_Z2
          write(15, *) "use_fourier_Z2 = ", use_fourier_Z2
@@ -8675,8 +8678,8 @@ c                  divsp(i) = dspxdx(i)
 c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
                end if
             end if
-            if (1==0) then !comment out for now
-            if (i==1 .and. j/=1 .and/ j/=nnodex) then
+            if (1==0) then !comment out for now , axis behavior
+            if (i==1 .and. j/=1 .and. j/=nnodex) then
                    dezdx = (ez(i+1, j) - ez(i-1, j)) / (2.0 * dx)
                    dezdy = (ez(i, j+1) - ez(i, j-1)) / (2.0 * dy)
                    deydx = 0.0 !(ey(i+1, j) - ey(i-1, j)) / (2.0 * dx) ! indep of R
@@ -8709,9 +8712,9 @@ c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
             if (j==nnodey) then
             end if
             end if
-!*           --------------------------------
+!*           ---------------------------------
 !*           Calculate radial and theta force:
-!*           --------------------------------
+!*           ---------------------------------
 
             fpsi0(i, j)  = fx0i2(i, j) * rhohatx(i, j)
      &                   + fy0i2(i, j) * rhohaty(i, j)
@@ -8726,7 +8729,7 @@ c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
 
             ftheta1(i,j) = ftheta0(i,j) * bpol(i,j)
 
-!*           -------------------------------------------------------------
+!*           --------------------------------------------------------------
 !*           Calculate driven current from wdote(i,j) for xkprl = nphi / R:
 !*           First calculate C_ehst
 !*           --------------------------------------------------------------
@@ -10413,6 +10416,9 @@ c--      Calculate species fractions from Wdot:
      &                     + pcti4_ql + pcti5_ql + pcti6_ql
 
          write(15, 169)
+         z_load = pt_ql / (i_ant**2)
+         write(15, 1149) z_load
+         
          write(15, 81668)
          write(15, 71109)  pe_ql, pcte_ql,
      &                    pi1_ql, pcti1_ql,
@@ -11763,7 +11769,7 @@ c      write(6,*) "finished plots; starting deallocation"
       call blacs_barrier(icontxt, 'All')
 
       call blacs_gridexit( icontxt )
-      call blacs_exit(0)
+!      call blacs_exit(0)
       end
 
 !

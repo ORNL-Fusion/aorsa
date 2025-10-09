@@ -1,5 +1,9 @@
 EXEC = xaorsa2d
 
+#check if git present. Might need logic for non-gnumakes
+GIT_VERSION := "$(shell git describe --abbrev=4 --dirty --always --tags)"
+DEFS += -DGITHASH=\"$(GIT_VERSION)\"
+
 SRC_DIR = src
 OBJ_DIR = obj
 
