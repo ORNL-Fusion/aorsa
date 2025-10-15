@@ -23,6 +23,7 @@
       real :: xky_ono = 0.0           !ky (m-1) for which Ono's dispersion relations is plotted      
       
       integer :: nstrap = 4           ! number of current straps in antenna
+      integer :: nant   = 1           ! number of antennas
       
       real :: scrape = 100.           ! scrape-off length in rho for iprofile = 5 (numerical profiles) 
       real :: nmin = 1.0e+18          ! minimum density allowed in scrape-off layer for iprofile = 5 (numerical profiles)
@@ -75,7 +76,7 @@
       real :: psipti4 = .30
       real :: psipti5 = .30
       real :: psipti6 = .30
-      real :: yant = 0.0              !-----yant = location of antenna center in Z (m) , current shapey
+      real :: yant(2) = 0.0           !-----yant = location of antenna center in Z (m) , current shapey
       real :: te0  = 4.2900E+03       !-----te0=central value of eletron temperature in eV
       real :: ti0  = 7.0700E+03       !-----ti0=central value of ion temperature in eV
       real :: ti02 = 7.0700E+03

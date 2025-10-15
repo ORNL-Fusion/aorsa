@@ -2534,6 +2534,7 @@ c      CALL FREDDY(capd, nnodex, nkxplt, 1.0, 25.0)
       ncolln2=nmagenta
 
       title = 'wdote'
+      tity='Z (m)'      
       call ezconc(capr, y,wdote, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,
@@ -2632,7 +2633,7 @@ c        white background
      &     scalex)
 
 
-      title = 'wdot_tot'
+      title = 'wdot_{tot}'
       call ezconc(capr, y,wdott, ff, nnodex, nnodey, numb,
      &   nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
       if (iflag .eq. 0) call boundary (capr, y, rho, ff, nnodex,

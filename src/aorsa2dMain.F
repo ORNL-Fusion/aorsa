@@ -3296,7 +3296,10 @@ c      end if
             end if
 
             shapey = 0.0
-            deltay = y(j) - yant
+            deltay = y(j) - yant(1)
+            if (nant == 2) then
+               deltay = min( abs(deltay), abs(y(j)-yant(2)) )
+            end if
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
