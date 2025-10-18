@@ -480,7 +480,7 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
       call a1mnmx(y2, nrmax, nr, y2min, y2max)
 
-      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
+      if(y2max .eq. 0.0 .and. y2min .eq. 0.0)return
 
       ymax = y2max * 2.0
       ymin = y2min

@@ -3604,7 +3604,7 @@ DO  i = 1, n
   kdflg = 1
   y(i) = czero
   nz = nz + 1
-  IF (i /= 1) THEN
+  IF (i > 1) THEN
     IF (y(i-1) /= czero) THEN
       y(i-1) = czero
       nz = nz + 1
@@ -4004,7 +4004,7 @@ DO  i = 1, n
   y(i) = czero
   cs = -ci * cs
   nz = nz + 1
-  IF (i /= 1) THEN
+  IF (i > 1) THEN
     IF (y(i-1) /= czero) THEN
       y(i-1) = czero
       nz = nz + 1

@@ -3038,7 +3038,7 @@ c           if(myid==0)write(6,*)n, m, capr_flux(n,m), xj
       cos_antang = cos(antang_rad)
 
       iant=int((rant - rwleft) / dx) + 1
-      jant=int((yant - ybottom) / dy) + 1
+      jant=int((yant(1) - ybottom) / dy) + 1 !add jant(2) for two antennas
       if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
 
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).

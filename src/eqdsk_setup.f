@@ -357,8 +357,7 @@ c      double precision ws(lenws)
       real p, pi1, pi2, pit, pi3, pe
 
 
-      real yprimec(nxmx), ycourse(nxmx),
-     &     yprime(nxmx), y(nxmx), dy, dyc
+      real :: yprime(nymx), y(nymx), dy, dyc
 
 
       CHARACTER(128) :: eqdsk
@@ -3032,8 +3031,7 @@ c      double precision ws(lenws)
 
       complex sk1, sk2, sk3, sk4, sk5, sk0
 
-      real yprimec(nxmx), ycourse(nxmx),
-     &     yprime(nxmx), y(nxmx), dy, dyc
+      real :: yprime(nymx), y(nymx), dy, dyc
 
 
       CHARACTER(128) :: eqdsk

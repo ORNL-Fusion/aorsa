@@ -14,7 +14,7 @@
       integer:: kp1, km1
       integer:: nchmax, jhalf, khalf, kshift
       integer:: iezrant, nr, k, nt1, nt2, jmid,
-     &   nant, nphi3d, n, nphi, nstrpol, nphi_fpm, nt_max
+     &       nphi3d, n, nphi, nstrpol, nphi_fpm, nt_max
       integer:: nphi3d_1quarter, nphi3d_half, nphi3d_3quarter
 
       integer:: i, j
