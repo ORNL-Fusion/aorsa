@@ -119,7 +119,7 @@ c      CHARACTER(128) :: root
       integer :: mkdim1, mkdim2
 
       integer :: nkdim1, nkdim2, nkx1, nkx2, nldim, nldim3,
-     &   nky1, nky2, iant
+     &   nky1, nky2, iant, jant
 
       real :: kperp_max, valfven, kalfven, xky_ant
       real ::  kperp_max_actual
@@ -3043,9 +3043,9 @@ c--   thetam: 0 to 2pi
       sin_antang = sin(antang_rad)
       cos_antang = cos(antang_rad)
 
-      iant=int((rant - rwleft) / dx) + 1
-      if(rant .ne. 0.0)psiant = psi(iant, jequat)
-
+      iant=int((rant - rwleft) / dx + 0.5)+1
+      jant=int((yant - ybottom) / dy + 0.5)+1
+      if(rant .ne. 0.0)psiant = psi(iant, jant)
 
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
       xjantx = curdnx / dx
@@ -3344,6 +3344,8 @@ c                  antlc = pi / (xk0 * antlen)
          end do
       end do
 
+      write(*,*) 'current location',i_cur_max,j_cur_max,
+     &   cur_mod_max,capr(i_cur_max),y(j_cur_max)      
       xkphia = nphi / capr(i_cur_max)
       npar = xkphia / xk0
 
@@ -4547,6 +4549,8 @@ c            acold(i,j) = xnphi**2 - capk_perp
       end do
 
       call dgrate(xprime, kimag_cold, 1, nnodex, ans, nxmx)
+      write(*,*) 'spa', xprime(1:nnodex), kimag_cold(1:nnodex), 1,
+     &   nnodex, ans, nxmx
       spa_cold = 1.0 - exp(-2.0 * ans)
 
       if (myid .eq. 0) then

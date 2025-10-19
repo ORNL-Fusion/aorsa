@@ -12,3 +12,6 @@ WARNING_FLAGS += -fcheck=all #-ffpe-trap=invalid -fcheck=all
 
 ORBIT_F_WARNING_FLAGS += -ffpe-trap=invalid #-fcheck=all
 
+GIT_VERSION := "$(shell git describe --abbrev=4 --dirty --always --tags)"
+DEFS += -DGITHASH=$(GIT_VERSION)
+
