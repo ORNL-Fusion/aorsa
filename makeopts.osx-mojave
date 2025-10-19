@@ -1,6 +1,6 @@
 include compileropts.gnu
-
-FC = mpif90 -cpp -O0 -g
+WARNING_FLAGS+=-fallow-argument-mismatch
+FC = mpif90 -cpp -O2   
 
 NETCDF_DIR := $(shell brew --prefix netcdf)
 NETCDFF_DIR := $(shell brew --prefix netcdf-fortran)
@@ -19,4 +19,5 @@ LIBS += -L $(PGPLOT_DIR)/lib -lpgplot -lgiza
 
 LIBS +=  -L /opt/X11/lib -lX11
 
-DEFS += -DGIZA -DDEBUG
+DEFS += -DGIZA 
+#-DDEBUG

@@ -1,5 +1,5 @@
 include compileropts.gnu
-
+WARNING_FLAGS+=-fallow-argument-mismatch
 FC = mpif90.openmpi
 
 # pgplot

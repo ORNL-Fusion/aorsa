@@ -7,21 +7,21 @@
 * netcdf / netcdff
 * scalapack / blas / blacs
 * mpi
-* pgplot and X11
-* cmake > 3.15
+* pgplot/giza and X11
 
-## Cori
+## Perlmutter
 ### Build
 ```
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
 source env.cori
+ml +cray-hdf5
+ml +cray-netcdf
 make clean
 make
 ```
 ### Run
 ```
-source env.cori
 ulimit -s unlimited
 cp -r examples $SCRATCH/
 cd $SCRATCH/examples
@@ -29,18 +29,18 @@ cd DIIID-helicon
 ```
 #### batchscript
 ```
-sbatch batchscript.cori
+sbatch batchscript.perlmutter
 ```
 #### interative
 ```
-salloc -N 1 -C haswell -q interactive -t 01:00:00
+salloc -N 1 -q interactive -t 01:00:00
 srun -n 1 /path/to/xaorsa2d
 ```
 
-## Ubuntu 18.04
+## Ubuntu 20.04
 ### Build
 ```
-apt-get install gfortran libblacs-openmpi1 libblacs-mpi-dev libopenmpi-dev pgplot5 libnetcdff-dev libscalapack-openmpi-dev libpng-dev libblas-dev libx11-dev
+apt-get install gfortran-10 libscalapack-openmpi-dev libopenmpi-dev pgplot5 libnetcdff-dev libpng-dev libblas-dev libx11-dev
 ```
 ### Run
 ```
@@ -52,7 +52,7 @@ mpirun -n 1 ../../xaorsa2d
 ### Build
 ```
 brew cask install xquartz
-brew install open-mpi scalapack pgplot netcdf
+brew install gfortran open-mpi scalapack giza netcdf 
 git clone https://github.com/ORNL-Fusion/aorsa.git
 cd aorsa
 make 

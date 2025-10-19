@@ -18,10 +18,9 @@ c
 
       external f2, error
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     .   dx, dy,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, caprx
+      common/fcom/ bxn, byn, bzn, bmod, bratio, 
+     .   dx, dy, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     .   dxdphi, dydphi, caprx, fcount, nxdim, nydim, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      .   xprime, yprime
@@ -76,7 +75,7 @@ c
 
       integer nrhomax
 
-      integer n_theta_max, n_u_max, n_psi_max, n_theta_check
+      integer n_theta_max, n_u_max, n_psi_max
      
       parameter (n_theta_max = 200)
       parameter (n_u_max = 200)
@@ -359,14 +358,14 @@ c     .     fcount, h0
 c
 c***************************************************************************
 c
-      subroutine f2(x, y, dy)
+      subroutine f2(x, y, dy) !integration of d x/d ell
       use size_mod        
 
       implicit none
 
       integer fcount, nnodex, nnodey, nxmx, nymx 
 
-      real x, len, y(1), dy(1), br, bz, bphi, modb, x_extint, sgn_vprl
+      real x, len, y(3), dy(3), br, bz, bphi, modb, x_extint, sgn_vprl
       real bratio_phi
       real xprime, yprime, dxdphi, dydphi, dr, dz, rt, capr, xwleft
       real drdl, dzdl, dphidl
@@ -383,10 +382,9 @@ c
       real zbratio(nmodesmax, mmodesmax, 3)
       real xprimea(nmodesmax), yprimea(mmodesmax)
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxmx, nymx, 
-     .   dr, dz,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, capr
+      common/fcom/ bxn, byn, bzn, bmod, bratio,
+     .   dr, dz, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     .   dxdphi, dydphi, capr, fcount, nxmx, nymx, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      .   xprimea, yprimea
@@ -417,22 +415,21 @@ c
 
       fcount = fcount + 1
 
- 1312 format(1p,8e12.4)
-
       return
       end
 c
 c***************************************************************************
 c
-      subroutine f(x, y, dy)
+      subroutine f(x, y, dy) !integration of d x/d phi
       use size_mod        
 
+      use aorsa2din_mod, only: eqtype
       implicit none
 
       integer fcount, nnodex, nnodey, nxmx, nymx 
 c      integer nmodesmax, mmodesmax
 
-      real x, phi, y(1), dy(1), br, bz, bphi, modb, x_extint, sgn_vprl
+      real x, phi, y(3), dy(3), br, bz, bphi, modb, x_extint, sgn_vprl
       real bratio_phi
       real xprime, yprime, dxdphi, dydphi, dr, dz, rt, capr, xwleft
       
@@ -457,10 +454,9 @@ c      parameter (mmodesmax = 450)
       real zbratio(nmodesmax, mmodesmax, 3)
       real xprimea(nmodesmax), yprimea(mmodesmax)
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxmx, nymx, 
-     .   dr, dz,
-     .   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     .   dxdphi, dydphi, capr
+      common/fcom/ bxn, byn, bzn, bmod, bratio, 
+     .   dr, dz, rt, xwleft, sgn_vprl, modb, bratio_phi, 
+     .   dxdphi, dydphi, capr, fcount, nxmx, nymx, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      .   xprimea, yprimea
@@ -480,7 +476,7 @@ c     .   nxmx, nymx, dr, dz)
 c      call intplt2(xprime, yprime, bratio_phi, nnodex, nnodey, bratio,
 c     .   nxmx, nymx, dr, dz)
 
-
+      !Note bxn etc are Normalized to bmod
       br = surf2 (xprime, yprime, nnodex, nnodey, xprimea, yprimea,
      .   bxn, nxmx, zbxn, sigma)
 
@@ -490,9 +486,8 @@ c     .   nxmx, nymx, dr, dz)
       bphi =surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
      .   bzn, nxmx, zbzn, sigma)
 
-      modb = sqrt(br**2+bz**2+bphi**2)
-!surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
-!     .   bmod, nxmx, zbmod, sigma)
+      modb = surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
+     .   bmod, nxmx, zbmod, sigma)
      
       bratio_phi=surf2(xprime, yprime, nnodex, nnodey, xprimea, yprimea,
      .   bratio, nxmx, zbratio, sigma)
@@ -502,9 +497,9 @@ c     .   nxmx, nymx, dr, dz)
       x_extint = xprime + xwleft
       capr = x_extint + rt
 
-      if (bphi/modb <= 1.0e-2) then !find dX/dell if bphi<0.01 modb
-         dxdphi = sgn_vprl * br / modb
-         dydphi = sgn_vprl * bz / modb
+      if (eqtype /= 'tokamak' .and. bphi <= 1.0e-4) then !find dX/dell if bphi<0.01 modb
+         dxdphi = sgn_vprl * br!Use f2 instead
+         dydphi = sgn_vprl * bz
       else 
          dxdphi = sgn_vprl * capr * br / bphi
          dydphi = sgn_vprl * capr * bz / bphi
@@ -512,10 +507,9 @@ c     .   nxmx, nymx, dr, dz)
 
       dy(1) = dxdphi
       dy(2) = dydphi
+      !dy(3) = dphi/dphi=1
 
       fcount = fcount + 1
-
- 1312 format(1p,8e12.4)
 
       return
       end
@@ -562,15 +556,6 @@ c
 
       do n_theta = 1, n_theta_(i_psi)
 
-c         thetai = theta_(n_theta, i_psi)
-c         costhi = cos(thetai)
-c         sinthi = sin(thetai)
-c         tanthi = tan(thetai)
-
-c         write(6, 100)modb_init
-c  100    format(1p,8e12.4)
-c         call exit
-
          dtau(n_theta) = 0.0
 
          sinth2_i = b_i / modb_init * sinth2_init(n_theta, i_psi)
@@ -578,7 +563,7 @@ c         call exit
          tanth2_i = sinth2_i / costh2_i
          costh_i = sqrt(costh2_i)
          
-         if(sinth2_i .gt. 1.0) go to 300
+         if(sinth2_i > 1.0) cycle
 
          argi = 1.0 - (mri - 1.0) * tanth2_i
 
@@ -603,12 +588,8 @@ c         call exit
      .           * 2.0 * abs(costh_i)  / (mri - 1.0) / sinth2_i
          end if
 
-  300    continue
 
       end do
-      
-
-
 
       return
       end
@@ -619,6 +600,228 @@ c***************************************************************************
 c
 !check limits here JCW
       SUBROUTINE EXTINT (NMAX, X, Y, F, H0, MMAX, ERROR)
+      INTEGER NMAX, MMAX
+      REAL   X, H0, Y(NMAX)
+C
+C          A DEFERRED-LIMIT INTEGRATOR (J.P. BORIS AND N.K. WINSOR)
+C
+C         THIS SUBROUTINE INTEGRATES UP TO 100 SIMULTANEOUS FIRST ORDER
+C     ORDINARY DIFFERENTIAL EQUATIONS FROM X TO X + H0 BY REPEATED EX-
+C     TRAPOLATIONS ON A MIDPOINT RULE. UP TO 10 EXTRAPOLATIONS MAY BE
+C     REQUESTED BEFORE REDUCTION OF THE INITIAL STEPSIZE IS CARRIED OUT.
+C     (REF. R. BULIRSCH AND J. STOER -  NUMERISCHE MATHEMATIK 8,1 (1966)
+C
+C     NMAX         THE TOTAL NUMBER OF DEPENDENT VARIABLES BEING INTE-
+C                  GRATED. THERE WILL BE ONE FIRST ORDER EQUATION FOR
+C                  EACH DEPENDENT VARIABLE.
+C
+C     X            THE INDEPENDENT VARIABLE, X IS TREATED AS REAL AND
+C                  MONOTONIC DURING THE INTEGRATION STEP. THE VALUE OF
+C                  X ON RETURN FROM ''EXT INT'' CONTAINS THE VALUE WHICH
+C                  IS APPROPRIATE TO THE LENGTH OF THE INTEGRATION ACTU-
+C                  ALLY PERFORMED. IF CONVERGENCE HAS BEEN OBSERVED IN
+C                  MMAX OF FEWER EXTRAPOLATIONS, X (AT EXIT) = X (AT
+C                  ENTRY) + H0. ON ENTRY X MUST BE SET TO THE INITIAL
+C                  VALUE OF THE INDEPENDENT VARIABLE FOR THE INTEGRATION
+C                  STEP BEING CONTEMPLATED.
+C
+C     Y            THE DEPENDENT VARIABLES. EACH DEPENDENT VARIABLE Y(N)
+C                  (FOR N = 1, 2, .., NMAX) IS INTEGRATED FROM X TO X+H0
+C                  IF ADEQUATE CONVERGENCE, AS DEFINED BY THE ''ERROR''
+C                  SUBROUTINE, OCCURS IN MMAX OR FEWER EXTRAPOLATIONS.
+C
+C     F            THE DERIVATIVE SUBROUTINE SUPPLIED BY THE USER FOR
+C                  HIS PARTICULAR PROBLEM. IT MUST BE OF THE FORM
+C                  F (X, Y, DY) WHERE THE ARRAY DY(N) (FOR N = 1,2, ...,
+C                  NMAX) IS RETURNED CONTAINING THE NMAX DERIVATIVES
+C                  (DY(N)/DX)(X,Y).
+C
+C     H0           IS THE BASIC STEPSIZE OF THE INTEGRATION. IF CONVER-
+C                  GENCE OCCURS WITHIN MMAX EXTRAPOLATIONS, X RETURNS
+C                  FROM EXT INT WITH THE VALUE X + H0. THE VALUES IN THE
+C                  ARRAY Y ARE THE VALUES OF THE DEPENDENT VARIABLES AT
+C                  THIS VALUE OF X. IF CONVERGENCE DOES NOT OCCUR, H0 IS
+C                  HALVED AND THE ENTIRE EXTRAPOLATION PROCEDURE IS
+C                  REPEATED AND REPEATED AGAIN UNTIL CONVERGENCE OCCURS.
+C                  AN ATTEMPT HAS BEEN MADE TO UTILIZE AS MUCH PREVIOUS-
+C                  LY COMPUTED INFORMATION AS POSSIBLE WHEN H0 MUST BE
+C                  HALVED FOR CONVERGENCE.
+C
+C     MMAX        CONTAINS THE NUMBER OF TIMES EXTRAPOLATION IS ATTEM-
+C                  PTED BEFORE H0 IS HALVED. THIS VALUE WILL VARY WITH
+C                  COMPUTER ROUND-OFF ERROR AND WITH THE TYPE AND NUMBER
+C                  OF EQUATIONS BEING INTEGRATED. IN ALL CASES, HOWEVER,
+C                  ONE SHOULD SPECIFY AN MMAX 'GQ' 2. THE STEPSIZE FOR
+C                  FUTURE ITERATIONS IS SELECTED AND RETURNED IN H0.
+C                  THIS NEW VALUE IS CHOSEN SO THAT CONVERGENCE WILL BE
+C                  OBSERVED AT ABOUT THE 0.66*MMAX-TH EXTRAPOLATION.
+C                  AS WRITTEN, MMAX.LE.10.
+C
+C     ERROR        IS A SUBROUTINE WHICH IS USED TO DETERMINE THE SATIS-
+C                  FACTORY CONVERGENCE OF EACH INDIVIDUAL EQUATION BEING
+C                  INTEGRATED. AN EXAMPLE IS GIVEN WHICH CORRESPONDS TO
+C                  THE ERROR CRITERION USED BY BULIRSCH AND STOER.
+C                      THE CALLING SEQUENCE IS
+C                  ERROR (M, DY, CONV, FINISH) WHERE M IS THE ORDER OF
+C                  EXTRAPOLATION, DY IS THE VECTOR OF INCREMENTS TO THE
+C                  DEPENDENT VARIABLES Y, CONV IS A VECTOR OF LOGICALS
+C                  WHICH ARE .TRUE. COMPONENTWISE WHEN THE CORRESPONDING
+C                  DEPENDENT VARIABLE HAS CONVERGED, AND FINISH IS
+C                  RETURNED .TRUE. WHEN THE ENTIRE SYSTEM OF EQUATIONS
+C                  HAS SATISFIED THE CONVERGENCE CRITERION.
+C
+      LOGICAL LATERL, CONV(100), PREVIN, FINISH
+      REAL   STEPFC, X0, U, SUM, YM, BETA, H, DEN, SQRT2, YP
+      INTEGER J, K, L, M, N, LMAX, KASIDE, PTS, MM, MMAXP
+      INTEGER KMIN
+      REAL   HM(11), S(11), P(11), YBAR(100,11), Y0(100)
+      REAL   YNEW(100), YOLD(100), DY(100), DY0(100), YHOLD(7,10,100)
+
+
+! INITIALIZE..100
+      MMAXP = MMAX + 1
+      SQRT2 =  SQRT(2.0)
+      FINISH = .FALSE.
+      LATERL = .FALSE.
+      X0 = X
+      DO N = 1,NMAX
+        Y0(N) = Y(N)
+      END DO
+      LMAX = (MMAX + 1)/2 + 1
+      CALL F (X0, Y, DY0)
+
+! START A NEW LEVEL..200
+
+  204 X = X0 + H0
+      KMIN = 1
+      STEPFC = 2.0**(MMAX/3.0+0.5)
+      DO N = 1, NMAX
+         CONV(N) = .FALSE.
+      END DO
+
+      IF (.NOT.LATERL .OR. (MMAX.LT.1)) GO TO 203
+C     ELSE BEGIN SHIFTING OLD INFORMATION INTO POSITION..
+      DO N = 1, NMAX
+        Y(N) = YHOLD(2,1,N)
+        YBAR(N,1) = Y(N)
+        DO L = 1, LMAX
+          MM2 = MMAX - 2
+          MMIN = IABS(2*L-3)
+          DO M = MMIN, MM2
+             YHOLD(L,M,N) = YHOLD (L+1, M+2, N)
+          END DO
+        END DO
+      END DO
+C
+C COMPUTING BETA AND ASSOCIATED QUANTITIES..300
+  203 H = H0/2
+      HM(1) = H0/2.0
+      HM(2) = H0/4.0
+      HM(3) = H0/6.0
+      BETA = 0.25/(H0*H0)
+C
+C EXTRAPOLATIONS OF HIGHER ORDER EXPANSIONS..400
+      DO 400 MM = 1, MMAXP
+
+C     BEGINNING THE LOOP OVER MMAX EXTRAPOLATIONS IN THIS LEVEL..
+        M = MM - 1
+        STEPFC = STEPFC/SQRT2
+        PREVIN = .FALSE.
+        IF (LATERL.AND.(M.LT.MMAX - 1)) PREVIN = .TRUE.
+        KASIDE = 2
+        IF (2*(M/2).EQ.M) KASIDE = 3
+        L = (M + 1)/2 + 1
+        IF (M.GT.2) HM(MM) = HM(MM-2)/2
+        H = HM(MM)
+        S(MM) = 1 -  EXP(-BETA*H*H)
+
+        IF (PREVIN) GO TO 503
+C       ELSE GENERATE THE M-TH MIDPOINT INTEGRAL..
+          DO N = 1, NMAX
+            YOLD(N) = Y0(N)
+            YNEW(N) = Y0(N) + H*DY0(N)
+          END DO
+          CALL F (X0+H, YNEW, DY)
+          PTS = (H0*1.000001)/H
+          DO 405 K = 2, PTS
+C         BEGIN THE MIDPOINT INTEGRATION..
+            DO N = 1, NMAX
+              U = YOLD(N) + 2*H*DY(N)
+              YOLD(N) = YNEW (N)
+              YNEW (N) = U
+            END DO
+            CALL F (X0 + K*H, YNEW, DY)
+            IF ((K.NE.KASIDE).OR.(L.LT.2)) GO TO 405
+C           ELSE BEGIN PUTTING INFORMATION ASIDE..
+              DO N = 1, NMAX
+                YHOLD (L, M, N) = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
+              END DO
+              L = L - 1
+              KASIDE = 2*KASIDE
+C           END OF PUTTING INFORMATION ASIDE
+  405     CONTINUE
+C         END OF THE MIDPOINT INTEGRATION
+
+C
+C NOW ADVANCE THE DEPENDENT VARIABLES..500
+  503   IF (M.GT.0) GO TO 504
+        DO N = 1, NMAX
+          YBAR(N,1) = (YNEW(N) + YOLD(N) + H*DY(N))/2
+          Y(N) = YBAR(N,1)
+        END DO
+        IF (MMAX.EQ.0) GO TO 700
+        GO TO 400
+
+C       NOW DETERMINE THE INTERPOLATIONAL POLYNOMIALS..
+  504   IF (STEPFC.LT.1.1) KMIN = KMIN + 1
+        DEN = 1
+        DO K = KMIN, M
+          P(K) = ((H/HM(K))**2)
+          DO J = KMIN, M
+            IF (J.NE.K) P(K) = P(K)*(S(J) - S(MM))/(S(J) - S(K))
+          END DO
+          DEN = DEN - P(K)
+        END DO
+
+C       END DETERMINATION OF THE INTERPOLATIONAL POLYNOMIALS
+        DO 500 N=1, NMAX
+          IF (CONV(N)) GO TO 500
+          YP = Y(N)
+          YM = YHOLD (1,M,N)
+          IF (.NOT.PREVIN) YM = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
+          SUM = 0.0
+          IF (M.LT.2) GO TO 501
+          DO J = KMIN, M
+            SUM = SUM + (YBAR(N,J) - YP)*P(J)
+          END DO
+  501     DY(N) = 0.0
+          IF (DEN.NE.0.0) DY(N) = ((YM - YP) - SUM)/DEN
+          Y(N) = YP + DY(N)
+          YBAR(N,MM) = YM
+  500   CONTINUE
+
+        CALL ERROR (M, DY, CONV, FINISH)
+        IF (FINISH) GO TO 700
+  400 CONTINUE
+C
+C PREPARE FOR THE NEXT LEVEL IF NECESSARY..600
+      LATERL = .TRUE.
+      H0 = H0/2
+      GO TO 204
+
+C RETURN..700
+  700 H0 = H0 * STEPFC
+      RETURN
+      END
+
+c
+c***************************************************************************
+c
+c
+c***************************************************************************
+c
+!check limits here JCW
+      SUBROUTINE EXTINT_F90 (NMAX, X, Y, F, H0, MMAX, ERROR)
 C     IMPLICIT REAL*8 (A-H,O-Z), INTEGER (I-N)
       INTEGER NMAX, MMAX
 C     REAL*8 X, H0, Y(NMAX)
@@ -709,29 +912,36 @@ C INITIALIZE..100
       FINISH = .FALSE.
       LATERL = .FALSE.
       X0 = X
-      DO 100 N = 1,NMAX
-  100   Y0(N) = Y(N)
+      DO N = 1,NMAX
+         Y0(N) = Y(N)
+      END DO
       LMAX = (MMAX + 1)/2 + 1
       CALL F (X0, Y, DY0)
-C
+
 C START A NEW LEVEL..200
   204 X = X0 + H0
       icount = icount + 1
       !write(*,*) 'extint icount',icount
       KMIN = 1
       STEPFC = 2.0**(MMAX/3.0+0.5)
-      DO 205 N = 1, NMAX
-  205   CONV(N) = .FALSE.
+      DO  N = 1, NMAX
+         CONV(N) = .FALSE.
+      END DO
+      
       IF (.NOT.LATERL .OR. (MMAX.LT.1)) GO TO 203
+
 C     ELSE BEGIN SHIFTING OLD INFORMATION INTO POSITION..
-      DO 202 N = 1, NMAX
-        Y(N) = YHOLD(2,1,N)
-        YBAR(N,1) = Y(N)
-        DO 202 L = 1, LMAX
-          MM2 = MMAX - 2
-          MMIN = IABS(2*L-3)
-          DO 202 M = MMIN, MM2
-  202       YHOLD(L,M,N) = YHOLD (L+1, M+2, N)
+      DO N = 1, NMAX
+         Y(N) = YHOLD(2,1,N)
+         YBAR(N,1) = Y(N)
+         DO L = 1, LMAX
+            MM2 = MMAX - 2
+            MMIN = IABS(2*L-3)
+            DO M = MMIN, MM2
+               YHOLD(L,M,N) = YHOLD (L+1, M+2, N)
+            END DO
+         END DO
+      END DO
 C
 C COMPUTING BETA AND ASSOCIATED QUANTITIES..300
   203 H = H0/2.0
@@ -739,79 +949,90 @@ C COMPUTING BETA AND ASSOCIATED QUANTITIES..300
       HM(2) = H0/4.0
       HM(3) = H0/6.0
       BETA = 0.25/(H0*H0)
-C
+
 C EXTRAPOLATIONS OF HIGHER ORDER EXPANSIONS..400
-      DO 400 MM = 1, MMAXP
+      DO MM = 1, MMAXP
+         
 C     BEGINNING THE LOOP OVER MMAX EXTRAPOLATIONS IN THIS LEVEL..
-        M = MM - 1
-        STEPFC = STEPFC/SQRT2
-        PREVIN = .FALSE.
-        IF (LATERL.AND.(M.LT.MMAX - 1)) PREVIN = .TRUE.
-        KASIDE = 2
-        IF (2*(M/2).EQ.M) KASIDE = 3
-        L = (M + 1)/2 + 1
-        IF (M.GT.2) HM(MM) = HM(MM-2)/2.
-        H = HM(MM)
-C       S(MM) = 1 - DEXP(-BETA*H*H)
-        S(MM) = 1 -  EXP(-BETA*H*H)
-        IF (PREVIN) GO TO 503
-C       ELSE GENERATE THE M-TH MIDPOINT INTEGRAL..
-          DO 404 N = 1, NMAX
+         M = MM - 1
+         STEPFC = STEPFC/SQRT2
+         PREVIN = .FALSE.
+         IF (LATERL.AND.(M.LT.MMAX - 1)) PREVIN = .TRUE.
+         KASIDE = 2
+         IF (2*(M/2).EQ.M) KASIDE = 3
+         L = (M + 1)/2 + 1
+         IF (M.GT.2) HM(MM) = HM(MM-2)/2.
+         H = HM(MM)
+         S(MM) = 1 -  EXP(-BETA*H*H)
+         IF (PREVIN) GO TO 503
+C     ELSE GENERATE THE M-TH MIDPOINT INTEGRAL..
+         DO N = 1, NMAX
             YOLD(N) = Y0(N)
-  404       YNEW(N) = Y0(N) + H*DY0(N)
-          CALL F (X0+H, YNEW, DY)
-          PTS = (H0*1.000001)/H
-          DO 405 K = 2, PTS
-C         BEGIN THE MIDPOINT INTEGRATION..
-            DO 406 N = 1, NMAX
-              U = YOLD(N) + 2*H*DY(N)
-              YOLD(N) = YNEW (N)
-  406         YNEW (N) = U
+            YNEW(N) = Y0(N) + H*DY0(N)
+         END DO
+         CALL F (X0+H, YNEW, DY)
+         PTS = (H0*1.000001)/H
+         DO K = 2, PTS
+C     BEGIN THE MIDPOINT INTEGRATION..
+            DO N = 1, NMAX
+               U = YOLD(N) + 2*H*DY(N)
+               YOLD(N) = YNEW (N)
+               YNEW (N) = U
+            END DO
+                  
             CALL F (X0 + K*H, YNEW, DY)
-            IF ((K.NE.KASIDE).OR.(L.LT.2)) GO TO 405
-C           ELSE BEGIN PUTTING INFORMATION ASIDE..
-              DO 408 N = 1, NMAX
-  408           YHOLD (L, M, N) = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
-              L = L - 1
-              KASIDE = 2*KASIDE
+            IF ((K.NE.KASIDE).OR.(L.LT.2)) CYCLE
+C     ELSE BEGIN PUTTING INFORMATION ASIDE..
+            DO N = 1, NMAX
+               YHOLD (L, M, N) = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
+            END DO
+            L = L - 1
+            KASIDE = 2*KASIDE
 C           END OF PUTTING INFORMATION ASIDE
-  405     CONTINUE
-C         END OF THE MIDPOINT INTEGRATION
-C
-C NOW ADVANCE THE DEPENDENT VARIABLES..500
-  503   IF (M.GT.0) GO TO 504
-        DO 505 N = 1, NMAX
-          YBAR(N,1) = (YNEW(N) + YOLD(N) + H*DY(N))/2.
-  505     Y(N) = YBAR(N,1)
-        IF (MMAX.EQ.0) GO TO 700
-        GO TO 400
-C       NOW DETERMINE THE INTERPOLATIONAL POLYNOMIALS..
-  504   IF (STEPFC.LT.1.1) KMIN = KMIN + 1
-        DEN = 1
-        DO 401 K = KMIN, M
-          P(K) = ((H/HM(K))**2)
-          DO 410 J = KMIN, M
-            IF (J.NE.K) P(K) = P(K)*(S(J) - S(MM))/(S(J) - S(K))
-  410     CONTINUE
-  401     DEN = DEN - P(K)
-C       END DETERMINATION OF THE INTERPOLATIONAL POLYNOMIALS
-        DO 500 N=1, NMAX
-          IF (CONV(N)) GO TO 500
-          YP = Y(N)
-          YM = YHOLD (1,M,N)
-          IF (.NOT.PREVIN) YM = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
-          SUM = 0.0
-          IF (M.LT.2) GO TO 501
-          DO 502 J = KMIN, M
-  502       SUM = SUM + (YBAR(N,J) - YP)*P(J)
-  501     DY(N) = 0.0
-          IF (DEN.NE.0.0) DY(N) = ((YM - YP) - SUM)/DEN
-          Y(N) = YP + DY(N)
-          YBAR(N,MM) = YM
-  500   CONTINUE
-        CALL ERROR (M, DY, CONV, FINISH)
-        IF (FINISH) GO TO 700
-  400 CONTINUE
+         END DO
+         
+C        END OF THE MIDPOINT INTEGRATION
+
+C     NOW ADVANCE THE DEPENDENT VARIABLES..500
+         
+ 503     IF (M.GT.0) GO TO 504
+         DO N = 1, NMAX
+            YBAR(N,1) = (YNEW(N) + YOLD(N) + H*DY(N))/2.
+            Y(N) = YBAR(N,1)
+         END DO
+         IF (MMAX.EQ.0) GO TO 700
+         CYCLE
+        
+C     NOW DETERMINE THE INTERPOLATIONAL POLYNOMIALS..
+ 504     IF (STEPFC.LT.1.1) KMIN = KMIN + 1
+         DEN = 1
+         DO K = KMIN, M
+            P(K) = ((H/HM(K))**2)
+            DO J = KMIN, M
+               IF (J.NE.K) P(K) = P(K)*(S(J) - S(MM))/(S(J) - S(K))
+            END DO
+            DEN = DEN - P(K)
+         END DO
+C     END DETERMINATION OF THE INTERPOLATIONAL POLYNOMIALS
+
+         DO N=1, NMAX
+            IF (CONV(N)) CYCLE
+            YP = Y(N)
+            YM = YHOLD (1,M,N)
+            IF (.NOT.PREVIN) YM = (YNEW(N) + YOLD(N) + H*DY(N))/2.0
+            SUM = 0.0
+            IF (M.LT.2) GO TO 501
+            DO  J = KMIN, M
+               SUM = SUM + (YBAR(N,J) - YP)*P(J)
+            END DO
+ 501        DY(N) = 0.0
+            IF (DEN.NE.0.0) DY(N) = ((YM - YP) - SUM)/DEN
+            Y(N) = YP + DY(N)
+            YBAR(N,MM) = YM
+         END DO
+         CALL ERROR (M, DY, CONV, FINISH)
+         IF (FINISH) GO TO 700
+      END DO
 C
 C PREPARE FOR THE NEXT LEVEL IF NECESSARY..600
       LATERL = .TRUE.
@@ -819,7 +1040,7 @@ C PREPARE FOR THE NEXT LEVEL IF NECESSARY..600
       GO TO 204
 C
 C RETURN..700
-  700 H0 = H0 * STEPFC
+ 700  H0 = H0 * STEPFC
       RETURN
       END
 

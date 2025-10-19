@@ -1,6 +1,10 @@
 
 *----------------------------------------------------------------------
-*     AORSA2D: version 20 (04-28-2010)
+*     AORSA2D: version 30 (04-010-2025)
+*     Code modernization, non square mesh working, mirror (R=0, Ip=0)
+*     Some memory and bounds errors fixed. Dynamic allocation begun
+      
+*     version 20 (04-28-2010)
 *     This version includes odd-order derivative in the conductivity
 *     Special eqdsk_setup for Alcator-C lower hybrid
 *        (eqdsk_special .ne. 0)
@@ -98,7 +102,7 @@ c      CHARACTER(128) :: root
       integer :: nnodex_loc, nx_overlap, nnodex_eff
       integer :: nnodey_loc, ny_overlap, nnodey_eff
       integer :: istart, ifinish, jstart, jfinish
-     &  i_seg, j_seg, iseg1, iseg2, jseg1, jseg2, i0, j0
+     &  i_seg, j_seg, iseg1, iseg2, jseg1, jseg2, i0, j0, loc0(2)
 
       integer :: nxmx,nymx,ieq, nlmx, nkldim1, nkldim2, nkl, nkl1, nkl2
       integer :: nmax, mmax
@@ -418,6 +422,7 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
      &   omgci10, omgrf, xmax, qi2, qi3,
      &   costh, sinth, radius, rnx,  rny, rnphi
       real :: ymaxp, yminp, xminp, xmaxp
+      complex ::  omgrfc
       real :: rhoi20, vthi20, omgci20
       real :: rhoi30, vthi30, omgci30
       real :: rhoi40, vthi40, omgci40
@@ -607,7 +612,7 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
      &   bmod2, rhom1, bxn, byn, bzn, pressi, muhat, nu_star,
      &   ipsi, xna_slo, gradprlb, omgp2_slo, omgci_slo, zeff,
      &   rho_pol2d, psi_pol2d, drhodr, drhodz,
-     &   dthedr, dthedz, reomg1a, reomg2a, reomg3a, xjx, xjy, xjz,
+     &   dthedr, dthedz, reomg1a, reomg2a, reomg3a, xjx, xjy, xjz,xjt,
      &   ntilda_e_real, reomglha
 
       real :: cur_mod, cur_mod_max, npar
@@ -911,6 +916,7 @@ c       complex, dimension(:,:), allocatable :: Btmp
 
 
       integer :: indxg2p,indxg2l,indxl2g
+      integer :: ierr
       external indxg2p,indxg2l,indxl2g
 
 *     ---------------
@@ -1000,7 +1006,7 @@ c       complex, dimension(:,:), allocatable :: Btmp
      &   dthedr(nxmx, nymx),  dthedz(nxmx, nymx),
      &   reomg1a(nxmx, nymx), reomg2a(nxmx, nymx), reomg3a(nxmx, nymx),
      &   xjx(nxmx, nymx), xjy(nxmx, nymx), xjz(nxmx, nymx),
-     &   reomglha(nxmx, nymx))
+     &   xjt(nxmx, nymx), reomglha(nxmx, nymx))
 
 
       allocate (wdote(nxmx, nymx), wdoti1(nxmx, nymx),
@@ -1242,7 +1248,7 @@ c       complex, dimension(:,:), allocatable :: Btmp
       call blacs_gridinfo( icontxt, nprow, npcol, myrow, mycol)
 
 
-      if(nphi_sum_only .eqv. .true.)go to 9001
+      if(nphi_sum_only) go to 9001
 
 *     ----------------
 *     loop over nphi's
@@ -1458,10 +1464,11 @@ c      jequat  = nnodey / 2
 
       xnurf = freqcy
 
-      omgrf = 2.0 * pi * xnurf
+      omgrf = twopi * xnurf
+      omgrfc = omgrf*(1.+zi*xnuome)
 
 
-      if (plot_only .eqv. .true.)go to 9002
+      if (plot_only) go to 9002
 
       vphase = omgrf / xkphi0
       vthe = sqrt(t0e / xme)
@@ -2064,7 +2071,7 @@ c----------------------------------------------------
                   theta0(i,j) = atan2(y(j), denom)
                   if(theta0(i,j) .ge. 0.0) theta(i,j) = theta0(i,j)
                   if(theta0(i,j) .lt. 0.0) theta(i,j) =
-     1                                       theta0(i,j) + 2.0 * pi
+     1                                       theta0(i,j) + twopi
                end if
 
 
@@ -2964,7 +2971,7 @@ c      write(6, 1312) jzoom2
                theta0(i,j) = atan2(y(j), x(i))
                if(theta0(i,j) .ge. 0.0) theta(i,j) = theta0(i,j)
                if(theta0(i,j) .lt. 0.0) theta(i,j) =
-     1                                       theta0(i,j) + 2.0 * pi
+     1                                       theta0(i,j) + twopi
             end if
          end do
       end do
@@ -3001,7 +3008,7 @@ c      rhomax = 1.0
 *     Define theta mesh: thetam(m)
 *---------------------------------
 c--   thetam: 0 to 2pi
-      thetamax = 2.0 * pi
+      thetamax = twopi
       dtheta = thetamax / (mnodetheta - 1)
       do m = 1, mnodetheta
          thetam(m) = (m-1) * dtheta
@@ -3024,7 +3031,6 @@ c--   thetam: 0 to 2pi
 
             capr_flux(n,m) = capr_out
             capz_flux(n,m) = capz_out
-c           if(myid .eq. 0)write(6,*)n, m, capr_flux(n,m), xj
          end do
       end do
 
@@ -3060,16 +3066,11 @@ c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
 *     ----------------------------------------
       j = jequat
       do i = 2, nnodex -1
-c         if (myid .eq. 0)write(6, 1312)i, rho(i,j), x(i), xprime(i),
-c     &       capr(i)
          if(rho(i,j) .lt. 1. .and. rho(i-1,j) .ge. 1.)caprmin = capr(i)
          if(rho(i,j) .gt. 1. .and. rho(i-1,j) .le. 1.)caprmax =capr(i-1)
       end do
 
       rmax = (caprmax - caprmin) / 2.0
-
-      if(myid .eq. 0)write(6, 311)caprmax, caprmin, rmax
-
 
 
       do n = 1, nnoderho
@@ -3080,53 +3081,14 @@ c         if (myid .eq. 0)write(15, 1312)n, rn(n), rhon(n), dn(n)
       end do
 
 
-      ! The following find the point within drho of 0.
-      ! May fail in a coarse mesh. drho for uniform mesh as well
-      ! Could be replaced with minloc call
-      loopi1: do i = 1, nnodex
-         do j = 1, nnodey
-            n = int(rho(i,j) / drho) + 1
-            if (n .eq. 1) then
-               i0 = i
-               j0 = j
-               exit loopi1
-            end if
-         end do 
-      end do loopi1
-
-      if(i0 .eq. 0 .and. j0 .eq. 0) then
-         loopi2: do i = 1, nnodex
-            do j = 1, nnodey
-               n = int(rho(i,j) / drho) + 1
-               if (n .eq. 2) then
-                  i0 = i
-                  j0 = j
-                  exit loopi2
-               end if
-            end do
-         end do loopi2
-      end if
-      
-      if(i0 .eq. 0 .and. j0 .eq. 0) then
-         loopi3: do i = 1, nnodex               
-            do j = 1, nnodey         
-               n = int(rho(i,j) / drho) + 1
-               if (n .eq. 3) then
-                  i0 = i
-                  j0 = j
-                  exit loopi3
-               end if
-            end do
-         end do loopi3
-      end if
-
+      loc0=minloc(int(rho(1:nnodex,1:nnodey) / drho))
+      i0=loc0(1) ; j0=loc0(2)
 
       dr = drho * rmax
 
       do n = 1, nnoderho - 1
          rh(n) = (rn(n) + rn(n+1)) / 2.0
          dh(n) = (dn(n) + dn(n+1)) / 2.0
-c         if (myid .eq. 0)write(6, 1312)n, rh(n), dh(n)
       end do
       rh(nnoderho) = 0.0
       dh(nnoderho) = 0.0
@@ -3271,7 +3233,7 @@ c      end if
       theta_antr = theta_ant / 180. * pi
 
       dpsiant = dpsiant0
-      dthetant = dthetant0 / 360. * 2.0 * pi
+      dthetant = dthetant0 / 360. * twopi
       yant_max = antlen / 2.0
 
 
@@ -3291,9 +3253,9 @@ c      end if
             gaussantth = exp(-delta_theta**2 / dthetant**2)
 
 *           ------------------------
-*           Curved antenna (default)
+*           Curved antenna (default) psi,theta
 *           ------------------------
-            if(curved_ant .eqv. .true.) then
+            if(curved_ant) then
                gausspsi = exp(-( psi(i,j) - psiant)**2 / dpsiant**2)
             end if
 
@@ -3330,6 +3292,7 @@ c                  antlc = pi / (xk0 * antlen)
 
 
                end if
+!               if(curved_ant .eqv. .true.) shapey=gaussantth !allow ant on limited theta !jcw fix
 
                Ix = - dpsidy / gradpsi * cos_antang
                Iy =   dpsidx / gradpsi * cos_antang
@@ -3492,6 +3455,7 @@ c                  antlc = pi / (xk0 * antlen)
      &                               - z_slo * xna_slo(i, j)   ) / z1
 
                if (xn1a(i, j) .le. 0.0) then
+                  if(myid == 0) write(6,*) 'xn1a',xn1a(i,j),i,j
                   xn1a(i, j) = 1.0e-10
                   if(myid .eq.0) write(6, *) xnea(i,j), xn1a(i,j),
      &               xn2a(i,j), xn3a(i,j), xn4a(i,j), xn5a(i,j),
@@ -4147,6 +4111,8 @@ c                     xkti6(i,j) = s_t_s(ndata,6)
          if (nboundary .eq. 1) then
             do i = 1, nnodex
                do j = 1, nnodey
+                  xnuomea(i,j) = xnuome !JCW can modify for internal resonances
+                  xnuomia(i,j) = xnuomi                  
                   if(rho(i,j) .gt. rholim) then
                      xnea(i,j) = 1.0e-10
                      zeff(i,j) = 1.0e-10
@@ -4215,7 +4181,6 @@ c                 xkti2(i,j) = xkti3(i,j)
                if (xn1a(i, j) .le. 0.0) xn1a(i, j) = 1.0e-10
             end do
          end do
-
 
 
          xn00 = xnea(i0, j0)
@@ -4340,7 +4305,7 @@ c     write (6, *) "xmi1 = ", xmi1
          do j = 1, nnodey
             n = int(rho(i,j) / drho) + 1
             if(n .le. nnoderho)then
-               dvol(n)  =  dvol(n) + dx * dy * 2.0 * pi * capr(i)
+               dvol(n)  =  dvol(n) + dx * dy * twopi * capr(i)
                darea(n) = darea(n) + dx * dy * capr(i) / rt
             end if
          end do
@@ -4547,25 +4512,25 @@ c     &                             + pressi4 pressi5 + pressi6
             xc(i,j) = -zi / omgrf / eps0 * xjy(i,j)
             xd(i,j) = -zi / omgrf / eps0 * xjz(i,j)
 
-            capk_perp = 1.0 - omgpe2(i,j) / (omgrf**2 - omgce(i,j)**2)
-     &                      - omgp12(i,j) / (omgrf**2 - omgci1(i,j)**2)
-     &                      - omgp22(i,j) / (omgrf**2 - omgci2(i,j)**2)
-     &                      - omgp32(i,j) / (omgrf**2 - omgci3(i,j)**2)
-     &                      - omgp42(i,j) / (omgrf**2 - omgci4(i,j)**2)
-     &                      - omgp52(i,j) / (omgrf**2 - omgci5(i,j)**2)
-     &                      - omgp62(i,j) / (omgrf**2 - omgci6(i,j)**2)
+            capk_perp =1.0 - omgpe2(i,j) / (omgrfc**2 - omgce(i,j)**2)
+     &                     - omgp12(i,j) / (omgrfc**2 - omgci1(i,j)**2)
+     &                     - omgp22(i,j) / (omgrfc**2 - omgci2(i,j)**2)
+     &                     - omgp32(i,j) / (omgrfc**2 - omgci3(i,j)**2)
+     &                     - omgp42(i,j) / (omgrfc**2 - omgci4(i,j)**2)
+     &                     - omgp52(i,j) / (omgrfc**2 - omgci5(i,j)**2)
+     &                     - omgp62(i,j) / (omgrfc**2 - omgci6(i,j)**2)
 
-            capk_x =(omgce(i,j) * omgpe2(i,j)/(omgrf**2-omgce(i,j)**2)
-     &            + omgci1(i,j) * omgp12(i,j)/(omgrf**2-omgci1(i,j)**2)
-     &            + omgci2(i,j) * omgp22(i,j)/(omgrf**2-omgci2(i,j)**2)
-     &            + omgci3(i,j) * omgp32(i,j)/(omgrf**2-omgci3(i,j)**2)
-     &            + omgci4(i,j) * omgp42(i,j)/(omgrf**2-omgci4(i,j)**2)
-     &            + omgci5(i,j) * omgp52(i,j)/(omgrf**2-omgci5(i,j)**2)
-     &            + omgci6(i,j) * omgp62(i,j)/(omgrf**2-omgci6(i,j)**2))
-     &             / omgrf
+            capk_x =(omgce(i,j) * omgpe2(i,j)/(omgrfc**2-omgce(i,j)**2)
+     &           + omgci1(i,j) * omgp12(i,j)/(omgrfc**2-omgci1(i,j)**2)
+     &           + omgci2(i,j) * omgp22(i,j)/(omgrfc**2-omgci2(i,j)**2)
+     &           + omgci3(i,j) * omgp32(i,j)/(omgrfc**2-omgci3(i,j)**2)
+     &           + omgci4(i,j) * omgp42(i,j)/(omgrfc**2-omgci4(i,j)**2)
+     &           + omgci5(i,j) * omgp52(i,j)/(omgrfc**2-omgci5(i,j)**2)
+     &           + omgci6(i,j) * omgp62(i,j)/(omgrfc**2-omgci6(i,j)**2))
+     &           / omgrfc
 
-           left  = capk_perp - capk_x
-           right = capk_perp + capk_x
+            left  = capk_perp - capk_x !S-D=L
+            right = capk_perp + capk_x !S+D=R
 
             xnphi = bzn(i,j) * xkphi(i) / xk0
 c            acold(i,j) = xnphi**2 - capk_perp
@@ -4751,24 +4716,24 @@ c     &         xnea(i,j), re_acold
       end do
 
 
-      if(myid .eq. 0)write(6, *) "      n       xkxsav"
+      if(myid .eq. 0)write(6, *) "      n       xkxsav",xmax
       do n = nkx1, nkx2
-         xkxsav(n) = 2.0 * pi * n / xmax
+         xkxsav(n) = twopi * n / xmax
          if(myid .eq. 0)write(6, *) n,  xkxsav(n)
       end do
-
+ 
 
 
       if(myid .eq. 0)write(6, *) "      m       xkysav"
       do m = nky1, nky2
-         xkysav(m) = 2.0 * pi * m / ymax
+         xkysav(m) = twopi * m / ymax
          if(myid .eq. 0)write(6, *) m,  xkysav(m)
       end do
 
-      mdisp = xkydisp * ymax / (2.0 * pi)
+      mdisp = xkydisp * ymax / (twopi)
 
-      n_ono = xkx_ono * xmax / (2.0 * pi)
-      m_ono = xky_ono * ymax / (2.0 * pi)
+      n_ono = xkx_ono * xmax / (twopi)
+      m_ono = xky_ono * ymax / (twopi)
 
 
 
@@ -5137,7 +5102,7 @@ c        call flush
       end if
 
 
-      if (read_solution .eqv. .true.) then
+      if (read_solution) then
          t1 = second1(dummy)
 !        ---------------------------------------------
 !        read solution in Fourier space to all processors
@@ -5229,16 +5194,27 @@ c           call flush
         stop '** error ** '
       endif
 
-!if not static
+
       call pzgecon('1', nrow, p_amat, 1, 1, desc_amat, anorm, rcond,
      &          sworkn, -1, srwork, -1, info)
-      write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
+      if (myid==0) then
+         write(*,*) 'pzgecon',sworkn(1),srwork(1),nxmx,desc_amat
+      end if
       lwork = int(sworkn(1))
+
       lrwork = int(srwork(1)) !jcw temp
 
-      allocate (workn(lwork))
-      allocate (rwork(lrwork))
-!fi
+      allocate (workn(lwork),stat=ierr)
+      if (ierr.ne.0) then
+         write(*,*) myid,ierr,'failed to allocate workn',lwork
+         stop
+      end if
+      allocate (rwork(lrwork),stat=ierr)
+      if (ierr.ne.0) then
+         write(*,*) myid,ierr,'failed to allocate rwork',lrwork
+         stop
+      end if
+
       do irnc=1,nrow_local*ncol_local
         p_amat(irnc) = cmplx(0., 0.)
       enddo
@@ -5429,7 +5405,7 @@ c           call flush
 
       end if
 
-      psiorb = psilim * 10.0
+      psiorb = psilim * 10.0 !magic number JCW
 
 *     ----------------------------------------------------------------
 *     Load x, y and z equations for spatial point (i,j) and mode number (n,m)
@@ -5445,7 +5421,7 @@ c           call flush
 
 
 
-            if (use_fourier_z2 .eqv. .true.) then
+            if (use_fourier_z2) then
 
 *           ---------------------------------------------------------
 *           if nboundary = 1, just do orbits in interior plasma region
@@ -5460,7 +5436,7 @@ c           call flush
 c--            lb(nl):  0 to lbmax
 c--            lbprime(nl): -lbmax / 2 to lbmax / 2
 
-                lbmax = 2.0 * pi * rt * qsafety(i, j)
+                lbmax = twopi * rt * qsafety(i, j)
 
 
                dlb = lbmax / nnodelb
@@ -5471,7 +5447,7 @@ c--            lbprime(nl): -lbmax / 2 to lbmax / 2
                end do
 
                do nkl = nkl1, nkl2
-                  xklsav(nkl) = 2.0 * pi * nkl / lbmax
+                  xklsav(nkl) = twopi * nkl / lbmax
                   if (nkl .eq. 0) xklsav(nkl) = 1.0e-05
                end do
 
@@ -5904,7 +5880,7 @@ c               end if
      &                        dKdL_giv, nmax, mmax, .true.,
      &                        ntable, mtable, sige3_new)
 
-                        end if ! use_fourier_z2 .eq. .true. .and. psi.ge. psiorb
+                        end if ! use_fourier_z2 .eqv. .true. .and. psi.ge. psiorb
 
 
 
@@ -6563,7 +6539,8 @@ c               end if
 *                 --------------------------
 *                 metal boundary edge region:
 *                 --------------------------
-                  if(psi(i,j) .gt. psilim .and. nboundary .eq. 1
+                  if(     psi(i,j) .gt. psilim .and. nboundary .eq. 1
+     &               .or. psi(i,j) .lt. psifcf .and. nboundary .eq. 1
      &               .or. nboundary .eq. 0 .and. i .eq. 1
      &               .or. nboundary .eq. 0 .and. i .eq. nnodex
      &               .or. nboundary .eq. 0 .and. j .eq. 1
@@ -7008,7 +6985,7 @@ c      deallocate(Btmp)
 
 
 
-      if (anti_alias .eqv. .true.) then
+      if (anti_alias) then
 *        --------------------------------------
 *        Anti-aliasing filter (two-thirds rule):
 *        --------------------------------------
@@ -7138,8 +7115,8 @@ c     &   myid, nproc, icontxt)
 
 
       do i = 1, nnodex
-         kimag_slow(i) = aimag(csqrt(xkperp2_slow(i,jmid)))
-         kimag_fast(i) = aimag(csqrt(xkperp2_fast(i,jmid)))
+         kimag_slow(i) = aimag(sqrt(xkperp2_slow(i,jmid)))
+         kimag_fast(i) = aimag(sqrt(xkperp2_fast(i,jmid)))
       end do
 
       call dgrate(xprime, kimag_slow, 1, nnodex, ans, nxmx)
@@ -7540,7 +7517,7 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
 *     ---------------------------------
 *     set artificial absorption to zero
 *     ---------------------------------
-      if (use_no_damp .eqv. .true.)then
+      if (use_no_damp) then
          delta0 = 0.0
          damping = 0.0
       end if
@@ -8000,7 +7977,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_bin, upshift, i_write, xk_cutoff)
 
 
-      if (use_new_wdot .eqv. .true.) then
+      if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdote, darea, nrhomax, nnoderho, drho,
      &   dx, dy, rt, nxmx, nymx, nnodex, nnodey,
@@ -8070,7 +8047,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_bin, upshift, i_write, xk_cutoff)
 
 
-      if (use_new_wdot .eqv. .true.) then
+      if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti1,
      &   darea, nrhomax, nnoderho, drho,
@@ -8136,7 +8113,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      &   n_bin, upshift, i_write, xk_cutoff)
 
-      if (use_new_wdot .eqv. .true.) then
+      if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti2,
      &   darea, nrhomax, nnoderho, drho,
@@ -8203,7 +8180,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      &   n_bin, upshift, i_write, xk_cutoff)
 
-      if (use_new_wdot .eqv. .true.) then
+      if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti3,
      &   darea, nrhomax, nnoderho, drho,
@@ -8272,7 +8249,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      &   n_bin, upshift, i_write, xk_cutoff)
 
-      if (use_new_wdot .eqv. .true.) then
+      if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti4,
      &   darea, nrhomax, nnoderho, drho,
@@ -8339,7 +8316,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      &   n_bin, upshift, i_write, xk_cutoff)
 
-      if (use_new_wdot .eqv. .true.) then
+      if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti5,
      &   darea, nrhomax, nnoderho, drho,
@@ -8407,7 +8384,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_theta_max, n_psi_max, i_psi_eq, n_theta_, dldbavg,
      &   n_bin, upshift, i_write, xk_cutoff)
 
-      if (use_new_wdot .eqv. .true.) then
+      if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti6,
      &   darea, nrhomax, nnoderho, drho,
@@ -8693,7 +8670,7 @@ c                   rhohaty(i,j) = drhody / gradrho
      1                         conjg(ex(i,j)) * bzwave(i,j)
      1                       - conjg(ez(i,j)) * bxwave(i,j)  )
 
-c                  dspxdx(i) = 1. / (2. * xmu0 * omgrf) * imag(
+c                  dspxdx(i) = 1. / (2. * xmu0 * omgrf) * aimag(
 c    1                conjg(deydx(i)) * (deydx(i) - zi * xky * ex(i))
 c    1              + conjg(ey(i)) * (d2eydx(i) - zi * xky * dexdx(i))
 c    1              + conjg(dezdx(i)) * (dezdx(i) - zi * xkz * ex(i))
@@ -8874,12 +8851,12 @@ c                 c_ehst = 1.0
 *     ------------------
 *     Normalize to jdote:
 *     ------------------
-      if(norm .eq. 1)powtot = 2.0 * pi * rt * ptot
+      if(norm .eq. 1)powtot = twopi * rt * ptot
 
 *     -----------------
 *     Normalize to wdot:
 *     -----------------
-      if(norm .eq. 2)powtot = 2.0 * pi * rt * ptot_wdot
+      if(norm .eq. 2)powtot = twopi * rt * ptot_wdot
 
 *     --------------------
 *     Normalize to wdot_ql:
@@ -8937,6 +8914,7 @@ c                 c_ehst = 1.0
       xjx = xjx * sqrt(pscale)
       xjy = xjy * sqrt(pscale)
       xjz = xjz * sqrt(pscale)
+      xjt = sqrt(xjx**2+xjy**2+xjz**2)
 
       do n = nkx1, nkx2
          do m = nky1, nky2
@@ -9600,8 +9578,9 @@ c                 c_ehst = 1.0
       t1 = second1(dummy)
 *     ------------------------------------------------------------------------
 *     calculate individual species edotj's and driven current on solution mesh
+*     P = E*.J
 *     ------------------------------------------------------------------------
-
+ 
       do i = 1, nnodex
          do j = 1, nnodey
             redotje(i, j) = 0.5 * real(conjg(ealpha(i, j)) * xjpxe(i, j)
@@ -9684,7 +9663,7 @@ c           if(nnode_local .le. 0)xjprl(i,j) = redotj_ehst(i,j)
       call sgrator(x, y, redotjt, 1, nnodex, 1, nnodey, pedotjt,
      &   capr, rt, nxmx, nymx)
 
-      call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
+      call sgrator1(x, y, xjt, 1, nnodex, 1, nnodey, i_ant, !xjy
      &   capr, rt, nxmx, nymx, j_cur_max)
 
       call sgrator(x, y, xjprl, 1, nnodex, 1, nnodey, xjtot,
@@ -10472,7 +10451,7 @@ c         do i = 1, nnodex
 c            do j = 1, nnodey
 c               n = int(rho(i,j) / drho) + 1
 c               if(n .lt. nnoderho)then
-c                  dvol(n)  =  dvol(n) + dx * dy * 2.0 * pi * capr(i)
+c                  dvol(n)  =  dvol(n) + dx * dy * twopi * capr(i)
 c                 darea(n) = darea(n) + dx * dy * capr(i) / rt
 c               end if
 c            end do
@@ -10590,7 +10569,7 @@ c         end do
 
 
          do n = nkx1, nkx2
-            write(6, *)"n = ",n,"xkb(nnodex/2, n) = ", xkb(nnodex/2, n)
+            write(6, *) "n = ",n,"xkb(nnodex/2, n) = ",xkb(nnodex/2, n)
          end do
 
          write(38, 309) nnoderho
@@ -10855,7 +10834,7 @@ c         end do
          write(38, 310) ((ftheta0(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((pressi(i,j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((dldb_tot12(i, j), i = 1, nnodex),
-     &                                      j = 1, nnodey)
+     &                                       j = 1, nnodey)
 
          write (38, 309) ndisti1, ndisti2, ndisti3
 
@@ -10890,7 +10869,6 @@ c         end do
          write(38, 310) ((dxxuyy(i,j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((dyyuzz(i,j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((gradprlb(i,j), i = 1, nnodex), j = 1, nnodey)
-
          write(38, 310) ((xkperp2_slow(i, j), i = 1, nnodex),
      &      j = 1, nnodey)
          write(38, 310) ((xkperp2_fast(i, j), i = 1, nnodex),
@@ -11636,7 +11614,7 @@ c        close (15)
 
       end if
 
-      if (read_solution .eqv. .false.) then
+      if (.not.read_solution) then
 
 c         deallocate( new_to_org )
 
@@ -11965,12 +11943,12 @@ c
       real:: a(maxsave)
       save:: ntop, a
       data ntop, a(1)/0, 1./
-      
-      if(n < 0) then
-         write(*,*) 'negative factorial in factrl'
-      else if (n <= ntop)then
+
+      if (n < 0)stop 'factrl is called with negative integer'
+
+      if(n <= ntop) then
          factrl = a(n+1)
-      else if (n <= maxsave-1) then
+      else if(n <= maxsave-1) then
          do j = ntop+1, n
             a(j+1) = j * a(j)
          end do

@@ -15,10 +15,9 @@ c
 
       external f2, error
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     &   dx, dy,
-     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     &   dxdphi, dydphi, caprx
+      common/fcom/ bxn, byn, bzn, bmod, bratio,
+     &   dx, dy, rt, xwleft, sgn_vprl, modb, bratio_phi,
+     &   dxdphi, dydphi, caprx, fcount, nxdim, nydim, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      &   xprime, yprime
@@ -2685,10 +2684,9 @@ c
 
       external f, error
 
-      common/fcom/fcount, bxn, byn, bzn, bmod, bratio, nxdim, nydim, 
-     &   dx, dy,
-     &   nnodex, nnodey, rt, xwleft, sgn_vprl, modb, bratio_phi, 
-     &   dxdphi, dydphi, caprx
+      common/fcom/ bxn, byn, bzn, bmod, bratio,
+     &   dx, dy, rt, xwleft, sgn_vprl, modb, bratio_phi,
+     &   dxdphi, dydphi, caprx, fcount, nxdim, nydim, nnodex, nnodey
 
       common/spline_com/sigma, zbxn, zbyn, zbzn, zbmod, zbratio, 
      &   xprime, yprime

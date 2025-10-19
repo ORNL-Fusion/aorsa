@@ -5,10 +5,10 @@ on: [push]
 jobs:
   build:
 
-    runs-on: macos-12
+    runs-on: macos-14
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Get xquartz pt 2
       run: brew install --cask xquartz
     - name: find gfortran

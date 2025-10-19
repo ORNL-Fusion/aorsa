@@ -94,7 +94,7 @@
 
       dy = y(2) - y(1)
       ybottom = y(1)
-c      yplot = 0.05
+
       yprime = yplot - ybottom
       jplot = yprime / dy + 1
       write(6, *) "jplot = ", jplot
@@ -123,40 +123,40 @@ c      yplot = 0.05
       tity = 'Z (m)'
       title = 'Re(k**2) - slow root'
       call ezconc(capr, y, real(xkperp2_slow), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
 
       title = 'k_{parallel}'
       call ezconc(capr, y, xkprl, ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
 
       title = 'Re(P)'
       call ezconc(capr, y, real(P), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
       title = 'Im(P)'
       call ezconc(capr, y, aimag(P), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
       title = 'Im(k**2) - slow root'
       call ezconc(capr, y, aimag(xkperp2_slow), ff, nnodex, nnodey,numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
 !     ------------------------
 !     Plot cut in y at yplot
@@ -201,17 +201,17 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
       title = 'Re(k**2) - fast root'
       call ezconc(capr, y, real(xkperp2_fast), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
       title = 'Im(k**2) - fast root'
       call ezconc(capr, y, aimag(xkperp2_fast), ff, nnodex, nnodey,numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
 
       xkperp_slow = csqrt(xkperp2_slow)
@@ -253,10 +253,10 @@ c     &   npoints, nmax, ymax, ymin, xmin, xmax, nred)
 
       title = 'Re(k) - slow root'
       call ezconc(capr, y, real(xkperp_slow), ff, nnodex, nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity, iflag)
+     &   nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex,
      &   nnodey, numb,
-     &   nxmx, nymx, nlevmax, title, titx, tity)
+     &   nxmx, nymx, nlevmax, title, titx, tity,1.)
 
 
 

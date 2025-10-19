@@ -1,0 +1,15 @@
+include compileropts.gnu
+#CENTOS7 systems at mit engaging cluster
+FC = mpif90 -cpp  -g
+NETCDF_LIB=/home/software/gcc/6.2.0/pkg/netcdf/4.6.3-c/lib
+NETCDF_INC=/home/software/gcc/6.2.0/pkg/netcdf/4.6.3-c/include
+SCALAPACK_LIB=/nfs/psfclab001/software/spack/var/spack/environments/scalapack-debug/.spack-env/view/lib
+PGPLOT_DIR := ${PKG_GIZA_ROOT}/lib
+
+
+LIBS = -L$(PGPLOT_DIR) -Wl,-rpath,$(PGPLOT_DIR) -lpgplot -L$(NETCDF_LIB) -Wl,-rpath,$(NETCDF_LIB)  -lnetcdff  -lnetcdf
+LIBS +=  -L /usr/lib64 -lX11
+LIBS += -L$(SCALAPACK_LIB) -Wl,-rpath,$(SCALAPACK_LIB) -lscalapack -lopenblas
+INCLUDE_DIRS = -I$(NETCDF_INC)  -I$(NETCDFF_INC)
+
+DEFS+= -DGIZA

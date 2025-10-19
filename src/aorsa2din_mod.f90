@@ -63,6 +63,7 @@
       real :: antlen = 1.0
       real :: antlc = .0001           !-----antlc = propagation constant along the antenna = c / vphase
       real :: psilim = .99
+      real :: psifcf = .0             !-----psifcf = inner metal wall, like dipole
       real :: psimask = 1.05
       real :: psiant = 0.95
       real :: psimol = 1.00           !-----psimol: if (psimol .eq. 1.0) molifier is NOT used for plasma profiles (default)
@@ -389,7 +390,7 @@
      &    ti04, ti05, ti06, ti4lim, ti5lim, ti6lim,  &
      &    inu, iprint, iexact, delta0, xwall, xnwall,  &
      &    iroot, iequat, igeom, epszet,  &
-     &    dthetant0, dpsiant0, psilim, psiant, psimol, psipne, psipte,  &
+     &    dthetant0, dpsiant0, psilim, psifcf, psiant, psimol, psipne, psipte,  &
      &    psipti1, psipti2, psipti3,  &
      &    psipti4, psipti5, psipti6,  &
      &    iqx, iqprof, iez, nprow, npcol, &

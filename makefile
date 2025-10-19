@@ -120,18 +120,7 @@ ifeq ($(LMOD_SYSHOST),perlmutter)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
-ifeq ($(NERSC_HOST),cori)
-  ifeq ($(PE_ENV),GNU)
-    include makeopts.cori.gnu
-    $(info System identified as Cori GNU)
-    SYSTEM_IDENTIFIED = 1
-  endif      
-  ifeq ($(PE_ENV),INTEL)
-    include makeopts.cori.intel
-    $(info System identified as Cori Intel)
-    SYSTEM_IDENTIFIED = 1
-  endif
-endif
+
 ifeq ($(UNAME_S),Darwin) # OSX
   #ifeq ($(UNAME_R),18.7.0)
     include makeopts.osx-mojave
@@ -139,6 +128,7 @@ ifeq ($(UNAME_S),Darwin) # OSX
     SYSTEM_IDENTIFIED = 1
   #endif
 endif
+
 ifeq ($(LSB_IS),Ubuntu)
   ifeq ($(LSB_RS),20.04)
     include makeopts.ubuntu20.04
@@ -151,7 +141,9 @@ ifeq ($(LSB_IS),Ubuntu)
     SYSTEM_IDENTIFIED = 1
   endif
 endif
-ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
+
+ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node of engaging cluster
+ifeq ($(LSB_IS),CentOS) #building on node of engaging cluster
   ifdef MKLROOT
   include makeopts.eofe7.intel
   $(info "Intel found" )
@@ -161,6 +153,15 @@ ifeq ($(SLURM_CLUSTER_NAME),eofe7) #building on node
   endif
   SYSTEM_IDENTIFIED = 1
 endif
+ifeq ($(LSB_IS),Rocky) #building on node of engaging cluster
+  ifdef MKLROOT
+  include makeopts.engaging.oneapi
+  $(info "Intel on rocky found" )
+  SYSTEM_IDENTIFIED = 1
+  endif
+endif
+endif
+
 ifeq ($(HOSTNAME),eofe7.mit.edu)  #building on host
   include makeopts.eofe7
   SYSTEM_IDENTIFIED = 1
@@ -245,7 +246,7 @@ $(OBJ_DIR)/dql_write.o:      $(SRC_DIR)/dql_write.f
 
 $(OBJ_DIR)/plot.o:           $(SRC_DIR)/plot.f
 	                     $(COMPILE_r4) -o $(OBJ_DIR)/plot.o \
-                             $(SRC_DIR)/plot.f $(INCLUDE_DIRS)				     
+                             $(SRC_DIR)/plot.f $(INCLUDE_DIRS)
 
 ### FFTPACK files:
 

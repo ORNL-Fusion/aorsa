@@ -1,0 +1,26 @@
+
+
+include compileropts.intel
+#-ftrapuv #there are a LOT of unitialized vars in aorsa
+FC = $(MPIF90) -cpp -O2 -qmkl=cluster -module mod # -g -O0 -traceback -debug all
+
+#with spack env loaded, this is all in path
+#PGPLOT_DIR=$(GIZA_ROOT)/lib
+
+NETCDFF_LIBS= $(shell nf-config --flibs)
+NETCDFF_INC= $(shell nf-config --includedir)
+NETCDF_LIB=  $(shell nc-config --libdir)
+LIBS = -L/nfs/pool001/jcwright/software/views/intel2024/lib -L $(PGPLOT_DIR) -lpgplot  -L$(NETCDF_LIB) $(NETCDFF_LIBS)
+LIBS +=  -L /usr/lib64 -lX11
+INCLUDE_DIRS =  -I$(NETCDFF_INC)
+#DEFS += -DGIZA #-DDEBUG
+#
+#. /pool001/jcwright/software/spack/share/spack/setup-env.sh
+#[jcwright@node2113 jcwright]$ module use /home/software/psfc/modulefiles
+#module use /home/software/psfc/modulefiles
+#ml +gcc
+#[jcwright@node2113 jcwright]$ module load psfc/pgplot/gcc6.2.0/5.2.2
+
+#eval `spack --config-scope ~/myscopes/prod env activate --sh oneapi`
+
+#need to build pgplot library externally for aorsa
