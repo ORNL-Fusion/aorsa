@@ -71,11 +71,14 @@ ctest
 
 # Outputs
   - `out15` - run time logging messages
+  - `bharvey, bharvey_3d` - also aorsa\_flds\_xyz.dat in mcgo for nphi=2,nphi>1
   - `log_aorsa2d` - run time logging messages
+  - `out237` - f(v) in polar and cartesian mesh for plotting
+  - `cql3d.out` - f, df/vperp, df/dvpar for aorsa2dMain
   - vtk files (viewed with Visit or paraview or mayavi). 2D and 3D plots
-    - `Bql_avg_2D.vtk`, Cql_avg_2D.vtk - Quasilinear diffusion coefficients, optional with flag
+    - `Bql_avg_2D.vtk`, Cql\_avg\_2D.vtk - Quasilinear diffusion coefficients, optional with flag
     - `E_kicks_2D.vtk` - for monte carlo kicks. optional with flag, 
-    - `Eb_spectrum.vtk` - RF electric field Poynting_2D.vtk
+    - `Eb_spectrum.vtk` - RF electric field Poynting\_2D.vtk
     - `Bfield_2D.vtk` - magnetic equilibrium or RF?
     - `Efield_2D.vtk`  - electric field from RF 
     - `capd.vtk` - contour plots of dispersion relation D(k,x)

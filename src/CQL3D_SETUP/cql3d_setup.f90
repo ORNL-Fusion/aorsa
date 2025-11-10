@@ -1,19 +1,20 @@
 
-      subroutine cql3d_setup1(netcdf_file, nuper, nupar, xm, enorm_factor, vc_mks_cql3d)
-      use size_mod   
+      subroutine cql3d_setup1(netcdf_file, nuper, nupar, xm, &
+     &enorm_factor, vc_mks_cql3d)
+      use size_mod
 
       USE read_CQL3D
-      USE quick_vector_write_m
-      USE f_expanded_m, only : C_matrix_file, in_file_CQL, &
-     &  n_u_coeffs, n_theta_coeffs, u_norm, u0_Max_poly, &
-     &  C_matrix, dens_Maxwell_psi, T_Maxwell_psi,              &
-     &  read_C_matrix_m, eval_delta_f_exp_m, eval_f_exp_m
-        
-      USE basis_functions_m, only : u_fns_name
-        
+      ! USE quick_vector_write_m
+!      USE f_expanded_m, only : C_matrix_file, in_file_CQL, &
+!     &  n_u_coeffs, n_theta_coeffs, u_norm, u0_Max_poly, &
+!     &  C_matrix, dens_Maxwell_psi, T_Maxwell_psi,              &
+!     &  read_C_matrix_m, eval_delta_f_exp_m, eval_f_exp_m
+
+!      USE basis_functions_m, only : u_fns_name
+
 
       IMPLICIT NONE
-      
+
       INTEGER :: j, k, n, n_expand, ncount, number_points
       integer i, i_psi, i_theta, i_u, iflag, nproc, myid
       integer n_u_basis, n_theta_basis, ni, mi
@@ -40,11 +41,13 @@
       integer, parameter :: mkdim2 =   mmodesmax / 2
 
       real :: UminPara, UmaxPara, UmaxPerp, dupara, duperp, drho, drho10
-      real fb, dfb_du, dfb_dtheta, xn_alpha, xne, dfdth
-      real betat, alphat, shapen, shapet, xkt0, xnlim, xktlim, betan, alphan
+      real :: fb, dfb_du, dfb_dtheta, xn_alpha, xne, dfdth
+      real ::  betat, alphat, shapen, shapet, xkt0, xnlim, xktlim
+      real :: betan, alphan
+
       real wperp_max, wpar_max, enorm_aorsa_kev
       real enorm_cql3d_joules, enorm_cql3d_kev
-      real enorm_aorsa_joules, vc_mks_aorsa, vc_ratio, vc_mks_cql3d  
+      real enorm_aorsa_joules, vc_mks_aorsa, vc_ratio, vc_mks_cql3d
 
       integer :: nuper, nupar
 
@@ -70,8 +73,8 @@
       real :: dfdu, dfdtheta
       real :: d2fdu2, d2fdtheta2
 
-!      double precision :: f_cql_n(0 : n_theta_dim, n_u_dim, n_psi_dim)      
-!      double precision :: f_cql_sum(n_theta_dim, n_u_dim, n_psi_dim)      
+!      double precision :: f_cql_n(0 : n_theta_dim, n_u_dim, n_psi_dim)
+!      double precision :: f_cql_sum(n_theta_dim, n_u_dim, n_psi_dim)
 !      double precision :: theta_dp(n_theta_dim, n_psi_dim)
 !      double precision :: pi_dp, piinv_dp
 !      double precision :: f_cql_dp(n_theta_dim, n_u_dim, n_psi_dim)
@@ -86,17 +89,17 @@
 
 
       real :: f1(n_u_dim), fout
-      
+
 !      real :: f2(n_u_dim, n_theta_dim)
 !      real :: dfdu_(n_u_dim, n_theta_dim)
 !      real :: dfdth_(n_u_dim, n_theta_dim)
 !      real :: f_(n_u_dim, n_theta_dim)
-      
+
       real, dimension(:,:), allocatable :: f2
       real, dimension(:,:), allocatable :: dfdu_
       real, dimension(:,:), allocatable :: dfdth_
-      real, dimension(:,:), allocatable :: f_      
-      
+      real, dimension(:,:), allocatable :: f_
+
 
 !      real uxx(nxmx, nymx), uxy(nxmx, nymx), uxz(nxmx, nymx), &
 !     &     uyx(nxmx, nymx), uyy(nxmx, nymx), uyz(nxmx, nymx), &
@@ -123,30 +126,31 @@
       real z_alpha, amu_alpha, eta_alpha
 
       real xktev, xmih, amu, xn0, xmi_alpha, xm
-      real eps0, clight, xmu0
-      real q, xnurf, sqx, rho, xlogf, rho10
-      complex zi
+      ! constants
+      real, parameter ::  q = 1.60218e-19, qe = -q, e=q ![J/ev]
+      complex, parameter :: zi = cmplx(0.0,1.0)
+      real, parameter ::  clight = 299792458, pi = 3.141592654, &
+     &       twopi = 2.0 * pi, &
+     &       xmu0 = 4.0*pi*1.e-7, eps0 = 1./(clight**2 * xmu0)
 
+      real xnurf, sqx, rho, xlogf, rho10
 
       real :: theta_(n_theta_dim), u_(n_u_dim)
-      real :: u_cql, u_aorsa
+      real :: u_cql
 
-      real :: pi, piinv, fl, ugiv, thegiv, fnorm, fmin, fmax, &
-     &    vc_mks, u0, alpha, e, u_dbb, u_norm_mks
+      real :: piinv, fl, ugiv, thegiv, fnorm, fmin, fmax, &
+     &    vc_mks, u0, alpha, u_dbb, u_norm_mks
 
-
-
-      common/sigcom/zi, eps0, v0i, omgrf, xk0
 
 
       open(unit=237,file='out237',status='unknown', form='formatted')
 
       open(unit=140, file='f_cql_3D.vtk', status='unknown', &
-     &                                              form='formatted')       
-      
+     &                                              form='formatted')
+
 !      open(unit=115,file='out115',status='unknown', form='formatted')
 !      open(unit=143,file='ahern',status='unknown', form='formatted')
-      
+
       open(unit=50,file='cql3d.out',status='unknown', form='formatted')
 
 
@@ -158,7 +162,7 @@
 !     set default values of input data:
 !     --------------------------------
 
-      C_matrix_file = 'phillips_nstx3.5._C_matrix.dat'
+!      C_matrix_file = 'phillips_nstx3.5._C_matrix.dat'
 
       n_distribution = 1
       xktev = 17.1e+03
@@ -223,7 +227,7 @@
       allocate( f_cql_cart(nuper, nupar, n_psi_dim) )
       allocate( df_cql_uprp(nuper, nupar, n_psi_dim) )
       allocate( df_cql_uprl(nuper, nupar, n_psi_dim) )
-      
+
       allocate( dfdu_cql(n_theta_dim, n_u_dim, n_psi_dim) )
       allocate( dfdtheta_cql(n_theta_dim, n_u_dim, n_psi_dim) )
       allocate( f_aorsa(n_theta_dim, n_u_dim, n_psi_dim) )
@@ -234,9 +238,7 @@
       allocate( f_(n_u_dim, n_theta_dim) )
 
 
-      e = 1.6e-19
       xmih = 1.67e-27
-      pi = 4.0 * atan(1.0)
       piinv = 1.0 / pi
 
 !      pi_dp = 4.0 * datan(1.0d+00)
@@ -255,109 +257,115 @@
 !     Write some data
 !     ---------------
 
-      WRITE(6,*)
-      WRITE (6,*) "n_theta_max = ", n_theta_max
-      WRITE (6,*) "n_u = ", n_u
-      WRITE (6,*) "n_psi = ", n_psi
-      WRITE (6,*) "n_theta_(i) = ", n_theta_
-      WRITE (6,*) "vc_cql3d_cgs = ", vc, "cm/sec"
-      WRITE (6,*) "vc_cql3d_mks = ", vc_mks_cql3d, "m/sec"
-      WRITE (6,*) "n_t = ", n_t
-      WRITE(6,*)
+      WRITE(6, *)
+      WRITE(6, *) "n_theta_max = ", n_theta_max
+      WRITE(6, *) "n_u = ", n_u
+      WRITE(6, *) "n_psi = ", n_psi
+      WRITE(6, *) "n_theta_(i) = ", n_theta_
+      WRITE(6, *) "vc_cql3d_cgs = ", vc, "cm/sec"
+      WRITE(6, *) "vc_cql3d_mks = ", vc_mks_cql3d, "m/sec"
+      WRITE(6, *) "n_t = ", n_t
+      WRITE(6, *)
 
       write(6, *)
       write(6, *) "rho/a(i_psi)"
       write(6, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-      
+
       write(6, *)
       write(6, *) "wperp_cql(i_psi, n_t) = "
       write(6, 310) (wperp_cql(i_psi, n_t), i_psi = 1, n_psi)
-      
+
       wperp_max = wperp_cql(1, n_t)
       do i_psi = 1, n_psi
          wperp_max = amax1(wperp_max, wperp_cql(i_psi, n_t))
       end do
-      
-      
+
+
       write(6, *)
       write(6, *) "wpar_cql(i_psi, n_t) = "
-      write(6, 310) (wpar_cql(i_psi, n_t), i_psi = 1, n_psi) 
-      
+      write(6, 310) (wpar_cql(i_psi, n_t), i_psi = 1, n_psi)
+
       wpar_max = wpar_cql(1, n_t)
       do i_psi = 1, n_psi
          wpar_max = amax1(wpar_max, wpar_cql(i_psi, n_t))
       end do
+
+#ifdef DEBUG
+      write(*,*) 'wpar_max', wpar_max, maxval(wpar_cql(:,n_t)) 
+#endif
       
       write(15, *)"wperp_max = ", wperp_max, " keV"
-      write(15, *)"wpar_max = ", wpar_max, " keV"       
-            
+      write(15, *)"wpar_max = ", wpar_max, " keV"
+
       write(6, *)"wperp_max = ", wperp_max, " keV"
-      write(6, *)"wpar_max = ", wpar_max, " keV" 
-      
-      enorm_cql3d_joules = .5 * xm * vc_mks_cql3d**2
+      write(6, *)"wpar_max = ", wpar_max, " keV"
+
+      enorm_cql3d_joules = xm * clight**2*(sqrt( &
+           & vc_mks_cql3d**2/clight**2+1)-1)
+      !JCW .5 * xm * vc_mks_cql3d**2
       enorm_cql3d_kev = enorm_cql3d_joules / e / 1000.
-      
+
 !     ----------------------------------------------------
 !     Set AORSA enorm to enorm_factor x the maximum energy
-!     ----------------------------------------------------      
-      enorm_aorsa_kev =  (wperp_max + wpar_max) * enorm_factor      
-
-      
-      enorm_aorsa_joules = 1000. * enorm_aorsa_kev * e             
+!     ----------------------------------------------------
+      enorm_aorsa_kev =  (wperp_max + wpar_max) * enorm_factor
+      enorm_aorsa_joules = 1000. * enorm_aorsa_kev * e
       vc_mks_aorsa = sqrt(2.0 * enorm_aorsa_joules / xm)
-                   
-      if (enorm_factor .eq. 0.0 .or. enorm_aorsa_kev .gt. enorm_cql3d_kev) then
-         vc_mks_aorsa = vc_mks_cql3d 
+
+      if (enorm_factor == 0.0 .or. &
+           & enorm_aorsa_kev == enorm_cql3d_kev) then !was .gt.
+         vc_mks_aorsa = vc_mks_cql3d
          enorm_aorsa_joules = .5 * xm * vc_mks_aorsa**2
          enorm_aorsa_kev = enorm_aorsa_joules / e / 1000.
-      end if      
-      
+      end if
+
       vc_ratio = vc_mks_aorsa / vc_mks_cql3d
-      
-      write(6, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"       
-      write(6, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV" 
-      
-      write(15, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"       
-      write(15, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV"       
-               
+
+      write(6,  *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"
+      write(6,  *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV"
+
+      write(15, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"
+      write(15, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV"
+
 
       write(6, *)
       write(6, *) "u(i_u) ="
       write(6, 310) (u(i_u), i_u = 1, n_u)
 
 
-      i_psi = 5
+      i_psi = min(5,n_psi)
       write(6, *)
-      write(6, *) "theta(i_theta, 5) = "
-      write(6, 310) (theta(i_theta, i_psi), i_theta = 1, n_theta_(i_psi))
-      
+      write(6, *) "theta(i_theta, ",i_psi,") = "
+      write(6, 310) (theta(i_theta, i_psi), i_theta = 1, &
+           & n_theta_(i_psi))
+
 
       if (n_distribution .eq. 0)then
 
 
-!        -------------------------------------------------------------------
-!        Isotropic Maxwellian with thermal velocity = sqrt(2.0 * xkt / xmi)
-!        -------------------------------------------------------------------
+!        --------------------------------------------------------------
+!        Isotropic Maxwellian with thermal velocity = sqrt(2.0*xkt/xmi)
+!        --------------------------------------------------------------
          amu = 1.0
          xmi =  xmih * amu
-      
+
          xn0 = 1.022e+19
          xnlim = 4.84e+18
-      
+
          xkt0 = 2.0e+03  * e
          xktlim = .285e+03  * e
-      
-         alphan = 1.1 
+
+         alphan = 1.1
          betan = 1.5
-             
+
          alphat = 1.9
          betat = 1.9
-      
+
 !        -----------------------------------------
 !        n and T profiles for isotropic Maxwellian
 !        -----------------------------------------
          do i_psi = 1, n_psi
-         
+
             shapen = 0.0
             shapet = 0.0
 
@@ -366,21 +374,21 @@
                   shapet  = 1.0 - rho_a(i_psi)**betat
             end if
 
-            xn(i_psi) = xnlim  + (xn0 - xnlim)   * shapen**alphan 
-            xkt(i_psi)= xktlim + (xkt0 - xktlim) * shapet**alphat 
+            xn(i_psi) = xnlim  + (xn0 - xnlim)   * shapen**alphan
+            xkt(i_psi)= xktlim + (xkt0 - xktlim) * shapet**alphat
             xkt_prt(i_psi) = xkt(i_psi) / e
-            
+
          end do
-         
+
 
          do i_psi = 1, n_psi
-         
+
             alpha = sqrt(2.0 * xkt(i_psi) / xmi)
 !           vc_mks = 3.5 * alpha
             u0 = vc_mks / alpha
             fnorm = xn(i_psi) * u0**3 / pi**1.5
-            
-            
+
+
             do  i_u = 1, n_u
                do i_theta = 1, n_theta_(i_psi)
                   f_cql(i_theta, i_u, i_psi) = exp(-u(i_u)**2 * u0**2) &
@@ -427,13 +435,13 @@
      &                                      - z_alpha * eta_alpha)
 
 
-        
+
          vmax = sqrt(2.0 * e0 / xmi_alpha)
          vc_mks = 1.1 * vmax
          alphae = sqrt(2.0 * xkte / xme)
          zeff = z1 / amu1 * eta1 + z2 / amu2 * eta2  &
      &            + z3 / amu3 * eta3 + z_alpha / amu_alpha * eta_alpha
-        
+
          ve3 = 3.0 * sqrt(pi) * xme/xmi_alpha * zeff * alphae**3
          ve = ve3**(1./3.)
          A = 3.0 / (4.0 * pi * alog(1.0 + vmax**3 / ve3))
@@ -468,41 +476,40 @@
 !     integrate to get density
 !     ------------------------
 
-       do i_psi = 1, n_psi
+      do i_psi = 1, n_psi
 
 
-          do i_theta = 1, n_theta_(i_psi)
-             theta_(i_theta) =  theta(i_theta, i_psi)
-          end do
+         do i_theta = 1, n_theta_(i_psi)
+            theta_(i_theta) =  theta(i_theta, i_psi)
+         end do
 
-          do  i_u = 1, n_u
-             do i_theta = 1, n_theta_(i_psi)
-                f2(i_u, i_theta) = f_cql(i_theta, i_u, i_psi)
-             end do
-          end do
+         do  i_u = 1, n_u
+            do i_theta = 1, n_theta_(i_psi)
+               f2(i_u, i_theta) = f_cql(i_theta, i_u, i_psi)
+            end do
+         end do
 
-          if (i_psi .eq. 1) then
-             call a2dmnmx(f2, n_u_dim, n_theta_dim, n_u, n_theta_(i_psi), fmin, fmax)
-          end if
+         if (i_psi .eq. 1) then
+            call a2dmnmx(f2, n_u_dim, n_theta_dim, n_u, &
+              &  n_theta_(i_psi), fmin, fmax)
+         end if
 
-          call sgrate_sphere(u, theta, f2, 1, n_u, 1, n_theta_(i_psi), &
-     &           dens(i_psi), n_u_dim, n_theta_dim)
+         call sgrate_sphere(u, theta, f2, 1, n_u, 1, n_theta_(i_psi), &
+              &  dens(i_psi), n_u_dim, n_theta_dim)
 
 
-       end do
+      end do
 
       write(6, *)
       write(6, *) "density ="
       write(6, 310) (dens(i_psi), i_psi = 1, n_psi)
-
-!      write(6, *)
-!      write(6, *) "f_cql(1, 2, 1) = ", f_cql(1, 2, 1)
-
+      write(15, *)
+      write(15, *) "density ="
+      write(15, 310) (dens(i_psi), i_psi = 1, n_psi)
+      
       write(6, *)
       write(6, *) "f_cql_max = ", fmax
-      
-           
-      
+
 !      write(6, *)
 !      write(6, *) "temperature ="
 !      write(6, 310) (xkt_prt(i_psi), i_psi = 1, n_psi)
@@ -510,20 +517,21 @@
 
 
 
-!     ----------------------
-!     normalize f_cql to 1.0
-!     ----------------------
+!     --------------------------
+!     normalize f_cql to density
+!     --------------------------
 
        do i_psi = 1, n_psi
 
           do  i_u = 1, n_u
              do i_theta = 1, n_theta_(i_psi)
-                f_cql(i_theta, i_u, i_psi) = f_cql(i_theta, i_u, i_psi) / dens(i_psi)
+                f_cql(i_theta, i_u, i_psi)=f_cql(i_theta, i_u, i_psi)/&
+                     &dens(i_psi)
              end do
           end do
 
        end do
-       
+
 
 !     ----------------------
 !     calculate derivatives:
@@ -544,10 +552,12 @@
          do  i_u = 1, n_u
             do i_theta = 1, n_theta_(i_psi)
 
-               call deriv_1(f2, n_u_dim, n_theta_dim, i_u, i_theta, n_u, n_theta_(i_psi), &
-     &                u, dfdu, d2fdu2)
-               call deriv_2(f2, n_u_dim, n_theta_dim, i_u, i_theta, n_u, n_theta_(i_psi), &
-     &                theta_, dfdtheta, d2fdtheta2)
+               call deriv_1(f2, n_u_dim, n_theta_dim, i_u, &
+     &               i_theta, n_u, n_theta_(i_psi), &
+     &               u, dfdu, d2fdu2)
+               call deriv_2(f2, n_u_dim, n_theta_dim, i_u, &
+     &               i_theta, n_u, n_theta_(i_psi), &
+     &               theta_, dfdtheta, d2fdtheta2)
 
                dfdu_cql(i_theta, i_u, i_psi) = dfdu
                dfdtheta_cql(i_theta, i_u, i_psi) = dfdtheta
@@ -556,31 +566,29 @@
          end do
 
       end do
-       
-       
+
+
 !     ------------------------------
-!     interpolate onto AORSA u grid: 
-!     ------------------------------       
-       
+!     interpolate onto AORSA u grid:
+!     ------------------------------
+
       do i_psi = 1, n_psi
           do i_theta = 1, n_theta_(i_psi)
-       
-             do  i_u = 1, n_u             
+
+             do  i_u = 1, n_u
                 f1(i_u) = f_cql(i_theta, i_u, i_psi)
              end do
-                     
-             do  i_u = 1, n_u 
-                u_aorsa = u(i_u)             
-                u_cql = u_aorsa * vc_ratio           
-                ugiv = u_cql
-          
+
+             do  i_u = 1, n_u
+                ugiv = u(i_u) * vc_ratio
+
                 call intplt_1d(ugiv, fout, n_u, f1, n_u_dim, u)
                 f_aorsa(i_theta, i_u, i_psi) = fout * vc_ratio**3
              end do
-          
+
           end do
        end do
-              
+
 
 !     ----------------------------------------------
 !     Write data for plotting f_aorsa in u and theta
@@ -593,12 +601,13 @@
       write (237, 310) (u(i_u), i_u = 1, n_u)
       write (237, 311) (n_theta_(i_psi), i_psi = 1, n_psi)
       write (237, 310) ((theta(i_theta, i_psi), &
-     &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)     
-           
+     &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
+
       write (237, 310) (((f_aorsa(i_theta, i_u, i_psi), &
-     &     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u), i_psi = 1, n_psi)
-     
-           
+           &     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u),&
+           &     i_psi = 1, n_psi)
+
+
 !     ----------------------------------------------
 !     interpolate onto METS grid: u_perp, u_parallel
 !     ----------------------------------------------
@@ -618,28 +627,30 @@
                dfdu_(i_u, i_theta) = dfdu_cql(i_theta, i_u, i_psi)
                dfdth_(i_u, i_theta) = dfdtheta_cql(i_theta, i_u, i_psi)
             end do
-         end do  
+         end do
 
 
          call mets_grid(nupar, nuper, UminPara, UmaxPara, UmaxPerp, &
-     &                UPERP, UPARA, DFDUPER, DFDUPAR, f, fnorm, &
-     &                u_, theta_, f_, dfdu_, dfdth_, n_u_dim, n_theta_dim,  &
-     &                n_u, n_theta_(i_psi), vc_ratio)
- 
+     &           UPERP, UPARA, DFDUPER, DFDUPAR, f, fnorm, &
+     &           u_, theta_, f_, dfdu_, dfdth_, n_u_dim, n_theta_dim, &
+     &           n_u, n_theta_(i_psi), vc_ratio)
+
 
          do i_uperp = 1, NUPER
             do i_upara = 1, NUPAR
 
                f_cql_cart(i_uperp, i_upara, i_psi) = f(i_uperp, i_upara)
-               df_cql_uprp(i_uperp, i_upara, i_psi)= DFDUPER(i_uperp, i_upara)
-               df_cql_uprl(i_uperp, i_upara, i_psi)= DFDUPAR(i_uperp, i_upara)
+               df_cql_uprp(i_uperp, i_upara, i_psi)= &
+                    &DFDUPER(i_uperp, i_upara)
+               df_cql_uprl(i_uperp, i_upara, i_psi)= &
+                    &DFDUPAR(i_uperp, i_upara)
 
-               if(abs(f_cql_cart(i_uperp, i_upara, i_psi)) .lt. 1.0e-99) &
-     &                               f_cql_cart(i_uperp, i_upara, i_psi) = 0.0
-               if(abs(df_cql_uprp(i_uperp, i_upara, i_psi)) .lt. 1.0e-99) &
-     &                               df_cql_uprp(i_uperp, i_upara, i_psi) = 0.0
-               if(abs(df_cql_uprl(i_uperp, i_upara, i_psi)) .lt. 1.0e-99) &
-     &                               df_cql_uprl(i_uperp, i_upara, i_psi) = 0.0
+               if(abs(f_cql_cart(i_uperp, i_upara, i_psi))  < 1.0e-99) &
+     &                        f_cql_cart(i_uperp, i_upara, i_psi) = 0.0
+               if(abs(df_cql_uprp(i_uperp, i_upara, i_psi)) < 1.0e-99) &
+     &                       df_cql_uprp(i_uperp, i_upara, i_psi) = 0.0
+               if(abs(df_cql_uprl(i_uperp, i_upara, i_psi)) < 1.0e-99) &
+     &                       df_cql_uprl(i_uperp, i_upara, i_psi) = 0.0
 
             end do
          end do
@@ -675,14 +686,17 @@
 !      write(6, *)
 !      write(6, *) "upara ="
 !      write(6, 310) (upara(i_upara), i_upara = 1, nupar)
-      
-      
+
+
 
       write(6, *)
       write(6, *) "density ="
       write(6, 310) (dens(i_psi), i_psi = 1, n_psi)
-      
-!      call exit      
+      write(15, *)
+      write(15, *) "density ="
+      write(15, 310) (dens(i_psi), i_psi = 1, n_psi)      
+
+!      call exit
 
       write(6, *)
       write(6, *) "f_cql_cart_max = ", fmax
@@ -699,9 +713,9 @@
 !     Write data for AORSA2D in u_perp and u_parallel
 !     ------------------------------------------------
       rewind (50)
-      
+
       write (50, 309) nuper
-      write (50, 309) nupar      
+      write (50, 309) nupar
       write (50, 309) n_psi
 
       write (50, 3310) vc_mks_aorsa
@@ -719,13 +733,12 @@
 
       write (50, 3310) (((df_cql_uprl(i_uperp, i_upara, i_psi), &
      &  i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
-     
+
 
       rewind (50)
 
-!        read (50, 309) nuper
-!        read (50, 309) nupar
-
+!      read (50, 309) nuper
+!      read (50, 309) nupar
 !      read (50, 309) n_psi
 
 !      read (50, 3310) vc_mks
@@ -753,20 +766,20 @@
 !     &              UminPara,UmaxPara,      &
 !     &              df_cql_uprp, df_cql_uprl,  &
 !     &              UPERP, UPARA, DFDUPER, DFDUPAR)
-     
+
 !      do ni = 1, nuper
 !          do mi = 1, nupar
-!     
+!
 !             dfdth = upara(mi) * dfduper(ni, mi)  &
 !     &                           - uperp(ni) * dfdupar(ni, mi)
-!     
+!
 !            write(6,  1314)ni, mi, uperp(ni),  upara(mi), dfdth
 !            write(115, 1314)ni, mi, uperp(ni),  upara(mi), dfdth
-!                 
+!
 !         end do
 !      end do
-               
-! 1314  format(2i10, 1p,9e12.4)  
+
+! 1314  format(2i10, 1p,9e12.4)
 
 !     ------------------------------------------------
 !     Write data for plotting in u_perp and u_parallel
@@ -780,25 +793,25 @@
       write (237, 310) (upara(i_upara), i_upara = 1, nupar)
       write (237, 310) (((f_cql_cart(i_uperp, i_upara, i_psi), &
      &  i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
-     
+
       write(237, 310) (wperp_cql(i_psi, n_t), i_psi = 1, n_psi)
       write(237, 310) (wpar_cql(i_psi, n_t), i_psi = 1, n_psi)
-     
+
       close (237)
 
 
- 
+
 !     ----------------------
 !     take log of f_cql_cart
 !     ----------------------
-      do i_psi = 1, n_psi      
+      do i_psi = 1, n_psi
          do i_uperp = 1, nuper
             do i_upara = 1, nupar
-               
+
                if(f_cql_cart(i_uperp, i_upara, i_psi) .le. 0.0) then
                   f_cql_cart(i_uperp, i_upara, i_psi) = -100.0
                end if
-               
+
                if(f_cql_cart(i_uperp, i_upara, i_psi) .gt. 0.0) then
                   f_cql_cart(i_uperp, i_upara, i_psi) =  &
      &                    log10(f_cql_cart(i_uperp, i_upara, i_psi))
@@ -806,69 +819,69 @@
 
             end do
          end do
-      end do 
-     
-      
+      end do
+
+
 !     ---------------
 !     expand rho grid
 !     ----------------
-      do i_psi = 1, n_psi      
-          rho_a(i_psi) = rho_a(i_psi) * 5.0      
-      end do 
- 
+      do i_psi = 1, n_psi
+          rho_a(i_psi) = rho_a(i_psi) * 5.0
+      end do
+
 !     ---------------------------------------
 !     Write f_cql_3D.vtk file "rectilinear_grid"
 !     ---------------------------------------
       number_points = nupar * nuper * n_psi
-      
+
       write(140, 2840)
  2840 format('# vtk DataFile Version 2.0')
- 
+
       write(140, 2845)
- 2845 format('Cql3d distribution function')      
-      
+ 2845 format('Cql3d distribution function')
+
       write(140, 2846)
- 2846 format('ASCII')       
-           
+ 2846 format('ASCII')
+
       write(140, 2847)
- 2847 format('DATASET RECTILINEAR_GRID')  
-      
+ 2847 format('DATASET RECTILINEAR_GRID')
+
       write(140, 2841)nupar, nuper, n_psi
  2841 format('DIMENSIONS', 3i8)
-           
+
       write(140, 2842) nupar
  2842 format('X_COORDINATES', i8, ' float')
-      write (140, 3411) (upara(i_upara), i_upara = 1, nupar) 
- 
+      write (140, 3411) (upara(i_upara), i_upara = 1, nupar)
+
       write(140, 2843) nuper
  2843 format('Y_COORDINATES', i8, ' float')
-      write (140, 3411) (uperp(i_uperp), i_uperp = 1, nuper) 
-      
+      write (140, 3411) (uperp(i_uperp), i_uperp = 1, nuper)
+
       write(140, 2851) n_psi
  2851 format('Z_COORDINATES', i8, ' float')
-      write (140, 3411) (rho_a(i_psi), i_psi = 1, n_psi)      
-      
+      write (140, 3411) (rho_a(i_psi), i_psi = 1, n_psi)
+
       write(140, 2844) number_points
- 2844 format('POINT_DATA', i10)      
-      
+ 2844 format('POINT_DATA', i10)
+
       write(140, 2848)
- 2848 format('SCALARS f_cql_cart float 1')       
-      
+ 2848 format('SCALARS f_cql_cart float 1')
+
       write(140, 2849)
- 2849 format('LOOKUP_TABLE default')        
-                  
+ 2849 format('LOOKUP_TABLE default')
+
       write (140, 3411) (((f_cql_cart(i_uperp, i_upara, i_psi), &
-     &   i_upara = 1, nupar), i_uperp = 1, nuper), i_psi = 1, n_psi) 
-     
-     
- 3410 format(1p,4e10.2)  
- 3411 format(6f12.4)     
-     
- 
-                 
+     &   i_upara = 1, nupar), i_uperp = 1, nuper), i_psi = 1, n_psi)
+
+
+ 3410 format(1p,4e10.2)
+ 3411 format(6f12.4)
+
+
+
 !     ----------------
 !     Write ahern file
-!     ----------------          
+!     ----------------
 !      write (143, 311) nuper
 !      write (143, 311) nupar
 !      write (143, 311) n_psi
@@ -876,8 +889,8 @@
 !      write (143, 310) (uperp(i_uperp), i_uperp = 1, nuper)
 !      write (143, 310) (upara(i_upara), i_upara = 1, nupar)
 !      write (143, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-      
-      
+
+
 !      write (143, 310) (((f_cql_cart(i_uperp, i_upara, i_psi), &
 !     &  i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
 
@@ -1009,8 +1022,8 @@
   309 format(10i10)
 
   312 format(i10, 1p,6e12.4)
-  
-  
+
+
 ! 5000 continue
 
 
@@ -1027,16 +1040,16 @@
       deallocate( f_cql_cart )
       deallocate( df_cql_uprp )
       deallocate( df_cql_uprl )
-      
+
       deallocate( dfdu_cql )
       deallocate( dfdtheta_cql )
-      deallocate( f_aorsa ) 
-      
+      deallocate( f_aorsa )
+
       deallocate( f2 )
       deallocate( dfdu_ )
       deallocate( dfdth_ )
-      deallocate( f_ )           
-      
+      deallocate( f_ )
+
       close(50)
       close (140)
 
@@ -1048,20 +1061,20 @@
 !***********************************************************************
 !
       subroutine cql3d_setup2(netcdf_file, nuper, nupar, xm, enorm_factor, vc_mks_cql3d)
-      use size_mod   
+      use size_mod
 
       USE read_CQL3D
-      USE quick_vector_write_m
-      USE f_expanded_m, only : C_matrix_file, in_file_CQL, &
-     &  n_u_coeffs, n_theta_coeffs, u_norm, u0_Max_poly, &
-     &  C_matrix, dens_Maxwell_psi, T_Maxwell_psi,              &
-     &  read_C_matrix_m, eval_delta_f_exp_m, eval_f_exp_m
-        
-      USE basis_functions_m, only : u_fns_name
-        
+      ! USE quick_vector_write_m
+!      USE f_expanded_m, only : C_matrix_file, in_file_CQL, &
+!     &  n_u_coeffs, n_theta_coeffs, u_norm, u0_Max_poly, &
+!     &  C_matrix, dens_Maxwell_psi, T_Maxwell_psi,              &
+!     &  read_C_matrix_m, eval_delta_f_exp_m, eval_f_exp_m
+
+!      USE basis_functions_m, only : u_fns_name
+
 
       IMPLICIT NONE
-      
+
       INTEGER :: j, k, n, n_expand, ncount, number_points
       integer i, i_psi, i_theta, i_u, iflag, nproc, myid
       integer n_u_basis, n_theta_basis, ni, mi
@@ -1090,9 +1103,10 @@
       real :: UminPara, UmaxPara, UmaxPerp, dupara, duperp, drho, drho10
       real fb, dfb_du, dfb_dtheta, xn_alpha, xne, dfdth
       real betat, alphat, shapen, shapet, xkt0, xnlim, xktlim, betan, alphan
-      real wperp_max, wpar_max, enorm_aorsa_kev
-      real enorm_cql3d_joules, enorm_cql3d_kev
-      real enorm_aorsa_joules, vc_mks_aorsa, vc_ratio, vc_mks_cql3d  
+      real wperp_max, wpar_max
+      real       enorm_cql3d_joules, enorm_cql3d_kev,      &
+           &     enorm_aorsa_joules, enorm_aorsa_kev,      &
+           &     vc_mks_aorsa      , vc_mks_cql3d, vc_ratio
 
       integer :: nuper, nupar
 
@@ -1120,8 +1134,8 @@
       real :: dfdu, dfdtheta
       real :: d2fdu2, d2fdtheta2
 
-!      double precision :: f_cql_n(0 : n_theta_dim, n_u_dim, n_psi_dim)      
-!      double precision :: f_cql_sum(n_theta_dim, n_u_dim, n_psi_dim)      
+!      double precision :: f_cql_n(0 : n_theta_dim, n_u_dim, n_psi_dim)
+!      double precision :: f_cql_sum(n_theta_dim, n_u_dim, n_psi_dim)
 !      double precision :: theta_dp(n_theta_dim, n_psi_dim)
 !      double precision :: pi_dp, piinv_dp
 !      double precision :: f_cql_dp(n_theta_dim, n_u_dim, n_psi_dim)
@@ -1180,17 +1194,13 @@
 
 
 
-      common/sigcom/zi, eps0, v0i, omgrf, xk0
-
-
       open(unit=238,file='out238',status='unknown', form='formatted')
-!      open(unit=139,file='Point.3D',status='unknown', form='formatted')
       open(unit=140, file='f_cql_3D.vtk', status='unknown', &
-     &                                              form='formatted')       
-      
+     &                                              form='formatted')
+
 !      open(unit=115,file='out115',status='unknown', form='formatted')
 !      open(unit=143,file='ahern',status='unknown', form='formatted')
-      
+
       open(unit=50,file='cql3d.out',status='unknown', form='formatted')
 
 
@@ -1202,7 +1212,7 @@
 !     set default values of input data:
 !     --------------------------------
 
-      C_matrix_file = 'phillips_nstx3.5._C_matrix.dat'
+!      C_matrix_file = 'phillips_nstx3.5._C_matrix.dat'
 !      netCDF_file = 'phillips_nstx3.5.2.nc'
 
       n_distribution = 1
@@ -1274,7 +1284,7 @@
       allocate( f_aorsa(n_theta_dim, n_u_dim, n_psi_dim) )
 
 
-      e = 1.6e-19
+!JW      e = 1.6e-19 ![J/ev]
       xmih = 1.67e-27
       pi = 4.0 * atan(1.0)
       piinv = 1.0 / pi
@@ -1309,59 +1319,50 @@
 
       write(6, *) "rho/a(i_psi)"
       write(6, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-      
+
       write(6, *)
       write(6, *) "wperp_cql(i_psi, n_t) = "
       write(6, 310) (wperp_cql(i_psi, n_t), i_psi = 1, n_psi)
-      
-      wperp_max = wperp_cql(1, n_t)
-      do i_psi = 1, n_psi
-         wperp_max = amax1(wperp_max, wperp_cql(i_psi, n_t))
-      end do
-      
-      
-      
+
       write(6, *)
       write(6, *) "wpar_cql(i_psi, n_t) = "
-      write(6, 310) (wpar_cql(i_psi, n_t), i_psi = 1, n_psi) 
-      
-      wpar_max = wpar_cql(1, n_t)
-      do i_psi = 1, n_psi
-         wpar_max = amax1(wpar_max, wpar_cql(i_psi, n_t))
-      end do
-      
+      write(6, 310) (wpar_cql(i_psi, n_t), i_psi = 1, n_psi)
+
+      wperp_max = maxval(wperp_cql(:, n_t))
+      wpar_max = maxval(wpar_cql(:, n_t))
+
       write(15, *)"wperp_max = ", wperp_max, " keV"
-      write(15, *)"wpar_max = ", wpar_max, " keV"       
-            
+      write(15, *)"wpar_max = ", wpar_max, " keV"
+
       write(6, *)"wperp_max = ", wperp_max, " keV"
-      write(6, *)"wpar_max = ", wpar_max, " keV" 
-      
+      write(6, *)"wpar_max = ", wpar_max, " keV"
+
       enorm_cql3d_joules = .5 * xm * vc_mks_cql3d**2
       enorm_cql3d_kev = enorm_cql3d_joules / e / 1000.
-      
+
 !     ----------------------------------------------------
 !     Set AORSA enorm to enorm_factor x the maximum energy
-!     ----------------------------------------------------      
-      enorm_aorsa_kev =  (wperp_max + wpar_max) * enorm_factor      
+!     ----------------------------------------------------
+      enorm_aorsa_kev =  (wperp_max + wpar_max) * enorm_factor
 
-      
-      enorm_aorsa_joules = 1000. * enorm_aorsa_kev * e             
+
+      enorm_aorsa_joules = 1000. * enorm_aorsa_kev * e
       vc_mks_aorsa = sqrt(2.0 * enorm_aorsa_joules / xm)
-                   
+
       if (enorm_factor .eq. 0.0 .or. enorm_aorsa_kev .gt. enorm_cql3d_kev) then
-         vc_mks_aorsa = vc_mks_cql3d 
+         vc_mks_aorsa = vc_mks_cql3d
          enorm_aorsa_joules = .5 * xm * vc_mks_aorsa**2
          enorm_aorsa_kev = enorm_aorsa_joules / e / 1000.
-      end if      
-      
+      end if
+
       vc_ratio = vc_mks_aorsa / vc_mks_cql3d
-      
-      write(6, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"       
-      write(6, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV" 
-      
-      write(15, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"       
-      write(15, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV"       
-               
+
+      write(6, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"
+      write(6, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV"
+
+      write(15, *)"enorm_cql3d_kev = ", enorm_cql3d_kev, " keV"
+      write(15, *)"enorm_aorsa_kev = ", enorm_aorsa_kev, " keV"
+
 
       write(6, *)
       write(6, *) "u(i_u) ="
@@ -1372,7 +1373,7 @@
       write(6, *)
       write(6, *) "theta(i_theta, 5) = "
       write(6, 310) (theta(i_theta, i_psi), i_theta = 1, n_theta_(i_psi))
-      
+
 
       if (n_distribution .eq. 0)then
 
@@ -1382,24 +1383,24 @@
 !        -------------------------------------------------------------------
          amu = 1.0
          xmi =  xmih * amu
-      
+
          xn0 = 1.022e+19
          xnlim = 4.84e+18
-      
+
          xkt0 = 2.0e+03  * e
          xktlim = .285e+03  * e
-      
-         alphan = 1.1 
+
+         alphan = 1.1
          betan = 1.5
-             
+
          alphat = 1.9
          betat = 1.9
-      
+
 !        -----------------------------------------
 !        n and T profiles for isotropic Maxwellian
 !        -----------------------------------------
          do i_psi = 1, n_psi
-         
+
             shapen = 0.0
             shapet = 0.0
 
@@ -1408,21 +1409,21 @@
                   shapet  = 1.0 - rho_a(i_psi)**betat
             end if
 
-            xn(i_psi) = xnlim  + (xn0 - xnlim)   * shapen**alphan 
-            xkt(i_psi)= xktlim + (xkt0 - xktlim) * shapet**alphat 
+            xn(i_psi) = xnlim  + (xn0 - xnlim)   * shapen**alphan
+            xkt(i_psi)= xktlim + (xkt0 - xktlim) * shapet**alphat
             xkt_prt(i_psi) = xkt(i_psi) / e
-            
+
          end do
-         
+
 
          do i_psi = 1, n_psi
-         
+
             alpha = sqrt(2.0 * xkt(i_psi) / xmi)
 !           vc_mks = 3.5 * alpha
             u0 = vc_mks / alpha
             fnorm = xn(i_psi) * u0**3 / pi**1.5
-            
-            
+
+
             do  i_u = 1, n_u
                do i_theta = 1, n_theta_(i_psi)
                   f_cql(i_theta, i_u, i_psi) = exp(-u(i_u)**2 * u0**2) &
@@ -1469,13 +1470,13 @@
      &                                      - z_alpha * eta_alpha)
 
 
-        
+
          vmax = sqrt(2.0 * e0 / xmi_alpha)
          vc_mks = 1.1 * vmax
          alphae = sqrt(2.0 * xkte / xme)
          zeff = z1 / amu1 * eta1 + z2 / amu2 * eta2  &
      &            + z3 / amu3 * eta3 + z_alpha / amu_alpha * eta_alpha
-        
+
          ve3 = 3.0 * sqrt(pi) * xme/xmi_alpha * zeff * alphae**3
          ve = ve3**(1./3.)
          A = 3.0 / (4.0 * pi * alog(1.0 + vmax**3 / ve3))
@@ -1542,9 +1543,9 @@
 
       write(6, *)
       write(6, *) "f_cql_max = ", fmax
-      
-           
-      
+
+
+
 !      write(6, *)
 !      write(6, *) "temperature ="
 !      write(6, 310) (xkt_prt(i_psi), i_psi = 1, n_psi)
@@ -1565,7 +1566,7 @@
           end do
 
        end do
-       
+
 
 !     ----------------------
 !     calculate derivatives:
@@ -1598,31 +1599,29 @@
          end do
 
       end do
-       
-       
+
+
 !     ------------------------------
-!     interpolate onto AORSA u grid: 
-!     ------------------------------       
-       
+!     interpolate onto AORSA u grid:
+!     ------------------------------
+
       do i_psi = 1, n_psi
           do i_theta = 1, n_theta_(i_psi)
-       
-             do  i_u = 1, n_u             
+
+             do  i_u = 1, n_u
                 f1(i_u) = f_cql(i_theta, i_u, i_psi)
              end do
-                     
-             do  i_u = 1, n_u 
-                u_aorsa = u(i_u)             
-                u_cql = u_aorsa * vc_ratio           
-                ugiv = u_cql
-          
+
+             do  i_u = 1, n_u
+                ugiv = u(i_u) * vc_ratio
+
                 call intplt_1d(ugiv, fout, n_u, f1, n_u_dim, u)
                 f_aorsa(i_theta, i_u, i_psi) = fout * vc_ratio**3
              end do
-          
+
           end do
        end do
-              
+
 
 !     ----------------------------------------------
 !     Write data for plotting f_aorsa in u and theta
@@ -1635,12 +1634,12 @@
       write (238, 310) (u(i_u), i_u = 1, n_u)
       write (238, 311) (n_theta_(i_psi), i_psi = 1, n_psi)
       write (238, 310) ((theta(i_theta, i_psi), &
-     &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)     
-           
+     &          i_theta = 1, n_theta_(i_psi)), i_psi = 1, n_psi)
+
       write (238, 310) (((f_aorsa(i_theta, i_u, i_psi), &
      &     i_theta = 1, n_theta_(i_psi)), i_u = 1, n_u), i_psi = 1, n_psi)
-     
-           
+
+
 !     ----------------------------------------------
 !     interpolate onto METS grid: u_perp, u_parallel
 !     ----------------------------------------------
@@ -1660,14 +1659,14 @@
                dfdu_(i_u, i_theta) = dfdu_cql(i_theta, i_u, i_psi)
                dfdth_(i_u, i_theta) = dfdtheta_cql(i_theta, i_u, i_psi)
             end do
-         end do  
+         end do
 
 
          call mets_grid(nupar, nuper, UminPara, UmaxPara, UmaxPerp, &
      &                UPERP, UPARA, DFDUPER, DFDUPAR, f, fnorm, &
      &                u_, theta_, f_, dfdu_, dfdth_, n_u_dim, n_theta_dim,  &
      &                n_u, n_theta_(i_psi), vc_ratio)
- 
+
 
          do i_uperp = 1, NUPER
             do i_upara = 1, NUPAR
@@ -1717,13 +1716,13 @@
 !      write(6, *)
 !      write(6, *) "upara ="
 !      write(6, 310) (upara(i_upara), i_upara = 1, nupar)
-      
-      
+
+
 
       write(6, *)
       write(6, *) "density ="
       write(6, 310) (dens(i_psi), i_psi = 1, n_psi)
-      
+
 !      call exit(-1)
 
       write(6, *)
@@ -1741,9 +1740,9 @@
 !     Write data for AORSA2D in u_perp and u_parallel
 !     ------------------------------------------------
       rewind (50)
-      
+
       write (50, 309) nuper
-      write (50, 309) nupar      
+      write (50, 309) nupar
       write (50, 309) n_psi
 
       write (50, 3310) vc_mks_aorsa
@@ -1761,7 +1760,7 @@
 
       write (50, 3310) (((df_cql_uprl(i_uperp, i_upara, i_psi), &
      &  i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
-     
+
 
       rewind (50)
 
@@ -1795,20 +1794,20 @@
 !     &              UminPara,UmaxPara,      &
 !     &              df_cql_uprp, df_cql_uprl,  &
 !     &              UPERP, UPARA, DFDUPER, DFDUPAR)
-     
+
 !      do ni = 1, nuper
 !          do mi = 1, nupar
-!     
+!
 !             dfdth = upara(mi) * dfduper(ni, mi)  &
 !     &                           - uperp(ni) * dfdupar(ni, mi)
-!     
+!
 !            write(6,  1314)ni, mi, uperp(ni),  upara(mi), dfdth
 !            write(115, 1314)ni, mi, uperp(ni),  upara(mi), dfdth
-!                 
+!
 !         end do
 !      end do
-               
-! 1314  format(2i10, 1p,9e12.4)  
+
+! 1314  format(2i10, 1p,9e12.4)
 
 !     ------------------------------------------------
 !     Write data for plotting in u_perp and u_parallel
@@ -1822,24 +1821,24 @@
       write (238, 310) (upara(i_upara), i_upara = 1, nupar)
       write (238, 310) (((f_cql_cart(i_uperp, i_upara, i_psi), &
      &  i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
-     
+
       write(238, 310) (wperp_cql(i_psi, n_t), i_psi = 1, n_psi)
       write(238, 310) (wpar_cql(i_psi, n_t), i_psi = 1, n_psi)
-     
+
       close (238)
- 
- 
+
+
 !     ----------------------
 !     take log of f_cql_cart
 !     ----------------------
-      do i_psi = 1, n_psi      
+      do i_psi = 1, n_psi
          do i_uperp = 1, nuper
             do i_upara = 1, nupar
-               
+
                if(f_cql_cart(i_uperp, i_upara, i_psi) .le. 0.0) then
                   f_cql_cart(i_uperp, i_upara, i_psi) = -100.0
                end if
-               
+
                if(f_cql_cart(i_uperp, i_upara, i_psi) .gt. 0.0) then
                   f_cql_cart(i_uperp, i_upara, i_psi) =  &
      &                    log10(f_cql_cart(i_uperp, i_upara, i_psi))
@@ -1847,69 +1846,69 @@
 
             end do
          end do
-      end do 
-     
-      
+      end do
+
+
 !     ---------------
 !     expand rho grid
 !     ----------------
-      do i_psi = 1, n_psi      
-          rho_a(i_psi) = rho_a(i_psi) * 5.0      
-      end do 
- 
+      do i_psi = 1, n_psi
+          rho_a(i_psi) = rho_a(i_psi) * 5.0
+      end do
+
 !     ---------------------------------------
 !     Write f_cql_3D.vtk file "rectilinear_grid"
 !     ---------------------------------------
       number_points = nupar * nuper * n_psi
-      
+
       write(140, 2840)
  2840 format('# vtk DataFile Version 2.0')
- 
+
       write(140, 2845)
- 2845 format('Cql3d distribution function')      
-      
+ 2845 format('Cql3d distribution function')
+
       write(140, 2846)
- 2846 format('ASCII')       
-           
+ 2846 format('ASCII')
+
       write(140, 2847)
- 2847 format('DATASET RECTILINEAR_GRID')  
-      
+ 2847 format('DATASET RECTILINEAR_GRID')
+
       write(140, 2841)nupar, nuper, n_psi
  2841 format('DIMENSIONS', 3i8)
-           
+
       write(140, 2842) nupar
  2842 format('X_COORDINATES', i8, ' float')
-      write (140, 3411) (upara(i_upara), i_upara = 1, nupar) 
- 
+      write (140, 3411) (upara(i_upara), i_upara = 1, nupar)
+
       write(140, 2843) nuper
  2843 format('Y_COORDINATES', i8, ' float')
-      write (140, 3411) (uperp(i_uperp), i_uperp = 1, nuper) 
-      
+      write (140, 3411) (uperp(i_uperp), i_uperp = 1, nuper)
+
       write(140, 2851) n_psi
  2851 format('Z_COORDINATES', i8, ' float')
-      write (140, 3411) (rho_a(i_psi), i_psi = 1, n_psi)      
-      
+      write (140, 3411) (rho_a(i_psi), i_psi = 1, n_psi)
+
       write(140, 2844) number_points
- 2844 format('POINT_DATA', i10)      
-      
+ 2844 format('POINT_DATA', i10)
+
       write(140, 2848)
- 2848 format('SCALARS f_cql_cart float 1')       
-      
+ 2848 format('SCALARS f_cql_cart float 1')
+
       write(140, 2849)
- 2849 format('LOOKUP_TABLE default')        
-                  
+ 2849 format('LOOKUP_TABLE default')
+
       write (140, 3411) (((f_cql_cart(i_uperp, i_upara, i_psi), &
-     &   i_upara = 1, nupar), i_uperp = 1, nuper), i_psi = 1, n_psi) 
-     
-     
- 3410 format(1p,4e10.2)  
- 3411 format(6f12.4)     
-     
- 
-                 
+     &   i_upara = 1, nupar), i_uperp = 1, nuper), i_psi = 1, n_psi)
+
+
+ 3410 format(1p,4e10.2)
+ 3411 format(6f12.4)
+
+
+
 !     ----------------
 !     Write ahern file
-!     ----------------          
+!     ----------------
 !      write (143, 311) nuper
 !      write (143, 311) nupar
 !      write (143, 311) n_psi
@@ -1917,8 +1916,8 @@
 !      write (143, 310) (uperp(i_uperp), i_uperp = 1, nuper)
 !      write (143, 310) (upara(i_upara), i_upara = 1, nupar)
 !      write (143, 310) (rho_a(i_psi), i_psi = 1, n_psi)
-      
-      
+
+
 !      write (143, 310) (((f_cql_cart(i_uperp, i_upara, i_psi), &
 !     &  i_uperp = 1, nuper), i_upara = 1, nupar), i_psi = 1, n_psi)
 
@@ -2050,8 +2049,8 @@
   309 format(10i10)
 
   312 format(i10, 1p,6e12.4)
-  
-  
+
+
 ! 5000 continue
 
 
@@ -2068,11 +2067,11 @@
       deallocate( f_cql_cart )
       deallocate( df_cql_uprp )
       deallocate( df_cql_uprl )
-      
+
       deallocate( dfdu_cql )
       deallocate( dfdtheta_cql )
-      deallocate( f_aorsa )      
-      
+      deallocate( f_aorsa )
+
       close(50)
       close (140)
 
@@ -2085,49 +2084,48 @@
 !
 
 
-
-       subroutine mets_grid(nupar, nuper, UminPara, UmaxPara, UmaxPerp, &
-     &                       UPERP, UPARA, DFDUPER, DFDUPAR, f, fnorm, &
-     &                       u_, theta_, f_, dfdu_, dfdth_, n_u_dim, n_theta_dim,  &
+      subroutine mets_grid(nupar, nuper, UminPara, UmaxPara, UmaxPerp, &
+     &                        UPERP, UPARA, DFDUPER, DFDUPAR, f, fnorm,&
+     &            u_, theta_, f_, dfdu_, dfdth_, n_u_dim, n_theta_dim, &
      &                       n_u, n_theta, vc_ratio)
-       implicit none
+        implicit none
 
-       integer, intent(in) :: nupar, nuper
-       integer, intent(in) :: n_u_dim, n_theta_dim
-       real,    intent(in) :: u_(n_u_dim), theta_(n_theta_dim)
-       real,    intent(in) :: f_(n_u_dim, n_theta_dim)
-       real,    intent(in) :: dfdu_(n_u_dim, n_theta_dim)
-       real,    intent(in) :: dfdth_(n_u_dim, n_theta_dim)
-     
-       integer, intent(in) :: n_u, n_theta
+        integer, intent(in) :: nupar, nuper
+        integer, intent(in) :: n_u_dim, n_theta_dim
+        real,    intent(in) :: u_(n_u_dim), theta_(n_theta_dim)
+        real,    intent(in) :: f_(n_u_dim, n_theta_dim)
+        real,    intent(in) :: dfdu_(n_u_dim, n_theta_dim)
+        real,    intent(in) :: dfdth_(n_u_dim, n_theta_dim)
 
-       real, intent(out) :: UminPara, UmaxPara, UmaxPerp
-       real, intent(out) :: UPERP(NUPER)
-       real, intent(out) :: UPARA(NUPAR)
-       real, intent(out) :: DFDUPER(NUPER, NUPAR),  &
+        integer, intent(in) :: n_u, n_theta
+
+        real, intent(out) :: UminPara, UmaxPara, UmaxPerp
+        real, intent(out) :: UPERP(NUPER)
+        real, intent(out) :: UPARA(NUPAR)
+        real, intent(out) :: DFDUPER(NUPER, NUPAR),  &
      &                      DFDUPAR(NUPER, NUPAR)
-       real, intent(out) :: f(NUPER, NUPAR)
-       real :: dfdu(NUPER, NUPAR)
-       real :: dfdth(NUPER, NUPAR)
+        real, intent(out) :: f(NUPER, NUPAR)
+        real :: dfdu(NUPER, NUPAR)
+        real :: dfdth(NUPER, NUPAR)
 
-       real :: dfduprp, d2fduprp2
-       real :: dfduprl, d2fduprl2
+        real :: dfduprp, d2fduprp2
+        real :: dfduprl, d2fduprl2
 
-       real surf2
-       real :: zp(n_u_dim, n_theta_dim, 3)
-       real :: zpu(n_u_dim, n_theta_dim, 3)
-       real :: zpth(n_u_dim, n_theta_dim, 3)
+        real surf2
+        real :: zp(n_u_dim, n_theta_dim, 3)
+        real :: zpu(n_u_dim, n_theta_dim, 3)
+        real :: zpth(n_u_dim, n_theta_dim, 3)
 
-       real :: zx1(n_theta_dim), zxm(n_theta_dim)
-       real :: zy1(n_u_dim), zyn(n_u_dim)
-       real :: pi, fnorm, u, u2,u3, theta
-       real :: u2_cql3d, u2_aorsa
-       real :: ugiv, thegiv, costh, sinth, sigma
-       integer n, m, islpsw, islpsw1, ierr
-       real :: temp(2 *(n_u_dim + n_theta_dim) )
-       real :: zxy11, zxym1, zxy1n, zxymn
-       
-       real ::  vc_ratio
+        real :: zx1(n_theta_dim), zxm(n_theta_dim)
+        real :: zy1(n_u_dim), zyn(n_u_dim)
+        real :: pi, fnorm, u, u2,u3, theta
+        real :: u2_cql3d, u2_aorsa
+        real :: ugiv, thegiv, costh, sinth, sigma
+        integer n, m, islpsw, islpsw1, ierr
+        real :: temp(2 *(n_u_dim + n_theta_dim) )
+        real :: zxy11, zxym1, zxy1n, zxymn
+
+        real ::  vc_ratio
 
 !      ---------------------------------------------------
 !      sigma = 0.0 for tensor product cubic splines
@@ -2157,9 +2155,9 @@
        do n = 1, NUPER
           do m = 1, NUPAR
              u2_aorsa = UPERP(n)**2 + UPARA(m)**2
-             
+
              u2_cql3d = u2_aorsa * vc_ratio**2
-                     
+
              u2 = u2_cql3d
 
 
@@ -2211,8 +2209,8 @@
 
 !             dfdth(n, m) = surf2(ugiv, thegiv, n_u, n_theta, u_, theta_, dfdth_, &
 !     &             n_u_dim, zpth, sigma)
-    
-                                             
+
+
              f(n,m) = f(n,m) * vc_ratio**3
 
              DFDUPER(n, m) = 0.0
@@ -2371,17 +2369,17 @@
 !
 
       subroutine intplt_1d(rgiv, fout, nr, fin, nrmax, r)
-
+        !linear interpolation
       implicit none
 
       integer n, nr, nrmax, i, np1
       real fin(nrmax), r(nrmax)
       real zeta, b,  a, fout, rgiv
-      
+
       fout = 0.0
 
       if (rgiv .gt. r(nr))return
-         
+
       do i = 1, nr - 1
          if(rgiv .ge. r(i) .and. rgiv .lt. r(i+1)) n = i
       end do
@@ -2389,7 +2387,6 @@
 
       if (n .gt. nr) then
          WRITE (6,*) "n .gt. nr", n
-         !         call exit(-1)
          stop 1
       end if
 
@@ -2400,12 +2397,12 @@
 
       a = fin(n)
       b = fin(np1) - fin(n)
-         
-      fout = a + b * zeta 
+
+      fout = a + b * zeta
 
       return
       end subroutine intplt_1d
-      
+
 !
 !***********************************************************************
 !
@@ -2581,10 +2578,4 @@
  2201 format(2i5,1p,8e12.4)
       end
 !
-!***************************************************************************
-!
-
-
-
-
-
+!**********************************************************************!

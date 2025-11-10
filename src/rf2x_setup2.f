@@ -824,27 +824,28 @@ c
 c
 c***************************************************************************
 c
-      subroutine intplt_to_cql3d(xgiv, ygiv, fout, nx, ny, nz, f, 
+      subroutine intplt_to_cql3d(x, y, fout, nx, ny, nz, f, 
      &   nxmax, nymax, nzmax, xa, ya, k)
-
+      ! 2D linear interpolation
       implicit none
 
-      integer nx, ny, nz, nxmax, nymax, n, m, nzmax, k
-      real x, y, xgiv, ygiv, zeta, eta, dx, dy, xmax, ymax, xmin, ymin
-      real f(nxmax, nymax, nzmax), fout, a, b, c, d
-      real xa(nxmax), ya(nymax)
-      
-      x = xgiv
-      y = ygiv
-      fout = 0.0      
+      integer, intent(in)::  nx, ny, nz, nxmax, nymax, nzmax, k
+      real, intent(in):: x, y, f(nxmax, nymax, nzmax)
+      real, intent(in):: xa(nxmax), ya(nymax)
+      real, intent(out):: fout
 
+      integer:: n, m
+      real:: xgiv, ygiv, zeta, eta, dx, dy, xmax, ymax, xmin, ymin
+      real:: a, b, c, d
+      
+      fout = 0.0      !default return
+      a = 0. ; b=0. ; c=0. ; d=0.
       xmin = xa(1)
       xmax = xa(nx)      
       ymin = ya(1)
       ymax = ya(ny)
       
-      if(xgiv .lt. xmax .and. xgiv .gt. xmin .and. 
-     &   ygiv .lt. ymax .and. ygiv .gt. ymin) then
+      if(x <= xmax .and. x >= xmin .and. y <= ymax .and. y >= ymin) then
       
          dx = (xmax - xmin) / (nx - 1)
          dy = (ymax - ymin) / (ny - 1)
@@ -856,10 +857,11 @@ c
          eta  = (y - (ymin + (m - 1) * dy)) / dy
 
          a = f(n, m, k)
-         b = f(n+1 ,m, k) - f(n, m, k)
-         c = f(n, m+1, k) - f(n, m, k)
-         d = f(n+1, m+1, k) + f(n, m, k) - f(n+1, m, k) - f(n, m+1, k)
-
+         if (n<nx) b = f(n+1 ,m, k) - f(n, m, k)
+         if (m<ny) c = f(n, m+1, k) - f(n, m, k)
+         if (n<nx .and. m<ny) then
+            d = f(n+1, m+1, k) + f(n, m, k) -f(n+1, m, k) - f(n, m+1, k)
+         end if
          fout = a + b * zeta + c * eta + d * zeta * eta
          
       end if

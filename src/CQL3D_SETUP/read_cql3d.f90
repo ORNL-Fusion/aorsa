@@ -9,27 +9,25 @@
        integer :: n_psi        ! Number of flux surfaces
        integer :: n_t          ! Number of cql3d time steps
 
-       integer, allocatable :: n_theta_(:) ! number of pitch angles for flux surface
-       real(kind=real_kind), allocatable :: u(:) ! normalized velocity
-       real(kind=real_kind), allocatable :: theta(:,:) ! pitch angles theta(i_theta, i_psi)
-       real(kind=real_kind), allocatable :: rho_a(:)    !normalized small radius
-       real(kind=real_kind), allocatable :: f_CQL(:,:,:) ! f(i_theta, i_u, i_psi)
-       real(kind=real_kind), allocatable :: f_cql_2d(:,:) ! f(i_u, i_theta)
+       integer,              allocatable :: n_theta_(:)    ! number of pitch angles for flux surface
+       real(kind=real_kind), allocatable :: u(:)           ! normalized velocity
+       real(kind=real_kind), allocatable :: theta(:,:)     ! pitch angles theta(i_theta, i_psi)
+       real(kind=real_kind), allocatable :: rho_a(:)       ! normalized small radius
+       real(kind=real_kind), allocatable :: f_CQL(:,:,:)   ! f(i_theta, i_u, i_psi)
+       real(kind=real_kind), allocatable :: f_cql_2d(:,:)  ! f(i_u, i_theta)
 
        real(kind=real_kind), allocatable :: wperp_cql(:,:) ! wperp(i_psi, n_t)
        real(kind=real_kind), allocatable :: wpar_cql(:,:)  ! wpar(i_psi, n_t)
 
-
        real(kind=real_kind) :: vc
-
 
 
        CONTAINS
 
        subroutine netcdfr3d(netcdfnm)
 
-!c-----Reads a
-!c distribution and the mesh from a netCDF file created
+!c---- Reads a
+!c     distribution and the mesh from a netCDF file created
 !c     with variables in the primary CQL3D output netcdf file.
 
          use netcdf
@@ -45,7 +43,7 @@
 !c --- include file for netCDF declarations
 !c --- (obtained from NetCDF distribution)
 
-!c-----Need to set the dimensions through a parameter statement
+!c---- Need to set the dimensions through a parameter statement
 !c       [dynamic dimensioning could get around this limitation].
 !c       The user can use ncdump [associated with the netCDF distributn]
 !c       to determine parameters and definitions of data in the
@@ -122,7 +120,7 @@
          istatus=nf90_open(TRIM(netcdfnm),NF90_NOWRITE,ncid)
          write(*,*)'after ncopn ncid=',ncid,'istatus',istatus
 
-!c.......................................................................
+!c......................................................................
 !c     read in dimension IDs and sizes
 
          write(*,*)'before ncdid xdim'
@@ -144,14 +142,18 @@
          write(*,*)'after inq_dimid kdim=',kdim,'istatus',istatus
 
          istatus = nf90_inq_dimid(ncid,'gen_species_dim',gkdim)
-         write(*,*)'proc_cql3d_op: after nf90_inq_dimid ngen_id = ',gkdim,'istatus = ',istatus
+         write(*,*)'proc_cql3d_op: after nf90_inq_dimid ngen_id = ',&
+              &gkdim,'istatus = ',istatus
 
          istatus = nf90_inq_dimid(ncid,'tdim',nt_id)
-         write(*,*)'proc_cql3d_op: after nf90_inq_dimid nt_id = ',nt_id,'istatus = ',istatus
+         write(*,*)'proc_cql3d_op: after nf90_inq_dimid nt_id = ',&
+              &nt_id,'istatus = ',istatus
 
          istatus = nf90_inquire_dimension(ncid, nt_id, len = nt)
        !call ncdinq(ncid, nt_id,'tdim', nt, istatus)
-         write(*,*)'proc_cql3d_op: after inquire dimenstion, # of t steps = ',nt, ' istatus=',istatus
+         write(*,*)&
+         & 'proc_cql3d_op: after inquire dimenstion, # of t steps = ',&
+         &     nt, ' istatus=',istatus
 
 !c --- inquire about dimension sizes ---
 !c     ncdinq(netCDF_id, dimension_id_from_ncdid, returned_dim_name,
@@ -212,19 +214,16 @@
   311  format(1p,6i6)
 !c-----normalized momentum x (momentum/mass/vnorm) variables
 
-!c     vnorm - character velocity (momentum-per-mass)[cms/sec]
+!c     vnorm - characteristic velocity (momentum-per-mass)[cms/sec]
        !       vid = ncvid(ncid,'vnorm',istatus)
        !       call ncvgt(ncid,vid,1,1,vnorm,istatus)
          istatus = nf90_inq_varid(ncid,'vnorm', vid)
          istatus = nf90_get_var(ncid, vid, vnorm)
-         write(*,*)'after ncvgp vnorm=',vnorm
 
        !       vid = ncvid(ncid,'x',istatus)
        ! call ncvgt(ncid,vid,1,jx,x,istatus)
          istatus = nf90_inq_varid(ncid, 'x', vid)
          istatus = nf90_get_var(ncid, vid, x) !, start=1, count=jx)
-         write(*,*) 'x status',istatus
-         write(*,310)(x(j),j=1,jx)
 
 !c      vid = ncvid(ncid,'dx',istatus)
 !c      call ncvgt(ncid,vid,1,jx,dx,istatus)
@@ -239,17 +238,16 @@
 !       call ncvgt(ncid,vid,1,lrz,iy_,istatus)
          istatus = nf90_inq_varid(ncid, 'iy_', vid)
          istatus = nf90_get_var(ncid, vid, iy_)!, 1, lrz)
+#ifdef DEBUG         
          write(*,*)'iy_',istatus
          write(*,311)(iy_(ll),ll=1,lrz)
-
+#endif
          count_y(1)=iy
          count_y(2)=lrz
 !       vid = ncvid(ncid,'y',istatus)
 !       call ncvgt(ncid,vid,start,count_y,y,istatus)
          istatus = nf90_inq_varid(ncid, 'y', vid)
          istatus = nf90_get_var(ncid, vid, y)
-         write(*,*)'y',istatus
-         write(*,310)(y(1,ll),ll=1,lrz)
          
 !c      do ll=1,lrza
 !c         write(*,*)'ll=',ll,'iy_(ll)=',iy_(ll)

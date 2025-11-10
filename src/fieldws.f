@@ -396,21 +396,6 @@ c--set default values of input data:
       numb = 20
       ycut = -0.0
 
-      i_psi1 = 2
-      i_psi2 = 10
-      i_psi3 = 20
-      i_psi4 = 30
-      i_psi5 = 40
-      i_psi6 = 50
-
-      i_psi_array(1) = 2
-      i_psi_array(2) = 10
-      i_psi_array(3) = 20
-      i_psi_array(4) = 30
-      i_psi_array(5) = 40
-      i_psi_array(6) = 50
-
-
       if(yminz .eq. -99.99)yminz = -ymaxz
 
 
@@ -435,7 +420,7 @@ c--set default values of input data:
 
       open(unit=51,file='rho',status='unknown',form='formatted')
 
-      open(unit=66,file='bharvey',status='unknown',form='formatted')
+      open(unit=66,file='bharvey',status='unknown',form='formatted') !also aorsa_flds_xyz.dat in mcgo for nphi=1
       open(unit=57,file='swain',status='unknown',form='formatted')
       open(unit=62,file='murakami',status='unknown', form='formatted')
       open(unit=72,file='bertelli',status='unknown', form='formatted')
@@ -3670,7 +3655,7 @@ c      end do
          read (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
 
-         read (42, 3310,iostat=ierr,iomsg=errio) bqlavg_i1
+         read (42, 3310,iostat=ierr,iomsg=errio) bqlavg_i1 !JCW test
 !     &     (((
 !     &     bqlavg_i1(i_uperp, i_upara, n),
 !     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
@@ -3804,7 +3789,7 @@ c      end do
          end if
 
         n_psi = size(bqlavg_i1,3)        
-        i_psi_array = (/ (i, i=2,n_psi,nint(n_psi/6.)) /)
+        i_psi_array = (/ (i, i=2,n_psi,int(n_psi/6.)) /)
         i_psi1 = i_psi_array(1)
         i_psi2 = i_psi_array(2)
         i_psi3 = i_psi_array(3)
@@ -3887,12 +3872,12 @@ c      end do
          write(6, *)"i_psi6 = ", i_psi6, "   rho6 = ", rhon(i_psi6)
 
 
-         write(15, *)"i_psi1 = ", i_psi1, "   rho1 = ", rhon(i_psi1)
-         write(15, *)"i_psi2 = ", i_psi2, "   rho2 = ", rhon(i_psi2)
-         write(15, *)"i_psi3 = ", i_psi3, "   rho3 = ", rhon(i_psi3)
-         write(15, *)"i_psi4 = ", i_psi4, "   rho4 = ", rhon(i_psi4)
-         write(15, *)"i_psi5 = ", i_psi5, "   rho5 = ", rhon(i_psi5)
-         write(15, *)"i_psi6 = ", i_psi6, "   rho6 = ", rhon(i_psi6)
+         write(15,*)"i_psi1 = ", i_psi1, "   rho1 = ", rhon(i_psi1)
+         write(15,*)"i_psi2 = ", i_psi2, "   rho2 = ", rhon(i_psi2)
+         write(15,*)"i_psi3 = ", i_psi3, "   rho3 = ", rhon(i_psi3)
+         write(15,*)"i_psi4 = ", i_psi4, "   rho4 = ", rhon(i_psi4)
+         write(15,*)"i_psi5 = ", i_psi5, "   rho5 = ", rhon(i_psi5)
+         write(15,*)"i_psi6 = ", i_psi6, "   rho6 = ", rhon(i_psi6)
 
          numb = 20
 
@@ -3904,7 +3889,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi1(u_{perp}, u_{para})'
+         title = 'f_{cql}(ipsi=1, u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3916,7 +3901,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi2(u_{perp}, u_{para})'
+         title = 'f_{cql}(ipsi=2, u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3928,7 +3913,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi3(u_{perp}, u_{para})'
+         title = 'f_{cql}(ipsi=3, u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3940,7 +3925,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi4(u_{perp}, u_{para})'
+         title = 'f_{cql}(ipsi=4, u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3952,7 +3937,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi5(u_{perp}, u_{para})'
+         title = 'f_{cql}(ipsi=5, u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3965,7 +3950,7 @@ c      end do
             end do
          end do
 
-         title = 'f_cql_psi6(u_{perp}, u_{para})'
+         title = 'f_{cql}(ipsi=6, u_{perp}, u_{para})'
          call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
@@ -3983,7 +3968,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi1(u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=1 , u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4020,7 +4005,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi2(u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=2, u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4043,7 +4028,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi3(u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=3, u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4065,7 +4050,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi4(u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=4, u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4088,7 +4073,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi5(u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=5,u_{perp},u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4109,7 +4094,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg_psi6(u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=6, u_{perp}, u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4128,7 +4113,8 @@ c      end do
 !        --------------------------------------
 !        2D plots of cqlavg(u_perp, u_{para})
 !        --------------------------------------
-
+!     JCW make into loop, not arbitrary scale factor
+         
          i_psi = i_psi1
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
@@ -4137,7 +4123,8 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi1(u_{perp}, u_{para})'
+         write(title, '("cqlavg(psi=", F8.3, ")")') rhon(i_psi)
+         !title = 'cqlavg (ipsi=1, u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4174,7 +4161,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi2(u_{perp}, u_{para})'
+         title = 'cqlavg(ipsi=2, u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4187,8 +4174,6 @@ c      end do
 
 
 
-
-
          i_psi = i_psi3
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
@@ -4197,7 +4182,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi3(u_{perp}, u_{para})'
+         title = 'cqlavg(ipsi=3}(u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4219,7 +4204,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi4(u_{perp}, u_{para})'
+         title = 'cqlavg(ipsi=4, u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4242,7 +4227,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi5(u_{perp}, u_{para})'
+         title = 'cqlavg(ipsi=5, u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4263,7 +4248,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg_psi6(u_{perp}, u_{para})'
+         title = 'cqlavg(ipsi=6, u_{perp}, u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4419,7 +4404,7 @@ c      end do
          vperp_mks = sqrt(2.0 * E_eV * q / xmi)
          vperp_cgs = vperp_mks * 100.
          uperp_1kev = vperp_cgs / vc_cgs
-         duperp = uperp(3) - uperp(2)
+         duperp = uperp(3) - uperp(2) !JCW assume uniform spacing
          i_uperp = int(uperp_1kev / duperp) + 2
 
          uperp_1kev = (i_uperp - 1) * duperp
@@ -7611,12 +7596,12 @@ c
       tr(6) = dy
 
 
-      call a1mnmx(r, nrmax, nr, xmin, xmax)
-      call a1mnmx(theta, nthmax, nth, ymin, ymax)
-!      xmin = MINVAL(r)
-!      xmax = MAXVAL(r)
-!      ymin = MINVAL(theta)
-!      ymax = MAXVAL(theta)
+!      call a1mnmx(r, nrmax, nr, xmin, xmax)
+!      call a1mnmx(theta, nthmax, nth, ymin, ymax)
+      xmin = MINVAL(r(1:nr))
+      xmax = MAXVAL(r(1:nr))
+      ymin = MINVAL(theta(1:nth))
+      ymax = MAXVAL(theta(1:nth))
 
 c--set up contour levels
 

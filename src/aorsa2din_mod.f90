@@ -255,7 +255,7 @@
       logical :: curved_ant = .true.    !-----if (curved_ant .eq. .true.) antenna follows flux surface (default)                                 
                                         !-----if (curved_ant .eq. .false.) antenna is vertical
                                           
-      integer :: norm = 3               !-----if (norm .eq. 1) normalize to jdote (default)   
+      integer :: norm = 1               !-----if (norm .eq. 1) normalize to jdote (default)   
                                         !-----if (norm .eq. 2) normalize to wdot 
                                         !-----if (norm .eq. 3) normalize to wdot_ql
                                           

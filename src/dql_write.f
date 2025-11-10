@@ -1,5 +1,5 @@
 
-      subroutine Dql_write_nc(FILE_txt, FILE_nc)
+      subroutine Dql_write_nc(FILE_txt) !, FILE_nc)
       
 C     This program writes the four quasilinear diffusion coefficients 
 C     calculated by AORSA.  The companion program (dql_read.f) 
@@ -7,11 +7,10 @@ C     reads the netCDF data file created by this program.
       
       use netcdf
       implicit none
-!     include 'netcdf.inc'
 
 C     This is the name of the data file we will create.
-      character(*):: FILE_nc
-      character(*):: FILE_txt
+      character(LEN=*), INTENT(IN)   :: FILE_txt
+      character(LEN=len(FILE_txt)+3) :: FILE_nc
 
       integer ncid
 
@@ -110,6 +109,10 @@ C     Error handling.
                                  
 C     Create test data by reading quasilinear diffusion coefficients 
 c     from the text file FILE_txt
+      FILE_nc=TRIM(FILE_txt)//".nc"
+#ifdef DEBUG
+      write(*,*) 'dql_write', FILE_txt, FILE_nc
+#endif
 
       open(unit=42, file = FILE_txt, status='unknown', form='formatted')
       read (42, 309) nuper
@@ -158,7 +161,7 @@ c     from the text file FILE_txt
        
              
 
-C     Create the netcdf file. 
+C     Create the netcdf file.
       retval = nf90_create(FILE_nc, nf90_clobber, ncid)
       if (retval .ne. nf90_noerr) call handle_err(retval)
 

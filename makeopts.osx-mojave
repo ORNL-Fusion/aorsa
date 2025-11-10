@@ -1,6 +1,6 @@
 include compileropts.gnu
 
-FC = mpif90 -O2 -cpp #-g  -Og -Wall -Wextra  -ffpe-trap=zero -fcheck=all -fbacktrace 
+FC = mpif90 -cpp -O2 -Wall -Wextra  -ffpe-trap=zero -fcheck=all -fbacktrace 
 WARNING_FLAGS+=-fallow-argument-mismatch
 NETCDF_DIR := $(shell brew --prefix netcdf)
 NETCDFF_DIR := $(shell brew --prefix netcdf-fortran)

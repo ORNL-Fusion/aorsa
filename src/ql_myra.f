@@ -157,7 +157,7 @@ c
       real, dimension(:,:,:), allocatable :: fqlvol
       real, dimension(:,:), allocatable :: fqlvol2d
 
-      real :: W, ENORM, ZSPEC, ASPEC, BMAG
+      real :: W, ENORM, ZSPEC, ASPEC, BMAG, qlcoeff
       real :: UminPara,UmaxPara
       real :: UminPara_cql,UmaxPara_cql
       real :: df_cql_uprp(NUPER, NUPAR, n_psi_dim)
@@ -508,19 +508,11 @@ c     &                             - uperp(ni) * dfdupar(ni, mi)
                fql = 0.0
 
                if(mi.ge.mi_min .and. mi.le.mi_max)then
-
-                  bql = 1.0 / (8. * emax * dupara)
-     &                  * eps0 * omgp2(i,j) / omgrf * real(b_sum(mi))
-
-                  cql = 1.0 / (8. * emax * dupara)
-     &                  * eps0 * omgp2(i,j) / omgrf * real(c_sum(mi))
-
-                  eql = 1.0 / (8. * emax * dupara)
-     &                  * eps0 * omgp2(i,j) / omgrf * real(e_sum(mi))
-
-                  fql = 1.0 / (8. * emax * dupara)
-     &                  * eps0 * omgp2(i,j) / omgrf * real(f_sum(mi))
-
+                  qlcoeff =1.0/(8.*emax*dupara)* eps0*omgp2(i,j)/omgrf
+                  bql = qlcoeff * real(b_sum(mi))
+                  cql = qlcoeff * real(c_sum(mi))
+                  eql = qlcoeff * real(e_sum(mi))
+                  fql = qlcoeff * real(f_sum(mi))
 
 
 !                  if(bql .ne. 0.0)count(myid, 1) = count(myid, 1) + 1.0

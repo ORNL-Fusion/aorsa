@@ -1195,7 +1195,7 @@ c     &         itable,jtable,ntable,mtable
      &                               status='unknown', form='formatted')
 
          open(unit=15, file='out15', status='unknown', form='formatted')
-         open(unit=166,file='bharvey_3d',status='unknown',
+         open(unit=166,file='bharvey_3d',status='unknown', !also aorsa_flds_xyz.dat in mcgo for nphi>1
      &                                                 form='formatted')
          if(nphi_sum_only .neqv. .true.)
      &      open(unit=34, file='fpm',status='unknown', form='formatted')
@@ -2658,7 +2658,7 @@ c               gradprlb(i,j) = bmod(i,j) / capr(i)
 
 
          if (ndisti1 .eq. 1) then
-
+            !read CQL nc file and write text file with f_cart
             if(myid==0) call cql3d_setup1(netcdf_file1,nuper,nupar,
      &                                xmi1, enorm_factor, vc1_mks_cql3d)
             vc1_cgs_cql3d = vc1_mks_cql3d * 100.
@@ -2751,7 +2751,7 @@ c               gradprlb(i,j) = bmod(i,j) / capr(i)
 
             WRITE (6,*)
             WRITE (6,*) "vce_mks = ", vce_mks
-            WRITE (6,*) "vc1_mks = ", vc1_mks
+            WRITE (6,*) "vc1_mks = ", vc1_mks, vc1_mks_cql3d
             WRITE (6,*) "vc2_mks = ", vc2_mks
             WRITE (6,*) "vc3_mks = ", vc3_mks
             WRITE (6,*) "vc4_mks = ", vc4_mks
@@ -9323,16 +9323,17 @@ c                 c_ehst = 1.0
 *     Interpolate quasilinear coefficients onto the CQL3D grid
 *     --------------------------------------------------------
 
-      if(enorm_factor >= 100.*epsilon(eta1)) then
-
-          if(eta1 >= 100.*epsilon(eta1) .and. ndisti1 .eq. 1)then
+      if(enorm_factor >= -100.*epsilon(1.0) .and. eqtype/='mirror') then
+!     JCW disable, we want to output on aorsa grid now for better resolution, cql will properly interpolate
+         !Have to interpolate if enorm_factor is used
+         if(eta1 >= 100.*epsilon(eta1) .and. ndisti1 .eq. 1)then
 
             vperp = uperp * vc1_mks
             vpara = upara * vc1_mks
 
             do n = 1, nnoderho
-               do i_uperp = 1, nuper
-                  do i_upara = 1, nupar
+               do i_upara = 1, nupar
+                  do i_uperp = 1, nuper
                      vperp_in = uperp(i_uperp) * vc1_mks_cql3d
                      vpara_in = upara(i_upara) * vc1_mks_cql3d
 
@@ -9450,7 +9451,7 @@ c                 c_ehst = 1.0
             write (40, 3310) xme
 
             close (40)
-            call dql_write_nc('out_cql3d.coefe','out_cql3d.coefe.nc')
+            call dql_write_nc('out_cql3d.coefe') !,'out_cql3d.coefe.nc')
 
          end if
 
@@ -9463,7 +9464,7 @@ c                 c_ehst = 1.0
             write (41, 309) nupar
             write (41, 309) nnoderho
 
-            write (41, 3310) vc1_cgs_cql3d
+            write (41, 3310) vc1_cgs  !jcw account for possible enorm_scaling _cql3d
             write (41, 3310) UminPara, UmaxPara
 
             write (41, 3310) (rhon(n), n = 1, nnoderho)
@@ -9486,7 +9487,7 @@ c                 c_ehst = 1.0
             write (41, 3310) xmi1
 
             close (41)
-            call dql_write_nc('out_cql3d.coef1','out_cql3d.coef1.nc')
+            call dql_write_nc('out_cql3d.coef1') !,'out_cql3d.coef1.nc')
 
          end if
 
@@ -9522,7 +9523,7 @@ c                 c_ehst = 1.0
             write (42, 3310) xmi2
 
             close (42)
-            call dql_write_nc('out_cql3d.coef2','out_cql3d.coef2.nc')
+            call dql_write_nc('out_cql3d.coef2') !,'out_cql3d.coef2.nc')
 
          end if
 
@@ -9557,7 +9558,7 @@ c                 c_ehst = 1.0
             write (43, 3310) xmi3
 
             close (43)
-            call dql_write_nc('out_cql3d.coef3','out_cql3d.coef3.nc')
+            call dql_write_nc('out_cql3d.coef3') !,'out_cql3d.coef3.nc')
 
          end if
 
@@ -9593,7 +9594,7 @@ c                 c_ehst = 1.0
             write (44, 3310) xmi4
 
             close (44)
-            call dql_write_nc('out_cql3d.coef4','out_cql3d.coef4.nc')
+            call dql_write_nc('out_cql3d.coef4') !,'out_cql3d.coef4.nc')
 
 
          end if

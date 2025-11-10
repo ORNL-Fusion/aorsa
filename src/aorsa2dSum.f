@@ -1989,7 +1989,7 @@ c     .   wdot5sum,  wdot6sum)
          write (41, 3310) xmi1
 
          close (41)
-         call dql_write_nc('out_cql3d.coef1','out_cql3d.coef1.nc')
+         call dql_write_nc('out_cql3d.coef1') !,'out_cql3d.coef1.nc')
 
       end if
 
