@@ -82,7 +82,7 @@
       real:: theta_(n_theta_max, n_psi_max)
 
       integer:: n_theta, n_u, n_psi
-      integer:: i_theta, i_u
+      integer:: i_theta, i_u, ai_theta(10)
       integer:: i_theta1, i_theta2, i_theta3, i_theta4,
      &     i_theta5, i_theta6, i_theta7
       integer, parameter :: r15 = selected_real_kind(15)
@@ -3765,31 +3765,32 @@ c      end do
 
 
          if (ndisti1 == 1) then
-         title= 'Wperp1 and Wpar1 (keV)'
-         titll= 'W (keV)'
-         titlr='       '
-         titlb = 'rho'
-         write(*,*) 'Wperp',
-     &      rhon_half(1:nnoderho_half),
-     &      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax
-         call ezplot2q(title, titll, titlr, titlb, 
-     &      rhon_half(1:nnoderho_half),
-     &      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax)
+            title= 'Wperp1 and Wpar1 (keV)'
+            titll= 'W (keV)'
+            titlr='       '
+            titlb = 'rho'
+            write(*,*) 'Wperp',
+     &           rhon_half(1:nnoderho_half),
+     &           wperp1_cql, wpar1_cql, nnoderho_half, nrhomax
+            call ezplot2q(title, titll, titlr, titlb, 
+     &           rhon_half(1:nnoderho_half),
+     &           wperp1_cql, wpar1_cql, nnoderho_half, nrhomax)
          end if
 
 
          if (ndisti2 == 1) then
-         title= 'Wperp2 and Wpar2 (keV)'
-         titll= 'W (keV)'
-         titlr='       '
-         titlb = 'rho'
+            title= 'Wperp2 and Wpar2 (keV)'
+            titll= 'W (keV)'
+            titlr='       '
+            titlb = 'rho'
 
-         call ezplot2q(title, titll, titlr, titlb, rhon_half,
-     &      wperp2_cql, wpar2_cql, nnoderho_half, nrhomax)
+            call ezplot2q(title, titll, titlr, titlb, rhon_half,
+     &           wperp2_cql, wpar2_cql, nnoderho_half, nrhomax)
          end if
 
-        n_psi = size(bqlavg_i1,3)        
-        i_psi_array = (/ (i, i=2,n_psi,int(n_psi/6.)) /)
+        n_psi = size(f_cql_cart,3)        
+        i_psi_array = (/ ( min(i,n_psi), i=1,n_psi,int(n_psi/6.) ) /)
+        write(*,*) 'i_psi_array',n_psi,i_psi_array
         i_psi1 = i_psi_array(1)
         i_psi2 = i_psi_array(2)
         i_psi3 = i_psi_array(3)
@@ -3804,16 +3805,15 @@ c      end do
         titx = 'u'
 
         do i_psi_index = 1, 6
-
-           if(i_psi_index==1)title = 'log f_{psi1}(u, theta = const)'
-           if(i_psi_index==2)title = 'log f_{psi2}(u, theta = const)'
-           if(i_psi_index==3)title = 'log f_{psi3}(u, theta = const)'
-           if(i_psi_index==4)title = 'log f_{psi4}(u, theta = const)'
-           if(i_psi_index==5)title = 'log f_{psi5}(u, theta = const)'
-           if(i_psi_index==6)title = 'log f_{psi6}(u, theta = const)'
+ 
+          write(title,'("log f_{psi",I1, "}(u,th=const)" )')i_psi_index
 
            i_psi = i_psi_array(i_psi_index)
-
+           ai_theta =
+     &          (/
+     &         (i, i=1,n_theta_(i_psi), nint(1./6.*n_theta_(i_psi)-1))
+     &           /)
+           write(*,*) 'i_psi,ai_theta',i_psi,n_theta_(i_psi),ai_theta
            i_theta1 = 1
            i_theta2 = nint(1./6. * n_theta_(i_psi))
            i_theta3 = nint(2./6. * n_theta_(i_psi))
@@ -3889,8 +3889,8 @@ c      end do
             end do
          end do
 
-         title = 'f_{cql}(ipsi=1, u_{perp}, u_{para})'
-         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
+         title = 'f_{cql}(ipsi=1)'
+         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 25,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
          i_psi = i_psi2
@@ -3901,8 +3901,8 @@ c      end do
             end do
          end do
 
-         title = 'f_{cql}(ipsi=2, u_{perp}, u_{para})'
-         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
+         title = 'f_{cql}(ipsi=2)'
+         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 25,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
          i_psi = i_psi3
@@ -3913,8 +3913,8 @@ c      end do
             end do
          end do
 
-         title = 'f_{cql}(ipsi=3, u_{perp}, u_{para})'
-         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
+         title = 'f_{cql}(ipsi=3)'
+         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 25,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
          i_psi = i_psi4
@@ -3925,8 +3925,8 @@ c      end do
             end do
          end do
 
-         title = 'f_{cql}(ipsi=4, u_{perp}, u_{para})'
-         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
+         title = 'f_{cql}(ipsi=4)'
+         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 25,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
          i_psi = i_psi5
@@ -3937,8 +3937,8 @@ c      end do
             end do
          end do
 
-         title = 'f_{cql}(ipsi=5, u_{perp}, u_{para})'
-         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
+         title = 'f_{cql}(ipsi=5)'
+         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 25,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
 
@@ -3950,8 +3950,8 @@ c      end do
             end do
          end do
 
-         title = 'f_{cql}(ipsi=6, u_{perp}, u_{para})'
-         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 21,
+         title = 'f_{cql}(ipsi=6)'
+         call ezconcx(upara, uperp, f_cql_cart_2d, ff, nupar, nuper, 25,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
 
 
@@ -3968,7 +3968,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg(ipsi=1 , u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=1,u_{perp},u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -3997,7 +3997,7 @@ c      end do
 
 
 
-         i_psi = i_psi2
+         i_psi = i_psi2 !JCW bqlavg may have diff psi size than f
          do  i_upara = 1, nupar
             do i_uperp = 1, nuper
                bqlavg_i1_2d(i_upara, i_uperp) =
@@ -4005,7 +4005,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg(ipsi=2, u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=2,u_{perp},u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4028,7 +4028,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg(ipsi=3, u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=3,u_{perp},u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4050,7 +4050,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg(ipsi=4, u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=4,u_{perp},u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4074,7 +4074,7 @@ c      end do
          end do
 
          title = 'bqlavg(ipsi=5,u_{perp},u_{para})'
-         call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
+         call ezconc(upara,uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
          write(142, 4855)
@@ -4094,7 +4094,7 @@ c      end do
             end do
          end do
 
-         title = 'bqlavg(ipsi=6, u_{perp}, u_{para})'
+         title = 'bqlavg(ipsi=6,u_{perp},u_{para})'
          call ezconc(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4123,8 +4123,8 @@ c      end do
             end do
          end do
 
-         write(title, '("cqlavg(psi=", F8.3, ")")') rhon(i_psi)
-         !title = 'cqlavg (ipsi=1, u_{perp}, u_{para})'
+         write(title, '("cqlavg(psi=", F6.3, ")")') rhon(i_psi)
+         !title = 'cqlavg (ipsi=1,u_{perp},u_{para})'
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4161,7 +4161,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg(ipsi=2, u_{perp}, u_{para})'
+         write(title, '("cqlavg(psi=", F6.3, ")")') rhon(i_psi)
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4182,7 +4182,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg(ipsi=3}(u_{perp}, u_{para})'
+         write(title, '("cqlavg(psi=", F6.3, ")")') rhon(i_psi)
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4204,7 +4204,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg(ipsi=4, u_{perp}, u_{para})'
+         write(title, '("cqlavg(psi=", F6.3, ")")') rhon(i_psi)
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4227,7 +4227,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg(ipsi=5, u_{perp}, u_{para})'
+         write(title, '("cqlavg(psi=", F6.3, ")")') rhon(i_psi)
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4248,7 +4248,7 @@ c      end do
             end do
          end do
 
-         title = 'cqlavg(ipsi=6, u_{perp}, u_{para})'
+         write(title, '("cqlavg(psi=", F6.3, ")")') rhon(i_psi)
          call ezconc(upara, uperp, cqlavg_i1_2d, ff, nupar, nuper, numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag,1.0)
 
@@ -4309,7 +4309,6 @@ c      end do
 
 
 
-
          i_psi = i_psi3
          do  i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
@@ -4325,7 +4324,6 @@ c      end do
 
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper,numb,
      &      NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
-
 
 
 
@@ -4362,7 +4360,6 @@ c      end do
 
          call ezconcx(upara, uperp, bqlavg_i1_2d, ff, nupar, nuper,
      &      numb, NUPAR, NUPER, nlevmax, title, titx, tity, iflag)
-
 
 
 
@@ -6100,46 +6097,8 @@ c
 !      ymin = MINVAL(theta)
 !      ymax = MAXVAL(theta)
 
-c--set up contour levels
 
-      call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
-
-      if(nlevelb.eq.1)then
-         flevel(1)= rhoplasm
-      endif
-
-c Split contours into two parts, f > 0, and f < 0.
-c Dashed contours will be at levels 'ilevlt' through 'ilevlt+nlevlt'.
-c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
-
-      ilevlt = 1
-      nlevlt = 0
-      do i = 1, nlevelb
-         if(flevel(i) .gt. 0.) exit
-         nlevlt = nlevlt + 1
-      end do
-
-      ilevgt = ilevlt + nlevlt
-      nlevgt = nlevelb - nlevlt
-
-c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
-
-      eps=0.05
-      xpmin = xmin - abs(xmin) * eps
-      xpmax = xmax + abs(xmax) * eps
-      ypmin = ymin - abs(ymin) * eps
-      ypmax = ymax + abs(ymax) * eps
-
-
-      xopt='bstn'
-      yopt='bstn'
-      xtick=0.
-      nxsub=0
-      ytick=0.
-      nysub=0
-
-c--Advance graphics frame and get ready to plot
+c--Plot boundary
 
       call pgsci(nblack)
       call pgsls(1)
@@ -6148,17 +6107,8 @@ c--Advance graphics frame and get ready to plot
       CALL PGWNAD (xmin, xmax, ymin, ymax)
       CALL PGBOX  ('BCNST', 0.0, 0, 'BCNST', 0.0, 0)
 
-c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
-
-      if(nlevlt .gt. 0) then
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
-     &       nlevlt, tr)
-      endif
-
-      if(nlevgt .gt. 0) then
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
-     &       nlevgt, tr)
-      endif
+      call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(1),
+     &       1, tr)
 
       return
       end
@@ -7575,6 +7525,7 @@ c
       character(32):: titx
       character(32):: tity
 
+      flevel=0.0
       nwhite = 0
       nblack = 1
       nred = 2
@@ -7610,7 +7561,7 @@ c--set up contour levels
 #ifdef DEBUG
       write(*,*) 'title: ', title
       write(6, *)"fmax = ", fmax, "   fmin = ", fmin
-      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
+!      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 #endif
 
       iflag = 0
@@ -7679,7 +7630,9 @@ c         end do
 
 
 
-
+#ifdef DEBUG
+      write(*,*) 'flevel',nlevel,nlevel0,flevel
+#endif
 
 
 
@@ -7724,17 +7677,20 @@ c--Advance graphics frame and get ready to plot
 c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
-
+         write(*,*)'neg plotting levels',nlevlt,
+     &       flevel(ilevlt:ilevlt+nlevlt-1)
          call pgsci(nyellow)
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
-     &       nlevlt, tr)
+         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, 
+     &       flevel(ilevlt:nlevlt+ilevlt-1),nlevlt, tr)
       endif
 
       if(nlevgt .gt. 0) then
 
          call pgsci(nblue)
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
-     &       nlevgt, tr)
+         write(*,*)'plotting levels',nlevgt,
+     &       flevel(ilevgt:ilevgt+nlevgt-1)
+         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, 
+     &       flevel(ilevgt:ilevgt+nlevgt-1),nlevgt, tr)
       endif
 
       call pgsci(nblack)
@@ -7849,7 +7805,10 @@ c
       rhomax=x1(nr)
       rhomin=x1(1)
 
-      call a1mnmx(y1, nrmax, nr, ymin, ymax)
+!call a1mnmx(y1, nrmax, nr, ymin, ymax)
+      ymax = maxval( (/ y1,y2,y3,y4,y5,y6,y7/) )  
+      ymin = minval( (/ y1,y2,y3,y4,y5,y6,y7/) )  
+
 
 #ifdef DEBUG
       write(*,*) 'ezlog1_f:  title: ', title, ymin,ymax
@@ -7859,7 +7818,7 @@ c
          return
       end if
 
-      ymin = -10.0
+      ymin = -10.0 ; ymax = 4.0
 
 c Advance plotter to a new page, define coordinate range of graph and draw axes
 c      call pgenv(rhomin, rhomax, ymin, ymax, 0, 0)

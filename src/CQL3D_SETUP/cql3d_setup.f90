@@ -1284,7 +1284,7 @@
       allocate( f_aorsa(n_theta_dim, n_u_dim, n_psi_dim) )
 
 
-!JW      e = 1.6e-19 ![J/ev]
+      e = 1.6e-19 ![J/ev]
       xmih = 1.67e-27
       pi = 4.0 * atan(1.0)
       piinv = 1.0 / pi

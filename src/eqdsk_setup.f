@@ -138,7 +138,7 @@ c      parameter (mmodesmax = 450)
       parameter (nrmax = 201)
       parameter (nthmax = 64)
 
-      parameter (nxeqdmax = 257, nyeqdmax = 257)
+      parameter (nxeqdmax = 1025, nyeqdmax = 1025)
 
       parameter (lxdata = nxeqdmax * nyeqdmax)
       parameter (lipwr = 10)
@@ -2722,7 +2722,7 @@ c      parameter (mmodesmax = 450)
       parameter (nrmax = 201)
       parameter (nthmax = 64)
 
-      parameter (nxeqdmax = 257, nyeqdmax = 257)
+      parameter (nxeqdmax = 1025, nyeqdmax = 1025)
 
       parameter (lxdata = nxeqdmax * nyeqdmax)
       parameter (lipwr = 10)

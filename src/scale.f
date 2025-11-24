@@ -16,8 +16,8 @@
 
       parameter (nlevmax = 101)
 
-      real xgrid(nmax), ygrid(nmax), f(nmax), dx, xmin, xmax, capf(nmax)
-      real capr(nmax), ff(101), rhoplasm, dy, yplot, ybottom, yprime
+      real xgrid(nmax), ygrid(nymx), dx, xmin, xmax
+      real capr(nmax), ff(nlevmax), rhoplasm, dy, yplot, ybottom, yprime
       complex xkperp2_slow(nxmx, nymx), xkperp2_fast(nxmx, nymx)
       complex xkperp_slow(nxmx, nymx), xkperp_fast(nxmx, nymx)
       complex P(nxmx, nymx)
@@ -29,7 +29,7 @@
       real rho(nxmx, nymx)
 
       real f3(nmax)
-      real y(nmax), k, xdeg, yh, L, kr, nr
+      real y(nymx), k, xdeg, yh, L, kr, nr
       real factrl, xn, an, diff1, diff2
 
       real ans_simpson, ans_trapezoidal, ans_analytic, ymax, ymin

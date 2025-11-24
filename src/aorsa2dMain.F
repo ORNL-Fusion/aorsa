@@ -30,9 +30,9 @@
       ! for pgplot
       integer, parameter :: real32=selected_real_kind(6,37)
       ! constants
-      real, parameter ::  q = 1.6e-19, qe = -q
+      real,    parameter ::  q = 1.6e-19, qe = -q
       complex, parameter :: zi = cmplx(0.0,1.0)
-      real, parameter :: eps0 = 8.85e-12, pi = 3.141592654,
+      real,    parameter :: eps0 = 8.85e-12, pi = 3.141592654,
      &       twopi = 2.0 * pi,
      &       xmu0 = 1.26e-06, clight = 1.0 / sqrt(eps0 * xmu0)
 
@@ -2834,7 +2834,7 @@ c        get the compiler warnings turned on first
 
       end if
 
-      xmax = rwright - rwleft
+      xmax = rwright - rwleft  !JCW check inputs
       ymax = ytop - ybottom
 
       if(ndisti1   .ne. 0 .or.
@@ -3444,8 +3444,8 @@ c                  antlc = pi / (xk0 * antlen)
                   shapeti5 = 1.0 - rho(i,j)**betati5
                   shapeti6 = 1.0 - rho(i,j)**betati6
 
-
                end if
+
 
                xnea(i,j) =
      &            xnlim  + (xn0 - xnlim)  * shapen**alphan   * flimiter
@@ -3952,7 +3952,7 @@ c              rhod(n) = sqrt(rhod(n))
   100    format(1p,6e12.3)
 
 
-         s_t_s = q * s_t_s * 1.0e3    !input is kev TEMPS IN JOULES
+         s_t_s  = q * s_t_s * 1.0e3    !input is kev TEMPS IN JOULES
          Temin0 = q * Temin * 1.0e3    !input is kev TEMPS IN JOULES
 
          nmin1 = s_n_s(ndata, 1) / s_n_s(ndata, 0) * nmin

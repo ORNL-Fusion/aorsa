@@ -63,7 +63,7 @@
       real :: dpsiant0 = .05
       real :: antlen = 1.0
       real :: antlc = .0001           !-----antlc = propagation constant along the antenna = c / vphase
-      real :: psilim = .99
+      real :: psilim = .99            ! conducting boundary for nboundary=1
       real :: psimask = 1.05
       real :: psiant = 0.95           !----- location of antenna center in Z (m) for curved antenna
       real :: psimol = 1.00           !-----psimol: if (psimol .eq. 1.0) molifier is NOT used for plasma profiles (default)
@@ -325,7 +325,8 @@
       integer :: lmaxe = 1              !-----lmaxe = highest order Bessel function kept in electron plasma conductivity and wdot     
       
       
-      integer :: ibessel = 1            !-----ibessel = flag determining which Bessel functions are used in Wdot
+      integer :: ibessel = 1            ! *DEPRECATED NOT USED*
+                                        !-----ibessel = flag determining which Bessel functions are used in Wdot
                                         !        if(ibessel.eq.0) Complex Bessel functions are used from besic
                                         !        if(ibessel.eq.1) Real Bessel functions used from ribesl (default)
                                         !        if(ibessel.eq.2) 2nd order expanded Bessel functions are used in Wdot only

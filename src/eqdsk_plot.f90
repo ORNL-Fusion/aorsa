@@ -35,7 +35,7 @@
            nkdim1 = - nxmx / 2,   nkdim2 =   nxmx / 2, &
            mkdim1 = - nxmx / 2,   mkdim2 =   nxmx / 2, &
            nkpltdim = 2 * nkdim2, mkpltdim = 2 * mkdim2, &
-           nxeqdmax = 257,        nyeqdmax = 257
+           nxeqdmax = 1025,        nyeqdmax = 1025
 
       real:: capr_x(6000), capz_x(6000), dx, dy
       integer:: n_phi, n_phi_max, number_points
@@ -304,7 +304,7 @@
            nkdim1 = - nxmx / 2,   nkdim2 =   nxmx / 2, &
            mkdim1 = - nxmx / 2,   mkdim2 =   nxmx / 2, &
            nkpltdim = 2 * nkdim2, mkpltdim = 2 * mkdim2, &
-           nxeqdmax = 257,        nyeqdmax = 257
+           nxeqdmax = 1025,        nyeqdmax = 1025
 
       real:: capr_x(6000), capz_x(6000), dx, dy
       integer:: n_phi, n_phi_max, number_points

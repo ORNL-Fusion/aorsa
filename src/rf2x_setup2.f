@@ -769,7 +769,7 @@ c
                
       if (n .ge. nx) return
       if (m .ge. ny) return
-
+      if (m<0) write(*,*) 'ygiv',y,m,dy
       zeta = (x - (n - 1) * dx) / dx
       eta  = (y - (m - 1) * dy) / dy
 
