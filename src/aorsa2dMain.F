@@ -404,6 +404,7 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real, dimension(:,:,:,:), allocatable :: f_rzvv
       real, dimension(:,:,:,:), allocatable :: dfdvper_rzvv
       real, dimension(:,:,:,:), allocatable :: dfdvpar_rzvv
+      real, dimension(:,:), allocatable :: density_rz
       integer :: n_r, n_z, n_vper, n_vpar
       double precision anorm11, work11(1)
       logical, save :: first_time1 = .true.
@@ -2746,6 +2747,7 @@ c      akprl_min = abs(nphi / rt)
             allocate(f_rzvv(1,1,1,1))
             allocate(dfdvper_rzvv(1,1,1,1))
             allocate(dfdvpar_rzvv(1,1,1,1))
+            allocate(density_rz(1,1))
 
          ! 1D arrays
          call mpi_bcast(R_rzvv, 1,    MPI_DOUBLE_PRECISION,
@@ -2755,6 +2757,10 @@ c      akprl_min = abs(nphi / rt)
          call mpi_bcast(vPer_rzvv, 1, MPI_DOUBLE_PRECISION,
      &                  0, mpi_comm_world, ierr)
          call mpi_bcast(vPar_rzvv, 1, MPI_DOUBLE_PRECISION,
+     &                  0, mpi_comm_world, ierr)
+
+         ! 2D density array 
+         call mpi_bcast(density_rz, 1, MPI_DOUBLE_PRECISION,
      &                  0, mpi_comm_world, ierr)
 
          ! 4D distribution function
@@ -2804,7 +2810,7 @@ c      akprl_min = abs(nphi / rt)
 
             allocate(R_rzvv(n_r), Z_rzvv(n_z), 
      &               vPer_rzvv(n_vper), vPar_rzvv(n_vpar))
-     
+            allocate(density_rz(n_r, n_z))
             allocate(f_rzvv(n_r, n_z, n_vper, n_vpar))
             allocate(dfdvper_rzvv(n_r, n_z, n_vper, n_vpar))
             allocate(dfdvpar_rzvv(n_r, n_z, n_vper, n_vpar))
@@ -2821,6 +2827,11 @@ c      akprl_min = abs(nphi / rt)
 
             if(myid.eq.0) call netcdfr4d_single_gen(f4d_file1, R_rzvv,
      &                            Z_rzvv, vPer_rzvv, vPar_rzvv, f_rzvv)
+
+         call blacs_barrier(icontxt, 'All')
+
+         if(myid.eq.0) call get_density_RZ(density_rz_file1, n_r, 
+     &                                     n_z, density_rz)
 
          call blacs_barrier(icontxt, 'All')
          
@@ -2846,6 +2857,10 @@ c      akprl_min = abs(nphi / rt)
          call mpi_bcast(vPar_rzvv, n_vpar, MPI_DOUBLE_PRECISION,
      &                  0, mpi_comm_world, ierr)
 
+         ! 2D array (density)
+         call mpi_bcast(density_rz, n_r*n_z, 
+     &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
+
          ! 4D distribution function
          call mpi_bcast(f_rzvv, n_r*n_z*n_vper*n_vpar, 
      &             MPI_DOUBLE_PRECISION, 0, mpi_comm_world, ierr)
@@ -2856,6 +2871,9 @@ c      akprl_min = abs(nphi / rt)
          print *, "Loaded f_rzvv has shape: ", 
      &      size(f_rzvv,1), size(f_rzvv,2), 
      &      size(f_rzvv,3), size(f_rzvv,4)
+
+         print *, "Loaded density_rz has shape: ", 
+     &      size(density_rz,1), size(density_rz,2)
 
          print *, "Unfilled dfdvper_rzvv has shape: ", 
      &      size(dfdvper_rzvv,1), size(dfdvper_rzvv,2), 

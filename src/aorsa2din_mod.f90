@@ -15,6 +15,7 @@
       CHARACTER(128) :: netCDF_file1 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 1
       CHARACTER(128) :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
       CHARACTER(128) :: f4d_file1 = 'f4d_file.nc'               !4d f(x, y, vperp, vpar) netcdf file name 1
+      CHARACTER(128) :: density_rz_file1 = 'density_rz.nc'      !2d n(x, y) netcdf file name 1
       logical :: use_4df1 = .false. !-----if (use_4df .eq. .true.) turn on handling of 4d f for ion species 1. 
       
       CHARACTER(128) :: root = 'none' ! if (root = 'none') sum all modes
@@ -432,7 +433,8 @@
      &    eqdsk_special, nsmooth, plot_only, ydisp, xkydisp, dfquotient, &
      &    anti_alias, scrape, nmin, rmin_zoom, rmax_zoom, root, rhomax, &
      &    xkx_ono, xky_ono, curved_ant, yplot, z2_electron, use_new_wdot,  &
-     &    use_no_damp, nzeta_wdoti, norm, antang, write_for_azzam, f4d_file1               
+     &    use_no_damp, nzeta_wdoti, norm,  & 
+     &    antang, write_for_azzam, f4d_file1, density_rz_file1              
 
       end module aorsa2din_mod
 
