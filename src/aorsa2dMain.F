@@ -2875,6 +2875,8 @@ c      akprl_min = abs(nphi / rt)
          print *, "Loaded density_rz has shape: ", 
      &      size(density_rz,1), size(density_rz,2)
 
+         print *, "density_rz(8,8) = ", density_rz(8,8)
+
          print *, "Unfilled dfdvper_rzvv has shape: ", 
      &      size(dfdvper_rzvv,1), size(dfdvper_rzvv,2), 
      &      size(dfdvper_rzvv,3), size(dfdvper_rzvv,4)
@@ -4181,10 +4183,22 @@ c        if(nboundary .eq. 0)xkte = s_t_s(ndata,0)
 
          xn1a = 1.0e-10
 c        if(nboundary .eq. 0)xn1a = s_n_s(ndata,1)
+         ! TODO: replace this mapping with a direct read of
+         ! the 2D density matrix if ndisti1 == 2. 
+         if (ndisti1 .ne. 2) then
+            call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,1),
+     &            xn1a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n),
+     &            s_nrho_n, rho(1:nnodex,1:nnodey))
 
-         call flux_to_rz(nnodex,nnodey,s_n_s(1:s_nrho_n,1),
-     &        xn1a(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n),
-     &        s_nrho_n, rho(1:nnodex,1:nnodey))
+         else ! skip mapping and instead loop over RZ
+            print *, "Using density_rz." 
+            do i = 1, nnodex
+               do j = 1, nnodey
+                  xn1a(i,j) = density_rz(i,j)
+               end do
+            end do
+         end if
+
 
          xkti = 1.0e-10 *q
 c        if(nboundary .eq. 0)xkti = s_t_s(ndata,1)
