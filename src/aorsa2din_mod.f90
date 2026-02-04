@@ -16,7 +16,7 @@
       CHARACTER(128) :: netCDF_file2 = 'phillips_nstx3.5.2.nc'  !cql3d distribution file name 2
       CHARACTER(128) :: f4d_file1 = 'f4d_file.nc'               !4d f(x, y, vperp, vpar) netcdf file name 1
       CHARACTER(128) :: density_rz_file1 = 'density_rz.nc'      !2d n(x, y) netcdf file name 1
-      logical :: use_4df1 = .false. !-----if (use_4df .eq. .true.) turn on handling of 4d f for ion species 1. 
+      !logical :: use_4df1 = .false. !-----if (use_4df .eq. .true.) turn on handling of 4d f for ion species 1. 
       
       CHARACTER(128) :: root = 'none' ! if (root = 'none') sum all modes
                                       ! if (root = 'fast') sum only modes within 20% of fast wave 
@@ -26,6 +26,16 @@
       real :: xky_ono = 0.0           !ky (m-1) for which Ono's dispersion relations is plotted      
       
       integer :: nstrap = 4           ! number of current straps in antenna
+
+      ! Multi antenna section 
+      integer :: n_antenna = 0 ! the number of antennas the user wants to add 
+      integer, parameter :: max_n_antenna = 20 ! the maximum number of antenna. 
+      real :: psi_ant_array(max_n_antenna) = 0.0 ! The psi antenna positions
+      real :: theta_ant_array(max_n_antenna) = 0.0 ! The theta antenna positions 
+      real :: dpsi_ant_array(max_n_antenna) = 0.0 ! Guassian current falloff width in psi  
+      real :: dtheta_ant_array(max_n_antenna) = 0.0 ! Guassian current falloff width in theta = 2pi*l(R,Z)/L_p(psi(R,Z))
+
+
       
       real :: scrape = 100.           ! scrape-off length in rho for iprofile = 5 (numerical profiles) 
       real :: nmin = 1.0e+18          ! minimum density allowed in scrape-off layer for iprofile = 5 (numerical profiles)
@@ -274,9 +284,14 @@
       integer :: i_antenna = 1          ! i_antenna = flag determining which antenna model is used
                                         ! if(i_antenna .eq. 0) antenna current is Gaussian 
                                         ! if(i_antenna .eq. 1) antenna current is cos(ky * y)  (default)
-                                        ! 2,3,4 ranval for y,x,z components
                                         ! where ky = omgrf / vphase = (omgrf / clight) * antlc = k0 * antlc
                                         ! For constant current, set antlc = 0.0
+                                        ! 2,3,4 ranval for y,x,z components
+                                        ! 5: allow for multiple antennas, use 
+                                        ! R_ant_array(max_n_antenna)
+                                        ! Z_ant_array(max_n_antenna) 
+                                        ! dpsi_ant_array(max_n_antenna) 
+                                        ! dtheta_ant_array(max_n_antenna) 
       integer :: nuper = 65
       integer :: nupar = 129
       integer :: nkperp = 201           !-----nkperp: number of kperp values used in Lee's interpolation version of the 
@@ -434,7 +449,9 @@
      &    anti_alias, scrape, nmin, rmin_zoom, rmax_zoom, root, rhomax, &
      &    xkx_ono, xky_ono, curved_ant, yplot, z2_electron, use_new_wdot,  &
      &    use_no_damp, nzeta_wdoti, norm,  & 
-     &    antang, write_for_azzam, f4d_file1, density_rz_file1              
+     &    antang, write_for_azzam, f4d_file1, density_rz_file1, &
+     &    n_antenna, psi_ant_array, theta_ant_array, &
+     &    dpsi_ant_array, dtheta_ant_array        
 
       end module aorsa2din_mod
 

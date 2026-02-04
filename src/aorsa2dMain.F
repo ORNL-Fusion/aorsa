@@ -411,7 +411,7 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real :: den_check
 *   end TODO new section 
 
-      integer :: nnodex, nnodey, i, j,
+      integer :: nnodex, nnodey, i, j, i_antdx,
      &    jequat, iflag, liw, lw, nrhs, icenter
       integer :: nnodelb, nnodelb0, nl
       real :: lbmax, dlb, xl, yl, zl
@@ -2875,6 +2875,9 @@ c      akprl_min = abs(nphi / rt)
          print *, "Loaded density_rz has shape: ", 
      &      size(density_rz,1), size(density_rz,2)
 
+         print *, "I see your psi_ant_array:", 
+     &      psi_ant_array
+
          print *, "density_rz(8,8) = ", density_rz(8,8)
 
          print *, "Unfilled dfdvper_rzvv has shape: ", 
@@ -2903,8 +2906,13 @@ c      akprl_min = abs(nphi / rt)
                   call sgrate_cyl(vPer_rzvv, vPar_rzvv, f_rzvv(i,j,:,:),
      &                  1, n_vper, 1, n_vpar, den_check, n_vper, n_vpar)
 
-!                 Normalize f_rzvv
-                  f_rzvv(i,j,:,:) = vc1_mks**3*f_rzvv(i,j,:,:)/den_check
+!                 Normalize f_rzvv, but avoid division by zero 
+                  if (den_check > 1.0e-20) then
+                     f_rzvv(i,j,:,:) = 
+     &                           vc1_mks**3*f_rzvv(i,j,:,:)/den_check
+                  else
+                     f_rzvv(i,j,:,:) = 0.0
+                  end if
 
 !                 Calculate giant 4d perp derivatives into memory  
                   call deriv_dfdvperp(f_rzvv, dfdvper_rzvv, i, j, 
@@ -3552,6 +3560,33 @@ c                  antlc = pi / (xk0 * antlen)
                xjy(i,j) = 0
                xjz(i,j) = ranval * 1.0e-06
             end if
+
+            if(i_antenna .eq. 5) then
+               ! loop over all antenna TODO need to update to proper theta(i,j) (radians)
+               gaussantth = 0
+               gausspsi = 0
+               do i_antdx = 1, n_antenna
+                  delta_theta = theta0(i,j) - theta_ant_array(i_antdx)
+                  ! wrap difference round the unit circle 
+                  delta_theta = modulo(delta_theta + pi, twopi)-pi
+                  dthetant = dtheta_ant_array(i_antdx)
+                  gaussantth = gaussantth + 
+     &                         exp(-delta_theta**2/dthetant**2)
+
+                  psiant = psi_ant_array(i_antdx)
+                  dpsiant = dpsi_ant_array(i_antdx)
+                  gausspsi = gausspsi + 
+     &                       exp(-( psi(i,j)-psiant)**2/dpsiant**2)
+               end do ! end loop over antennas
+               ! accumulate the current shapes to the grid 
+               Ix = - dpsidy / gradpsi * cos_antang
+               Iy =   dpsidx / gradpsi * cos_antang
+               Iz =   sin_antang
+
+               xjx(i,j) = xjantx * gaussantth  * gausspsi * Ix
+               xjy(i,j) = xjanty * gaussantth  * gausspsi * Iy
+               xjz(i,j) = xjantz * gaussantth  * gausspsi * Iz
+            end if 
 
 
          end do
