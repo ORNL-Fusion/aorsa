@@ -13,6 +13,8 @@
       character(32):: titz
       character(32):: titlb
 
+      integer:: nsurf, isurf
+
       real:: logmax
       integer:: ibackground, nkx1, nkx2, nky1, nky2, n, m, &
          nkxplt, nkyplt
@@ -138,7 +140,7 @@
 !      read(63, 309)ibackground
 
 
-      read(116, 309) nnodex, nnodey
+      read(116, 309) nnodex, nnodey, nsurf
       read(116, 310) rhoplasm
       read(116, 310) (x(i), i = 1, nnodex)
       read(116, 310) (y(j), j = 1, nnodey)
@@ -147,11 +149,6 @@
       read(116, 310) ((rho(i, j), i = 1, nnodex), j = 1, nnodey)
 
       read(116, 309) n_phi_max
-      read(116, 310) (capr_x(n_phi), n_phi = 1, n_phi_max)
-      read(116, 310) (capz_x(n_phi), n_phi = 1, n_phi_max)
-
-
-      close (116)
 
 
       nwhite = 0
@@ -221,19 +218,25 @@
 
       titx = 'R (m)'
       tity = 'Y (m)'
-
-      numb = 20
       title = 'poloidal rho surfaces'
+      numb = 20
       call ezconc(capr, y, rho, ff, nnodex, nnodey, numb, &
-         nxmx, nymx, nlevmax, title, titx, tity, iflag,1.)
+           nxmx, nymx, nlevmax, title, titx, tity, iflag, 1.)
+      
       if (iflag .eq. 0) call boundary(capr, y, rho, ff, nnodex, &
          nnodey, numb, &
          nxmx, nymx, nlevmax, title, titx, tity,1.)
 
+      
+      do isurf=1,nsurf
+         read(116, 310) (capr_x(n_phi), n_phi = 1, n_phi_max)
+         read(116, 310) (capz_x(n_phi), n_phi = 1, n_phi_max)
 
-      CALL PGSCI(nred)
-      call pgline(n_phi_max, capr_x, capz_x)
-
+         CALL PGSCI(nred)
+         call pgline(n_phi_max, capr_x, capz_x)
+      end do
+      
+      close (116)
 
 ! Close the graphics device.
 

@@ -1,6 +1,10 @@
 c JCW this file is a bit of a mess with legacy code and possible bounds errors
 c*****************************************************************************
 c
+!     not used: b0, psio, psimag, psi_tor_max, rho_pol2d, qsafety
+!     rmaxis,zmaxis : coordinate center
+!     rwleft, rwright, ytop, ybottom : boundaries
+      
       subroutine field_line_trace(sgn_vprl_in, i, j, 
      .   nmodesx, nmodesy,
      .   rwleft, rwright, ytop, ybottom, xprime_eq, yprime_eq,
@@ -69,9 +73,7 @@ c
       integer nkdim1, nkdim2, nkx1, nkx2, nldim, nldim3,
      .   nky1, nky2, iant, jant1, jant2
 
-      integer nxeqdmax, nyeqdmax
-
-      real rmin, rmax, zmin, zmax, psio, ro, zo
+      integer nxeqdmax, nyeqdmax, psio
 
       integer nrhomax
 

@@ -98,7 +98,7 @@ c      CHARACTER(128) :: root
       real :: xk_cutoff, term2, rmaxis, zmaxis, z0, ptot_wdot, xj
       real :: term1_coef, term2_coef, akprl_min
 
-      integer :: jmid, nxdim, nydim, l, lmaxdim, n_ono, m_ono
+      integer :: imid, jmid, nxdim, nydim, l, lmaxdim, n_ono, m_ono
       integer :: nnodex_loc, nx_overlap, nnodex_eff
       integer :: nnodey_loc, ny_overlap, nnodey_eff
       integer :: istart, ifinish, jstart, jfinish
@@ -148,7 +148,7 @@ c      CHARACTER(128) :: root
      &     ntable    = 1000,
      &     mtable    = 1000,
      &     norb_dim  = 4000,
-     &     norb_dim2 = norb_dim*2
+     &     norb_dim2 = norb_dim*2, ntheta_eq=256
 
       real :: capr_xp(norb_dim), capz_xp(norb_dim), phin_xp(norb_dim)
       real :: capr_xm(norb_dim), capz_xm(norb_dim), phin_xm(norb_dim)
@@ -396,9 +396,9 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real, dimension(:,:), allocatable :: xkb
       real, dimension(:,:), allocatable :: xkb2d
 
-      integer :: nnodex, nnodey, i, j,
+      integer :: nnodex, nnodey, i, j, iaxis,
      &    jequat, iflag, liw, lw, nrhs, icenter
-      integer :: nnodelb, nnodelb0, nl
+      integer :: nnodelb, nnodelb0, nl, isurf
       real :: lbmax, dlb, xl, yl, zl
 
       integer :: nnodexm1, nnodeym1
@@ -712,9 +712,10 @@ c     &        uzzk(nkdim1 : nkdim2, mkdim1 : mkdim2)
 
       complex :: ekl, xintc
 
-      complex :: sigexx, sigexy, sigexz,
-     &        sigeyx, sigeyy, sigeyz,
-     &        sigezx, sigezy, sigezz
+      complex ::
+     &     sigexx, sigexy, sigexz,
+     &     sigeyx, sigeyy, sigeyz,
+     &     sigezx, sigezy, sigezz
 
       complex :: sige0, sige1, sige2,
      &        sige3, sige4, sige5
@@ -722,35 +723,43 @@ c     &        uzzk(nkdim1 : nkdim2, mkdim1 : mkdim2)
       complex :: sige0_new, sige1_new, sige2_new,
      &        sige3_new, sige4_new, sige5_new
 
-      complex :: sigexx_new, sigexy_new, sigexz_new,
+      complex ::
+     &        sigexx_new, sigexy_new, sigexz_new,
      &        sigeyx_new, sigeyy_new, sigeyz_new,
      &        sigezx_new, sigezy_new, sigezz_new
 
-      complex :: sig1xx, sig1xy, sig1xz,
+      complex ::
+     &        sig1xx, sig1xy, sig1xz,
      &        sig1yx, sig1yy, sig1yz,
      &        sig1zx, sig1zy, sig1zz
 
-      complex :: sig2xx, sig2xy, sig2xz,
+      complex ::
+     &        sig2xx, sig2xy, sig2xz,
      &        sig2yx, sig2yy, sig2yz,
      &        sig2zx, sig2zy, sig2zz
 
-      complex :: sig3xx, sig3xy, sig3xz,
+      complex ::
+     &        sig3xx, sig3xy, sig3xz,
      &        sig3yx, sig3yy, sig3yz,
      &        sig3zx, sig3zy, sig3zz
 
-      complex :: sig4xx, sig4xy, sig4xz,
+      complex ::
+     &        sig4xx, sig4xy, sig4xz,
      &        sig4yx, sig4yy, sig4yz,
      &        sig4zx, sig4zy, sig4zz
 
-      complex :: sig5xx, sig5xy, sig5xz,
+      complex ::
+     &        sig5xx, sig5xy, sig5xz,
      &        sig5yx, sig5yy, sig5yz,
      &        sig5zx, sig5zy, sig5zz
 
-      complex :: sig6xx, sig6xy, sig6xz,
+      complex ::
+     &        sig6xx, sig6xy, sig6xz,
      &        sig6yx, sig6yy, sig6yz,
      &        sig6zx, sig6zy, sig6zz
 
-      complex :: sigsloxx, sigsloxy, sigsloxz,
+      complex ::
+     &        sigsloxx, sigsloxy, sigsloxz,
      &        sigsloyx, sigsloyy, sigsloyz,
      &        sigslozx, sigslozy, sigslozz
 
@@ -759,27 +768,29 @@ c     &        uzzk(nkdim1 : nkdim2, mkdim1 : mkdim2)
      &     sigyx, sigyy, sigyz,
      &     sigzx, sigzy, sigzz
 
-      complex
+      complex :: 
      &     xkxx, xkxy, xkxz,
      &     xkyx, xkyy, xkyz,
      &     xkzx, xkzy, xkzz
+      
       complex :: scap, capk_perp, capk_x, left, right
 
-      complex :: xk1xx, xk1xy, xk1xz,
-     &        xk1yx, xk1yy, xk1yz,
-     &        xk1zx, xk1zy, xk1zz
+      complex ::
+     &     xk1xx, xk1xy, xk1xz,
+     &     xk1yx, xk1yy, xk1yz,
+     &     xk1zx, xk1zy, xk1zz
 
-      complex :: xk2xx, xk2xy, xk2xz,
-     &        xk2yx, xk2yy, xk2yz,
-     &        xk2zx, xk2zy, xk2zz
+      complex ::
+     &     xk2xx, xk2xy, xk2xz,
+     &     xk2yx, xk2yy, xk2yz,
+     &     xk2zx, xk2zy, xk2zz
 
-
-      complex
+      complex ::
      &     dxx, dxy, dxz,
      &     dyx, dyy, dyz,
      &     dzx, dzy, dzz
 
-      complex
+      complex ::
      &     bxx, bxy, bxz,
      &     byx, byy, byz,
      &     bzx, bzy, bzz
@@ -789,7 +800,8 @@ c     &        uzzk(nkdim1 : nkdim2, mkdim1 : mkdim2)
      &     yprime(nymx), y(nymx), dy, dyc
 
       real :: lb(nlmx), lbprime(nlmx), capr_lb(nlmx), capz_lb(nlmx),
-     &                                              phin_lb(nlmx)
+     &     phin_lb(nlmx)
+      real ::   theta_eqarc(n_psi_max,3,nlmx) !more though here on n_psi_max
       complex :: El(nlmx),Elsum(nlmx),workl(nlmx), Eln(nkldim1:nkldim2)
       complex :: Eln_chk(nkldim1 : nkldim2)
       complex :: Esum
@@ -1199,7 +1211,6 @@ c       complex, dimension(:,:), allocatable :: Btmp
          stop '** blacs not setup '
       endif
 
-      write(*,*) 'myid', myid !JCW temp
 
       if (myid .eq. 0) then
          open(unit=53, file='out_fields', status='unknown',
@@ -1401,7 +1412,7 @@ c     &      form='formatted')
       nky1 = - nmodesy / 2 + 1
 
 
-c      jequat  = nnodey / 2
+      jequat  = nnodey / 2 
       icenter = nnodex / 2
 
 
@@ -2018,7 +2029,6 @@ c            write(6, 1022)rnz
 
             end do
          end do
-
       end if
 *     -------------------
 *     End of igeom .eq. 5
@@ -2886,7 +2896,7 @@ c--   x(i) : -xmax / 2.0   to   xmax / 2.0
      &     + dx / 2.0
 c--   Note: the code gives slightly smoother results with dx/2.0 added
          x(i) = xprime(i) + xwleft
-         capr(i) = rt + x(i)
+         capr(i) = rt + x(i) !rt is magnetic axis
 c         write(6, 1312)i, x(i), xprime(i), capr(i)
 
          xkphi(i) = nphi / capr(i)
@@ -2945,20 +2955,23 @@ c      write(6, 1312) jzoom1
 c      write(6, 1312) jzoom2
 
 
-*--------------------------------------
-*     find jmid = j in equatorial plane
-*--------------------------------------
-      ydiff_min = 100.0
-      do j = 1, nnodey
-         ydiff = abs(y(j) - zmaxis)
-         if (ydiff .lt. ydiff_min) then
-            jmid = j
-            ydiff_min = ydiff
-         end if
-      end do
-
+*---------------------------------------------------
+*     find imid = i and jmid = j in equatorial plane
+*---------------------------------------------------
+!      ydiff_min = 100.0 !inital value
+!      do j = 1, nnodey
+!         ydiff = abs(y(j) - zmaxis)
+!         if (ydiff .lt. ydiff_min) then
+!            jmid = j
+!            ydiff_min = ydiff
+!         end if
+!      end do
+      imid = minloc(abs(x(1:nnodex)),dim=1)
+      iaxis = imid
+      jmid = minloc(abs(y(1:nnodey)-zmaxis),dim=1)
       jequat = jmid
-
+      if(myid==0)write(*,*)'iaxis',iaxis
+      if(myid==0)write(*,*)'jequat',jequat,y(jequat),zmaxis,rmaxis
 
 *-------------------------------------------
 *     define theta(i,j)
@@ -2975,6 +2988,7 @@ c      write(6, 1312) jzoom2
             end if
          end do
       end do
+!      theta_arc(1:ntheta_eq)=call get_eqarc_theta(nnodex/2,jequat)
 
 *----------------------------------------------------
 *     Calculate derivatives of rho(i,j) and theta(i,j)
@@ -3061,9 +3075,10 @@ c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
 
 
 
-*     ----------------------------------------
-*     Set up r mesh for circular flux surfaces
-*     ----------------------------------------
+*     ----------------------------------------------
+*     Set up r mesh, rh,  for circular flux surfaces
+*     Used for \hat{K} calculations 
+*     ----------------------------------------------
       j = jequat
       do i = 2, nnodex -1
          if(rho(i,j) .lt. 1. .and. rho(i-1,j) .ge. 1.)caprmin = capr(i)
@@ -4549,8 +4564,8 @@ c            acold(i,j) = xnphi**2 - capk_perp
       end do
 
       call dgrate(xprime, kimag_cold, 1, nnodex, ans, nxmx)
-      write(*,*) 'spa', xprime(1:nnodex), kimag_cold(1:nnodex), 1,
-     &   nnodex, ans, nxmx
+      if (myid==0) write(*,*) 'spa', xprime(1:nnodex), 
+     &   kimag_cold(1:nnodex), 1,nnodex, ans, nxmx
       spa_cold = 1.0 - exp(-2.0 * ans)
 
       if (myid .eq. 0) then
@@ -4818,7 +4833,7 @@ c     ---------------------------
 c            gradprlb(i,j) = abs(uzx(i,j) * dbdx + uzy(i,j) * dbdy)
 
 *           -----------------------
-*           Brambilla approximation:
+*           Brambilla approximation:  !review for non tokamak geometries
 *           -----------------------
             sinth = y(j) / sqrt(x(i)**2 + y(j)**2)
             gradprlb(i,j) = bmod(i,j) / capr(i) * abs(btau(i,j) * sinth)
@@ -5409,11 +5424,59 @@ c           call flush
 
       end if
 
-      psiorb = psilim * 10.0 !magic number JCW
-
+      psiorb = psilim * 10.0 !magic number JCW, seems to be to limit orbits even less than psilim
+      
 *     ----------------------------------------------------------------
 *     Load x, y and z equations for spatial point (i,j) and mode number (n,m)
 *     ----------------------------------------------------------------
+      j = jequat
+      do i = iaxis,nnodex
+         if (rho(i,j) <= 1.) then
+            if (myid==0) write(*,*) 'field line',i,j,x(i),y(j),
+     &            psi(i,j),rho(i,j)
+            call get_field_line(i,j) 
+            theta_eqarc(i-iaxis+1,1,:)=capr_lb
+            theta_eqarc(i-iaxis+1,2,:)=capz_lb
+            theta_eqarc(i-iaxis+1,3,:)=phin_lb
+         else
+            exit !i=imax+1
+         end if
+      end do
+
+               ! block for debugging : makes plot of a field line trace
+!               go to 7070
+
+              if(myid .eq. 0) then
+                 !This is run anew for each i,j pair
+                 open(unit=116,file='trace',status='unknown',
+     &                form='formatted')
+                 write(116, 309) nnodex, nnodey, i-iaxis !55,jequat !i, j
+                 write(116, 310) rhoplasm
+                 write(116, 310) (x(idum), idum = 1, nnodex)
+                 write(116, 310) (y(jdum), jdum = 1, nnodey)
+                 write(116, 310) (capr(idum), idum = 1, nnodex)
+
+                 write(116, 310) ((rho(idum, jdum), idum = 1,nnodex),
+     &                jdum = 1,nnodey)
+
+                 write(116, 309) nnodelb
+!                 write(116, 310) (capr_lb(nl), nl = 1, nnodelb)
+!                 write(116, 310) (capz_lb(nl), nl = 1, nnodelb)
+                 do isurf=1,i-iaxis
+                 write(116, 310) (theta_eqarc(isurf,1,nl),
+     &                nl = 1, nnodelb)
+                 write(116, 310) (theta_eqarc(isurf,2,nl),
+     &                nl = 1, nnodelb)
+                 end do
+                 close (116)
+                 call trace_plot
+              end if
+
+ !             call blacs_barrier(icontxt, 'All')
+              stop 3
+ !7070         continue
+
+
       do i = 1, nnodex
          do j = 1, nnodey
 
@@ -5422,8 +5485,6 @@ c           call flush
 
 
             irnc1 = (j-1) * 3 + (i-1) * nnodey * 3 + 1
-
-
 
             if (use_fourier_z2) then
 
@@ -5434,122 +5495,9 @@ c           call flush
      &                                    .or. nboundary .eq. 0) then
             if(psi(i,j) .lt. psiorb) then
 
-*              -----------------------------
-*              Define mesh along field line:
-*              -----------------------------
-c--            lb(nl):  0 to lbmax
-c--            lbprime(nl): -lbmax / 2 to lbmax / 2
-
-                lbmax = twopi * rt * qsafety(i, j)
-
-
-               dlb = lbmax / nnodelb
-
-               do nl = 1, nnodelb
-                  lbprime(nl) = (nl - 1) * dlb
-                  lb(nl) = lbprime(nl) - lbmax / 2.0
-               end do
-
-               do nkl = nkl1, nkl2
-                  xklsav(nkl) = twopi * nkl / lbmax
-                  if (nkl .eq. 0) xklsav(nkl) = 1.0e-05
-               end do
-
-
-c              if (myid .eq. 0) then
-
-               sgn_vprl = +1.0
-               call field_line_trace(sgn_vprl, i, j,
-     &            nmodesx, nmodesy,
-     &            rwleft, rwright, ytop, ybottom, xprime, yprime,
-     &            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,
-     &            bxn, byn, bzn, bmod, capr, y, psi_pol2d, rho_pol2d,
-     &            qsafety, dx, dy,
-     &            bmod_mid,  capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
-     &            i_psi_eq, dldb_tot12, dldbavg,
-     &            n_prof_flux, rhomax, norb_dim, lbmax,
-     &            len_xp, phin_xp, capr_xp, capz_xp, nlen_exitp)
-
-               sgn_vprl = -1.0
-               call field_line_trace(sgn_vprl, i, j,
-     &            nmodesx, nmodesy,
-     &            rwleft, rwright, ytop, ybottom, xprime, yprime,
-     &            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,
-     &            bxn, byn, bzn, bmod, capr, y, psi_pol2d, rho_pol2d,
-     &            qsafety, dx, dy,
-     &            bmod_mid,  capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
-     &            i_psi_eq, dldb_tot12, dldbavg,
-     &            n_prof_flux, rhomax, norb_dim, lbmax,
-     &            len_xm, phin_xm, capr_xm, capz_xm, nlen_exitm)
-
-
-               do norbit = 1, nlen_exitm
-                  len_x(norbit)  = len_xm(nlen_exitm - norbit + 1)
-                  capr_x(norbit)  = capr_xm(nlen_exitm - norbit + 1)
-                  capz_x(norbit)  = capz_xm(nlen_exitm - norbit + 1)
-                  phin_x(norbit)  = phin_xm(nlen_exitm - norbit + 1)
-               end do
-
-               do norbit = nlen_exitm + 1, nlen_exitm + nlen_exitp
-                  len_x(norbit) = len_xp(norbit - nlen_exitm)
-                  capr_x(norbit) = capr_xp(norbit - nlen_exitm)
-                  capz_x(norbit) = capz_xp(norbit - nlen_exitm)
-                  phin_x(norbit) = phin_xp(norbit - nlen_exitm)
-               end do
-
-               nlen_exit = nlen_exitm + nlen_exitp
-
-
-*              -----------------------------
-*              Calculate spline coeficients
-*              -----------------------------
-               call spline (len_x, capr_x,
-     &                       b_capr, c_capr, d_capr, nlen_exit)
-               call spline (len_x, capz_x,
-     &                       b_capz, c_capz, d_capz, nlen_exit)
-               call spline (len_x, phin_x,
-     &                       b_phin, c_phin, d_phin, nlen_exit)
-
-               do nl = 1, nnodelb
-                  capr_lb(nl) = ispline(lb(nl), len_x, capr_x,
-     &                           b_capr, c_capr, d_capr, nlen_exit)
-                  capz_lb(nl) = ispline(lb(nl), len_x, capz_x,
-     &                           b_capz, c_capz, d_capz, nlen_exit)
-                  phin_lb(nl) = ispline(lb(nl), len_x, phin_x,
-     &                           b_phin, c_phin, d_phin, nlen_exit)
-               end do
-
-
-               ! dead block for debugging : JCW 2023 (who didnt code this block)
-               go to 7070
-
-c              if(myid .eq. 0) then
-
-                  open(unit=116,file='trace',status='unknown',
-     &                                                 form='formatted')
-                  write(116, 309) nnodex, nnodey
-                  write(116, 310) rhoplasm
-                  write(116, 310) (x(idum), idum = 1, nnodex)
-                  write(116, 310) (y(jdum), jdum = 1, nnodey)
-                  write(116, 310) (capr(idum), idum = 1, nnodex)
-
-                  write(116, 310) ((rho(idum, jdum), idum = 1,nnodex),
-     &                 jdum = 1,nnodey)
-
-                  write(116, 309) nnodelb
-                  write(116, 310) (capr_lb(nl), nl = 1, nnodelb)
-                  write(116, 310) (capz_lb(nl), nl = 1, nnodelb)
-
-                  close (116)
-                  call trace_plot
-c               end if
-
-               call blacs_barrier(icontxt, 'All')
-               stop 3
- 7070          continue
+               call get_field_line(i,j)
 
             end if    !  end if psi(i,j) .lt. psiorb
-
             end if    ! end if only do orbits in interior if nboundary = 1:
             end if    ! end if use_fourier_z2 .eq. .true.
 
@@ -11802,35 +11750,96 @@ c         deallocate( ntable )
       call blacs_gridexit( icontxt )
       call blacs_exit(0)
 
+      return
 
-      end
+      contains
+
+      subroutine get_field_line(istart,jstart)
+*     -----------------------------
+*     Define mesh along field line:
+*     -----------------------------
+c--   lb(nl):  0 to lbmax
+c--   lbprime(nl): -lbmax / 2 to lbmax / 2
+      integer:: istart, jstart
+         
+      lbmax = twopi * rt * qsafety(istart, jstart) !careful for when rt or q  \approx 0
+      dlb = lbmax / real(nnodelb)
+
+      do nl = 1, nnodelb
+         lbprime(nl) = (nl - 1) * dlb
+         lb(nl) = lbprime(nl) - lbmax / 2.0
+      end do
+
+
+      sgn_vprl = +1.0
+      call field_line_trace(sgn_vprl, istart, jstart,
+     &            nmodesx, nmodesy,
+     &            rwleft, rwright, ytop, ybottom, xprime, yprime,
+     &            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,
+     &            bxn, byn, bzn, bmod, capr, y, psi_pol2d, rho_pol2d,
+     &            qsafety, dx, dy,
+     &            bmod_mid,  capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
+     &            i_psi_eq, dldb_tot12, dldbavg,
+     &            n_prof_flux, rhomax, norb_dim, lbmax,
+     &            len_xp, phin_xp, capr_xp, capz_xp, nlen_exitp)
+
+      sgn_vprl = -1.0
+      call field_line_trace(sgn_vprl, istart, jstart,
+     &            nmodesx, nmodesy,
+     &            rwleft, rwright, ytop, ybottom, xprime, yprime,
+     &            rmaxis, zmaxis, b0, psio, psimag, psi_tor_max,
+     &            bxn, byn, bzn, bmod, capr, y, psi_pol2d, rho_pol2d,
+     &            qsafety, dx, dy,
+     &            bmod_mid,  capr_bpol_mid2, capr_bpol_mid, rho_tor2d,
+     &            i_psi_eq, dldb_tot12, dldbavg,
+     &            n_prof_flux, rhomax, norb_dim, lbmax,
+     &            len_xm, phin_xm, capr_xm, capz_xm, nlen_exitm)
+
+
+      do norbit = 1, nlen_exitm
+         len_x(norbit)   = len_xm(nlen_exitm - norbit + 1)
+         capr_x(norbit)  = capr_xm(nlen_exitm - norbit + 1)
+         capz_x(norbit)  = capz_xm(nlen_exitm - norbit + 1)
+         phin_x(norbit)  = phin_xm(nlen_exitm - norbit + 1)
+      end do
+
+      do norbit = nlen_exitm + 1, nlen_exitm + nlen_exitp
+         len_x(norbit)  = len_xp(norbit - nlen_exitm)
+         capr_x(norbit) = capr_xp(norbit - nlen_exitm)
+         capz_x(norbit) = capz_xp(norbit - nlen_exitm)
+         phin_x(norbit) = phin_xp(norbit - nlen_exitm)
+      end do
+
+      nlen_exit = nlen_exitm + nlen_exitp
+
+
+*     -----------------------------
+*     Calculate spline coeficients
+*     -----------------------------
+      call spline (len_x, capr_x,
+     &                       b_capr, c_capr, d_capr, nlen_exit)
+      call spline (len_x, capz_x,
+     &                       b_capz, c_capz, d_capz, nlen_exit)
+      call spline (len_x, phin_x,
+     &                       b_phin, c_phin, d_phin, nlen_exit)
+
+      do nl = 1, nnodelb
+         capr_lb(nl) = ispline(lb(nl), len_x, capr_x,
+     &                           b_capr, c_capr, d_capr, nlen_exit)
+         capz_lb(nl) = ispline(lb(nl), len_x, capz_x,
+     &                           b_capz, c_capz, d_capz, nlen_exit)
+         phin_lb(nl) = ispline(lb(nl), len_x, phin_x,
+     &                           b_phin, c_phin, d_phin, nlen_exit)
+      end do
+
+      
+      end subroutine get_field_line
+      
+      end program aorsa2dMain
 
 !
 !*************************************************************************
 !
-
-        subroutine pzgecopy( m,n, A,ia,ja,descA, B,ib,jb,descB)
-        integer :: m,n,  ia,ja,descA(*), ib,jb,descB(*)
-        complex :: A(*), B(*)
-
-        complex :: alpha,beta
-
-        alpha = 1.0
-        beta = 0.0
-*       ----------------------------------------------------
-*       pzgeadd is new capability found in PBLAS V2 or later
-*       otherwise, it can be implmented less efficiently by
-*       repeated calls to pzcopy
-*       ----------------------------------------------------
-        call pzgeadd( 'N', m,n, alpha, A,ia,ja,descA,
-     &        beta, B,ib,jb,descB )
-        return
-        end
-
-c
-c***************************************************************************
-c
-
 
       subroutine fluxavg(f, favg, rho, nxdim, nydim, nrhodim,
      &   nnodex, nnodey, nnoderho, drho, dx, dy, capr, r0, vol, fvol)

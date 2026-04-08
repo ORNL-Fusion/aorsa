@@ -1045,7 +1045,7 @@ c         write(6, 1314)i, i0, xprime(i), x(i), capr(i), diff
       end do
 
 
-      diffmin = 1.0e+05
+      diffmin = 1.0e+05 !disabled?
 
 *-----------------------------------
 *     Define y mesh: y(j), yprime(j)
@@ -1067,13 +1067,13 @@ c--      Note: the code gives slightly smoother results with dy/2.0 added
             j0 = j
          end if  
 
-c         write(6, 1314)j, j0, yprime(j), y(j), diff, z0
+         if (myid==0)write(6, 1314)j, j0, yprime(j), y(j), diff, z0
       end do
       
       jmid = j0
       jequat = jmid
       
-c      write(6, *)"jequat = ", jequat
+      write(6, *)"eqdsk setup jequat = ", jequat
 
 
 
@@ -2887,7 +2887,7 @@ c         if (current .gt. 0.0) psi = -psi
       if(myid .eq. 0) write(15, *)                    
       if(myid .eq. 0) write(6, *)   
       
-
+      ! JCW need to check raxis, zaxis: can be wrong
 
    10 format (5i10)
  8190 format(6a8,3i4,t73,a)
