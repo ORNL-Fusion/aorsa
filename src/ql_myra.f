@@ -180,6 +180,8 @@ c      real, dimension(:,:), allocatable :: factvol2d
       real :: df_cql_uprl(NUPER, NUPAR, n_psi_dim)
       real :: vc_mks, vc_mks_cql, rho_a(n_psi_dim)
       real :: eps0, pi, emax, u0, u_0, u_, costh, costh0, psic
+      real :: maxdfdupar, maxdfduper ! TODO added to debug 
+      real :: global_max_dupar, global_max_duper ! TODO debug
 
       parameter (eps0 = 8.85e-12)
       parameter (PI = 3.141592653597932384)
@@ -251,7 +253,8 @@ c      factvol2d = 0.0
       fqlvol2d = 0.0
 
 
-
+      maxdfdupar = 0.0
+      maxdfduper = 0.0
 
       W = omgrf
       ZSPEC = q / 1.6e-19
@@ -346,6 +349,16 @@ c     &         eql_store(start:finish,1:nuper,1:nupar),
 c     &         fql_store(start:finish,1:nuper,1:nupar))
 c      else
 c      endif
+      ! TODO debugging print statments 
+      if (myid .eq. 0) then
+        write(*,*) "pre QLSUM_NON_MAXWELLIAN cqlf, ql_myra_write"
+        write(*,*) "for ndisti1 = 1"
+        write(*,*) "UminPara =", UminPara
+        write(*,*) "UmaxPara =", UmaxPara
+        write(*,*) "vc_mks =", vc_mks
+        write(*,*) "old Max|omgp2| =", maxval(abs(omgp2))
+        write(*,*) "old Min|omgp2| =", minval(abs(omgp2))
+      end if
 
 
       do ip = start,finish
@@ -690,7 +703,35 @@ c                 endif
 !     --------------------------------
 !     end loop over i,j spatial points
 !     --------------------------------
+         if (maxdfdupar .lt. maxval(abs(dfdupar))) then
+            maxdfdupar = maxval(abs(dfdupar))
+         end if 
+
+         if (maxdfduper .lt. maxval(abs(dfduper))) then
+            maxdfduper = maxval(abs(dfduper))
+         end if 
+
       end do
+
+        ! 1. Synchronize all ranks (optional but good for debug print order)
+      call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+
+        ! 2. Reduce local max to global max
+      call MPI_ALLREDUCE(maxdfdupar, global_max_dupar, 1, 
+     &       MPI_DOUBLE_PRECISION, MPI_MAX, MPI_COMM_WORLD, ierr)
+
+      call MPI_ALLREDUCE(maxdfduper, global_max_duper, 1, 
+     &       MPI_DOUBLE_PRECISION, MPI_MAX, MPI_COMM_WORLD, ierr)
+
+        ! 3. Only the root rank (rank 0) should print the result
+      if (myid .eq. 0) then
+         write(*,*) "GLOBAL debug maxdfdupar =", global_max_dupar
+         write(*,*) "ndist =", ndist
+         write(*,*) "xm from old version =", xm
+         write(*,*) "GLOBAL debug maxdfduper =", global_max_duper
+      end if
+      ! TODO debugging print statment for the derivatives
+      
 
 
 c      if(ndist.eq.1 .and. i_write .ne. 0)then
@@ -1215,7 +1256,22 @@ c      factvol2d = 0.0
       !       end do
       !    end do
       ! end do
+      
+      ! TODO debugging print statments 
+      if (myid .eq. 0) then
+         write(*,*) "pre QLSUM_NON_MAXWELLIAN 4df, inside wdot_4df"
+         write(*,*) "for ndisti1 = 2"
+         write(*,*) "Max |dfdvpar_local| =", maxval(abs(dfdvpar_local))
+         write(*,*) "Max |dfdvper_local| =", maxval(abs(dfdvper_local))
+         write(*,*) "UminPara =", UminPara
+         write(*,*) "UmaxPara =", UmaxPara
+         write(*,*) "vc_mks =", vc_mks
+         write(*,*) "xm from new version =", xm
+         write(*,*) "new Max|omgp2| =", maxval(abs(omgp2))
+         write(*,*) "new Min|omgp2| =", minval(abs(omgp2))
+      end if 
 
+      !stop ! TODO this is jsut for debugging 
 
 
       nwork = 0

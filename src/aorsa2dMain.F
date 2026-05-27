@@ -4457,6 +4457,16 @@ c                 xkti2(i,j) = xkti3(i,j)
             end do
          end do
 
+         ! TODO for now jsut manually reset xn1a
+         if (ndisti1 .eq. 2) then
+            print *, "Using only density_rz." 
+            do i = 1, nnodex
+               do j = 1, nnodey
+                  xn1a(i,j) = density_rz(i,j)
+               end do
+            end do
+         end if
+
 
          xn00 = xnea(i0, j0)
          xn10 = xn1a(i0, j0)
@@ -8412,7 +8422,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
      &   n_vpar, f_rzvv, dfdvper_rzvv,
      &   dfdvpar_rzvv, vPer_rzvv, vPar_rzvv)
 
-      write(*,*) "Finished wdot_4df."
+         !write(*,*) "Finished wdot_4df."
       if (use_new_wdot) then
          call wdot_new_maxwellian(z2_electron,
      &   wdoti1,
