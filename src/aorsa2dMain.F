@@ -3507,7 +3507,8 @@ c      end if
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
-               if (capr(i) .lt. rt) then
+               if ((rant .lt. rt .and. capr(i) .lt. rt) .or.
+     &             (rant .ge. rt .and. capr(i) .gt. rt)) then
 
 *                 ------------------------------------------------
 *                 if(i_antenna .eq. 0) antenna current is Gaussian
