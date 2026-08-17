@@ -1736,27 +1736,28 @@ c         if(abs(gammab(l)) .lt. .01)gammab(l) = .01
          do l = lmin, lmax
             labs = abs(l)
 
-           if(nzfun .eq. 0) call z_approx(sgn_kprl, zetal(l), 0.0,
-     .                                                     z0, z1, z2)
+            if(nzfun .eq. 0) call z_approx(sgn_kprl, zetal(l), 0.0,
+     .           z0, z1, z2)
      
-           if(nzfun .eq. 1) then
-              call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
-     
-              if(use_new_z2 .eqv. .true. .and. l .eq. 0) then      
-                 call z_approx_e(sgn_kprl, zetal(l), gammab(l),
-     .              z0_new, z1_new, z2_new, zetai_table, 
-     .              dKdL_table, z0_table, z1_table, z2_table, 
-     .              dKdL_giv, nmax, mmax, ntable, mtable)
-                 z0 = z0_new
-                 z1 = z1_new
-                 z2 = z2_new
-              end if
-           end if
+            if(nzfun .eq. 1) then
+               call z_approx(sgn_kprl, zetal(l), gammab(l), z0, z1, z2)
+               if(use_new_z2 .eqv. .true. .and. l .eq. 0) then      
+!                 write(*,*) 'z_approx',zetal(l),z0
+                  call z_approx_e(sgn_kprl, zetal(l), gammab(l),
+     .                 z0_new, z1_new, z2_new, zetai_table, 
+     .                 dKdL_table, z0_table, z1_table, z2_table, 
+     .                 dKdL_giv, nmax, mmax, ntable, mtable)
+                  z0 = z0_new
+                  z1 = z1_new
+                  z2 = z2_new
+!                 write(*,*) 'z_approx_e',zetal(l),z0
+               end if
+            end if
                     
          
-           if(nzfun .eq. 2) call z_smithe(sgn_kprl,zetal(l),gammab(l),
+            if(nzfun .eq. 2) call z_smithe(sgn_kprl,zetal(l),gammab(l),
      .                                                     z0, z1, z2)
-           if(nzfun .eq. 3) call z_table(sgn_kprl,zetal(l),gammab(l),
+            if(nzfun .eq. 3) call z_table(sgn_kprl,zetal(l),gammab(l),
      .                                      gamma_coll(l), z0, z1, z2)
 
 

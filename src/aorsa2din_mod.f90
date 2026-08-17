@@ -350,7 +350,8 @@
       integer :: isigma = 1             !-----if(isigma.eq.0) cold plasma conductivity is used.
                                         !-----if(isigma.eq.1) hot  plasma conductivity is used (default)
       integer :: nzfun = 1              !-----nzfun:  if(nzfun.eq.0) Simple Z function is used from ZFUN 
-                                        !-----        if(nzfun.eq.1) Generalized Z function of Brambilla is used (default)
+                                        !-----        if(nzfun.eq.1) Generalized Z function of Brambilla is used (default) or
+                                        !-----                       Berry table if z2_electron=1
                                         !-----        if(nzfun.eq.2) Z function of Smithe is used by doing numerical integrals.
                                         !-----        if(nzfun.eq.3) Z function table lookup of Smithe is used
 

@@ -20,8 +20,8 @@
       integer n_u_basis, n_theta_basis, ni, mi
       real enorm_factor
 
-      integer, parameter :: n_u_dim = 300
-      integer, parameter :: n_theta_dim = 200
+      integer, parameter :: n_u_dim = 600
+      integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
 
 !     ----------------
@@ -142,7 +142,11 @@
      &    vc_mks, u0, alpha, u_dbb, u_norm_mks
 
 
-
+      if (n_u_dim < n_u) then
+         write(*,*) "CRITICAL max n_u_dim < cql n_u", n_u_dim,n_u
+         stop
+      end if
+      
       open(unit=237,file='out237',status='unknown', form='formatted')
 
       open(unit=140, file='f_cql_3D.vtk', status='unknown', &
@@ -248,7 +252,7 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
 !     -------------------------------------------------
-      CALL netcdfr3d(netCDF_file)
+      CALL netcdfr3d(netCDF_file,1)
 
       vc_mks = vc * 1.0e-02
       vc_mks_cql3d = vc_mks
@@ -1080,8 +1084,8 @@
       integer n_u_basis, n_theta_basis, ni, mi
       real enorm_factor
 
-      integer, parameter :: n_u_dim = 300
-      integer, parameter :: n_theta_dim = 200
+      integer, parameter :: n_u_dim = 600
+      integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
 
 !     ----------------
@@ -1192,6 +1196,10 @@
       real :: pi, piinv, fl, ugiv, thegiv, fnorm, fmin, fmax, &
      &    vc_mks, u0, alpha, e, u_dbb, u_norm_mks
 
+      if (n_u_dim < n_u) then
+         write(*,*) "CRITICAL max n_u_dim < cql n_u", n_u_dim,n_u
+         stop
+      end if
 
 
       open(unit=238,file='out238',status='unknown', form='formatted')
@@ -1296,7 +1304,7 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
 !     -------------------------------------------------
-      CALL netcdfr3d(netCDF_file)
+      CALL netcdfr3d(netCDF_file,2)
 
       vc_mks = vc * 1.0e-02
       vc_mks_cql3d = vc_mks

@@ -684,12 +684,12 @@ C***     REAL ARITHMETIC.
       END
 C
 C
-C TWO POL APPROXIMATION
+C TWO POLE APPROXIMATION
 C
       SUBROUTINE Z2P(Z,F)
       COMPLEX Z,F
-      F=CMPLX(.5,.81)/(CMPLX(.51,-.81)-Z)-CMPLX(.5,-.81)
-     1/(CMPLX(.51,.81)+Z)
+      F=CMPLX(.5, .81)/(CMPLX(.51,-.81)-Z)-
+     &  CMPLX(.5,-.81)/(CMPLX(.51, .81)+Z)
       RETURN
       END
 

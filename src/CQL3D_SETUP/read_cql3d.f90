@@ -24,7 +24,7 @@
 
        CONTAINS
 
-       subroutine netcdfr3d(netcdfnm)
+       subroutine netcdfr3d(netcdfnm,isp)
 
 !c---- Reads a
 !c     distribution and the mesh from a netCDF file created
@@ -73,7 +73,7 @@
 !c      real:: f(iya,jxa,lrza)
 
          real:: vnorm
-         integer:: iy,jx,lrz, nt, nt_id
+         integer:: iy,jx,lrz, nt, nt_id,isp
          integer, allocatable :: iy_(:)
          real, allocatable :: x(:)
          real, allocatable :: y(:,:)
@@ -152,7 +152,7 @@
          istatus = nf90_inquire_dimension(ncid, nt_id, len = nt)
        !call ncdinq(ncid, nt_id,'tdim', nt, istatus)
          write(*,*)&
-         & 'proc_cql3d_op: after inquire dimenstion, # of t steps = ',&
+         & 'proc_cql3d_op: after inquire dimension, # of t steps = ',&
          &     nt, ' istatus=',istatus
 
 !c --- inquire about dimension sizes ---
@@ -164,9 +164,8 @@
          istatus = nf90_inquire_dimension(ncid, ydim, len = iy)
          istatus = nf90_inquire_dimension(ncid, xdim, len = jx)
          istatus = nf90_inquire_dimension(ncid, rdim, len = lrz)
-         istatus = nf90_inquire_dimension(ncid, gkdim, len = ngen)
+         istatus = nf90_inquire_dimension(ncid, gkdim,len = ngen)
          istatus = nf90_inquire_dimension(ncid, kdim, len = ntotal)
-         istatus = nf90_inquire_dimension(ncid, gkdim, len = ngen)
 
 !c ************* Allocate space for Harvey arrays.
 
@@ -287,12 +286,12 @@
          write(*,*)'shape of wperp ', shape(wperp)
          istatus = nf90_inq_varid(ncid, 'wperp', vid)
          istatus = nf90_get_var(ncid, vid, wperp)
-         write(*,*)'proc_cql3d_op: after ncvgt, wperp = ', wperp(:,1,nt)
+         write(*,*)'proc_cql3d_op: after ncvgt, wperp = ', wperp(:,isp,nt)
 
          write(*,*)'shape of wpar ', shape(wpar)
          istatus = nf90_inq_varid(ncid, 'wpar', vid)
          istatus = nf90_get_var(ncid, vid, wpar)
-         write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:,1,nt)
+         write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:,isp,nt)
 
 
 !c-----Close netCDF file
@@ -358,10 +357,10 @@
          theta = y
          u = x
          rho_a = rya
-         f_CQL = f(:,:,:,1) 
+         f_CQL = f(:,:,:,isp) !JCW import patch for newer cql
 
-         wperp_cql = wperp(:,1,:) !first gen species
-         wpar_cql = wpar(:,1,:)   !first gen species
+         wperp_cql = wperp(:,isp,:) !first gen species
+         wpar_cql = wpar(:,isp,:)   !first gen species
 
          DEALLOCATE (iy_, x, y, rya, f, wperp, wpar)
 

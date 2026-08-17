@@ -92,7 +92,7 @@ c      use zfun_hilbert
       
       y0 = 1.5
       y = y0            
-      
+      !add toroidal broadening
       if(sgn_kprl .ge. 0.0)then
          fgam = 1.0
 
@@ -142,7 +142,7 @@ c        call zfun_hil(zetat, zfunct, flag)
       end if
       
       zetai_giv = 1.0 / real(zeta) 
-                 
+
       call intplt_z(zetai_giv, dKdL_giv, z0_out, nmax, mmax, z0_table, 
      .   ntable, mtable, zetai_table, dKdL_table)
      
