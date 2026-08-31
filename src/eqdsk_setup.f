@@ -10,6 +10,7 @@ c
      &   i_psi, dldb_tot12, dldbavg, n_prof_flux, rhomax)
      
       use size_mod
+      use aorsa2din_mod, only:eqtype
       
       implicit none
 
@@ -740,8 +741,10 @@ c      write(29,1000)nkzm
       rwleft_auto  = rwleft_auto  - drg32 * 2.0
       
       if(ytop .eq. 0.0)    ytop = ytop_auto
-      if(ybottom .eq. 0.0) ybottom = ybottom_auto 
-      if(rwleft .eq. 0.0)  rwleft = rwleft_auto     
+      if(ybottom .eq. 0.0) ybottom = ybottom_auto
+      if (eqtype/='mirror') then
+         if(rwleft .eq. 0.0)  rwleft = rwleft_auto
+      end if
       if(rwright .eq. 0.0) rwright = rwright_auto    
       
       

@@ -344,9 +344,9 @@
       
       integer :: iqprof = 1             !-----iqprof: if(iqprof.eq.1) q proportional to density (default)
                                         !-----        if(iqprof.eq.2) q proportional to sqrt(density) for TAE runs
-      integer :: iez = 0                !-----iez:  not used
+      integer :: iez = 0                !-----iez:   not used
       integer :: nstep  = 16            !-----nstep: not used
-      integer :: nabs = 2               !-----nabs not used
+      integer :: nabs = 2               !-----nabs:  not used
       integer :: isigma = 1             !-----if(isigma.eq.0) cold plasma conductivity is used.
                                         !-----if(isigma.eq.1) hot  plasma conductivity is used (default)
       integer :: nzfun = 1              !-----nzfun:  if(nzfun.eq.0) Simple Z function is used from ZFUN 
