@@ -10,9 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: setup brew
-    - run: brew untap aws/tap
+      run: brew untap aws/tap
     - name: brew trust
-    - run: brew trust aws/tap
+      run: brew trust aws/tap
     - name: find gfortran
       run:  ln -s  `brew --prefix`/bin/gfortran-15 `brew --prefix`/bin/gfortran
     - name: Install AORSA deps
