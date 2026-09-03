@@ -16,7 +16,7 @@ jobs:
     - name: find gfortran
       run:  ln -s  `brew --prefix`/bin/gfortran-15 `brew --prefix`/bin/gfortran
     - name: Install AORSA deps
-      run: brew install gfortran open-mpi scalapack giza netcdf-fortran
+      run: brew install ctest gfortran open-mpi scalapack giza netcdf-fortran
     - name: Build
       run: make
     - name: Test
