@@ -20,6 +20,6 @@ jobs:
     - name: Build
       run: make
     - name: Test
-      run: pytest
+      run: python -m pytest
 
       #giza license free pgplot
