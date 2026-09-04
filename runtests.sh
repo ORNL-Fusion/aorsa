@@ -1,3 +1,4 @@
+#!/bin/bash
 cd test/DIIID-whistler
 resultA=$(bash -c '(./test.sh); exit $?' 2>&1)
 exitA=$?
