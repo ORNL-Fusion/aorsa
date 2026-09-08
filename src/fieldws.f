@@ -5425,6 +5425,7 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevgt .gt. 0) then
          CALL PGSFS(1)
+#ifdef PDEBUG
          DO I=1, Nlevel-1
             RCOL = int(0.5+0.5*REAL(I-1)/REAL(NLEVEL-1))
             CALL PGSCR(I+10, RCOL, RCOL, RCOL)
@@ -5432,6 +5433,7 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
             CALL PGCONF(f, nrmax, nthmax, 1, nr, 1, nth,
      &        flevel(I),flevel(I+1),TR)
          END DO
+#endif
          call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)

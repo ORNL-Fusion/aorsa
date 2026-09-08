@@ -2803,7 +2803,7 @@ c
       end do
 
       return
-      end
+      end subroutine
 
 c
 c***************************************************************************
@@ -2849,7 +2849,7 @@ c
 
 
       return
-      end
+      end subroutine
 
 c
 c***************************************************************************
@@ -2899,7 +2899,7 @@ c
 
 
       return
-      end
+      end subroutine
 
 c
 c***************************************************************************
@@ -2949,7 +2949,7 @@ c
 
 
       return
-      end
+      end subroutine
 
 
 c
@@ -3026,7 +3026,7 @@ c
   900 format(1p6e12.4)
   910 format(1p8e12.4)
   920 format(2i10)
-      end
+      end subroutine
 
 
 
@@ -3046,14 +3046,14 @@ c----------------------------------------------------------------------------!
       fmax=f(1)
       fmin=fmax
       do i=1, nx
-            fmax=amax1(fmax, f(i))
-            fmin=amin1(fmin, f(i))
+            fmax=max(fmax, f(i))
+            fmin=min(fmin, f(i))
 c           write(6, *)fmax, fmin
       end do
 
       return
  2201 format(2i5,1p,8e12.4)
-      end
+      end subroutine
 
 
 c***************************************************************************
@@ -3088,7 +3088,7 @@ c
       end do
 
       return
-      end
+      end subroutine
 
 
       subroutine dgrate(x, f, nx1, nx2, ans, nxmax)
@@ -3105,7 +3105,7 @@ c
       end do
 
       return
-      end
+      end subroutine
 
 
 c

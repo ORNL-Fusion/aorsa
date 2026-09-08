@@ -11392,7 +11392,7 @@ c      write(6,*) "finished plots; starting deallocation"
      &   ndisti4   .eq. 0 .and.
      &   ndisti5   .eq. 0 .and.
      &   ndisti6   .eq. 0 .and.
-     &   ndiste    .eq. 0)   then
+     &   ndiste    .eq. 0 .and. plot_only .eqv. .false.)   then
 
          deallocate( UPERP )
          deallocate( UPARA )
@@ -11604,7 +11604,7 @@ c      write(6,*) "finished plots; starting deallocation"
 
       end if
 
-      if (read_solution .eqv. .false.) then
+      if (read_solution .eqv. .false. .and. plot_only .eqv. .false.)then
 
          deallocate( p_brhs )
          deallocate( p_ipiv )
@@ -11736,11 +11736,12 @@ c      write(6,*) "finished plots; starting deallocation"
       deallocate (xkperp2_slow, xkperp2_fast)
       deallocate (xkprl_a, P_a)
       deallocate (work)
-!      deallocate (workc)
-!if not static
-      deallocate (workn)
-      deallocate (rwork)
-!fi
+
+      if ( plot_only .eqv. .false. ) then
+         deallocate (workn)
+         deallocate (rwork)
+      end if
+
       if (myid==0) then
          close (963)
          close (34)
