@@ -3494,11 +3494,13 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       call ezplot2p(title, titll, titlr, titlb, rhon_half, redotjeavg,
      &   redotjiavg, nnoderho2_half, nrhomax)
 
-      write(15, *)
-      write(15, *) 'Flux surface driven current'
-      write(15, *)
-      write(15, *) '        n      rho       J (A/m2)     I (A)'
-      write(15, *)
+
+! turn of out15 for plot_only false
+!      write(15, *)
+!      write(15, *) 'Flux surface driven current'
+!      write(15, *)
+!      write(15, *) '        n      rho       J (A/m2)     I (A)'
+!      write(15, *)
 
       write(6, *)
       write(6, *) 'Flux surface driven current'
@@ -3507,7 +3509,7 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       write(6, *)
 
       do n = 1, nnoderho2_half
-         write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
+!         write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
          write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
       end do
 
@@ -5425,13 +5427,15 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevgt .gt. 0) then
          CALL PGSFS(1)
-         DO I=1, Nlevel-1
+#ifdef PDEBUG         
+         DO I=1, Nlevel-1  !buggy , esp in pgplot
             RCOL = int(0.5+0.5*REAL(I-1)/REAL(NLEVEL-1))
             CALL PGSCR(I+10, RCOL, RCOL, RCOL)
             CALL PGSCI(I+10)
             CALL PGCONF(f, nrmax, nthmax, 1, nr, 1, nth,
      &        flevel(I),flevel(I+1),TR)
          END DO
+#endif         
          call pgsci(nblue)
          call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
      &       nlevgt, tr)

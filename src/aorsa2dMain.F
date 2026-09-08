@@ -1177,7 +1177,7 @@ c     &         itable,jtable,ntable,mtable
       call blacs_pinfo( myid, nproc )
       if (nproc .lt. 1) then
          write(6,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
-         write(15,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
+!         write(15,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
          stop '** blacs not setup '
       else if (nproc .ne. nprow*npcol) then
          stop '** nproc is not equal to nprow*npcol '
@@ -4727,6 +4727,7 @@ c     &         xnea(i,j), re_acold
      &           6x,"  ne  ",6x,"  n4  ")
 
       j = jequat
+      write(*,*) 'xkt3',xkti3
       do i = 1, nnodex
          t1ev = xkti(i,j)  / q
          t2ev = xkti2(i,j) / q
@@ -11063,7 +11064,7 @@ c--      Calculate species fractions from Wdot:
 
          tmin = (second1(dummy) - t1) / 60.
          write(6 , 2846) tmin
-         write(15, 2846) tmin
+         if (plot_only .eqv. .false.) write(15, 2846) tmin
       end if
 
  2846 format('time to do plots =', f9.3, ' min')
@@ -11327,9 +11328,9 @@ c      write(6,*) "finished plots; starting deallocation"
       ttotal = time/60.
 
       if (myid==0) then
-         write(15,162)
+         if (plot_only .eqv. .false.) write(15,162)
          write(6, 162)
-         write(15,899) ttotal
+         if (plot_only .eqv. .false.) write(15,899) ttotal
          write(6, 899) ttotal
       endif
 
@@ -11490,7 +11491,7 @@ c      write(6,*) "finished plots; starting deallocation"
      &   ndisti4   .ne. 0 .or.
      &   ndisti5   .ne. 0 .or.
      &   ndisti6   .ne. 0 .or.
-     &   ndiste    .ne. 0)   then
+     &   ndiste    .ne. 0 .and. plot_only .eqv. .false.)   then
 
          deallocate( UPERP )
          deallocate( UPARA )
@@ -11604,7 +11605,7 @@ c      write(6,*) "finished plots; starting deallocation"
 
       end if
 
-      if (read_solution .eqv. .false.) then
+      if (read_solution .eqv. .false. .and. plot_only .eqv. .false.)then
 
          deallocate( p_brhs )
          deallocate( p_ipiv )
@@ -11736,11 +11737,12 @@ c      write(6,*) "finished plots; starting deallocation"
       deallocate (xkperp2_slow, xkperp2_fast)
       deallocate (xkprl_a, P_a)
       deallocate (work)
-!      deallocate (workc)
-!if not static
-      deallocate (workn)
-      deallocate (rwork)
-!fi
+
+      if ( plot_only .eqv. .false. ) then
+         deallocate (workn)
+         deallocate (rwork)
+      end if
+
       if (myid==0) then
          close (963)
          close (34)
@@ -11756,7 +11758,7 @@ c      write(6,*) "finished plots; starting deallocation"
 
          tmin = (second1(dummy) - t1) / 60.
          write(6 , 2847) tmin
-         write(15, 2847) tmin
+         if (plot_only .eqv. .false.) write(15, 2847) tmin
 
       end if
 
