@@ -53,7 +53,8 @@ c     &            (rho(nrho) - rho(nrho-1)) * (rho_ij(i,j) - rho(nrho))
                end if
                
             enddo
-            if (profile_out(i,j) <= 0.0) profile_out(i,j) = 1.0e-10
+            !magic number, " <= -> <  " permit zero in profile for unused species
+            if (profile_out(i,j) < 0.0) profile_out(i,j) = 1.0e-10
          end do
       end do
          

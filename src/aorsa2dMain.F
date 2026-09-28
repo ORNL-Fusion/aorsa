@@ -6,7 +6,9 @@
 *        (eqdsk_special .ne. 0)
 *     Does not change the sign of psi for abnormal eqdsks
 *     Uses simple but slower load and solve
-*        - good out to the outer box wall
+*     - good out to the outer box wall
+*
+*     version 24     Mirror modifications      
 *----------------------------------------------------------------------
 
 
@@ -3037,10 +3039,6 @@ c           if(myid==0)write(6,*)n, m, capr_flux(n,m), xj
       sin_antang = sin(antang_rad)
       cos_antang = cos(antang_rad)
 
-      iant=int((rant - rwleft) / dx) + 1
-      jant=int((yant(1) - ybottom) / dy) + 1 !add jant(2) for two antennas
-      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
-
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
       xjantx = curdnx / dx
       xjanty = curdny / dx
@@ -3049,8 +3047,6 @@ c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
       xjant=sqrt(xjantx**2 + xjanty**2 + xjantz**2) !not used
 
       rlim   = rt + alim
-
-
 
 
 
@@ -3264,6 +3260,10 @@ c      end if
       dpsiant = dpsiant0
       dthetant = dthetant0 / 360. * twopi
       yant_max = antlen / 2.0
+      do k = 1, nant
+      iant=int((rant - rwleft) / dx) + 1
+      jant=int((yant(k) - ybottom) / dy) + 1 !add jant(2) for two antennas
+      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
 
 
       do i = 1, nnodex
@@ -3296,10 +3296,10 @@ c      end if
             end if
 
             shapey = 0.0
-            deltay = y(j) - yant(1)
-            if (nant == 2) then
-               deltay = min( abs(deltay), abs(y(j)-yant(2)) )
-            end if
+            deltay = y(j) - yant(k)
+!            if (nant == 2) then
+!               deltay = min( abs(deltay), abs(y(j)-yant(2)) )
+!            end if
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
@@ -3325,13 +3325,13 @@ c                  antlc = pi / (xk0 * antlen)
 
                end if
 
-               Ix = - dpsidy / gradpsi * cos_antang
-               Iy =   dpsidx / gradpsi * cos_antang
-               Iz =   sin_antang
+               Ix = - dpsidy / gradpsi * cos_antang*exp(zi*phaseant(k))
+               Iy =   dpsidx / gradpsi * cos_antang*exp(zi*phaseant(k))
+               Iz =   sin_antang *exp(zi*phaseant(k))
 
-               xjx(i,j) = xjantx * shapey  * gausspsi * Ix
-               xjy(i,j) = xjanty * shapey  * gausspsi * Iy
-               xjz(i,j) = xjantz * shapey  * gausspsi * Iz
+               xjx(i,j) = xjx(i,j)+xjantx * shapey  * gausspsi * Ix 
+               xjy(i,j) = xjy(i,j)+xjanty * shapey  * gausspsi * Iy
+               xjz(i,j) = xjz(i,j)+xjantz * shapey  * gausspsi * Iz
             end if
 
             if(i_antenna .eq. 2) then
@@ -3358,7 +3358,7 @@ c                  antlc = pi / (xk0 * antlen)
 
          end do
       end do
-
+      end do
 
 *     ----------------------------
 *     find maximum antenna current
@@ -4027,11 +4027,9 @@ c        if(nboundary .eq. 0)xn3a = s_n_s(ndata,3)
 
          xkti3 = 1.0e-10 *q
 c        if(nboundary .eq. 0)xkti3 = s_t_s(ndata,3)
-
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,3),
      &        xkti3(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n),
      &        s_nrho_n, rho(1:nnodex,1:nnodey))
-
          xn4a = 1.0e-10
 c        if(nboundary .eq. 0)xn4a = s_n_s(ndata,4)
 
@@ -4154,7 +4152,6 @@ c                    xnuomia(i,j) = xnuomi * exp(+ drho1/ scrape)
                end do
             end do
          end if
-
 *        ---------------------------------
 *        Minority ion (species 2) profiles:
 *        ---------------------------------
@@ -4727,7 +4724,6 @@ c     &         xnea(i,j), re_acold
      &           6x,"  ne  ",6x,"  n4  ")
 
       j = jequat
-      write(*,*) 'xkt3',xkti3
       do i = 1, nnodex
          t1ev = xkti(i,j)  / q
          t2ev = xkti2(i,j) / q
@@ -10083,8 +10079,9 @@ c      go to 9945
       cn(nnoderho) = 0.0
       yn(nnoderho) = 0.0
 
-      call tridag(an, bn, cn, yn, xjhat, nnoderho)
 
+      call tridag(an, bn, cn, yn, xjhat, nnoderho)
+      if (eqtype=='mirror') xjhat=1.0 !for mirrors to avoid NaN
 
 
 *     -------------------------
@@ -11071,7 +11068,7 @@ c--      Calculate species fractions from Wdot:
  2847 format('time to sum modes =', f9.3, ' min')
 
 c      write(6,*) "finished plots; starting deallocation"
-      call blacs_barrier(icontxt, 'All')
+C      call blacs_barrier(icontxt, 'All')
 
 
   310 format(1p,6e12.4)
@@ -11319,7 +11316,7 @@ c      write(6,*) "finished plots; starting deallocation"
  1118 format(3x,"avg iotabr = ",1p,e12.4,"       ")
  1119 format(2x,"ellipticity = ",1p,e12.4,"      ")
 
- 5555 continue
+! 5555 continue
 
       call blacs_barrier(icontxt, 'All')
 
@@ -11393,7 +11390,7 @@ c      write(6,*) "finished plots; starting deallocation"
      &   ndisti4   .eq. 0 .and.
      &   ndisti5   .eq. 0 .and.
      &   ndisti6   .eq. 0 .and.
-     &   ndiste    .eq. 0)   then
+     &   ndiste    .eq. 0 .and. plot_only .eqv. .false.)   then
 
          deallocate( UPERP )
          deallocate( UPARA )
@@ -11485,13 +11482,13 @@ c      write(6,*) "finished plots; starting deallocation"
 
       end if
 
-      if(ndisti1   .ne. 0 .or.
+      if( (ndisti1   .ne. 0 .or.
      &   ndisti2   .ne. 0 .or.
      &   ndisti3   .ne. 0 .or.
      &   ndisti4   .ne. 0 .or.
      &   ndisti5   .ne. 0 .or.
      &   ndisti6   .ne. 0 .or.
-     &   ndiste    .ne. 0 .and. plot_only .eqv. .false.)   then
+     &   ndiste    .ne. 0) .and. (plot_only .eqv. .false.) )  then
 
          deallocate( UPERP )
          deallocate( UPARA )

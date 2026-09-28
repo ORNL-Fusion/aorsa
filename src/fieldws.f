@@ -5427,6 +5427,7 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevgt .gt. 0) then
          CALL PGSFS(1)
+
 #ifdef PDEBUG         
          DO I=1, Nlevel-1  !buggy , esp in pgplot
             RCOL = int(0.5+0.5*REAL(I-1)/REAL(NLEVEL-1))

@@ -198,6 +198,8 @@ LOAD = $(F90_LOAD) $(OPTIMIZATION)
 
 $(EXEC):  make_directories $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP)
 	$(info LIBS are $(LIBS))
+	$(info INCLUDE_DIRS are $(INCLUDE_DIRS))
+	$(info NETCDF_DIR is $(NETCDF_DIR))
 	$(LOAD) -o $(EXEC) $(OBJ_FILES) $(OBJ_FFT) $(OBJ_CQL3D_SETUP) $(LOADFLAGS) $(LIBS) 
 
 # Dependencies
