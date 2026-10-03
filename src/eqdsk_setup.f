@@ -2018,14 +2018,19 @@ c           calculate fields:
 *           -------------------------------------------------
 *           Minus sign because psig(i,j) = psilim - psig(i,j)
 *           -------------------------------------------------
-            if ( (r < 2.e-2) ) then !JCW
+            if ( (r < 2.e-2) ) then !JCW mirror
+!     assume dpsi/dr(R=0) = 0, then dpsi^2/dr^2 (R=0) = dpsi/dr(R=delta r) /delta r
+!     get derivates of psi near axis, derivates on axis vanish, estimate 2nd derivatives
                psr2 = surf2(2.e-2, z, mr, mz, rg, zg, psirg, nxeqdmax,
      &           zpr, sigma)
 
-               psz2 = surf2(capr(2), z, mr, mz, rg, zg, psizg, nxeqdmax,
+!               psz2 = surf2(capr(2), z, mr, mz, rg, zg, psizg, nxeqdmax,
+!     &              zpz, sigma)
+               psz2 = surf2(2.e-2, z, mr, mz, rg, zg, psizg, nxeqdmax,
      &              zpz, sigma)
                !r=0 not on mesh , capr(1)=delta r. dpsi/dr(0)=0
-               br =  1./r * psz
+!     br =  1./r * psz
+               br =  1./2.e-2 * psz2
                !bz = -(psr2-psr)/(capr(2)-capr(1))
                bz = -1./2.e-2 * psr2
 

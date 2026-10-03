@@ -6,7 +6,7 @@
 !     ---------------------------------------------------
 !     Maximum number of modes allowed:
 !     IMPORTANT NOTE: when changing these parameters, you 
-!     must touch all files and recomile everything!!! 
+!     must touch all files and recompile everything!!! 
 !     ---------------------------------------------------
 
       end module size_mod

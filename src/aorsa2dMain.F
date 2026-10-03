@@ -1455,9 +1455,9 @@ c      jequat  = nnodey / 2
       if (myid==0) then
 
          write(15, *) "AORSA2D: version_number = ", version_number
-#ifdef GITHASH       
+#ifdef GITHASH
          write(15, *) "AORSA2D: GIT hash  = "//GITHASH
-#endif         
+#endif
          write(15, *) "z2_electron = ", z2_electron
          write(15, *) "use_new_Z2 = ", use_new_Z2
          write(15, *) "use_fourier_Z2 = ", use_fourier_Z2
@@ -1467,12 +1467,15 @@ c      jequat  = nnodey / 2
 
 
          write(6, *) "AORSA2D: version_number = ", version_number
+#ifdef GITHASH
+         write(6, *) "AORSA2D: GIT hash  = "//GITHASH
+#endif
          write(6, *) "z2_electron = ", z2_electron
          write(6, *) "use_new_Z2 = ", use_new_Z2
          write(6, *) "use_fourier_Z2 = ", use_fourier_Z2
 
          write(6, *) "nphi_number = ", nphi_number
-         write(6, *) "nphi_array = ", nphi_array
+         write(6, *) "nphi_array = ", nphi_array(1:nphi_number)
 
 
          write (6, *)
@@ -3035,10 +3038,6 @@ c           if(myid==0)write(6,*)n, m, capr_flux(n,m), xj
       sin_antang = sin(antang_rad)
       cos_antang = cos(antang_rad)
 
-      iant=int((rant - rwleft) / dx) + 1
-      jant=int((yant(1) - ybottom) / dy) + 1 !add jant(2) for two antennas
-      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
-
 c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
       xjantx = curdnx / dx
       xjanty = curdny / dx
@@ -3263,6 +3262,11 @@ c      end if
       dthetant = dthetant0 / 360. * twopi
       yant_max = antlen / 2.0
 
+      nant_loop: do k = 1, nant
+
+      iant=int((rant - rwleft) / dx) + 1
+      jant=int((yant(k) - ybottom) / dy) + 1
+      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -3294,10 +3298,7 @@ c      end if
             end if
 
             shapey = 0.0
-            deltay = y(j) - yant(1)
-            if (nant == 2) then
-               deltay = min( abs(deltay), abs(y(j)-yant(2)) )
-            end if
+            deltay = y(j) - yant(k)
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
@@ -3317,19 +3318,19 @@ c      end if
 *                 ---------------------------------------------------
 c                  antlc = pi / (xk0 * antlen)
                   if (i_antenna.eq.1 .and. abs(deltay).lt.yant_max)then
-                     shapey = cos(xk0 * antlc * deltay)
+                     shapey = cos(xk0 * antlc * abs(deltay))
                   end if
 
 
                end if
 
-               Ix = - dpsidy / gradpsi * cos_antang
-               Iy =   dpsidx / gradpsi * cos_antang
-               Iz =   sin_antang
+               Ix = - dpsidy / gradpsi * cos_antang*exp(zi*phaseant(k))
+               Iy =   dpsidx / gradpsi * cos_antang*exp(zi*phaseant(k))
+               Iz =   sin_antang*exp(zi*phaseant(k))
 
-               xjx(i,j) = xjantx * shapey  * gausspsi * Ix
-               xjy(i,j) = xjanty * shapey  * gausspsi * Iy
-               xjz(i,j) = xjantz * shapey  * gausspsi * Iz
+               xjx(i,j) = xjx(i,j)+xjantx * shapey  * gausspsi * Ix
+               xjy(i,j) = xjy(i,j)+xjanty * shapey  * gausspsi * Iy
+               xjz(i,j) = xjz(i,j)+xjantz * shapey  * gausspsi * Iz
             end if
 
             if(i_antenna .eq. 2) then
@@ -3356,7 +3357,7 @@ c                  antlc = pi / (xk0 * antlen)
 
          end do
       end do
-
+      end do nant_loop
 
 *     ----------------------------
 *     find maximum antenna current
@@ -10081,7 +10082,7 @@ c      go to 9945
       yn(nnoderho) = 0.0
 
       call tridag(an, bn, cn, yn, xjhat, nnoderho)
-
+      if (eqtype=='mirror') xjhat=1.0 !for mirrors to avoid NaN
 
 
 *     -------------------------

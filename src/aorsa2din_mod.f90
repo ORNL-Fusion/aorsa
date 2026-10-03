@@ -5,6 +5,7 @@
       logical :: write_for_azzam = .false. ! write out matrix for Azzam
       logical :: use_new_z2                                               
       logical :: use_fourier_z2       
+      integer,parameter :: nphimx=200, nphasemx=12, maxant=8
 
 !     --------------------------------------------------------
 !     Declarations and defaults for aorsa2d.in input variables
@@ -68,6 +69,9 @@
       real :: psiant = 0.95           !----- location of antenna center in Z (m) for curved antenna
       real :: psimol = 1.00           !-----psimol: if (psimol .eq. 1.0) molifier is NOT used for plasma profiles (default)
                                       !-----        if (psimol .ne. 1.0) molifier is used for profiles, centered at psimol
+      real, dimension(maxant) :: yant = 0.0  !-----yant = location of antenna center in Z (m) , current shapey
+      real, dimension(maxant) :: phaseant = 0.0
+
       real :: psipne = 0.50
       real :: psipte = .30
       real :: psipti1 = .30
@@ -76,7 +80,6 @@
       real :: psipti4 = .30
       real :: psipti5 = .30
       real :: psipti6 = .30
-      real :: yant(2) = 0.0           !-----yant = location of antenna center in Z (m) , current shapey
       real :: te0  = 4.2900E+03       !-----te0=central value of eletron temperature in eV
       real :: ti0  = 7.0700E+03       !-----ti0=central value of ion temperature in eV
       real :: ti02 = 7.0700E+03
@@ -372,7 +375,6 @@
       integer :: ndisti5 = 0
       integer :: ndisti6 = 0      
 
-      integer,parameter :: nphimx=200, nphasemx=12
       integer :: nmodesx = 128          !-----nmodesx=number of modes used in the x direction
       integer :: nmodesy = 128          !-----nmodesy=number of modes used in the y direction
       integer :: nmodeslb = 256         !-----nmodeslb =number of modes used along the field line
@@ -387,7 +389,7 @@
       real phase, zmin, zmax, phi0, amplt(20) 
                    
       namelist/aorsa2din/eqtype,nmodesx, nmodesy, nmodeslb, nwdot, lmax, lmaxe, ibessel, &
-     &    ti0, xnuead, xnu1ad, xnu2ad, rant, te0, yant,  &
+     &    ti0, xnuead, xnu1ad, xnu2ad, rant, te0, yant, nant, phaseant, &
      &    ti02, ti03, ti2lim, ti3lim, nuper, nupar, &
      &    ti04, ti05, ti06, ti4lim, ti5lim, ti6lim,  &
      &    inu, iprint, iexact, delta0, xwall, xnwall,  &
