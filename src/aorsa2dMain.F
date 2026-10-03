@@ -868,7 +868,6 @@ c     &         itable,jtable,ntable,mtable
 
 !        complex :: aij, beta
         real,    dimension(:,:), allocatable :: work
-!        complex, dimension(:,:), allocatable :: workc
 
         complex, dimension(ndfmax) :: row,rowk
 
@@ -911,7 +910,6 @@ c     &         itable,jtable,ntable,mtable
      &           yy(mkdim1 : mkdim2, 1 : nymx) )
 
       allocate (work(nxmx, nymx))
-!      allocate (workc(nxmx, nymx))
 
       allocate ( psi(nxmx, nymx),  rho(nxmx, nymx), theta(nxmx, nymx),
      &   rhohatx(nxmx, nymx), rhohaty(nxmx, nymx), theta0(nxmx, nymx),
@@ -1243,7 +1241,7 @@ c     &         itable,jtable,ntable,mtable
 *     -------------------------------------------------------------
 *     Leave all modes out of the sum except the pre-determined ones
 *     -------------------------------------------------------------
-      do 9000 nsum = 1, nphi_number
+      nsum_loop: do nsum = 1, nphi_number
 
          fdksav = 0.0
          feksav = 0.0
@@ -11045,6 +11043,139 @@ c--      Calculate species fractions from Wdot:
 
       end if
 
+!     -----------------
+!     deallocate arrays
+!     -----------------
+
+         deallocate( UPERP )
+         deallocate( UPARA )
+         deallocate( VPERP )
+         deallocate( VPARA )
+         deallocate( UPERP_work )
+         deallocate( UPARA_work )
+
+         deallocate( f )
+
+         deallocate( dfdupere )
+         deallocate( dfdupare )
+         deallocate( fperpe )
+
+
+         deallocate( dfduper1 )
+         deallocate( dfdupar1 )
+         deallocate( fperp1 )
+
+         deallocate( dfduper2 )
+         deallocate( dfdupar2 )
+         deallocate( fperp2 )
+
+         deallocate( dfduper3 )
+         deallocate( dfdupar3 )
+         deallocate( fperp3 )
+
+         deallocate( dfduper4 )
+         deallocate( dfdupar4 )
+         deallocate( fperp4 )
+
+         deallocate( dfduper5 )
+         deallocate( dfdupar5 )
+         deallocate( fperp5 )
+
+         deallocate( dfduper6 )
+         deallocate( dfdupar6 )
+         deallocate( fperp6 )
+
+         deallocate( bqlavg_e )
+         deallocate( cqlavg_e )
+         deallocate( eqlavg_e )
+         deallocate( fqlavg_e )
+
+         deallocate( bqlavg_work )
+         deallocate( cqlavg_work )
+         deallocate( eqlavg_work )
+         deallocate( fqlavg_work )
+
+         deallocate( bqlavg_i1 )
+         deallocate( cqlavg_i1 )
+         deallocate( eqlavg_i1 )
+         deallocate( fqlavg_i1 )
+
+         if(eta2 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i2 )
+            deallocate( cqlavg_i2 )
+            deallocate( eqlavg_i2 )
+            deallocate( fqlavg_i2 )
+         end if
+
+         if(eta3 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i3 )
+            deallocate( cqlavg_i3 )
+            deallocate( eqlavg_i3 )
+            deallocate( fqlavg_i3 )
+         end if
+
+         if(eta4 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i4 )
+            deallocate( cqlavg_i4 )
+            deallocate( eqlavg_i4 )
+            deallocate( fqlavg_i4 )
+         end if
+
+         if(eta5 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i5 )
+            deallocate( cqlavg_i5 )
+            deallocate( eqlavg_i5 )
+            deallocate( fqlavg_i5 )
+         end if
+
+         if(eta6 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i6 )
+            deallocate( cqlavg_i6 )
+            deallocate( eqlavg_i6 )
+            deallocate( fqlavg_i6 )
+         end if
+
+
+      if(ndisti1   .ne. 0 .or.
+     &   ndisti2   .ne. 0 .or.
+     &   ndisti3   .ne. 0 .or.
+     &   ndisti4   .ne. 0 .or.
+     &   ndisti5   .ne. 0 .or.
+     &   ndisti6   .ne. 0 .or.
+     &   ndiste    .ne. 0)   then
+
+         deallocate( dfe_cql_uprp )
+         deallocate( dfe_cql_uprl )
+
+         deallocate( df1_cql_uprp )
+         deallocate( df1_cql_uprl )
+
+         deallocate( df2_cql_uprp )
+         deallocate( df2_cql_uprl )
+
+         deallocate( df3_cql_uprp )
+         deallocate( df3_cql_uprl )
+
+         deallocate( df4_cql_uprp )
+         deallocate( df4_cql_uprl )
+
+         deallocate( df5_cql_uprp )
+         deallocate( df5_cql_uprl )
+
+         deallocate( df6_cql_uprp )
+         deallocate( df6_cql_uprl )
+
+      end if
+
+      if (read_solution .eqv. .false.) then
+
+         deallocate( p_brhs )
+         deallocate( p_ipiv )
+         deallocate (workn)
+         deallocate (rwork)
+
+      end if
+
  9002 continue
 
 
@@ -11318,7 +11449,6 @@ c      write(6,*) "finished plots; starting deallocation"
  1118 format(3x,"avg iotabr = ",1p,e12.4,"       ")
  1119 format(2x,"ellipticity = ",1p,e12.4,"      ")
 
- 5555 continue
 
       call blacs_barrier(icontxt, 'All')
 
@@ -11382,240 +11512,11 @@ c      write(6,*) "finished plots; starting deallocation"
 
       endif
 
-!     -----------------
-!     deallocate arrays
-!     -----------------
 
-      if(ndisti1   .eq. 0 .and.
-     &   ndisti2   .eq. 0 .and.
-     &   ndisti3   .eq. 0 .and.
-     &   ndisti4   .eq. 0 .and.
-     &   ndisti5   .eq. 0 .and.
-     &   ndisti6   .eq. 0 .and.
-     &   ndiste    .eq. 0)   then
-
-         deallocate( UPERP )
-         deallocate( UPARA )
-         deallocate( VPERP )
-         deallocate( VPARA )
-         deallocate( UPERP_work )
-         deallocate( UPARA_work )
-
-         deallocate( f )
-
-         deallocate( dfdupere )
-         deallocate( dfdupare )
-         deallocate( fperpe )
-
-
-         deallocate( dfduper1 )
-         deallocate( dfdupar1 )
-         deallocate( fperp1 )
-
-         deallocate( dfduper2 )
-         deallocate( dfdupar2 )
-         deallocate( fperp2 )
-
-         deallocate( dfduper3 )
-         deallocate( dfdupar3 )
-         deallocate( fperp3 )
-
-         deallocate( dfduper4 )
-         deallocate( dfdupar4 )
-         deallocate( fperp4 )
-
-         deallocate( dfduper5 )
-         deallocate( dfdupar5 )
-         deallocate( fperp5 )
-
-         deallocate( dfduper6 )
-         deallocate( dfdupar6 )
-         deallocate( fperp6 )
-
-         deallocate( bqlavg_e )
-         deallocate( cqlavg_e )
-         deallocate( eqlavg_e )
-         deallocate( fqlavg_e )
-
-         deallocate( bqlavg_work )
-         deallocate( cqlavg_work )
-         deallocate( eqlavg_work )
-         deallocate( fqlavg_work )
-
-         deallocate( bqlavg_i1 )
-         deallocate( cqlavg_i1 )
-         deallocate( eqlavg_i1 )
-         deallocate( fqlavg_i1 )
-
-         if(eta2 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i2 )
-            deallocate( cqlavg_i2 )
-            deallocate( eqlavg_i2 )
-            deallocate( fqlavg_i2 )
-         end if
-
-         if(eta3 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i3 )
-            deallocate( cqlavg_i3 )
-            deallocate( eqlavg_i3 )
-            deallocate( fqlavg_i3 )
-         end if
-
-         if(eta4 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i4 )
-            deallocate( cqlavg_i4 )
-            deallocate( eqlavg_i4 )
-            deallocate( fqlavg_i4 )
-         end if
-
-         if(eta5 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i5 )
-            deallocate( cqlavg_i5 )
-            deallocate( eqlavg_i5 )
-            deallocate( fqlavg_i5 )
-         end if
-
-         if(eta6 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i6 )
-            deallocate( cqlavg_i6 )
-            deallocate( eqlavg_i6 )
-            deallocate( fqlavg_i6 )
-         end if
-
-      end if
-
-      if(ndisti1   .ne. 0 .or.
-     &   ndisti2   .ne. 0 .or.
-     &   ndisti3   .ne. 0 .or.
-     &   ndisti4   .ne. 0 .or.
-     &   ndisti5   .ne. 0 .or.
-     &   ndisti6   .ne. 0 .or.
-     &   ndiste    .ne. 0)   then
-
-         deallocate( UPERP )
-         deallocate( UPARA )
-         deallocate( VPERP )
-         deallocate( VPARA )
-
-         deallocate( UPERP_work )
-         deallocate( UPARA_work )
-
-         deallocate( f )
-
-         deallocate( dfdupere )
-         deallocate( dfdupare )
-         deallocate( fperpe )
-
-
-         deallocate( dfduper1 )
-         deallocate( dfdupar1 )
-         deallocate( fperp1 )
-
-         deallocate( dfduper2 )
-         deallocate( dfdupar2 )
-         deallocate( fperp2 )
-
-         deallocate( dfduper3 )
-         deallocate( dfdupar3 )
-         deallocate( fperp3 )
-
-         deallocate( dfduper4 )
-         deallocate( dfdupar4 )
-         deallocate( fperp4 )
-
-         deallocate( dfduper5 )
-         deallocate( dfdupar5 )
-         deallocate( fperp5 )
-
-         deallocate( dfduper6 )
-         deallocate( dfdupar6 )
-         deallocate( fperp6 )
-
-         deallocate( dfe_cql_uprp )
-         deallocate( dfe_cql_uprl )
-
-         deallocate( df1_cql_uprp )
-         deallocate( df1_cql_uprl )
-
-         deallocate( df2_cql_uprp )
-         deallocate( df2_cql_uprl )
-
-         deallocate( df3_cql_uprp )
-         deallocate( df3_cql_uprl )
-
-         deallocate( df4_cql_uprp )
-         deallocate( df4_cql_uprl )
-
-         deallocate( df5_cql_uprp )
-         deallocate( df5_cql_uprl )
-
-         deallocate( df6_cql_uprp )
-         deallocate( df6_cql_uprl )
-
-         deallocate( bqlavg_e )
-         deallocate( cqlavg_e )
-         deallocate( eqlavg_e )
-         deallocate( fqlavg_e )
-
-         deallocate( bqlavg_work )
-         deallocate( cqlavg_work )
-         deallocate( eqlavg_work )
-         deallocate( fqlavg_work )
-
-         deallocate( bqlavg_i1 )
-         deallocate( cqlavg_i1 )
-         deallocate( eqlavg_i1 )
-         deallocate( fqlavg_i1 )
-
-         if(eta2 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i2 )
-            deallocate( cqlavg_i2 )
-            deallocate( eqlavg_i2 )
-            deallocate( fqlavg_i2 )
-         end if
-
-         if(eta3 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i3 )
-            deallocate( cqlavg_i3 )
-            deallocate( eqlavg_i3 )
-            deallocate( fqlavg_i3 )
-         end if
-
-         if(eta4 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i4 )
-            deallocate( cqlavg_i4 )
-            deallocate( eqlavg_i4 )
-            deallocate( fqlavg_i4 )
-         end if
-
-         if(eta5 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i5 )
-            deallocate( cqlavg_i5 )
-            deallocate( eqlavg_i5 )
-            deallocate( fqlavg_i5 )
-         end if
-
-         if(eta6 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i6 )
-            deallocate( cqlavg_i6 )
-            deallocate( eqlavg_i6 )
-            deallocate( fqlavg_i6 )
-         end if
-
-      end if
-
-      if (read_solution .eqv. .false.) then
-
-         deallocate( p_brhs )
-         deallocate( p_ipiv )
-
-      end if
-
-
- 9000 continue
+      end do nsum_loop
 
 !     -----------------------
-!     End of loop over nphi\'s
+!     End of loop over nphis
 !     -----------------------
 
 
@@ -11736,11 +11637,8 @@ c      write(6,*) "finished plots; starting deallocation"
       deallocate (xkperp2_slow, xkperp2_fast)
       deallocate (xkprl_a, P_a)
       deallocate (work)
-!      deallocate (workc)
-!if not static
-      deallocate (workn)
-      deallocate (rwork)
-!fi
+
+
       if (myid==0) then
          close (963)
          close (34)

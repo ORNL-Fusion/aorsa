@@ -603,9 +603,9 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       read (38, 310) ((xkb(i, n), i = 1, nnodex), n = 1, nkxplt)
 
 
-      do n = 1, nkxplt  !JCW magic numbers fix
-         write(6, *) "n = ", n, "capd(nkxplt/2, n) = ",capd(nkxplt/2, n)
-      end do
+!      do n = 1, nkxplt  !JCW magic numbers fix
+!         write(6, *) "n = ", n, "capd(nkxplt/2, n) = ",capd(nkxplt/2, n)
+!      end do
 
       read(38, 309) nnoderho
       read(38, 310) (rhon(n), n = 1, nnoderho)
