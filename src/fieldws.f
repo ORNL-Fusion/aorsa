@@ -2,7 +2,9 @@
 
       use size_mod
       use aorsa2din_mod, only: eqtype, nzeta_wdoti
-      
+#ifdef GIZA      
+      use gizapgplot
+#endif
       implicit none
 
       character(32):: title
@@ -552,7 +554,7 @@ c
      &    ezklogmin, ezklogmax)
 
 
-c--   Normalize log's to a maximum value of logmax
+c--   Normalize logs to a maximum value of logmax
       do n = 1, nkxplt
          do m = 1, nkyplt
             if(exklog(n,m) .ne. 0.0)
@@ -3635,7 +3637,7 @@ c      end do
          if (ndisti2==1) then
             allocate( wperp2_cql(nnoderho) )
             allocate( wpar2_cql(nnoderho) )
-         wperp2_cql = 0.; wpar2_cql = 0.;
+            wperp2_cql = 0.; wpar2_cql = 0.;
          end if
 
          allocate( bqlavg_i1(nuper, nupar, nnoderho) )
@@ -5394,7 +5396,7 @@ c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
 
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
 
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
@@ -5410,25 +5412,26 @@ c--Make a bit larger so the boundary doesn't get clipped
       nysub=0
 
 c--Advance graphics frame and get ready to plot
-
-      call pgsci(nblack)
+      write(*,*) 'nlevgt',nlevgt,0
+      CALL PGPAGE
+      CALL PGSVP (0.15,0.85,0.15,0.85)
       call pgenv(xmin, xmax, ymin, ymax, 1, 0)
-
+      call pgsci(nblack)
+      write(*,*) 'nlevgt',1,nrmax, nthmax, 1, nr, 1, nth, 
+     &       flevel, nlevlt,ilevlt,nlevgt,ilevgt,nlevel
 c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
          
          call pgsci(nmagenta)
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
-     &        nlevlt, tr)
+         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, 
+     &        flevel(ilevlt:ilevlt+nlevlt-1),nlevlt, tr)
 !         call pgconl(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
 !              nlevlt, tr)
       endif
-
+      write(*,*) 'nlevgt'
       if(nlevgt .gt. 0) then
          CALL PGSFS(1)
-
-#ifdef PDEBUG         
          DO I=1, Nlevel-1  !buggy , esp in pgplot
             RCOL = int(0.5+0.5*REAL(I-1)/REAL(NLEVEL-1))
             CALL PGSCR(I+10, RCOL, RCOL, RCOL)
@@ -5436,10 +5439,10 @@ c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
             CALL PGCONF(f, nrmax, nthmax, 1, nr, 1, nth,
      &        flevel(I),flevel(I+1),TR)
          END DO
-#endif         
+
          call pgsci(nblue)
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
-     &       nlevgt, tr)
+         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, 
+     &       flevel(ilevgt:ilevgt+nlevgt-1),nlevgt, tr)
       endif
 
       call pgsci(nblack)

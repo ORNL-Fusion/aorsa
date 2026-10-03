@@ -1,6 +1,6 @@
 include compileropts.gnu
 
-FC = mpif90 -cpp -O2     #-Wall -Wextra  -ffpe-trap=zero -fcheck=all -fbacktrace 
+FC = mpif90 -cpp -O0 -g  -Wall -Wextra  -ffpe-trap=zero -fcheck=all -fbacktrace 
 WARNING_FLAGS+=-fallow-argument-mismatch
 NETCDF_DIR := $(shell brew --prefix netcdf)
 NETCDFF_DIR := $(shell brew --prefix netcdf-fortran)
@@ -11,11 +11,13 @@ INCLUDE_DIRS += -I $(NETCDF_DIR)/include -I $(NETCDFF_DIR)/include
 SCALAPACK_DIR := $(shell brew --prefix scalapack)
 BLAS_DIR := $(shell brew --prefix openblas)
 PGPLOT_DIR := $(shell brew --prefix giza)
+PGPLOT_DIR := $(HOME)/Codes/giza
+INCLUDE_DIRS += -I$(PGPLOT_DIR)/include
 
 LIBS += -L $(SCALAPACK_DIR)/lib -lscalapack \
 	-L $(BLAS_DIR)/lib -lopenblas
 
-LIBS += -L $(PGPLOT_DIR)/lib -lpgplot -lgiza
+LIBS += -L $(PGPLOT_DIR)/lib -lpgplot
 
 #LIBS +=  -L /opt/X11/lib -lX11
 

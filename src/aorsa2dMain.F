@@ -1471,13 +1471,15 @@ c      jequat  = nnodey / 2
 
 
          write(6, *) "AORSA2D: version_number = ", version_number
+#ifdef GITHASH       
+         write(6, *) "AORSA2D: GIT hash  = "//GITHASH
+#endif         
          write(6, *) "z2_electron = ", z2_electron
          write(6, *) "use_new_Z2 = ", use_new_Z2
          write(6, *) "use_fourier_Z2 = ", use_fourier_Z2
 
          write(6, *) "nphi_number = ", nphi_number
-         write(6, *) "nphi_array = ", nphi_array
-
+         write(6, *) "nphi_array = ", nphi_array(1:nphi_number)
 
          write (6, *)
          write (6, *) "xkperp_cutoff = ", xkperp_cutoff
@@ -11384,13 +11386,13 @@ C      call blacs_barrier(icontxt, 'All')
 !     deallocate arrays
 !     -----------------
 
-      if(ndisti1   .eq. 0 .and.
+      if( (ndisti1   .eq. 0 .and.
      &   ndisti2   .eq. 0 .and.
      &   ndisti3   .eq. 0 .and.
      &   ndisti4   .eq. 0 .and.
      &   ndisti5   .eq. 0 .and.
      &   ndisti6   .eq. 0 .and.
-     &   ndiste    .eq. 0 .and. plot_only .eqv. .false.)   then
+     &   ndiste    .eq. 0) .and. (plot_only .eqv. .false.) )   then
 
          deallocate( UPERP )
          deallocate( UPARA )
