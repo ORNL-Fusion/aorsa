@@ -7,8 +7,6 @@
 *     Does not change the sign of psi for abnormal eqdsks
 *     Uses simple but slower load and solve
 *     - good out to the outer box wall
-*
-*     version 24     Mirror modifications      
 *----------------------------------------------------------------------
 
 
@@ -870,7 +868,6 @@ c     &         itable,jtable,ntable,mtable
 
 !        complex :: aij, beta
         real,    dimension(:,:), allocatable :: work
-!        complex, dimension(:,:), allocatable :: workc
 
         complex, dimension(ndfmax) :: row,rowk
 
@@ -913,7 +910,6 @@ c     &         itable,jtable,ntable,mtable
      &           yy(mkdim1 : mkdim2, 1 : nymx) )
 
       allocate (work(nxmx, nymx))
-!      allocate (workc(nxmx, nymx))
 
       allocate ( psi(nxmx, nymx),  rho(nxmx, nymx), theta(nxmx, nymx),
      &   rhohatx(nxmx, nymx), rhohaty(nxmx, nymx), theta0(nxmx, nymx),
@@ -1179,7 +1175,7 @@ c     &         itable,jtable,ntable,mtable
       call blacs_pinfo( myid, nproc )
       if (nproc .lt. 1) then
          write(6,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
-!         write(15,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
+         write(15,*) '** blacs_pinfo returns:myid,nproc',myid,nproc
          stop '** blacs not setup '
       else if (nproc .ne. nprow*npcol) then
          stop '** nproc is not equal to nprow*npcol '
@@ -1245,7 +1241,7 @@ c     &         itable,jtable,ntable,mtable
 *     -------------------------------------------------------------
 *     Leave all modes out of the sum except the pre-determined ones
 *     -------------------------------------------------------------
-      do 9000 nsum = 1, nphi_number
+      nsum_loop: do nsum = 1, nphi_number
 
          fdksav = 0.0
          feksav = 0.0
@@ -1459,9 +1455,9 @@ c      jequat  = nnodey / 2
       if (myid==0) then
 
          write(15, *) "AORSA2D: version_number = ", version_number
-#ifdef GITHASH       
+#ifdef GITHASH
          write(15, *) "AORSA2D: GIT hash  = "//GITHASH
-#endif         
+#endif
          write(15, *) "z2_electron = ", z2_electron
          write(15, *) "use_new_Z2 = ", use_new_Z2
          write(15, *) "use_fourier_Z2 = ", use_fourier_Z2
@@ -1471,15 +1467,16 @@ c      jequat  = nnodey / 2
 
 
          write(6, *) "AORSA2D: version_number = ", version_number
-#ifdef GITHASH       
+#ifdef GITHASH
          write(6, *) "AORSA2D: GIT hash  = "//GITHASH
-#endif         
+#endif
          write(6, *) "z2_electron = ", z2_electron
          write(6, *) "use_new_Z2 = ", use_new_Z2
          write(6, *) "use_fourier_Z2 = ", use_fourier_Z2
 
          write(6, *) "nphi_number = ", nphi_number
          write(6, *) "nphi_array = ", nphi_array(1:nphi_number)
+
 
          write (6, *)
          write (6, *) "xkperp_cutoff = ", xkperp_cutoff
@@ -3053,6 +3050,8 @@ c--note curden is in Amps per meter of toroidal length (2.*pi*rt).
 
 
 
+
+
 *     ----------------------------------------
 *     Set up r mesh for circular flux surfaces
 *     ----------------------------------------
@@ -3262,11 +3261,12 @@ c      end if
       dpsiant = dpsiant0
       dthetant = dthetant0 / 360. * twopi
       yant_max = antlen / 2.0
-      do k = 1, nant
-      iant=int((rant - rwleft) / dx) + 1
-      jant=int((yant(k) - ybottom) / dy) + 1 !add jant(2) for two antennas
-      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
 
+      nant_loop: do k = 1, nant
+
+      iant=int((rant - rwleft) / dx) + 1
+      jant=int((yant(k) - ybottom) / dy) + 1
+      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -3299,9 +3299,6 @@ c      end if
 
             shapey = 0.0
             deltay = y(j) - yant(k)
-!            if (nant == 2) then
-!               deltay = min( abs(deltay), abs(y(j)-yant(2)) )
-!            end if
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
@@ -3321,7 +3318,7 @@ c      end if
 *                 ---------------------------------------------------
 c                  antlc = pi / (xk0 * antlen)
                   if (i_antenna.eq.1 .and. abs(deltay).lt.yant_max)then
-                     shapey = cos(xk0 * antlc * deltay)
+                     shapey = cos(xk0 * antlc * abs(deltay))
                   end if
 
 
@@ -3329,9 +3326,9 @@ c                  antlc = pi / (xk0 * antlen)
 
                Ix = - dpsidy / gradpsi * cos_antang*exp(zi*phaseant(k))
                Iy =   dpsidx / gradpsi * cos_antang*exp(zi*phaseant(k))
-               Iz =   sin_antang *exp(zi*phaseant(k))
+               Iz =   sin_antang*exp(zi*phaseant(k))
 
-               xjx(i,j) = xjx(i,j)+xjantx * shapey  * gausspsi * Ix 
+               xjx(i,j) = xjx(i,j)+xjantx * shapey  * gausspsi * Ix
                xjy(i,j) = xjy(i,j)+xjanty * shapey  * gausspsi * Iy
                xjz(i,j) = xjz(i,j)+xjantz * shapey  * gausspsi * Iz
             end if
@@ -3360,7 +3357,7 @@ c                  antlc = pi / (xk0 * antlen)
 
          end do
       end do
-      end do
+      end do nant_loop
 
 *     ----------------------------
 *     find maximum antenna current
@@ -4029,9 +4026,11 @@ c        if(nboundary .eq. 0)xn3a = s_n_s(ndata,3)
 
          xkti3 = 1.0e-10 *q
 c        if(nboundary .eq. 0)xkti3 = s_t_s(ndata,3)
+
          call flux_to_rz(nnodex,nnodey,s_t_s(1:s_nrho_n,3),
      &        xkti3(1:nnodex,1:nnodey),s_rho_n_grid(1:s_nrho_n),
      &        s_nrho_n, rho(1:nnodex,1:nnodey))
+
          xn4a = 1.0e-10
 c        if(nboundary .eq. 0)xn4a = s_n_s(ndata,4)
 
@@ -4154,6 +4153,7 @@ c                    xnuomia(i,j) = xnuomi * exp(+ drho1/ scrape)
                end do
             end do
          end if
+
 *        ---------------------------------
 *        Minority ion (species 2) profiles:
 *        ---------------------------------
@@ -10081,7 +10081,6 @@ c      go to 9945
       cn(nnoderho) = 0.0
       yn(nnoderho) = 0.0
 
-
       call tridag(an, bn, cn, yn, xjhat, nnoderho)
       if (eqtype=='mirror') xjhat=1.0 !for mirrors to avoid NaN
 
@@ -11045,6 +11044,139 @@ c--      Calculate species fractions from Wdot:
 
       end if
 
+!     -----------------
+!     deallocate arrays
+!     -----------------
+
+         deallocate( UPERP )
+         deallocate( UPARA )
+         deallocate( VPERP )
+         deallocate( VPARA )
+         deallocate( UPERP_work )
+         deallocate( UPARA_work )
+
+         deallocate( f )
+
+         deallocate( dfdupere )
+         deallocate( dfdupare )
+         deallocate( fperpe )
+
+
+         deallocate( dfduper1 )
+         deallocate( dfdupar1 )
+         deallocate( fperp1 )
+
+         deallocate( dfduper2 )
+         deallocate( dfdupar2 )
+         deallocate( fperp2 )
+
+         deallocate( dfduper3 )
+         deallocate( dfdupar3 )
+         deallocate( fperp3 )
+
+         deallocate( dfduper4 )
+         deallocate( dfdupar4 )
+         deallocate( fperp4 )
+
+         deallocate( dfduper5 )
+         deallocate( dfdupar5 )
+         deallocate( fperp5 )
+
+         deallocate( dfduper6 )
+         deallocate( dfdupar6 )
+         deallocate( fperp6 )
+
+         deallocate( bqlavg_e )
+         deallocate( cqlavg_e )
+         deallocate( eqlavg_e )
+         deallocate( fqlavg_e )
+
+         deallocate( bqlavg_work )
+         deallocate( cqlavg_work )
+         deallocate( eqlavg_work )
+         deallocate( fqlavg_work )
+
+         deallocate( bqlavg_i1 )
+         deallocate( cqlavg_i1 )
+         deallocate( eqlavg_i1 )
+         deallocate( fqlavg_i1 )
+
+         if(eta2 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i2 )
+            deallocate( cqlavg_i2 )
+            deallocate( eqlavg_i2 )
+            deallocate( fqlavg_i2 )
+         end if
+
+         if(eta3 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i3 )
+            deallocate( cqlavg_i3 )
+            deallocate( eqlavg_i3 )
+            deallocate( fqlavg_i3 )
+         end if
+
+         if(eta4 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i4 )
+            deallocate( cqlavg_i4 )
+            deallocate( eqlavg_i4 )
+            deallocate( fqlavg_i4 )
+         end if
+
+         if(eta5 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i5 )
+            deallocate( cqlavg_i5 )
+            deallocate( eqlavg_i5 )
+            deallocate( fqlavg_i5 )
+         end if
+
+         if(eta6 >= 100.*epsilon(eta1)) then
+            deallocate( bqlavg_i6 )
+            deallocate( cqlavg_i6 )
+            deallocate( eqlavg_i6 )
+            deallocate( fqlavg_i6 )
+         end if
+
+
+      if(ndisti1   .ne. 0 .or.
+     &   ndisti2   .ne. 0 .or.
+     &   ndisti3   .ne. 0 .or.
+     &   ndisti4   .ne. 0 .or.
+     &   ndisti5   .ne. 0 .or.
+     &   ndisti6   .ne. 0 .or.
+     &   ndiste    .ne. 0)   then
+
+         deallocate( dfe_cql_uprp )
+         deallocate( dfe_cql_uprl )
+
+         deallocate( df1_cql_uprp )
+         deallocate( df1_cql_uprl )
+
+         deallocate( df2_cql_uprp )
+         deallocate( df2_cql_uprl )
+
+         deallocate( df3_cql_uprp )
+         deallocate( df3_cql_uprl )
+
+         deallocate( df4_cql_uprp )
+         deallocate( df4_cql_uprl )
+
+         deallocate( df5_cql_uprp )
+         deallocate( df5_cql_uprl )
+
+         deallocate( df6_cql_uprp )
+         deallocate( df6_cql_uprl )
+
+      end if
+
+      if (read_solution .eqv. .false.) then
+
+         deallocate( p_brhs )
+         deallocate( p_ipiv )
+         deallocate (workn)
+         deallocate (rwork)
+
+      end if
+
  9002 continue
 
 
@@ -11063,14 +11195,14 @@ c--      Calculate species fractions from Wdot:
 
          tmin = (second1(dummy) - t1) / 60.
          write(6 , 2846) tmin
-         if (plot_only .eqv. .false.) write(15, 2846) tmin
+         write(15, 2846) tmin
       end if
 
  2846 format('time to do plots =', f9.3, ' min')
  2847 format('time to sum modes =', f9.3, ' min')
 
 c      write(6,*) "finished plots; starting deallocation"
-C      call blacs_barrier(icontxt, 'All')
+      call blacs_barrier(icontxt, 'All')
 
 
   310 format(1p,6e12.4)
@@ -11318,7 +11450,6 @@ C      call blacs_barrier(icontxt, 'All')
  1118 format(3x,"avg iotabr = ",1p,e12.4,"       ")
  1119 format(2x,"ellipticity = ",1p,e12.4,"      ")
 
-! 5555 continue
 
       call blacs_barrier(icontxt, 'All')
 
@@ -11327,9 +11458,9 @@ C      call blacs_barrier(icontxt, 'All')
       ttotal = time/60.
 
       if (myid==0) then
-         if (plot_only .eqv. .false.) write(15,162)
+         write(15,162)
          write(6, 162)
-         if (plot_only .eqv. .false.) write(15,899) ttotal
+         write(15,899) ttotal
          write(6, 899) ttotal
       endif
 
@@ -11382,240 +11513,11 @@ C      call blacs_barrier(icontxt, 'All')
 
       endif
 
-!     -----------------
-!     deallocate arrays
-!     -----------------
 
-      if( (ndisti1   .eq. 0 .and.
-     &   ndisti2   .eq. 0 .and.
-     &   ndisti3   .eq. 0 .and.
-     &   ndisti4   .eq. 0 .and.
-     &   ndisti5   .eq. 0 .and.
-     &   ndisti6   .eq. 0 .and.
-     &   ndiste    .eq. 0) .and. (plot_only .eqv. .false.) )   then
-
-         deallocate( UPERP )
-         deallocate( UPARA )
-         deallocate( VPERP )
-         deallocate( VPARA )
-         deallocate( UPERP_work )
-         deallocate( UPARA_work )
-
-         deallocate( f )
-
-         deallocate( dfdupere )
-         deallocate( dfdupare )
-         deallocate( fperpe )
-
-
-         deallocate( dfduper1 )
-         deallocate( dfdupar1 )
-         deallocate( fperp1 )
-
-         deallocate( dfduper2 )
-         deallocate( dfdupar2 )
-         deallocate( fperp2 )
-
-         deallocate( dfduper3 )
-         deallocate( dfdupar3 )
-         deallocate( fperp3 )
-
-         deallocate( dfduper4 )
-         deallocate( dfdupar4 )
-         deallocate( fperp4 )
-
-         deallocate( dfduper5 )
-         deallocate( dfdupar5 )
-         deallocate( fperp5 )
-
-         deallocate( dfduper6 )
-         deallocate( dfdupar6 )
-         deallocate( fperp6 )
-
-         deallocate( bqlavg_e )
-         deallocate( cqlavg_e )
-         deallocate( eqlavg_e )
-         deallocate( fqlavg_e )
-
-         deallocate( bqlavg_work )
-         deallocate( cqlavg_work )
-         deallocate( eqlavg_work )
-         deallocate( fqlavg_work )
-
-         deallocate( bqlavg_i1 )
-         deallocate( cqlavg_i1 )
-         deallocate( eqlavg_i1 )
-         deallocate( fqlavg_i1 )
-
-         if(eta2 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i2 )
-            deallocate( cqlavg_i2 )
-            deallocate( eqlavg_i2 )
-            deallocate( fqlavg_i2 )
-         end if
-
-         if(eta3 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i3 )
-            deallocate( cqlavg_i3 )
-            deallocate( eqlavg_i3 )
-            deallocate( fqlavg_i3 )
-         end if
-
-         if(eta4 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i4 )
-            deallocate( cqlavg_i4 )
-            deallocate( eqlavg_i4 )
-            deallocate( fqlavg_i4 )
-         end if
-
-         if(eta5 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i5 )
-            deallocate( cqlavg_i5 )
-            deallocate( eqlavg_i5 )
-            deallocate( fqlavg_i5 )
-         end if
-
-         if(eta6 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i6 )
-            deallocate( cqlavg_i6 )
-            deallocate( eqlavg_i6 )
-            deallocate( fqlavg_i6 )
-         end if
-
-      end if
-
-      if( (ndisti1   .ne. 0 .or.
-     &   ndisti2   .ne. 0 .or.
-     &   ndisti3   .ne. 0 .or.
-     &   ndisti4   .ne. 0 .or.
-     &   ndisti5   .ne. 0 .or.
-     &   ndisti6   .ne. 0 .or.
-     &   ndiste    .ne. 0) .and. (plot_only .eqv. .false.) )  then
-
-         deallocate( UPERP )
-         deallocate( UPARA )
-         deallocate( VPERP )
-         deallocate( VPARA )
-
-         deallocate( UPERP_work )
-         deallocate( UPARA_work )
-
-         deallocate( f )
-
-         deallocate( dfdupere )
-         deallocate( dfdupare )
-         deallocate( fperpe )
-
-
-         deallocate( dfduper1 )
-         deallocate( dfdupar1 )
-         deallocate( fperp1 )
-
-         deallocate( dfduper2 )
-         deallocate( dfdupar2 )
-         deallocate( fperp2 )
-
-         deallocate( dfduper3 )
-         deallocate( dfdupar3 )
-         deallocate( fperp3 )
-
-         deallocate( dfduper4 )
-         deallocate( dfdupar4 )
-         deallocate( fperp4 )
-
-         deallocate( dfduper5 )
-         deallocate( dfdupar5 )
-         deallocate( fperp5 )
-
-         deallocate( dfduper6 )
-         deallocate( dfdupar6 )
-         deallocate( fperp6 )
-
-         deallocate( dfe_cql_uprp )
-         deallocate( dfe_cql_uprl )
-
-         deallocate( df1_cql_uprp )
-         deallocate( df1_cql_uprl )
-
-         deallocate( df2_cql_uprp )
-         deallocate( df2_cql_uprl )
-
-         deallocate( df3_cql_uprp )
-         deallocate( df3_cql_uprl )
-
-         deallocate( df4_cql_uprp )
-         deallocate( df4_cql_uprl )
-
-         deallocate( df5_cql_uprp )
-         deallocate( df5_cql_uprl )
-
-         deallocate( df6_cql_uprp )
-         deallocate( df6_cql_uprl )
-
-         deallocate( bqlavg_e )
-         deallocate( cqlavg_e )
-         deallocate( eqlavg_e )
-         deallocate( fqlavg_e )
-
-         deallocate( bqlavg_work )
-         deallocate( cqlavg_work )
-         deallocate( eqlavg_work )
-         deallocate( fqlavg_work )
-
-         deallocate( bqlavg_i1 )
-         deallocate( cqlavg_i1 )
-         deallocate( eqlavg_i1 )
-         deallocate( fqlavg_i1 )
-
-         if(eta2 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i2 )
-            deallocate( cqlavg_i2 )
-            deallocate( eqlavg_i2 )
-            deallocate( fqlavg_i2 )
-         end if
-
-         if(eta3 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i3 )
-            deallocate( cqlavg_i3 )
-            deallocate( eqlavg_i3 )
-            deallocate( fqlavg_i3 )
-         end if
-
-         if(eta4 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i4 )
-            deallocate( cqlavg_i4 )
-            deallocate( eqlavg_i4 )
-            deallocate( fqlavg_i4 )
-         end if
-
-         if(eta5 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i5 )
-            deallocate( cqlavg_i5 )
-            deallocate( eqlavg_i5 )
-            deallocate( fqlavg_i5 )
-         end if
-
-         if(eta6 >= 100.*epsilon(eta1)) then
-            deallocate( bqlavg_i6 )
-            deallocate( cqlavg_i6 )
-            deallocate( eqlavg_i6 )
-            deallocate( fqlavg_i6 )
-         end if
-
-      end if
-
-      if (read_solution .eqv. .false. .and. plot_only .eqv. .false.)then
-
-         deallocate( p_brhs )
-         deallocate( p_ipiv )
-
-      end if
-
-
- 9000 continue
+      end do nsum_loop
 
 !     -----------------------
-!     End of loop over nphi\'s
+!     End of loop over nphis
 !     -----------------------
 
 
@@ -11737,10 +11639,6 @@ C      call blacs_barrier(icontxt, 'All')
       deallocate (xkprl_a, P_a)
       deallocate (work)
 
-      if ( plot_only .eqv. .false. ) then
-         deallocate (workn)
-         deallocate (rwork)
-      end if
 
       if (myid==0) then
          close (963)
@@ -11757,7 +11655,7 @@ C      call blacs_barrier(icontxt, 'All')
 
          tmin = (second1(dummy) - t1) / 60.
          write(6 , 2847) tmin
-         if (plot_only .eqv. .false.) write(15, 2847) tmin
+         write(15, 2847) tmin
 
       end if
 

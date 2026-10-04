@@ -2025,7 +2025,7 @@ c     .   wdot5sum,  wdot6sum)
          write (42, 3310) xmi2
 
          close (42)
-         call dql_write_nc('out_cql3d.coef2','out_cql3d.coef2.nc')
+         call dql_write_nc('out_cql3d.coef2')
 
       end if
 

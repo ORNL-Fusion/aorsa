@@ -1,10 +1,8 @@
       subroutine fieldws(dfquotient, rmin_zoom, rmax_zoom)
 
       use size_mod
-      use aorsa2din_mod, only: eqtype, nzeta_wdoti
-#ifdef GIZA      
-      use gizapgplot
-#endif
+      use aorsa2din_mod, only: eqtype, nzeta_wdoti, plot_only
+      
       implicit none
 
       character(32):: title
@@ -554,7 +552,7 @@ c
      &    ezklogmin, ezklogmax)
 
 
-c--   Normalize logs to a maximum value of logmax
+c--   Normalize log's to a maximum value of logmax
       do n = 1, nkxplt
          do m = 1, nkyplt
             if(exklog(n,m) .ne. 0.0)
@@ -605,9 +603,9 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
       read (38, 310) ((xkb(i, n), i = 1, nnodex), n = 1, nkxplt)
 
 
-      do n = 1, nkxplt  !JCW magic numbers fix
-         write(6, *) "n = ", n, "capd(nkxplt/2, n) = ",capd(nkxplt/2, n)
-      end do
+!      do n = 1, nkxplt  !JCW magic numbers fix
+!         write(6, *) "n = ", n, "capd(nkxplt/2, n) = ",capd(nkxplt/2, n)
+!      end do
 
       read(38, 309) nnoderho
       read(38, 310) (rhon(n), n = 1, nnoderho)
@@ -3496,14 +3494,14 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       call ezplot2p(title, titll, titlr, titlb, rhon_half, redotjeavg,
      &   redotjiavg, nnoderho2_half, nrhomax)
 
-
-! turn of out15 for plot_only false
-!      write(15, *)
-!      write(15, *) 'Flux surface driven current'
-!      write(15, *)
-!      write(15, *) '        n      rho       J (A/m2)     I (A)'
-!      write(15, *)
-
+!     turn off out15 for plot_only false
+      if (.not. plot_only) then
+         write(15, *)
+         write(15, *) 'Flux surface driven current'
+         write(15, *)
+         write(15, *) '        n      rho       J (A/m2)     I (A)'
+         write(15, *)
+      end if
       write(6, *)
       write(6, *) 'Flux surface driven current'
       write(6, *)
@@ -3511,7 +3509,9 @@ c         write(6, 1312)n, rhon(n), rhon_half(n)
       write(6, *)
 
       do n = 1, nnoderho2_half
-!         write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
+         if (.not. plot_only) then
+            write (15, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
+         end if
          write (6, 1312) n, rhon_half(n), xjprlavg(n), xjprl_int(n)
       end do
 
@@ -3875,13 +3875,14 @@ c      end do
          write(6, *)"i_psi5 = ", i_psi5, "   rho5 = ", rhon(i_psi5)
          write(6, *)"i_psi6 = ", i_psi6, "   rho6 = ", rhon(i_psi6)
 
-
-         write(15,*)"i_psi1 = ", i_psi1, "   rho1 = ", rhon(i_psi1)
-         write(15,*)"i_psi2 = ", i_psi2, "   rho2 = ", rhon(i_psi2)
-         write(15,*)"i_psi3 = ", i_psi3, "   rho3 = ", rhon(i_psi3)
-         write(15,*)"i_psi4 = ", i_psi4, "   rho4 = ", rhon(i_psi4)
-         write(15,*)"i_psi5 = ", i_psi5, "   rho5 = ", rhon(i_psi5)
-         write(15,*)"i_psi6 = ", i_psi6, "   rho6 = ", rhon(i_psi6)
+         if (.not. plot_only) then
+            write(15,*)"i_psi1 = ", i_psi1, "   rho1 = ", rhon(i_psi1)
+            write(15,*)"i_psi2 = ", i_psi2, "   rho2 = ", rhon(i_psi2)
+            write(15,*)"i_psi3 = ", i_psi3, "   rho3 = ", rhon(i_psi3)
+            write(15,*)"i_psi4 = ", i_psi4, "   rho4 = ", rhon(i_psi4)
+            write(15,*)"i_psi5 = ", i_psi5, "   rho5 = ", rhon(i_psi5)
+            write(15,*)"i_psi6 = ", i_psi6, "   rho6 = ", rhon(i_psi6)
+         end if
 
          numb = 20
 
@@ -4271,7 +4272,7 @@ c      end do
 !        --------------------------------------
 
          write(6,  *) 'energy kicks (eV)'
-         write(15, *) 'energy kicks (eV)'
+         if (.not. plot_only) write(15, *) 'energy kicks (eV)'
 
          title = 'Energy kick (eV)'
          titz='Energy kick (eV)'
@@ -4391,9 +4392,10 @@ c      end do
          write(6, *)
          write(6, *) 'energy kicks for 1 keV ion (eV)'
 
-         write(15, *)
-         write(15, *) 'energy kicks for 1 keV ion (eV)'
-
+         if (.not. plot_only) then
+            write(15, *)
+            write(15, *) 'energy kicks for 1 keV ion (eV)'
+         end if
          title = 'Energy kick for 1 keV ion (eV)'
          titx = 'u_{para}'
          tity = 'rho'
@@ -4416,9 +4418,10 @@ c      end do
 
          write (6, *) 'i_uperp =', i_uperp
          write (6, *) 'E = ', E_eV, ' eV'
-
-         write (15, *) 'i_uperp =', i_uperp
-         write (15, *) 'E = ', E_eV, ' eV'
+         if (.not. plot_only) then
+            write (15, *) 'i_uperp =', i_uperp
+            write (15, *) 'E = ', E_eV, ' eV'
+         end if
 
          do i_upara = 1, nupar
             vpara_cgs = abs(upara(i_upara) + .001) * vc_cgs
@@ -5396,7 +5399,7 @@ c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
 
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesnt get clipped
+c--Make a bit larger so the boundary doesn't get clipped
 
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
@@ -5412,37 +5415,35 @@ c--Make a bit larger so the boundary doesnt get clipped
       nysub=0
 
 c--Advance graphics frame and get ready to plot
-      write(*,*) 'nlevgt',nlevgt,0
-      CALL PGPAGE
-      CALL PGSVP (0.15,0.85,0.15,0.85)
-      call pgenv(xmin, xmax, ymin, ymax, 1, 0)
+
       call pgsci(nblack)
-      write(*,*) 'nlevgt',1,nrmax, nthmax, 1, nr, 1, nth, 
-     &       flevel, nlevlt,ilevlt,nlevgt,ilevgt,nlevel
+      call pgenv(xmin, xmax, ymin, ymax, 1, 0)
+
 c Call plotter once for f < 0 (dashed), once for f > 0 (solid lines).
 
       if(nlevlt .gt. 0) then
          
          call pgsci(nmagenta)
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, 
-     &        flevel(ilevlt:ilevlt+nlevlt-1),nlevlt, tr)
+         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
+     &        nlevlt, tr)
 !         call pgconl(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevlt),
 !              nlevlt, tr)
       endif
-      write(*,*) 'nlevgt'
+
       if(nlevgt .gt. 0) then
+#ifdef PDEBUG         
          CALL PGSFS(1)
-         DO I=1, Nlevel-1  !buggy , esp in pgplot
+         DO I=1, Nlevel-1
             RCOL = int(0.5+0.5*REAL(I-1)/REAL(NLEVEL-1))
             CALL PGSCR(I+10, RCOL, RCOL, RCOL)
             CALL PGSCI(I+10)
             CALL PGCONF(f, nrmax, nthmax, 1, nr, 1, nth,
      &        flevel(I),flevel(I+1),TR)
          END DO
-
+#endif
          call pgsci(nblue)
-         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, 
-     &       flevel(ilevgt:ilevgt+nlevgt-1),nlevgt, tr)
+         call pgcont(f, nrmax, nthmax, 1, nr, 1, nth, flevel(ilevgt),
+     &       nlevgt, tr)
       endif
 
       call pgsci(nblack)
@@ -5706,7 +5707,7 @@ c--set up contour levels
       write(*,*) 'title: ', title
 #endif
       write(6, *)"fmax = ", fmax, "   fmin = ", fmin
-      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
+!      write(15,*)"fmax = ", fmax, "   fmin = ", fmin
 
       iflag = 0
        if(fmax==0.0 .and. fmin==0.0)then
