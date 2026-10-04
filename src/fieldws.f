@@ -3637,7 +3637,7 @@ c      end do
          if (ndisti2==1) then
             allocate( wperp2_cql(nnoderho) )
             allocate( wpar2_cql(nnoderho) )
-         wperp2_cql = 0.; wpar2_cql = 0.;
+            wperp2_cql = 0.; wpar2_cql = 0.;
          end if
 
          allocate( bqlavg_i1(nuper, nupar, nnoderho) )

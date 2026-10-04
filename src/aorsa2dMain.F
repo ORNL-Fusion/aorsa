@@ -6,7 +6,7 @@
 *        (eqdsk_special .ne. 0)
 *     Does not change the sign of psi for abnormal eqdsks
 *     Uses simple but slower load and solve
-*        - good out to the outer box wall
+*     - good out to the outer box wall
 *----------------------------------------------------------------------
 
 
