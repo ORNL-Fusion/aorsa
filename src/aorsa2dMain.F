@@ -3260,8 +3260,10 @@ c      end if
 
       iant=int((rant - rwleft) / dx) + 1
       jant=int((yant(k) - ybottom) / dy) + 1
-      if(rant .ne. 0.0)psiant = psi(iant, jant) !change jequat to jant
-
+      if(rant .ne. 0.0 .and. k==1) then
+         psiant = psi(iant, jant) !change jequat to jant
+      end if
+      
       do i = 1, nnodex
          do j = 1, nnodey
 
@@ -3354,7 +3356,7 @@ c                  antlc = pi / (xk0 * antlen)
 
          end do
       end do
-      end do nant_loop
+      end do nant_loop !k
 
 *     ----------------------------
 *     find maximum antenna current
@@ -3369,6 +3371,7 @@ c                  antlc = pi / (xk0 * antlen)
                i_cur_max = i
                j_cur_max = j
             end if
+            if (myid==0) write(*,*) 'xjz',i,j,xjz(i,j)
          end do
       end do
 
@@ -10508,9 +10511,9 @@ c--      Calculate species fractions from Wdot:
 
          write(38, 310) ((reomglha(i, j), i = 1, nnodex),j = 1, nnodey)
 
-         write(38, 310) ((xjx(i, j),  i = 1, nnodex), j = 1, nnodey)
-         write(38, 310) ((xjy(i, j),  i = 1, nnodex), j = 1, nnodey)
-         write(38, 310) ((xjz(i, j),  i = 1, nnodex), j = 1, nnodey)
+         write(38, 310) ((real(xjx(i, j)), i = 1,nnodex), j = 1,nnodey)
+         write(38, 310) ((real(xjy(i, j)), i = 1,nnodex), j = 1,nnodey)
+         write(38, 310) ((real(xjz(i, j)), i = 1,nnodex), j = 1,nnodey)
 
          write(38, 310) ((ex(i, j), i = 1, nnodex), j = 1, nnodey)
          write(38, 310) ((ey(i, j), i = 1, nnodex), j = 1, nnodey)
