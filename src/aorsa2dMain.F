@@ -9702,10 +9702,10 @@ c           if(nnode_local .le. 0)xjprl(i,j) = redotj_ehst(i,j)
      &   capr, rt, nxmx, nymx)
 
       if (eqtype=='mirror') then !JCW mirror
-         call sgrator1(x, y, xjz, 1, nnodex, 1, nnodey, i_ant,
+         call sgrator1(x, y, abs(xjz), 1, nnodex, 1, nnodey, i_ant,
      &        capr, rt, nxmx, nymx , j_cur_max)
       else
-         call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
+         call sgrator1(x, y, abs(xjy), 1, nnodex, 1, nnodey, i_ant,
      &        capr, rt, nxmx, nymx , j_cur_max)
       end if
 
@@ -10966,9 +10966,9 @@ c--      Calculate species fractions from Wdot:
          write(34,310) ((xjpy(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjpz(i, j), i = 1, nnodex), j = 1, nnodey)
 
-         write(34,310) ((xjx(i, j), i = 1, nnodex), j = 1, nnodey)
-         write(34,310) ((xjy(i, j), i = 1, nnodex), j = 1, nnodey)
-         write(34,310) ((xjz(i, j), i = 1, nnodex), j = 1, nnodey)
+         write(34,310) ((real(xjx(i, j)), i=1, nnodex), j = 1, nnodey)
+         write(34,310) ((real(xjy(i, j)), i=1, nnodex), j = 1, nnodey)
+         write(34,310) ((real(xjz(i, j)), i=1, nnodex), j = 1, nnodey)
 
          write(34,310) ((xjpxe_lab(i, j), i = 1, nnodex), j = 1, nnodey)
          write(34,310) ((xjpye_lab(i, j), i = 1, nnodex), j = 1, nnodey)
