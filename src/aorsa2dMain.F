@@ -605,7 +605,7 @@
      &   bmod2, rhom1, bxn, byn, bzn, pressi, muhat, nu_star,
      &   ipsi, xna_slo, gradprlb, omgp2_slo, omgci_slo, zeff,
      &   rho_pol2d, psi_pol2d, drhodr, drhodz,
-     &   dthedr, dthedz, reomg1a, reomg2a, reomg3a, xjx, xjy, xjz,
+     &   dthedr, dthedz, reomg1a, reomg2a, reomg3a, 
      &   ntilda_e_real, reomglha
 
       real :: cur_mod, cur_mod_max, npar
@@ -622,7 +622,7 @@
      &   eplus_flux_plot, eminus_flux_plot, xkperp_flux_plot,
      &   ealpha, ebeta, eb, eplus, eminus, ealphakx, ebetakx,
      &   ealphaky, ebetaky, ebkx, ebky, rho_ant, rho_pla, ntilda_e,
-     &   xb, xc, xd
+     &   xb, xc, xd, xjx, xjy, xjz
 
       complex, dimension(:,:), allocatable :: xkperp2_slow,
      &        xkperp2_fast, P_a
@@ -1195,20 +1195,14 @@ c     &         itable,jtable,ntable,mtable
          open(unit=15, file='out15', status='unknown', form='formatted')
          open(unit=166,file='bharvey_3d',status='unknown', !also aorsa_flds_xyz.dat in mcgo for nphi>1
      &                                                 form='formatted')
-         if(nphi_sum_only .neqv. .true.)
-     &      open(unit=34, file='fpm',status='unknown', form='formatted')
-
+         if(nphi_sum_only .neqv. .true.) then
+            open(unit=34, file='fpm',status='unknown', form='formatted')
+            write(34,309) nphi1, nphi2
+         end if
 *        ------------------------
 *        Write namelist input data
 *        ------------------------
          write (963, aorsa2din)
-      end if
-
-*     -----------------------
-*     write fpm (34) file
-*     ------------------------
-      if (myid.eq.0 .and. nphi_sum_only .neqv. .true.) then
-         write(34,309) nphi1, nphi2
       end if
 
 
@@ -3324,13 +3318,16 @@ c                  antlc = pi / (xk0 * antlen)
 
                end if
 
-               Ix = - dpsidy / gradpsi * cos_antang*exp(zi*phaseant(k))
-               Iy =   dpsidx / gradpsi * cos_antang*exp(zi*phaseant(k))
-               Iz =   sin_antang*exp(zi*phaseant(k))
+               Ix = - dpsidy / gradpsi * cos_antang
+               Iy =   dpsidx / gradpsi * cos_antang
+               Iz =   sin_antang
 
-               xjx(i,j) = xjx(i,j)+xjantx * shapey  * gausspsi * Ix
-               xjy(i,j) = xjy(i,j)+xjanty * shapey  * gausspsi * Iy
-               xjz(i,j) = xjz(i,j)+xjantz * shapey  * gausspsi * Iz
+               xjx(i,j) = xjx(i,j)+xjantx * shapey  * gausspsi *
+     &             Ix * exp(zi*phaseant(k))
+               xjy(i,j) = xjy(i,j)+xjanty * shapey  * gausspsi * 
+     &             Iy * exp(zi*phaseant(k))
+               xjz(i,j) = xjz(i,j)+xjantz * shapey  * gausspsi * 
+     &             Iz * exp(zi*phaseant(k))
             end if
 
             if(i_antenna .eq. 2) then
@@ -3365,7 +3362,8 @@ c                  antlc = pi / (xk0 * antlen)
       cur_mod_max = 0.0
       do i = 1, nnodex
          do j = 1, nnodey
-            cur_mod = sqrt(xjx(i,j)**2 + xjy(i,j)**2 + xjz(i,j)**2)
+            cur_mod = sqrt(abs(xjx(i,j))**2 + abs(xjy(i,j))**2 +
+     &       abs(xjz(i,j))**2)
             if (cur_mod .gt. cur_mod_max) then
                cur_mod_max = cur_mod
                i_cur_max = i
@@ -4790,7 +4788,7 @@ c     -----------------------------
 c      call zfun_hil_init(ieer)
 
 c     -------------------------------------
-c     setup Smithe\'s Z function table when nzfun = 3
+c     setup Smithes Z function table when nzfun = 3
 c     -------------------------------------
       if (nzfun .eq. 3) then
 
@@ -5060,7 +5058,7 @@ c        call flush
   386 format('time to call eqdsk_setup = ',f9.3, " min")
 
 *     -----------------------------------------------------------------
-*     Read 2D lookup table for Lee Berry\'s new Z function (xnuomge = 0)
+*     Read 2D lookup table for Lee Berrys new Z function (xnuomge = 0)
 *     -----------------------------------------------------------------
       open(unit=195,file='Ztable',status='unknown',form='formatted')
       read (195, 3409)  nmax, mmax
@@ -5234,14 +5232,14 @@ c           call flush
 !      xjy_min = 0.0
 !      xjz_min = 0.0
 
-      xjx_max = maxval(xjx)
-      xjy_max = maxval(xjy)
-      xjz_max = maxval(xjz)
+      xjx_max = maxval(abs(xjx))
+      xjy_max = maxval(abs(xjy))
+      xjz_max = maxval(abs(xjz))
 
 
-      xjx_min = minval(xjx)
-      xjy_min = minval(xjy)
-      xjz_min = minval(xjz)
+      xjx_min = minval(abs(xjx))
+      xjy_min = minval(abs(xjy))
+      xjz_min = minval(abs(xjz))
 
       do i = 1, nnodex
          do j = 1, nnodey
@@ -7418,7 +7416,7 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
 
 
 !*                   ----------------------------------------------
-!*                   Optional: Don\'t allow xkprl to be 0 (upshift = -2)
+!*                   Optional: Dont allow xkprl to be 0 (upshift = -2)
 !*                   ----------------------------------------------
 
                     if (upshift .eq. -2) then
@@ -7433,7 +7431,7 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
 
 
 !*                    ------------------------------------------------
-!*                    Calculate Brambilla\'s xkrpl_eff using l = 1 only
+!*                    Calculate Brambillas xkrpl_eff using l = 1 only
 !*                    ------------------------------------------------
 
                      y0 = 1.5
@@ -9615,7 +9613,7 @@ c                 c_ehst = 1.0
 
       t1 = second1(dummy)
 *     ------------------------------------------------------------------------
-*     calculate individual species edotj\'s and driven current on solution mesh
+*     calculate individual species edotjs and driven current on solution mesh
 *     ------------------------------------------------------------------------
 
       do i = 1, nnodex
@@ -9702,10 +9700,10 @@ c           if(nnode_local .le. 0)xjprl(i,j) = redotj_ehst(i,j)
 
       if (eqtype=='mirror') then !JCW mirror
          call sgrator1(x, y, xjz, 1, nnodex, 1, nnodey, i_ant,
-     &        capr, rt, nxmx, nymx, j_cur_max)
+     &        capr, rt, nxmx, nymx , j_cur_max)
       else
          call sgrator1(x, y, xjy, 1, nnodex, 1, nnodey, i_ant,
-     &        capr, rt, nxmx, nymx, j_cur_max)
+     &        capr, rt, nxmx, nymx , j_cur_max)
       end if
 
       call sgrator(x, y, xjprl, 1, nnodex, 1, nnodey, xjtot,
