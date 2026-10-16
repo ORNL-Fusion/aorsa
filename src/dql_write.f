@@ -106,15 +106,16 @@ C     Loop indices.
       integer i_uperp, i_upara, n
 
 C     Error handling.
-      integer retval
+      integer retval,funit
                                  
 C     Create test data by reading quasilinear diffusion coefficients 
 c     from the text file FILE_txt
 
-      open(unit=42, file = FILE_txt, status='unknown', form='formatted')
-      read (42, 309) nuper
-      read (42, 309) nupar
-      read (42, 309) nnoderho
+      open(newunit=funit, file = FILE_txt, status='unknown',
+     &    form='formatted')
+      read (funit, 309) nuper
+      read (funit, 309) nupar
+      read (funit, 309) nnoderho
       
       allocate( uperp(nuper) )
       allocate( upara(nupar) )
@@ -124,26 +125,26 @@ c     from the text file FILE_txt
       allocate( eqlavg(nuper, nupar, nnoderho) ) 
       allocate( fqlavg(nuper, nupar, nnoderho) )   
 
-      read (42, 3310) vc_cgs
-      read (42, 3310) UminPara, UmaxPara
-      read (42, 3310) (rhon(n), n = 1, nnoderho)
-      read (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
-      read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
-      read (42, 3310) (((bqlavg(i_uperp, i_upara, n),
+      read (funit, 3310) vc_cgs
+      read (funit, 3310) UminPara, UmaxPara
+      read (funit, 3310) (rhon(n), n = 1, nnoderho)
+      read (funit, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
+      read (funit, 3310) (upara(i_upara), i_upara = 1, nupar)
+      read (funit, 3310) (((bqlavg(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar),
      &        n = 1, nnoderho)
-      read (42, 3310) (((cqlavg(i_uperp, i_upara, n),
+      read (funit, 3310) (((cqlavg(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), 
      &        n = 1, nnoderho)
-      read (42, 3310) (((eqlavg(i_uperp, i_upara, n),
+      read (funit, 3310) (((eqlavg(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), 
      &        n = 1, nnoderho)
-      read (42, 3310) (((fqlavg(i_uperp, i_upara, n),
+      read (funit, 3310) (((fqlavg(i_uperp, i_upara, n),
      &        i_uperp = 1, nuper), i_upara = 1, nupar), 
      &        n = 1, nnoderho)     
-      read (42, 3310) xmi
+      read (funit, 3310) xmi
       
-      close (42)
+      close (funit)
                  
        
        write (6, *) 'nuper = ', nuper

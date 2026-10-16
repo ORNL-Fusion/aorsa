@@ -396,7 +396,7 @@ c     &        yy_inv(mkdim1 : mkdim2, 1 : nymx)
       real, dimension(:,:), allocatable :: xkb
       real, dimension(:,:), allocatable :: xkb2d
 
-      integer :: nnodex, nnodey, i, j,
+      integer :: nnodex, nnodey, i, j, jant,
      &    jequat, iflag, liw, lw, nrhs, icenter
       integer :: nnodelb, nnodelb0, nl
       real :: lbmax, dlb, xl, yl, zl
@@ -2683,7 +2683,7 @@ c      akprl_min = abs(nphi / rt)
 
             call blacs_barrier(icontxt, 'All')
 
-            open(unit=50, file='cql3d.out', status='unknown',
+            open(unit=50, file='cql3di1.out', status='unknown',
      &                                                 form='formatted')
 
 !           ---------------------------------------------
@@ -2727,7 +2727,7 @@ c      akprl_min = abs(nphi / rt)
 
             call blacs_barrier(icontxt, 'All')
 
-            open(unit=50,file='cql3d.out', status='unknown',
+            open(unit=50,file='cql3di2.out', status='unknown',
      &                                                 form='formatted')
 
 !           ---------------------------------------------
@@ -2762,7 +2762,7 @@ c      akprl_min = abs(nphi / rt)
 
 
          if(myid .eq. 0)then
-            WRITE (6,*)
+            WRITE (6,*) " for ndisti2 "
             WRITE (6,*) "nuper = ",  nuper
             WRITE (6,*) "nupar = ",  nupar
             WRITE (6,*) "n_psi = ",  n_psi
@@ -3229,11 +3229,15 @@ c      end if
 *     ---------------
 *     Antenna current
 *     ---------------
+      xjx =0.
+      xjy =0.
+      xjz =0.
 
-      theta_antr = theta_ant / 180. * pi
+      do jant=1,nants
+      theta_antr = theta_ant(jant) / 180. * pi
 
       dpsiant = dpsiant0
-      dthetant = dthetant0 / 360. * twopi
+      dthetant = dthetant0(jant) / 360. * twopi
       yant_max = antlen / 2.0
 
 
@@ -3267,7 +3271,7 @@ c      end if
             end if
 
             shapey = 0.0
-            deltay = y(j) - yant
+            deltay = y(j) - yant(jant)
 
             if(i_antenna .eq. 0 .or. i_antenna .eq. 1) then
 
@@ -3298,9 +3302,9 @@ c                  antlc = pi / (xk0 * antlen)
                Iy =   dpsidx / gradpsi * cos_antang
                Iz =   sin_antang
 
-               xjx(i,j) = xjantx * shapey  * gausspsi * Ix
-               xjy(i,j) = xjanty * shapey  * gausspsi * Iy
-               xjz(i,j) = xjantz * shapey  * gausspsi * Iz
+               xjx(i,j) = xjx(i,j) + xjantx * shapey  * gausspsi * Ix
+               xjy(i,j) = xjy(i,j) + xjanty * shapey  * gausspsi * Iy
+               xjz(i,j) = xjz(i,j) + xjantz * shapey  * gausspsi * Iz
 
             end if
 
@@ -3328,7 +3332,7 @@ c                  antlc = pi / (xk0 * antlen)
 
          end do
       end do
-
+      end do
 *     ----------------------------
 *     find maximum antenna current
 *     ----------------------------
@@ -4275,11 +4279,11 @@ c     write (6, *) "xmi1 = ", xmi1
       kperprhoi4 = 0.0
       kperprhoi5 = 0.0
 
-      if (eta1 >= 100.*epsilon(eta1)) kperprhoi1 = kalfven * rhoi10
-      if (eta2 >= 100.*epsilon(eta1)) kperprhoi2 = kalfven * rhoi20
-      if (eta3 >= 100.*epsilon(eta1)) kperprhoi3 = kalfven * rhoi30
-      if (eta4 >= 100.*epsilon(eta1)) kperprhoi4 = kalfven * rhoi40
-      if (eta5 >= 100.*epsilon(eta1)) kperprhoi5 = kalfven * rhoi50
+      if (eta1 > 0) kperprhoi1 = kalfven * rhoi10
+      if (eta2 > 0) kperprhoi2 = kalfven * rhoi20
+      if (eta3 > 0) kperprhoi3 = kalfven * rhoi30
+      if (eta4 > 0) kperprhoi4 = kalfven * rhoi40
+      if (eta5 > 0) kperprhoi5 = kalfven * rhoi50
 
 
 *     -----------
@@ -5966,7 +5970,7 @@ c               end if
      &                     xkalp, xkbet, xkprl)
 
 
-                        if (eta2 >= 100.*epsilon(eta1)) then
+                        if (eta2 > 0) then
                         call sigmad_cql3d_2(i, j, n, m, rho(i,j), rho_a,
      &                     gradprlb(i,j), bmod(i,j), bmod_mid(i,j),
      &                     xmi2, qi2, xn2a(i,j), xnuomi,
@@ -6018,7 +6022,7 @@ c               end if
                         end if    !   eta2 .ne. 0.0
 
 
-                        if(eta3 >= 100.*epsilon(eta1)) then
+                        if(eta3 > 0.) then
                         call sigmad_cql3d(i, j, n, m, rho(i,j), rho_a,
      &                     gradprlb(i,j), bmod(i,j), bmod_mid(i,j),
      &                     xmi3, qi3, xn3a(i,j), xnuomi,
@@ -6276,7 +6280,7 @@ c               end if
      &                  delta0, zi, eps0, v0i, omgrf, xk0, kperp_max,
      &                  i_sav, j_sav)
 
-                        if(eta2 >= 100.*epsilon(eta1))
+                        if(eta2 > 0 )
      &                  call sigmac_stix(i, j, n, m,
      &                  xmi2, qi2, xn2a(i,j), xnuomi,
      &                  xkti2(i,j), omgci2(i,j), omgp22(i,j),
@@ -7616,7 +7620,7 @@ c                     if (upshift .eq. 0) xkprl = nphi / rt
 
 
 
-      if(eta2 >= 100.*epsilon(eta1)) then
+      if(eta2 > 0) then
 
          call current_2(xjpx2, xjpy2, xjpz2, nxmx, nymx, nnodex, nnodey,
      &   nkx1, nkx2, nky1, nky2, nkdim1, nkdim2, mkdim1, mkdim2,
@@ -7887,7 +7891,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       fqlavg_work = 0.0
 
 
-      if(eta2 >= 100.*epsilon(eta1))then
+      if(eta2 > 0.) then
          allocate( bqlavg_i2(nuper, nupar, nnoderho) )
          allocate( cqlavg_i2(nuper, nupar, nnoderho) )
          allocate( eqlavg_i2(nuper, nupar, nnoderho) )
@@ -8088,7 +8092,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       ! --Minority ions -- !
       ! ------------------ !
 
-      if(eta2 >= 100.*epsilon(eta1))then
+      if(eta2 > 0.)then
       t1i2 = second1(dummy)
       call ql_myra_write(bqlavg_i2, cqlavg_i2, eqlavg_i2, fqlavg_i2,
      &   wdoti2, fx0i2, fy0i2, fz0i2, darea, nrhomax, nnoderho, drho,
@@ -8475,7 +8479,7 @@ c           ntilda_e(i,j) = rho_pla(i,j) / qe
       ! --Minority ions -- !
       ! ------------------ !
 
-      if(eta2 >= 100.*epsilon(eta1))then
+      if(eta2 > 0.)then
 
       call wdot_qlcheck(wdoti2_ql,
      &   nnoderho, nrhomax,
@@ -8691,7 +8695,7 @@ c     1               + zi * xky * spy(i) + zi * xkz * spz(i)
             ftheta0(i,j) = fy0i2(i, j) * rhohatx(i, j)
      &                   - fx0i2(i, j) * rhohaty(i, j)
 
-            if (eta2 .gt. 0) then
+            if (eta2 .gt. 0.) then
             fpsi1(i,j) = 1.0 / (qi2 * xn2a(i, j) )
      &                 * fpsi0(i, j) / (capr(i) * bpol(i, j))
             end if
@@ -9069,7 +9073,7 @@ c                 c_ehst = 1.0
                eqlavg_i1(niu, miu, n) = eqlavg_i1(niu, miu, n) * pscale
                fqlavg_i1(niu, miu, n) = fqlavg_i1(niu, miu, n) * pscale
 
-               if(eta2 >= 100.*epsilon(eta1))then
+               if(eta2 > 0.)then
                bqlavg_i2(niu, miu, n) = bqlavg_i2(niu, miu, n) * pscale
                cqlavg_i2(niu, miu, n) = cqlavg_i2(niu, miu, n) * pscale
                eqlavg_i2(niu, miu, n) = eqlavg_i2(niu, miu, n) * pscale
@@ -9179,7 +9183,7 @@ c                 c_ehst = 1.0
                   fqlavg_i1(niu, miu, n)= 0.
                end if
 
-               if(eta2 >= 100.*epsilon(eta1))then
+               if(eta2 > 0.)then
                if(xn2avg(n) >= 100.*epsilon(eta1))then
                bqlavg_i2(niu, miu, n)= bqlavg_i2(niu, miu, n)/ xn2avg(n)
      &            * vc2_cgs**4 * 100.
@@ -9330,7 +9334,7 @@ c                 c_ehst = 1.0
 
 
 
-         if(eta2 >= 100.*epsilon(eta1) .and. ndisti2 .eq. 1) then
+         if(eta2 > 0 .and. ndisti2 .eq. 1) then
 
             vperp = uperp * vc2_mks
             vpara = upara * vc2_mks
@@ -9456,7 +9460,7 @@ c                 c_ehst = 1.0
 *        ----------------------------------------------------------------
 *        Write quasilinear diffusion coefficients to file out_cql3d.coef2
 *        ----------------------------------------------------------------
-         if(eta2 >= 100.*epsilon(eta1) .and. ndisti2 .eq. 1)then
+         if(eta2 > 0 .and. ndisti2 .eq. 1)then
 
             write (42, 309) nuper
             write (42, 309) nupar
@@ -11457,7 +11461,7 @@ c        close (15)
          deallocate( eqlavg_i1 )
          deallocate( fqlavg_i1 )
 
-         if(eta2 >= 100.*epsilon(eta1)) then
+         if(eta2 > 0.) then
             deallocate( bqlavg_i2 )
             deallocate( cqlavg_i2 )
             deallocate( eqlavg_i2 )
@@ -11577,7 +11581,7 @@ c        close (15)
          deallocate( eqlavg_i1 )
          deallocate( fqlavg_i1 )
 
-         if(eta2 >= 100.*epsilon(eta1)) then
+         if(eta2 > 0.) then
             deallocate( bqlavg_i2 )
             deallocate( cqlavg_i2 )
             deallocate( eqlavg_i2 )

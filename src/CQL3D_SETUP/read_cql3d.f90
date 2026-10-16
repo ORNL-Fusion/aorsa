@@ -26,7 +26,7 @@
 
        CONTAINS
 
-       subroutine netcdfr3d(netcdfnm)
+       subroutine netcdfr3d(netcdfnm,isp)
 
 !c-----Reads a
 !c distribution and the mesh from a netCDF file created
@@ -35,7 +35,7 @@
       use netcdf
       implicit none
 
-      INTEGER :: istat
+      INTEGER :: istat, isp
 
 !      implicit integer (i-n), real*8 (a-h,o-z)
 !      save
@@ -80,10 +80,10 @@
        real, allocatable :: x(:)
        real, allocatable :: y(:,:)
        real, allocatable :: rya(:)                  !normalized small radius
-       real, allocatable :: f(:,:,:)
-       real, allocatable, dimension(:,:) :: wperp   !perp energy/particle
+       real, allocatable :: f(:,:,:,:)
+       real, allocatable, dimension(:,:,:) :: wperp   !perp energy/particle
                                                       !tdim, rdim
-       real, allocatable, dimension(:,:) :: wpar    !par energy/particle
+       real, allocatable, dimension(:,:,:) :: wpar    !par energy/particle
                                                       !tdim, rdim
        
 
@@ -109,7 +109,7 @@
 !c --- some stuff for netCDF file ---
        character(nf90_max_name):: name
        integer ncid,istatus
-       integer xdim,ydim,rdim,kdim,vid
+       integer xdim,ydim,rdim,kdim,vid,gkdim
        integer ngen,ntotal
        integer ll,j,i
        integer start(3),count(3),start_y(2),count_y(2)
@@ -138,7 +138,7 @@
 !       ydim = ncdid(ncid,'ydim',istatus)
        write(*,*)'after inq_dimid ydim=',ydim,'istatus',istatus
 
-       istatus = nf90_inq_dimid(ncid,'rdim',istatus)
+       istatus = nf90_inq_dimid(ncid,'rdim',rdim)
 !       rdim = ncdid(ncid,'rdim',istatus)
        write(*,*)'after inq_dimid rdim=',rdim,'istatus',istatus
 
@@ -146,6 +146,10 @@
 !       kdim=ncdid(ncid,'species_dim',istatus)
        write(*,*)'after inq_dimid kdim=',kdim,'istatus',istatus
        
+       istatus = nf90_inq_dimid(ncid,'gen_species_dim',gkdim)
+       write(*,*)'proc_cql3d_op: after nf90_inq_dimid ngen_id = ',&
+            &gkdim,'istatus = ',istatus
+
        istatus = nf90_inq_dimid(ncid,'tdim',nt_id)
        write(*,*)'proc_cql3d_op: after nf90_inq_dimid nt_id = ',nt_id,'istatus = ',istatus
 
@@ -162,9 +166,10 @@
        call ncdinq(ncid,ydim,name,iy,istatus)
        call ncdinq(ncid,xdim,name,jx,istatus)
        call ncdinq(ncid,rdim,name,lrz,istatus)
+       call ncdinq(ncid,gkdim,name,ngen,istatus)
        call ncdinq(ncid,kdim,name,ntotal,istatus)
-       write(*,*)'iy,jx,lrz,ntotal',iy,jx,lrz,ntotal
-!c      write(*,*)'netcdfr3d 2 iya,jxa,lrza',iya,jxa,lrza
+       write(*,*)'iy,jx,lrz,ngen,ntotal',iy,jx,lrz,ngen,ntotal
+
 
 !c********** Skip dimension checking since are allocating arrays DBB 8/27/03
 !c-----check the dimensions
@@ -228,17 +233,17 @@
        WRITE (*,'("read_CQL3D: allocate failed for rya")')
        END IF
 
-        ALLOCATE( f(iy, jx, lrz), stat=istat )
+        ALLOCATE( f(iy, jx, lrz, ngen), stat=istat )
        IF (istat /= 0 ) THEN
        WRITE (*,'("read_CQL3D: allocate failed for f")')
        END IF
        
-        ALLOCATE( wperp(lrz, nt), stat=istat )
+        ALLOCATE( wperp(lrz, ngen, nt), stat=istat )
        IF (istat /= 0 ) THEN
        WRITE (*,'("read_CQL3D: allocate failed for wperp")')
        END IF 
        
-        ALLOCATE( wpar(lrz, nt), stat=istat )
+        ALLOCATE( wpar(lrz, ngen, nt), stat=istat )
        IF (istat /= 0 ) THEN
        WRITE (*,'("read_CQL3D: allocate failed for wpar")')
        END IF               
@@ -337,12 +342,12 @@
       write(*,*)'shape of wperp ', shape(wperp)  
       istatus = nf90_inq_varid(ncid, 'wperp', vid)
       istatus = nf90_get_var(ncid, vid, wperp)       
-      write(*,*)'proc_cql3d_op: after ncvgt, wperp = ', wperp(:, nt)
+      write(*,*)'proc_cql3d_op: after ncvgt, wperp = ', wperp(:,isp, nt)
 
       write(*,*)'shape of wpar ', shape(wpar)    
       istatus = nf90_inq_varid(ncid, 'wpar', vid)
       istatus = nf90_get_var(ncid, vid, wpar)            
-      write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:, nt)
+      write(*,*)'proc_cql3d_op: after ncvgt, wpar = ', wpar(:, isp, nt)
       
        
 !c      do ll=1,lrz
@@ -415,10 +420,10 @@
        theta = y
        u = x
        rho_a = rya
-       f_CQL = f       
+       f_CQL = f(:,:,:,isp) !JCW import patch for newer cql
 
-       wperp_cql = wperp
-       wpar_cql = wpar
+       wperp_cql = wperp(:,isp,:)
+       wpar_cql = wpar(:,isp,:)
 
        DEALLOCATE (iy_, x, y, rya, f, wperp, wpar)
 

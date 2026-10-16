@@ -1,136 +1,4 @@
-      subroutine plotws()
-      !> Not called
-      use size_mod
-
-      implicit none
-
-      character(32):: title
-      character(32):: titll
-      character(32):: titlr
-      character(32):: titlb
-      character(32):: titx
-      character(32):: tity
-      character(32):: titz
-
-      integer:: ncolln10, ncolln9, nwheat, ngrey, naqua,
-     &   npink, nblueviolet, ncyan, nbrown, nblue, nyellow, ngreen,
-     &   nblack, nred, nturquoise, ncolln6, ncolln7, ncolln4, ncolln5,
-     &   ncolln8, nwhite, ncolbox, nmagenta, nsalmon, ncolln2,
-     &   ncolln3, ncolbrd, ncolln1, ncollin, ncollab, ncolion,
-     &   ncolelec, norange
-
-      integer:: nlmx, n, ibackground
-
-      parameter (nlmx = 256)
-
-      integer:: npoints, nnodelb, lnwidth
-      integer:: pgopen, pgbeg, ier, np, nl
-      real:: xklsavp(nlmx), Elnp(nlmx)
-      real:: lb(nlmx), lbprime(nlmx)
-      complex El(nlmx)
-
-
-      open(unit=938,file='out938',status='old',form='formatted')
-
-      read(938, 309) nnodelb
-      read(938, 310) (lb(nl), nl = 1, nnodelb)
-      read(938, 310) (lbprime(nl), nl = 1, nnodelb)
-      read(938, 310) (El(nl), nl = 1, nnodelb)
-
-      read(938, 309) npoints
-      read(938, 310) (xklsavp(np), np = 1, npoints)
-      read(938, 310) (Elnp(np), np = 1, npoints)
-
-      lnwidth = 2
-
-
-      nwhite = 0
-      nblack = 1
-      nred = 2
-      ngreen = 3
-      nblue = 4
-      ncyan = 5
-      nmagenta = 6
-      nyellow = 7
-      norange = 8
-
-
-      ncollin=ncyan
-      ncolln2=nblueviolet
-      ncolln3=ngreen
-      ncolln4=naqua
-      ncolln5=nyellow
-      ncolbrd=nwheat
-      ncollab=ncyan
-
-      ncolbox=nred
-      ncolbrd=nwheat
-      ncolion=naqua
-      ncolelec=nyellow
-
-      if (ibackground.eq.1)then
-         ncolbox=nred
-         ncolbrd=nwheat
-      end if
-
-      if (ibackground.eq.0)then
-         ncolbox=nblack
-         ncolbrd=nblack
-      end if
-
-c Open graphics device
-
-
-#ifdef GIZA      
-      IER = PGBEG(0, 'scale.pdf', 1, 1)
-#else
-      IER = PGBEG(0, 'scale.ps/vcps', 1, 1)
-#endif
-
-      IF (IER.NE.1) STOP
-
-      call PGSCF(2)
-      call PGSCH (1.5)
-      CALL PGSCI(1)
-      CALL PGSLW(lnwidth)
-
-c
-c--plot El along field line
-c
-      title= 'E(l) along B'
-      titll= 'Mod El (V/m)'
-      titlr='       '
-      titlb='l(m)'
-
-      call ezplot1q(title, titll, titlr, titlb, lb, real(El),
-     &    nnodelb, nlmx)
-
-c
-c--plot El spectrum
-c
-      title= 'Spectrum of E(k) along B'
-      titll= 'Mod E(k) (V/m)'
-      titlr='       '
-      titlb='kl (m-1)'
-
-      call ezplot1q(title, titll, titlr, titlb, xklsavp, Elnp,
-     &    npoints, nlmx)
-
-      call pgclos
-
-
-  310 format(1p,6e12.4)
-  309 format(10i10)
-
-      close (938)
-
-      return
-      end
-c
-c********************************************************************
-c
-
-      subroutine fieldws(dfquotient, rmin_zoom, rmax_zoom)
+      SUBROUTINE fieldws(dfquotient, rmin_zoom, rmax_zoom)
 
       use size_mod
       use aorsa2din_mod, only: eqtype, nzeta_wdoti
@@ -144,7 +12,8 @@ c
       character(32):: titx
       character(32):: tity
       character(32):: titz
-
+      character(32):: errio
+      
       real:: dfquotient
 
       real:: logmax, ycut, dy, xmax, ymax, xmi, E_eV, vperp_mks,
@@ -195,8 +64,8 @@ c
       parameter (nkpltdim = 2 * nkdim2)
       parameter (mkpltdim = 2 * mkdim2)
 
-      parameter (n_theta_max = 150)
-      parameter (n_u_max = 150)
+      parameter (n_theta_max = 600)
+      parameter (n_u_max = 500)
       parameter (n_psi_max = 150)
 
       real:: u(n_u_max), theta_u(n_theta_max)
@@ -748,7 +617,7 @@ c      write(6, *)"ebk(32,32)     = ", ezk(32,32)
 
 
       do n = 1, nkxplt
-         write(6, *) "n = ",n,"capd(nnodex/2, n) = ",capd(nnodex/2, n)
+         write(6, *) "n = ",n,"capd(nkxplt/2, n) = ",capd(nkxplt/2, n)
       end do
 
       read(38, 309) nnoderho
@@ -3734,61 +3603,57 @@ c      end do
       if (ndisti2 .eq. 1 .or. ndisti1 .eq. 1) then
 
          if (ndisti1 .eq. 1)
-     &      open(unit=42,file='out_cql3d.coef1', status='unknown',
+     &      open(unit=4242,file='out_cql3d.coef1', status='unknown',
      &                                             form='formatted')
 
-         if (ndisti2 .eq. 1)
-     &      open(unit=42,file='out_cql3d.coef2', status='unknown',
-     &                                             form='formatted')
+!         if (ndisti2 .eq. 1)
+!     &      open(unit=4242,file='out_cql3d.coef2', status='unknown',
+!     &                                             form='formatted')
 
-         read (42, 309) nuper
-         read (42, 309) nupar
-         read (42, 309) nnoderho
+         read (4242, 309) nuper
+         read (4242, 309) nupar
+         read (4242, 309) nnoderho
 
          allocate( UPERP(nuper) )
          allocate( UPARA(nupar) )
-         allocate( f_cql_cart(nuper, nupar, nnoderho) )
-
-         allocate( wperp1_cql(nnoderho) )
-         allocate( wpar1_cql(nnoderho) )
-
-         allocate( wperp2_cql(nnoderho) )
-         allocate( wpar2_cql(nnoderho) )
 
          allocate( bqlavg_i1(nuper, nupar, nnoderho) )
          allocate( cqlavg_i1(nuper, nupar, nnoderho) )
          allocate( eqlavg_i1(nuper, nupar, nnoderho) )
          allocate( fqlavg_i1(nuper, nupar, nnoderho) )
-
+         bqlavg_i1 = 0. ;cqlavg_i1 = 0. ;eqlavg_i1 = 0. ;fqlavg_i1 = 0.
          allocate( bqlavg_i1_2d(nupar, nuper) )
          allocate( cqlavg_i1_2d(nupar, nuper) )
 
-         allocate( E_kick_2d (nupar, nnoderho) )
          allocate( f_cql_cart_2d (nupar, nuper) )
 
 
-         read (42, 3310) vc_cgs
-         read (42, 3310) UminPara, UmaxPara
+         read (4242, 3310) vc_cgs
+         read (4242, 3310) UminPara, UmaxPara
 
-         read (42, 3310) (rhon(n), n = 1, nnoderho)
-         read (42, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
-         read (42, 3310) (upara(i_upara), i_upara = 1, nupar)
+         read (4242, 3310) (rhon(n), n = 1, nnoderho)
+         read (4242, 3310) (uperp(i_uperp), i_uperp = 1, nuper)
+         read (4242, 3310) (upara(i_upara), i_upara = 1, nupar)
 
-         read (42, 3310) (((bqlavg_i1(i_uperp, i_upara, n),
+         read (4242, 3310,iostat=ierr,iomsg=errio) (((
+     &        bqlavg_i1(i_uperp, i_upara, n),
+     &        i_uperp = 1, nuper), i_upara=1, nupar), n=1, nnoderho)
+         if (ierr/=0) then                                           
+            print *, ierr," end-of-file encountered during read:",errio
+         end if
+         
+         read (4242, 3310) (((cqlavg_i1(i_uperp, i_upara, n),
      &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-         read (42, 3310) (((cqlavg_i1(i_uperp, i_upara, n),
+         read (4242, 3310) (((eqlavg_i1(i_uperp, i_upara, n),
      &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-         read (42, 3310) (((eqlavg_i1(i_uperp, i_upara, n),
+         read (4242, 3310) (((fqlavg_i1(i_uperp, i_upara, n),
      &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
 
-         read (42, 3310) (((fqlavg_i1(i_uperp, i_upara, n),
-     &     i_uperp = 1, nuper), i_upara = 1, nupar), n = 1, nnoderho)
+         read (4242, 3310) xmi
 
-         read (42, 3310) xmi
-
-         close (42)
+         close (4242)
 
 !        --------------------------------------------
 !        read data for plotting f(u_perp, u_parallel)
@@ -3814,6 +3679,10 @@ c      end do
          read (237, 309) nuper
          read (237, 309) nupar
          read (237, 309) nnoderho
+         !assuming same size for out238 below
+         allocate( f_cql_cart(nuper, nupar, nnoderho) )
+         allocate( wperp1_cql(nnoderho) )
+         allocate( wpar1_cql(nnoderho) )
 
          read (237, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (237, 310)  (upara(i_upara), i_upara = 1, nupar)
@@ -3828,7 +3697,7 @@ c      end do
          close (237)
          end if
 
-
+         write(*,*) 'wperp1',wperp1_cql
 
          if (ndisti2 .eq. 1) then
          open(unit=238,file='out238',status='old',form='formatted')
@@ -3851,6 +3720,9 @@ c      end do
          read (238, 309) nupar
          read (238, 309) nnoderho
 
+         allocate( wperp2_cql(nnoderho) )
+         allocate( wpar2_cql(nnoderho) )
+
          read (238, 310) (uperp(i_uperp), i_uperp = 1, nuper)
          read (238, 310)  (upara(i_upara), i_upara = 1, nupar)
 
@@ -3862,6 +3734,7 @@ c      end do
          read (238, 310) (wpar2_cql(i_psi),  i_psi = 1, nnoderho)
 
          close (238)
+         write(*,*) 'wperp2',wperp2_cql
          end if
 
  4319    format(i10, 1p,1e16.8)
@@ -3874,7 +3747,7 @@ c      end do
          call ezplot2q(title, titll, titlr, titlb, rhon_half,
      &      wperp1_cql, wpar1_cql, nnoderho_half, nrhomax)
 
-
+         if (ndisti2 == 1) then
          title= 'Wperp2 and Wpar2 (keV)'
          titll= 'W (keV)'
          titlr='       '
@@ -3882,7 +3755,7 @@ c      end do
 
          call ezplot2q(title, titll, titlr, titlb, rhon_half,
      &      wperp2_cql, wpar2_cql, nnoderho_half, nrhomax)
-
+         end if
 
 !       ---------------------------------
 !       2D plots of f(u, theta = const)
@@ -3903,11 +3776,11 @@ c      end do
            i_psi = i_psi_array(i_psi_index)
 
            i_theta1 = 1
-           i_theta2 = int(1./6. * n_theta_(i_psi))
-           i_theta3 = int(2./6. * n_theta_(i_psi))
-           i_theta4 = int(3./6. * n_theta_(i_psi))
-           i_theta5 = int(4./6. * n_theta_(i_psi))
-           i_theta6 = int(5./6. * n_theta_(i_psi))
+           i_theta2 = nint(1./6. * n_theta_(i_psi))
+           i_theta3 = nint(2./6. * n_theta_(i_psi))
+           i_theta4 = nint(3./6. * n_theta_(i_psi))
+           i_theta5 = nint(4./6. * n_theta_(i_psi))
+           i_theta6 = nint(5./6. * n_theta_(i_psi))
            i_theta7 = n_theta_(i_psi)
 
            do i_u = 1, n_u
@@ -4532,7 +4405,6 @@ c      end do
          titz='Energy kick (eV)'
          numb = 15
 
-
          E_eV = 1000.
          vperp_mks = sqrt(2.0 * E_eV * q / xmi)
          vperp_cgs = vperp_mks * 100.
@@ -4543,11 +4415,12 @@ c      end do
          uperp_1kev = (i_uperp - 1) * duperp
          vperp_cgs = uperp_1kev * vc_cgs
          vperp_mks = vperp_cgs / 100.
+         allocate( E_kick_2d (nupar, nnoderho) )
 
          E_eV = 0.5 * xmi * (vperp_mks**2) / q
 
          write (6, *) 'i_uperp =', i_uperp
-         write (6, *) 'E = ', E_eV, ' eV'
+         write (6, *) 'E = ', E_eV, ' eV',size(E_kick_2d)
 
          write (15, *) 'i_uperp =', i_uperp
          write (15, *) 'E = ', E_eV, ' eV'
@@ -4595,7 +4468,8 @@ c      end do
 
 
       end if
-
+      close(141)
+      
       do i = 1, nnodex
          do j = 1, nnodey
             freal(i,j) = real(bxwave(i,j))
@@ -5182,7 +5056,7 @@ c     &      nxmx, nymx, nlevmax, title, titx, tity, iflag,scalex)
 
       close (38)
 
-      close (141)
+c      close (141)
       close (142)
       close (242)
       close (143)
@@ -5216,9 +5090,10 @@ c      close (61)
 
          deallocate (wperp1_cql)
          deallocate (Wpar1_cql)
-
+         if (ndisti2==1)  then
          deallocate (wperp2_cql)
          deallocate (Wpar2_cql)
+         end if
       end if
 
       deallocate (xkperp_cold, acold, xkperp_cold2, bcold, ccold,
@@ -5483,7 +5358,7 @@ c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
 
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
 
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
@@ -5663,7 +5538,7 @@ c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
 
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
 
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
@@ -5839,7 +5714,7 @@ c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
 
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
 
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
@@ -5991,7 +5866,7 @@ c     call plcol(ncolbox)
 
 c     call plenv(xmin, xmax, ymin, ymax, 1, 0)
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
       xpmax = xmax + abs(xmax) * eps
@@ -6200,7 +6075,7 @@ c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
       nlevgt = nlevelb - nlevlt
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
 
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
@@ -7568,7 +7443,7 @@ c
 
 
       call a1mnmx(y1, nrmax, nr, y1min, y1max)
-      if(y1max .eq. 0.0 .and. y2min .eq. 0.0)return
+      if(y1max .eq. 0.0 .and. y1min .eq. 0.0)return
 
       ymax = y1max
       ymin = y1min
@@ -7672,7 +7547,7 @@ c--set up contour levels
       call a2dmnmx_r4(f, nrmax, nthmax, nr, nth, fmin, fmax)
 
 #ifdef DEBUG
-      write(*,*) 'title: ', title
+      write(*,*) 'ezconcx title: ', title
 #endif
       write(6, *)"fmax = ", fmax, "   fmin = ", fmin
       write(15,*)"fmax = ", fmax, "   fmin = ", fmin
@@ -7765,7 +7640,7 @@ c Solid  contours will be at levels 'ilevgt' through 'ilevgt+nlevgt'.
 
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
 
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
@@ -8089,7 +7964,7 @@ c      call plenv(xmin, xmax, ymin, ymax, 0, 0)
       call pgenv(xmin, xmax, ymin, ymax, 1, 0)
 
 c--Scale window to user coordinates
-c--Make a bit larger so the boundary doesn't get clipped
+c--Make a bit larger so the boundary doesnt get clipped
       eps=0.05
       xpmin = xmin - abs(xmin) * eps
       xpmax = xmax + abs(xmax) * eps

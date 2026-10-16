@@ -19,8 +19,8 @@
       integer n_u_basis, n_theta_basis, ni, mi
       real enorm_factor
 
-      integer, parameter :: n_u_dim = 300
-      integer, parameter :: n_theta_dim = 200
+      integer, parameter :: n_u_dim = 600
+      integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
 
 !     ----------------
@@ -147,7 +147,7 @@
 !      open(unit=115,file='out115',status='unknown', form='formatted')
 !      open(unit=143,file='ahern',status='unknown', form='formatted')
       
-      open(unit=50,file='cql3d.out',status='unknown', form='formatted')
+      open(unit=50,file='cql3di1.out',status='unknown', form='formatted')
 
 
 
@@ -247,7 +247,7 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
 !     -------------------------------------------------
-      CALL netcdfr3d(netCDF_file)
+      CALL netcdfr3d(netCDF_file,1)
 
       vc_mks = vc * 1.0e-02
       vc_mks_cql3d = vc_mks
@@ -1072,8 +1072,8 @@
       integer n_u_basis, n_theta_basis, ni, mi
       real enorm_factor
 
-      integer, parameter :: n_u_dim = 300
-      integer, parameter :: n_theta_dim = 200
+      integer, parameter :: n_u_dim = 600
+      integer, parameter :: n_theta_dim = 300
       integer, parameter :: n_psi_dim = 64
 
 !     ----------------
@@ -1196,7 +1196,7 @@
 !      open(unit=115,file='out115',status='unknown', form='formatted')
 !      open(unit=143,file='ahern',status='unknown', form='formatted')
       
-      open(unit=50,file='cql3d.out',status='unknown', form='formatted')
+      open(unit=50,file='cql3di2.out',status='unknown', form='formatted')
 
 
 
@@ -1291,7 +1291,7 @@
 !     -------------------------------------------------
 !     Read CQL3D distribution function from netcdf file
 !     -------------------------------------------------
-      CALL netcdfr3d(netCDF_file)
+      CALL netcdfr3d(netCDF_file,2)
 
       vc_mks = vc * 1.0e-02
       vc_mks_cql3d = vc_mks
