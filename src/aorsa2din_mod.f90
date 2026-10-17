@@ -70,7 +70,7 @@
       real :: psimol = 1.00           !-----psimol: if (psimol .eq. 1.0) molifier is NOT used for plasma profiles (default)
                                       !-----        if (psimol .ne. 1.0) molifier is used for profiles, centered at psimol
       real, dimension(maxant) :: yant = 0.0  !-----yant = location of antenna center in Z (m) , current shapey
-      real, dimension(maxant) :: phaseant = 0.0
+      real, dimension(maxant) :: phaseant = 0.0, ampant = 1.0 !phase and amplitude of each ant strap
 
       real :: psipne = 0.50
       real :: psipte = .30
@@ -389,7 +389,7 @@
       real phase, zmin, zmax, phi0, amplt(20) 
                    
       namelist/aorsa2din/eqtype,nmodesx, nmodesy, nmodeslb, nwdot, lmax, lmaxe, ibessel, &
-     &    ti0, xnuead, xnu1ad, xnu2ad, rant, te0, yant, nant, phaseant, &
+     &    ti0, xnuead, xnu1ad, xnu2ad, rant, te0, yant, nant, phaseant, ampant, &
      &    ti02, ti03, ti2lim, ti3lim, nuper, nupar, &
      &    ti04, ti05, ti06, ti4lim, ti5lim, ti6lim,  &
      &    inu, iprint, iexact, delta0, xwall, xnwall,  &

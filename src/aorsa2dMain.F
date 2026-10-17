@@ -3325,11 +3325,11 @@ c                  antlc = pi / (xk0 * antlen)
                Iz =   sin_antang
 
                xjx(i,j) = xjx(i,j)+xjantx * shapey  * gausspsi *
-     &             Ix * exp(zi*phaseant(k))
+     &             Ix * exp(zi*phaseant(k))*ampant(k)
                xjy(i,j) = xjy(i,j)+xjanty * shapey  * gausspsi * 
-     &             Iy * exp(zi*phaseant(k))
+     &             Iy * exp(zi*phaseant(k))*ampant(k)
                xjz(i,j) = xjz(i,j)+xjantz * shapey  * gausspsi * 
-     &             Iz * exp(zi*phaseant(k))
+     &             Iz * exp(zi*phaseant(k))*ampant(k)
             end if
 
             if(i_antenna .eq. 2) then
