@@ -385,7 +385,7 @@
       integer :: nphi_array(nphimx) = 0 !-----list of nphi's in the nphi_array
       real :: phase_array(nphasemx) = 0.0 !-----list of phase on each antenna strap     
       
-      real phase, zmin, zmax, phi0, amplt(20) 
+      real :: phase, zmin, zmax, phi0, amplt(20) 
                    
       namelist/aorsa2din/eqtype,nmodesx, nmodesy, nmodeslb, nwdot, lmax, lmaxe, ibessel, &
      &    ti0, xnuead, xnu1ad, xnu2ad, rant, te0, yant, nant, phaseant, ampant, &

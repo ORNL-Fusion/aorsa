@@ -33,7 +33,6 @@
       ! for pgplot
       integer, parameter :: real32=selected_real_kind(6,37)
 !     constants
-      integer, parameter :: version_number = 30    !-----version_number: version of AORSA         
       real,    parameter ::  q = 1.6e-19, qe = -q
       complex, parameter :: zi = cmplx(0.0,1.0)
       real,    parameter :: eps0 = 8.85e-12, pi = 3.141592654,
@@ -3264,7 +3263,7 @@ c      end if
 
       iant=int((rant - rwleft) / dx) + 1
       jant=int((yant(k) - ybottom) / dy) + 1
-      if(rant .ne. 0.0 .and. k==1 and curved_ant) then
+      if(rant .ne. 0.0 .and. k==1 .and. curved_ant) then
          psiant = psi(iant, jant) !change jequat to jant
       end if
       
