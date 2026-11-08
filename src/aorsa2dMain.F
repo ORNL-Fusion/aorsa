@@ -1,7 +1,10 @@
 
 *----------------------------------------------------------------------
-*     AORSA2D: version 20 (04-28-2010)
-*     This version includes odd-order derivative in the conductivity
+*     AORSA2D: version 30 (11-28-2026)
+*     This version is modernized for fortran 2008, support for mirrors
+*     Anistropic resolution
+*      
+*     This version 24 includes odd-order derivative in the conductivity
 *     Special eqdsk_setup for Alcator-C lower hybrid
 *        (eqdsk_special .ne. 0)
 *     Does not change the sign of psi for abnormal eqdsks
@@ -29,7 +32,8 @@
 
       ! for pgplot
       integer, parameter :: real32=selected_real_kind(6,37)
-      ! constants
+!     constants
+      integer, parameter :: version_number = 30    !-----version_number: version of AORSA         
       real,    parameter ::  q = 1.6e-19, qe = -q
       complex, parameter :: zi = cmplx(0.0,1.0)
       real,    parameter :: eps0 = 8.85e-12, pi = 3.141592654,
@@ -3260,7 +3264,7 @@ c      end if
 
       iant=int((rant - rwleft) / dx) + 1
       jant=int((yant(k) - ybottom) / dy) + 1
-      if(rant .ne. 0.0 .and. k==1) then
+      if(rant .ne. 0.0 .and. k==1 and curved_ant) then
          psiant = psi(iant, jant) !change jequat to jant
       end if
       
@@ -5142,7 +5146,7 @@ c           call flush
       lld = max(1,nrow_local)
 
       p_amat_dim = nrow_local * ncol_local + 1
-      p_amat_size = p_amat_dim * 16 / 1000000
+      p_amat_size = p_amat_dim * (16. / 1000000.)
 
       if (isolve .ne. 0) then
 

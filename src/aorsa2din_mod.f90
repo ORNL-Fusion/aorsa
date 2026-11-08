@@ -218,7 +218,6 @@
 
            
       
-      integer :: version_number = 24    !-----version_number: version of AORSA         
       integer :: n_prof_flux = 0        !-----n_prof_flux = flag determining whether profiles are wrt toroidal or poloidal flux
                                         !           if(n_prof_flux .eq. 0) profiles are wrt sqrt(poloidal) flux (default)
                                         !           if(n_prof_flux .ne. 0) profiles are wrt sqrt(toroidal) flux 
