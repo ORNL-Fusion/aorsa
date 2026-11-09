@@ -3360,7 +3360,7 @@ c                  antlc = pi / (xk0 * antlen)
          end do
       end do
       end do nant_loop !k
-
+      write(15,*) 'psiant', psiant,rant
 *     ----------------------------
 *     find maximum antenna current
 *     ----------------------------

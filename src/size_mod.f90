@@ -1,7 +1,7 @@
       module size_mod
       implicit none
 
-      integer, parameter:: nmodesmax=64 , mmodesmax=128
+      integer, parameter:: nmodesmax=128 , mmodesmax=128
 
 !     ---------------------------------------------------
 !     Maximum number of modes allowed:
